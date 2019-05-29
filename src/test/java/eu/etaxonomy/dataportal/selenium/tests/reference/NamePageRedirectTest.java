@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 import java.util.UUID;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.thoughtworks.selenium.webdriven.commands.WaitForPageToLoad;
@@ -47,7 +46,6 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
      * related to https://dev.e-taxonomy.eu/redmine/issues/8304
      */
     @Test
-    @Ignore
     public void testNoRedirect() throws MalformedURLException {
 
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + name_achilllea_santolina_uuid.toString() + "/null/null");
@@ -80,13 +78,14 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + name_achilllea_santolina_uuid.toString() + "/null/null/redirect_to_taxon");
         wait.apply(driver, new String[] {timeout});
         wait.apply(driver, new String[] {timeout});
-        logger.debug(p.getDrupalPagePath());
+        logger.debug("DrupalPagePath: " + p.getDrupalPagePath());
         assertTrue(
                 "The target page should be a taxon page, the name page must have been redirected to the according taxon page.",
                 p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + taxon_achilllea_santolina_uuid.toString()));
 
         p = new GenericPortalPage(driver, getContext(), "name/" + name_achilllea_santolina_uuid.toString() + "///redirect_to_taxon");
         wait.apply(driver, new String[] {timeout});
+        logger.debug("DrupalPagePath: " + p.getDrupalPagePath());
         assertTrue(
                 "The target page should be a taxon page, the name page must have been redirected to the according taxon page.",
                 p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + taxon_achilllea_santolina_uuid.toString()));

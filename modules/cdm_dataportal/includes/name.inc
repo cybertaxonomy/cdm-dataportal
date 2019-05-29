@@ -1013,8 +1013,7 @@ function compose_name_relationships_inline($name_relations, $current_name_uuid, 
   $list_suffix = ']</span>';
   $item_prefix = '<span class="item">';
   $item_suffix = '</span> ';
-  $show_relationship_symbol = true;
-  $render_array = compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
+  $render_array = compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
 
   // remove the glue space from the last item element which has been added by the $item_suffix = '</span> '
   $items_ctn = count($render_array['list']['items']);
@@ -1067,9 +1066,8 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
   $list_suffix = '</div>';
   $item_prefix = '<div class="item">';
   $item_suffix = '</div>';
-  $show_relationship_symbol = true;
 
-  $render_array = compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid, $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
+  $render_array = compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
 
   RenderHints::popFromRenderStack();
   $render_array['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
@@ -1086,7 +1084,6 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
  *   - 'inverse': the relationship type uuids for the direct direction of the relation edge to be included
  * @param $current_name_uuid
  * @param $current_taxon_uuid
- * @param $show_relationship_symbol
  * @param $list_prefix
  * @param $list_suffix
  * @param $item_prefix
@@ -1096,7 +1093,7 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
  * @ingroup Compose
  */
 function compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid,
-                                    $show_relationship_symbol, $list_prefix, $list_suffix, $item_prefix, $item_suffix)
+                                    $list_prefix, $list_suffix, $item_prefix, $item_suffix)
 {
   $non_nec_name_reltype_uuids = array(UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
     UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
@@ -1150,13 +1147,13 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
       $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
 
-      $footnote_key_markup = name_relationship_footnote_markup($name_rel);
+      $rel_footnote_key_markup = name_relationship_footnote_markup($name_rel);
       $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
 
       $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
       $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
-      $symbol_markup = $show_relationship_symbol ? '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' : '';
-      $relationship_markup = $symbol_markup . $relationship_markup . $footnote_key_markup;
+      $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup . ' ';
+      $relationship_markup = $symbol_markup . $relationship_markup;
       if ($relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
           null,
@@ -1170,12 +1167,12 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
       $non_nec_markup = '';
       foreach ($non_nec_name_rels as $name_rel) {
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-        $footnote_key_markup = name_relationship_footnote_markup($name_rel);
+        $rel_footnote_key_markup = name_relationship_footnote_markup($name_rel);
         $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = $non_nec_markup ? ' nec ' : 'non';
-        $symbol_markup = $show_relationship_symbol ? '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' : '';
-        $non_nec_markup .= $symbol_markup . $relationship_markup . $footnote_key_markup;
+        $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
+        $non_nec_markup .= $symbol_markup . $relationship_markup;
       }
       if ($non_nec_markup) {
         $render_array['list']['items'][] = markup_to_render_array($non_nec_markup,
@@ -1190,13 +1187,13 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
       foreach ($orthographic_variants as $name_rel) {
 
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-        $footnote_key_markup = name_relationship_footnote_markup($name_rel);
-        $footnote_key_markup .= ($footnote_key_markup ? ', ' : '') . nomenclatural_reference_footnote_markup($name_rel->toName);
+        $rel_footnote_key_markup = name_relationship_footnote_markup($name_rel);
         $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, TRUE);
+        $relationship_markup .= nomenclatural_reference_footnote_markup($name_rel->toName);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
-        $symbol_markup = $show_relationship_symbol ? '<span class="symbol" title="' . $label . '">' . $symbol . '</span> ' : '';
-        $relationship_markup = $symbol_markup . $relationship_markup . $footnote_key_markup;
+        $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
+        $relationship_markup = $symbol_markup . $relationship_markup;
       }
       if ($relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,

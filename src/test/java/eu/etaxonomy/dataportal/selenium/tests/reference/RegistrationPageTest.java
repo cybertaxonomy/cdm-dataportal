@@ -125,7 +125,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1.11.2018",
+                "Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1.11.2018, nom. illeg.",
                 regItem.getNameElement().getText());
         assertEquals(
                 "Holotype: (CBFS A–83–1).",
@@ -192,9 +192,8 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("Registration Id: http://testbank.org/100008" + titleSuffix, driver.getTitle());
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
-        assertEquals(
-                "Lectotype: [icon] (BHUPM 671).\nopen media",
-                regItem.getSpecimenTypeDesignations().get(0).getText());
+        assertTrue(
+                regItem.getSpecimenTypeDesignations().get(0).getText().startsWith("Lectotype: [icon] (BHUPM 671)"));
         List<List<GalleryImage>> galleryImages = ElementUtils.getGalleryImages(regItem.getSpecimenTypeDesignations().get(0).getElement(), p.getWait());
         assertEquals("Expecting one row of images", 1, galleryImages.size());
         assertEquals("Expecting 1 image in row", 1, galleryImages.get(0).size());

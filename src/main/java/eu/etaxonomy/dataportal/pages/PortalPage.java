@@ -250,7 +250,11 @@ public abstract class PortalPage {
                 m.matches();
                 return m.group(1);
             } else {
-                return currentURL.getPath().replaceFirst("^"+ context.getBaseUri().getPath() + "/", "");
+                String uriBasePath = context.getBaseUri().getPath();
+                if(!uriBasePath.endsWith("/")){
+                    uriBasePath += "/";
+                }
+                return currentURL.getPath().replaceFirst("^"+ uriBasePath, "");
             }
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
