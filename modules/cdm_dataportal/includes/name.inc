@@ -281,12 +281,16 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
     $taxonName = $taxon_name_or_taxon_base->name;
     $is_doubtful = $taxon_name_or_taxon_base->doubtful;
-    // use the TaxonBase.taggedTitle so we have the secRef
-    $taggedTitle = $taxon_name_or_taxon_base->taggedTitle;
+    // use the TaxonBase.tagged_title so we have the secRef
+    $tagged_title = $taxon_name_or_taxon_base->taggedTitle;
   } else {
     // assuming this is a TaxonName
     $taxonName = $taxon_name_or_taxon_base;
-    $taggedTitle = $taxon_name_or_taxon_base->taggedName;
+    if(isset($taxonName->taggedFullTitle)){
+      $tagged_title = $taxon_name_or_taxon_base->taggedFullTitle;
+    } else {
+      $tagged_title = $taxon_name_or_taxon_base->taggedName;
+    }
   }
 
 
@@ -304,20 +308,22 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     }
   }
 
-  $secref_tagged_text = tagged_text_extract_secref($taggedTitle);
-  $nom_status_tagged_text = tagged_text_extract_nomstatus($taggedTitle);
+  $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_title);
+  // taxon names will have the nomenclatural reference in the tagged full title:
+  $nomref_tagged_text = tagged_text_extract_reference($tagged_title);
+  $nom_status_tagged_text = tagged_text_extract_nomstatus($tagged_title);
   $appended_phrase_tagged_text = array(); // this is filled later
 
-  normalize_tagged_text($taggedTitle);
+  normalize_tagged_text($tagged_title);
 
   $firstEntryIsValidNamePart =
-    isset($taggedTitle)
-    && is_array($taggedTitle)
-    && isset($taggedTitle[0]->text)
-    && is_string($taggedTitle[0]->text)
-    && $taggedTitle[0]->text != ''
-    && isset($taggedTitle[0]->type)
-    && $taggedTitle[0]->type == 'name';
+    isset($tagged_title)
+    && is_array($tagged_title)
+    && isset($tagged_title[0]->text)
+    && is_string($tagged_title[0]->text)
+    && $tagged_title[0]->text != ''
+    && isset($tagged_title[0]->type)
+    && $tagged_title[0]->type == 'name';
   $lastAuthorElementString = FALSE;
 
   $name_encasement = $is_invalid ? '"' : '';
@@ -329,14 +335,14 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   }
 
   // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
-  while($taggedTitle[count($taggedTitle)-1]->type == "appendedPhrase"){
-    $appended_phrase_tagged_text[] = array_pop($taggedTitle);
+  while($tagged_title[count($tagged_title)-1]->type == "appendedPhrase"){
+    $appended_phrase_tagged_text[] = array_pop($tagged_title);
   }
 
   // Got to use second entry as first one, see ToDo comment below ...
   if ($firstEntryIsValidNamePart) {
 
-    $taggedName = $taggedTitle;
+    $taggedName = $tagged_title;
     $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
     $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
 
@@ -402,23 +408,27 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
       if (isset($renderTemplate['referencePart']['microreference'])&& isset($taxonName->nomenclaturalMicroReference)) {
         $microreference = $taxonName->nomenclaturalMicroReference;
       }
-      $citation = cdm_ws_getNomenclaturalReference($taxonName->nomenclaturalReference->uuid, $microreference);
-
-      // Find preceding element of the reference.
-      $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
-      if (str_beginsWith($citation, ", in")) {
-        $citation = substr($citation, 2);
-        $separator = ' ';
-      }
-      elseif (!str_beginsWith($citation, "in") && $precedingKey == 'authors') {
-        $separator = ', ';
+      if(count($nomref_tagged_text) == 0){
+        $citation = cdm_ws_getNomenclaturalReference($taxonName->nomenclaturalReference->uuid, $microreference);
+        // Find preceding element of the reference.
+        $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
+        if (str_beginsWith($citation, ", in")) {
+          $citation = substr($citation, 2);
+          $separator = ' ';
+        }
+        elseif (!str_beginsWith($citation, "in") && $precedingKey == 'authors') {
+          $separator = ', ';
+        } else {
+          $separator = ' ';
+        }
+        $referenceArray['#separator'] = $separator;
+        $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
       } else {
-        $separator = ' ';
+        // this ist the case for taxon names
+        $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text);
       }
 
 
-      $referenceArray['#separator'] = $separator;
-      $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
       array_setr('reference', $referenceArray, $renderTemplate);
     }
 

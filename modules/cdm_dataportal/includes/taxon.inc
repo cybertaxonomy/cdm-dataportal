@@ -221,8 +221,8 @@ function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misa
   $appended_phrase_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('appendedPhrase')));
   // remove/extract appendedPhrase, secReference, relSecReference and add placeholders if needed
   tagged_text_extract($taxon_relation->taggedText, 'appendedPhrase', true);
-  $sensu_tagged_text = tagged_text_extract_secref($taxon_relation->taggedText, "secReference", true);
-  $relsec_tagged_text = tagged_text_extract_secref($taxon_relation->taggedText, "relSecReference", true);
+  $sensu_tagged_text = tagged_text_extract_reference_and_detail($taxon_relation->taggedText, "secReference", true);
+  $relsec_tagged_text = tagged_text_extract_reference_and_detail($taxon_relation->taggedText, "relSecReference", true);
 
   if (isset($sensu_tagged_text[1])) {
     // for de-duplication everything else needs to be equal except for appendedPhrase + MAN.sec + MAN.secDetail. see #7658#note-21

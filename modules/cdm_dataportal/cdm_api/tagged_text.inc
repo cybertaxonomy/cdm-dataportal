@@ -122,7 +122,7 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
  *
  * Tagged text where the type starts with 'PLACEHOLDER_' will be added to the markup as plain text whereas the
  * taggedText->type wrapped in curly brackets: '{'. $tt->text . '}' is used as text.
- * see tagged_text_extract_secref()
+ * see tagged_text_extract_reference_and_detail()
  *
  * In addition to the tagged text element fields as defined in the cdm this method also recognizes:
  *    - 'attributes': array of attributes as accepted by drupal_attributes()
@@ -308,6 +308,51 @@ function normalize_tagged_text(&$taggedTextList) {
 }
 
 /**
+ * Extracts from a tagged text array the tagged text for a references which is concatenated with citation
+ * detail separator and citation detail into one single element.
+ *
+ * @param $tagged_text
+ *    The tagged text to operate on
+ * @param string $ref_tag_type
+ *    The tagtype for a secreference is "secReference", but "relSecReference" is also used in case of relationships.
+ * @param bool $replace_with_placeholder
+ *    Indicates the method to add a empty placeholder tagged text alement as relpacement for the extrated tagged text
+ *    elements.
+ * @param string $ref_detail_tag_type
+ * @return array
+ */
+function tagged_text_extract_reference(&$tagged_text, $ref_tag_type = "reference", $replace_with_placeholder = false) {
+
+  $extracted_tt = array();
+  if (is_array($tagged_text)) {
+    $extract_pos = null;
+    for ($i = 0; $i < count($tagged_text); $i++) {
+      if ($tagged_text[$i]->type == $ref_tag_type){
+        if ($i > 0 && $tagged_text[$i - 1]->type == 'separator') {
+          // the reference may be preceeded by a separator in case it is not a in-reference
+          $extracted_tt[] = $tagged_text[$i - 1];
+          unset($tagged_text[$i - 1]);
+        } else {
+          // need to add a separator to since the reference tagged text will become the first element
+          // ant thus will not be preceded by a separator
+          $extracted_tt[] = tagged_text_new('separator', ' ');
+        }
+        $extracted_tt[] = $tagged_text[$i];
+        if ($replace_with_placeholder) {
+          // text must not be null, see cdm_tagged_text_to_markup()
+          $tagged_text[$i] = tagged_text_new("PLACEHOLDER_" . $ref_tag_type, "PLACEHOLDER_" . $ref_tag_type);
+        } else {
+          unset($tagged_text[$i]);
+        }
+        break;
+      }
+    }
+  }
+  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  return $extracted_tt;
+}
+
+/**
  * Extracts the tagged text for sec references with separator and citation detail from a tagged text array.
  * @param $tagged_text
  *    The tagged text to operate on
@@ -316,9 +361,10 @@ function normalize_tagged_text(&$taggedTextList) {
  * @param bool $replace_with_placeholder
  *    Indicates the method to add a empty placeholder tagged text alement as relpacement for the extrated tagged text
  *    elements.
+ * @param string $ref_detail_tag_type
  * @return array
  */
-function tagged_text_extract_secref(&$tagged_text, $ref_tag_type = "secReference", $replace_with_placeholder = false) {
+function tagged_text_extract_reference_and_detail(&$tagged_text, $ref_tag_type = "secReference", $replace_with_placeholder = false) {
 
   $extracted_tt = array();
   if (is_array($tagged_text)) {
@@ -354,7 +400,7 @@ function tagged_text_extract_nomstatus(&$tagged_text) {
 
   $extracted_tt = array();
   if (is_array($tagged_text)) {
-    for ($i = 0; $i < count($tagged_text) - 1; $i++) {
+    for ($i = 0; $i < count($tagged_text); $i++) {
       if ($tagged_text[$i]->type == "nomStatus"){
         $extracted_tt[] = $tagged_text[$i];
         if(isset($tagged_text[$i + 1]) && $tagged_text[$i + 1]->type == "postSeparator"){
@@ -377,7 +423,7 @@ function tagged_text_extract_nomstatus(&$tagged_text) {
 function tagged_text_extract(&$tagged_text, $type, $replace_with_placeholder = false) {
   $matching_elements = array();
   if (is_array($tagged_text)) {
-    for ($i = 0; $i < count($tagged_text) - 1; $i++) {
+    for ($i = 0; $i < count($tagged_text); $i++) {
       if($tagged_text[$i]->type == $type){
         $matching_elements[] = $tagged_text[$i];
         if($replace_with_placeholder){

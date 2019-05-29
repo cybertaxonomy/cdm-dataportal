@@ -1671,6 +1671,16 @@ function cdm_load_annotations(&$annotatable_entity) {
   }
 }
 
+function cdm_load_tagged_full_title($taxon_name){
+  if(isset($taxon_name) && !isset($taxon_name->taggedFullTitle)){
+    $tagged_full_title = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, 'taggedFullTitle'));
+    if(is_array($tagged_full_title)){
+      $taxon_name->taggedFullTitle = $tagged_full_title;
+
+    }
+  }
+}
+
 /**
  * Extends the $cdm_entity object by the field if it is not already existing.
  *
