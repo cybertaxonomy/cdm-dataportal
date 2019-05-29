@@ -77,8 +77,8 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
         List<BaseElement> nameRelationshipFootnotes = regItem.getNameRelationsipFootnotes();
         assertEquals(3, nameRelationshipFootnotes.size());
-        assertEquals("1. Art.99.9 Turland, Wiersema, Barrie, Greuter, D.Hawksw., Herend., S.Knapp, Kusber, D.Z.Li, Marhold, T.W.May, McNeill, A.M.Monro, J.Prado, M.J.Price & Gideon F.Sm., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:22", nameRelationshipFootnotes .get(0).getText());
-        assertEquals("2. Art. 88.9 Turland, Wiersema, Barrie, Greuter, D.Hawksw., Herend., S.Knapp, Kusber, D.Z.Li, Marhold, T.W.May, McNeill, A.M.Monro, J.Prado, M.J.Price & Gideon F.Sm., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33", nameRelationshipFootnotes .get(1).getText());
+        assertEquals("1. Art.99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:22", nameRelationshipFootnotes .get(0).getText());
+        assertEquals("2. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33", nameRelationshipFootnotes .get(1).getText());
         assertEquals("3. Lem, Nonsens species of the developers Vol1", nameRelationshipFootnotes .get(2).getText());
 
     }
@@ -92,7 +92,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1 [non Nodosilinea sensensia nec Nodosilinea sensensia nec Nodosilinea blockensis orth. var. Nodosilinea sensensi1, 2]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
-        assertEquals("1. Art. 88.9 Turland, Wiersema, Barrie, Greuter, D.Hawksw., Herend., S.Knapp, Kusber, D.Z.Li, Marhold, T.W.May, McNeill, A.M.Monro, J.Prado, M.J.Price & Gideon F.Sm., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33", footnotes.get(0).getText());
+        assertEquals("1. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33", footnotes.get(0).getText());
         assertEquals("2. Lem, Nonsens species of the developers Vol1", footnotes.get(1).getText());
 
     }
