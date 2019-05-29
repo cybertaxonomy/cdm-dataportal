@@ -125,7 +125,7 @@ function theme_cdm_specimen_page_title($variables)
  */
 function theme_cdm_name_page_title($variables) {
   $taxon_name = $variables['taxon_name'];
-  RenderHints::pushToRenderStack('taxon_page_title');
+  RenderHints::pushToRenderStack('name_page_title');
 
   $referenceUri = NULL;
   if (isset($taxon_name->nomenclaturalReference)) {

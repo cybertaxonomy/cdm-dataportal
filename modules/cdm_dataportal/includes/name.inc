@@ -592,6 +592,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   // name and typedesignation in detail
   if($registration_dto->nameRef){
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
+    cdm_load_tagged_full_title($name);
     $render_array['published_name'] = markup_to_render_array('<p class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</p>', 0);
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
     $render_array['name_relations'] = compose_name_relationships_list($name_relations, $registration_dto->nameRef->uuid, null);
@@ -939,6 +940,8 @@ function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_
   } else {
     $name = $name_rel->toName;
   }
+
+  cdm_load_tagged_full_title($name);
 
   $highlited_synonym_uuid = isset ($name->taxonBases[0]->uuid) ? $name->taxonBases[0]->uuid : '';
   if(!$show_name_cache_only){

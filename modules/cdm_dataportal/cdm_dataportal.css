@@ -49,6 +49,12 @@ dd.sublist-container div dl , dd.sublist-container div h3 {
   font-style: italic;
 }
 
+.cdm\:Taxon .fa, .cdm\:TaxonName .fa  {
+    /* override the default (display: inline-block) which causes problems
+       when using text-indent at the same time, see .relationships_list */
+    display: inline;
+}
+
 .rank,
 .authors,
 .appended-phrase,
@@ -283,6 +289,7 @@ li .taxon {
     padding-left: 26px ;
     text-indent: -26px ;
 }
+
 
 #synonymy ul.heterotypicSynonymyGroup,
 #synonymy ul.homotypicSynonymyGroup,

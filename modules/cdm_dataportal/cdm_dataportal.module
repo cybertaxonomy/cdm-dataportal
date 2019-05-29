@@ -1785,6 +1785,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     drupal_set_title(t('Taxon name does not exist'), PASS_THROUGH);
     return FALSE;
   }
+  cdm_load_tagged_full_title($taxon_name);
   // Searching for all the taxa connected with the taxon name on the tree
   // in use.
   $name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
@@ -1833,7 +1834,9 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     $taxon_name_page->title = theme('cdm_name_page_title', array('taxon_name' => $taxon_name));
     $content = array();
 
+    RenderHints::pushToRenderStack('name_page');
     $content['taxon_name'] = markup_to_render_array(render_taxon_or_name($taxon_name));
+
 
     // name relationships
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $taxon_name->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
@@ -1848,7 +1851,9 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     else {
       $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.');
     }
+
     $taxon_name_page->content = $content;
+    RenderHints::popFromRenderStack();
     return $taxon_name_page;
   }
 }
@@ -1872,11 +1877,13 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
 
   $registration_identifier = urldecode($registration_identifier_encoded);
 
+  RenderHints::pushToRenderStack('registration_page');
+
   $render_array = array();
   $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER . $registration_identifier_encoded);
   if($registration_dto){
-    drupal_set_title(t('Registration Id:') . ' ' . $registration_identifier, PASS_THROUGH);
 
+    drupal_set_title(t('Registration Id:') . ' ' . $registration_identifier, PASS_THROUGH);
     $render_array = compose_registration_dto_full($registration_dto, true);
 
   } else {
@@ -1900,6 +1907,8 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
     'registration' => $render_array,
     '#suffix' => '</div>',
   );
+
+  RenderHints::popFromRenderStack();
 
   return $render_array ;
 }

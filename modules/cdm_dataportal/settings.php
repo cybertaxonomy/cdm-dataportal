@@ -301,7 +301,7 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
      'statusPart' => TRUE,
      'secReferencePart' => TRUE,
     ),
-    'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy'=> array(
+    'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy,name_page,registration_page'=> array(
       'nameAuthorPart' => array('#uri' => TRUE),
       'referencePart' => TRUE,
       'descriptionPart' => TRUE,
