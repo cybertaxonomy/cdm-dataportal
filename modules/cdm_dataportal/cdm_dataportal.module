@@ -1835,6 +1835,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     $content = array();
 
     RenderHints::pushToRenderStack('name_page');
+    RenderHints::setFootnoteListKey('name_page');
     $content['taxon_name'] = markup_to_render_array(render_taxon_or_name($taxon_name));
 
 
@@ -1854,6 +1855,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
 
     $taxon_name_page->content = $content;
     RenderHints::popFromRenderStack();
+    RenderHints::clearFootnoteListKey();
     return $taxon_name_page;
   }
 }
@@ -1878,6 +1880,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
   $registration_identifier = urldecode($registration_identifier_encoded);
 
   RenderHints::pushToRenderStack('registration_page');
+  RenderHints::setFootnoteListKey('registration_page');
 
   $render_array = array();
   $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER . $registration_identifier_encoded);
@@ -1909,6 +1912,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
   );
 
   RenderHints::popFromRenderStack();
+  RenderHints::clearFootnoteListKey();
 
   return $render_array ;
 }

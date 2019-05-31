@@ -59,7 +59,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.",
+                "Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1",
                 regItem.getNameElement().getText());
         assertEquals(
                 "Lem, Nonsens species of the developers Vol1. 2001",
@@ -69,17 +69,26 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals(5,  nameRelationshipElements.size());
         assertEquals("is new combination for Nepenthes alata Blanco, Fl. Filip., ed. 1: 805. 1837", nameRelationshipElements.get(0).getText());
         assertEquals("is new name for Nepenthes blancoi Blume in Mus. Bot. Lugd.-Bat. 2: 10. 1852", nameRelationshipElements.get(1).getText());
-        assertEquals("is validating1 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1.11.2018, nom. illeg.", nameRelationshipElements.get(2).getText());
+        assertEquals("is validating2 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1.11.2018, nom. illeg.", nameRelationshipElements.get(2).getText());
         assertEquals("non Nodosilinea blockensis, New Species in the solar system nec Nodosilinea sensensia, Plantas vasculares de Oz nec Nodosilinea sensensia, Species solaris", nameRelationshipElements.get(3).getText());
         BaseElement orthVarElement = nameRelationshipElements.get(4);
-        assertEquals("orth. var.2 Nodosilinea sensensi3", orthVarElement.getText());
+        assertEquals("orth. var.3 Nodosilinea sensensi4", orthVarElement.getText());
         assertEquals("has orthographic variant", orthVarElement.getElement().findElement(By.className("symbol")).getAttribute("title"));
 
-        List<BaseElement> nameRelationshipFootnotes = regItem.getNameRelationsipFootnotes();
-        assertEquals(3, nameRelationshipFootnotes.size());
-        assertEquals("1. Art.99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:22", nameRelationshipFootnotes .get(0).getText());
-        assertEquals("2. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33", nameRelationshipFootnotes .get(1).getText());
-        assertEquals("3. Lem, Nonsens species of the developers Vol1. 2001", nameRelationshipFootnotes .get(2).getText());
+        List<BaseElement> footnotes = regItem.getRegistrationFootnotes();
+        assertEquals(4, footnotes.size());
+        assertEquals(
+                "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:11",
+                footnotes .get(0).getText());
+        assertEquals(
+                "2. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:22",
+                footnotes .get(1).getText());
+        assertEquals(
+                "3. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33",
+                footnotes .get(2).getText());
+        assertEquals(
+                "4. Lem, Nonsens species of the developers Vol1. 2001",
+                footnotes .get(3).getText());
 
     }
 
@@ -89,11 +98,20 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensensia_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov. [non Nodosilinea sensensia nec Nodosilinea sensensia nec Nodosilinea blockensis orth. var.1 Nodosilinea sensensi2]", accName.getText());
+        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1 [non Nodosilinea sensensia nec Nodosilinea sensensia nec Nodosilinea blockensis orth. var.2 Nodosilinea sensensi3]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
-        assertEquals("1. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33", footnotes.get(0).getText());
-        assertEquals("2. Lem, Nonsens species of the developers Vol1. 2001", footnotes.get(1).getText());
+        assertEquals(3, footnotes.size());
+        assertEquals(
+                "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:11",
+                footnotes .get(0).getText());
+        assertEquals(
+                "2. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33",
+                footnotes.get(1).getText());
+        assertEquals(
+                "3. Lem, Nonsens species of the developers Vol1. 2001",
+                footnotes.get(2).getText());
+
 
     }
 
@@ -116,9 +134,6 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
     /**
      * Test for https://dev.e-taxonomy.eu/redmine/issues/6523
-     *
-     * @throws MalformedURLException
-     * @throws UnsupportedEncodingException
      */
     @Test
     public void testIssue6523() throws MalformedURLException, UnsupportedEncodingException {

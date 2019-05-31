@@ -137,11 +137,15 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
  *   Array with text items to convert.
  * @param array $skiptags
  *   Array of tag names to skip
+ * @param $tag
+ * @param $options
+ *     - 'html' (default FALSE): Whether $text is HTML or just plain-text. NOTE! in this case the text will not being
+ *              translated by t()
  *
  * @return string
  *   The markup.
  */
-function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag = 'span') {
+function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag = 'span', $options = array()) {
 
   $out = '';
   $was_separator = false;
@@ -189,7 +193,11 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
         if(!$is_separator && !$was_separator && !$is_first){
           $out .= " ";
         }
-        $out .= t('@text', array('@text' => $tt->text));
+        if(isset($options['html']) &&  $options['html']){
+          $out .= $tt->text;
+        } else {
+          $out .= t('@text', array('@text' => $tt->text));
+        }
         $was_separator = $is_separator;
         $last_type = $tt->type;
         $last_suffix = $suffix;

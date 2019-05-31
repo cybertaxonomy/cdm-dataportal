@@ -461,7 +461,18 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   // Fill with status.
   if(isset($renderTemplate['statusPart']['status'])){
     if (isset($nom_status_tagged_text[0])) {
-        array_setr('status', '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator')) . '</span>', $renderTemplate);
+        $tt_to_markup_options = array('html' => false);
+        foreach ($nom_status_tagged_text as &$tt){
+         if($tt->type == 'nomStatus'&& isset($tt->entityReference)) {
+           $nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
+           $nom_status_fkey = nomenclatural_status_footnote_markup($nom_status);
+           $tt->text .= $nom_status_fkey;
+           $tt_to_markup_options['html'] = true;
+         }
+        }
+        array_setr(
+          'status',
+          '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator'), 'span', $tt_to_markup_options) . '</span>', $renderTemplate);
     }
   }
 
@@ -1051,8 +1062,11 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
 
   // $ordered_name_relation_type_uuids = array_keys(cdm_terms_by_type_as_option('NameRelationshipType', CDM_ORDER_BY_ORDER_INDEX_ASC));
 
-  RenderHints::pushToRenderStack('name_relationships');
-  RenderHints::setFootnoteListKey('name_relationships');
+  $key = 'name_relationships';
+  RenderHints::pushToRenderStack($key);
+  if(!RenderHints::getFootnoteListKey()){
+    RenderHints::setFootnoteListKey($key);
+  }
   // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, unserialize(CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT));
@@ -1071,8 +1085,9 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
 
   RenderHints::popFromRenderStack();
   $render_array['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
-  RenderHints::clearFootnoteListKey();
-
+  if(RenderHints::getFootnoteListKey() == $key) {
+    RenderHints::clearFootnoteListKey();
+  }
   return $render_array;
 }
 
@@ -1189,11 +1204,11 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
         $rel_footnote_key_markup = name_relationship_footnote_markup($name_rel);
         $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, TRUE);
-        $relationship_markup .= nomenclatural_reference_footnote_markup($name_rel->toName);
+        $nomref_footnote_key_markup = nomenclatural_reference_footnote_key_markup($name_rel->toName);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
-        $relationship_markup = $symbol_markup . $relationship_markup;
+        $relationship_markup = $symbol_markup . $relationship_markup . $nomref_footnote_key_markup;
       }
       if ($relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
@@ -1214,13 +1229,13 @@ function name_relationship_footnote_markup($name_rel)
 {
   $footnote_markup = '';
   $footnote_key_markup = '';
-  if (isset($name_rel->ruleConsidered) && $name_rel) {
+  if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered) {
     $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span> ';
   }
   if (isset($name_rel->citation)) {
     $footnote_markup .= '<span class="reference">' . $name_rel->citation->titleCache . '</span>';
   }
-  if (isset($name_rel->citationMicroReference)) {
+  if (isset($name_rel->citationMicroReference) && $name_rel->citationMicroReference) {
     $footnote_markup .= (isset($name_rel->citation) ? ':' : '') . '<span class="reference_detail">' . $name_rel->citationMicroReference . '</span>';
   }
   if ($footnote_markup) {
@@ -1236,10 +1251,21 @@ function name_relationship_footnote_markup($name_rel)
 }
 
 /**
+ * @param $nom_status
+ * @return string
+ */
+function nomenclatural_status_footnote_markup($nom_status)
+{
+  // NomenclaturalStatus is a subclass of ReferencedEntityBase
+  // and has the same structure as TaxonNameRelationship
+  return name_relationship_footnote_markup($nom_status);
+}
+
+/**
  * @param $name
  * @return string
  */
-function nomenclatural_reference_footnote_markup($name)
+function nomenclatural_reference_footnote_key_markup($name)
 {
   $footnote_markup = '';
   $footnote_key_markup = '';
@@ -1260,6 +1286,7 @@ function nomenclatural_reference_footnote_markup($name)
   }
   return $footnote_key_markup;
 }
+
 
 /**
  * @param $taxon

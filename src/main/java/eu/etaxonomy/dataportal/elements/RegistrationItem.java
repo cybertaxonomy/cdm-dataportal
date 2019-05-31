@@ -40,7 +40,7 @@ abstract public class RegistrationItem extends BaseElement {
     protected WebElement identifier;
     protected WebElement nameElement;
     protected List<BaseElement> nameRelationsipsElements;
-    protected List<BaseElement> nameRelationsipFootnotes;
+    protected List<BaseElement> registrationFootnotes;
     protected WebElement typifiedNameElement;
     protected WebElement summaryElement;
 
@@ -77,10 +77,10 @@ abstract public class RegistrationItem extends BaseElement {
                 }
             } catch (Exception e) { /* IGNORE */}
             try{
-                List<WebElement> std = containerElement.findElements(By.cssSelector(".footnotes-name_relationships .footnote"));
-                nameRelationsipFootnotes = new ArrayList<BaseElement>(std.size());
+                List<WebElement> std = containerElement.findElements(By.cssSelector(".footnotes-registration_page .footnote"));
+                registrationFootnotes = new ArrayList<BaseElement>(std.size());
                 for(WebElement we : std){
-                    nameRelationsipFootnotes.add(new BaseElement(we));
+                    registrationFootnotes.add(new BaseElement(we));
                 }
             } catch (Exception e) { /* IGNORE */}
             try{

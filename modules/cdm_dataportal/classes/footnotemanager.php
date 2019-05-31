@@ -109,7 +109,7 @@ class FootnoteManager {
    */
   public static function addNewFootnote($footnoteListKey, $object = NULL, $enclosing_tag = null) {
     if (!$object) {
-      return FALSE;
+      return null;
     }
     if (!array_key_exists($footnoteListKey, self::$fnstore)) {
       self::$fnstore[$footnoteListKey] = array();
