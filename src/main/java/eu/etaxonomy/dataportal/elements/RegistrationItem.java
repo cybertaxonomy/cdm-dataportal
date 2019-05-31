@@ -39,6 +39,8 @@ abstract public class RegistrationItem extends BaseElement {
     protected WebElement metadata;
     protected WebElement identifier;
     protected WebElement nameElement;
+    protected List<BaseElement> nameRelationsipsElements;
+    protected List<BaseElement> nameRelationsipFootnotes;
     protected WebElement typifiedNameElement;
     protected WebElement summaryElement;
 
@@ -63,10 +65,24 @@ abstract public class RegistrationItem extends BaseElement {
                 try {
                     typifiedNameElement = containerElement.findElement(By.cssSelector(".typified-name"));
                 } catch (Exception e2) {
-                    // typifiedNameElement must exist whennameElement is not present, so we throw the  Exception in this case:
+                    // typifiedNameElement must exist when nameElement is not present, so we throw the  Exception in this case:
                     throw e2;
                 }
             }
+            try{
+                List<WebElement> std = containerElement.findElements(By.cssSelector(".name_relationships .item"));
+                nameRelationsipsElements = new ArrayList<BaseElement>(std.size());
+                for(WebElement we : std){
+                    nameRelationsipsElements.add(new BaseElement(we));
+                }
+            } catch (Exception e) { /* IGNORE */}
+            try{
+                List<WebElement> std = containerElement.findElements(By.cssSelector(".footnotes-name_relationships .footnote"));
+                nameRelationsipFootnotes = new ArrayList<BaseElement>(std.size());
+                for(WebElement we : std){
+                    nameRelationsipFootnotes.add(new BaseElement(we));
+                }
+            } catch (Exception e) { /* IGNORE */}
             try{
                 List<WebElement> std = containerElement.findElements(By.cssSelector(".specimen_type_designation"));
                 specimenTypeDesignations = new ArrayList<BaseElement>(std.size());

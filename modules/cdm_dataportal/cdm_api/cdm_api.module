@@ -1242,7 +1242,8 @@ function cdm_term_representation_abbreviated($definedTermBase, $default_represen
  *   An additional element do be placed at the beginning og the list. This element will be the default option.
  *
  * @return array
- *   the terms in an array as options for a form element that allows multiple choices.
+ *   the terms in an array (key: uuid => value: label) as options for a form element that allows multiple choices.
+
  */
 function cdm_terms_as_options($terms, $term_label_callback = NULL, $empty_option = FALSE){
   $options = array();
@@ -1279,7 +1280,8 @@ function cdm_terms_as_options($terms, $term_label_callback = NULL, $empty_option
  *   so a boolean 'true' can be matched by '/true/'
  * @param string $order_by
  *   One of the order by constants defined in this file
- * @return mixed
+ * @return array
+ *   the terms in an array (key: uuid => value: label) as options for a form element that allows multiple choices.
  */
 function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL, $empty_option = FALSE,
                                   array $include_filter = null, $order_by = CDM_ORDER_BY_ORDER_INDEX_ASC) {
@@ -1374,7 +1376,7 @@ function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL,
  * @param bool $empty_option
  *   An additional element do be placed at the beginning og the list. This element will be the default option.
  * @return array
- *    the terms in an array as options for a form element that allows multiple choices.
+ *    the terms in an array (key: uuid => value: label) as options for a form element that allows multiple choices.
  */
 function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_CACHE_ASC, $term_label_callback = NULL, $empty_option = FALSE){
   $terms = cdm_ws_fetch_all(
@@ -1387,10 +1389,45 @@ function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_
   return cdm_terms_as_options($terms, $term_label_callback, $empty_option);
 }
 
+/**
+ * @param array $none_option
+ *    Will add a filter option to search for NULL values
+ * @param $with_empty_option
+ *    Will add an empty option to the beginning. Choosing this option will disable the filtering.
+ * @return array
+ *   An array of options with uuids as key and the localized term representation as value
+ */
+function cdm_type_designation_status_filter_terms_as_options($none_option_label, $with_empty_option = false){
+  $filter_terms = cdm_ws_get(CDM_WS_TYPE_DESIGNATION_STATUS_FILTER_TERMS);
+
+  if(isset($filter_terms) && is_array($filter_terms)) {
+    foreach ($filter_terms as $filter_term) {
+      $options[join(',', $filter_term->uuids)] = $filter_term->label;
+    }
+  }
+
+  if(is_string($none_option_label)){
+    $options = array_merge(array('NULL' => $none_option_label), $options);
+  }
+
+  if($with_empty_option !== FALSE){
+    array_unshift ($options, "");
+  }
+
+
+  return $options;
+}
+
+
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Callback function which provides the localized representation of a cdm term.
+ *
+ * The representation is build by concatenating the abbreviated label with the label
+ * and thus is especially useful for relationship terms
+ * The localized representation provided by the cdm can be overwritten by
+ * providing a drupal translation.
+ *
  */
 function _cdm_relationship_type_term_label_callback($term) {
   if (isset($term->representation_L10n_abbreviatedLabel)) {
@@ -1400,6 +1437,86 @@ function _cdm_relationship_type_term_label_callback($term) {
 else {
     return t('@term', array('@term' => $term->representation_L10n));
   }
+}
+
+/**
+ * Callback function which provides the localized inverse representation of a cdm term.
+ *
+ * The representation is build by concatenating the abbreviated label with the label
+ * and thus is especially useful for relationship terms
+ * The localized representation provided by the cdm can be overwritten by
+ * providing a drupal translation.
+ *
+ */
+function _cdm_relationship_type_term_inverse_label_callback($term) {
+  if (isset($term->inverseRepresentation_L10n_abbreviatedLabel)) {
+    return $term->inverseRepresentation_L10n_abbreviatedLabel . ' : '
+      . t('@term', array('@term' => $term->inverseRepresentation_L10n));
+  }
+  else {
+    return t('@term', array('@term' => $term->inverseRepresentation_L10n));
+  }
+}
+
+/**
+ * Returns the localized abbreviated label of the relationship term.
+ *
+ * In case the abbreviated label is not set the normal representation is returned.
+ *
+ * @param $term
+ * @param bool $is_inverse_relation
+ * @return string
+ *   The abbreviated label
+ */
+function cdm_relationship_type_term_abbreviated_label($term, $is_inverse_relation = false){
+
+  if($is_inverse_relation) {
+    if (isset($term->inverseRepresentation_L10n_abbreviatedLabel) && $term->inverseRepresentation_L10n_abbreviatedLabel) {
+      $abbr_label = $term->inverseResentation_L10n_abbreviatedLabel;
+    } else {
+      $abbr_label = $term->inverseRepresentation_L10n;
+    }
+  } else {
+    if (isset($term->representation_L10n_abbreviatedLabel) && $term->representation_L10n_abbreviatedLabel) {
+      $abbr_label = $term->representation_L10n_abbreviatedLabel;
+    } else {
+      $abbr_label = $term->representation_L10n;
+    }
+  }
+  return $abbr_label;
+}
+
+/**
+ * Returns the symbol of the relationship term.
+ *
+ * In case the symbol is not set the function falls back to use the abbreviated label or
+ * the normal representation..
+ *
+ * @param $term
+ * @param bool $is_inverse_relation
+ * @return string
+ *   The abbreviated label
+ */
+function cdm_relationship_type_term_symbol($term, $is_inverse_relation = false){
+
+  if($is_inverse_relation) {
+    if (isset($term->inverseSymbol) && $term->inverseSymbol) {
+      $symbol = $term->inverseSymbol;
+    } else if (isset($term->inverseRepresentation_L10n_abbreviatedLabel) && $term->inverseRepresentation_L10n_abbreviatedLabel) {
+      $symbol = $term->inverseResentation_L10n_abbreviatedLabel;
+    } else {
+      $symbol = $term->inverseRepresentation_L10n;
+    }
+  } else {
+    if (isset($term->symbol) && $term->symbol) {
+      $symbol = $term->symbol;
+    } else if (isset($term->representation_L10n_abbreviatedLabel) && $term->representation_L10n_abbreviatedLabel) {
+      $symbol = $term->representation_L10n_abbreviatedLabel;
+    } else {
+      $symbol = $term->representation_L10n;
+    }
+  }
+  return $symbol;
 }
 
 // ========================================================================================== //

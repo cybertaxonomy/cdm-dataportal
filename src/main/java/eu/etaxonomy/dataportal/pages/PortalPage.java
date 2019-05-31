@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -50,7 +52,9 @@ public abstract class PortalPage {
 
     public static final Logger logger = Logger.getLogger(PortalPage.class);
 
-    protected final static String DRUPAL_PAGE_QUERY_BASE = "?q=";
+    protected final static String DRUPAL_PAGE_QUERY = "q=";
+
+    private final static Pattern DRUPAL_PAGE_QUERY_PATTERN = Pattern.compile("q=([^&]*)");
 
     public enum MessageType {status, warning, error} // needs to be lowercase
 
@@ -67,13 +71,13 @@ public abstract class PortalPage {
 
     /**
      * Implementations of this method will supply the relative
-     * path to the Drupal page. This path will usally have the form
+     * path to the Drupal page. This path will usually have the form
      * <code>cdm_dataportal/{nodetype}</code>. For example the taxon pages all
      * have the page base <code>cdm_dataportal/taxon</code>
      */
     protected abstract String getDrupalPageBase();
 
-    private String drupalPagePath;
+    private String initialDrupalPagePath;
 
     protected URL pageUrl;
 
@@ -124,9 +128,9 @@ public abstract class PortalPage {
 
         this.wait = new JUnitWebDriverWait(driver, WAIT_SECONDS);
 
-        this.drupalPagePath = getDrupalPageBase() + (pagePathSuffix != null ? "/" + pagePathSuffix: "");
+        this.initialDrupalPagePath = getDrupalPageBase() + (pagePathSuffix != null ? "/" + pagePathSuffix: "");
 
-        this.pageUrl = new URL(context.getBaseUri().toString() + DRUPAL_PAGE_QUERY_BASE + drupalPagePath);
+        this.pageUrl = new URL(context.getBaseUri().toString() + "?" + DRUPAL_PAGE_QUERY + initialDrupalPagePath);
 
         // tell browser to navigate to the page
         driver.get(pageUrl.toString());
@@ -238,7 +242,29 @@ public abstract class PortalPage {
     }
 
     public String getDrupalPagePath() {
-        return drupalPagePath;
+        URL currentURL;
+        try {
+            currentURL = new URL(driver.getCurrentUrl());
+            if(currentURL.getQuery() != null && currentURL.getQuery().contains(DRUPAL_PAGE_QUERY)){
+                Matcher m = DRUPAL_PAGE_QUERY_PATTERN.matcher(currentURL.getQuery());
+                m.matches();
+                return m.group(1);
+            } else {
+                return currentURL.getPath().replaceFirst("^"+ context.getBaseUri().getPath() + "/", "");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns the the page path with which the page has initially been loaded.
+     * Due to redirects the actual page path which can be retrieved by
+     * {@link #getDrupalPagePath()} might be different
+     *
+     */
+    public String getInitialDrupalPagePath() {
+        return initialDrupalPagePath;
     }
 
     /**

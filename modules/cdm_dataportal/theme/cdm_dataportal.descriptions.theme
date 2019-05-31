@@ -415,10 +415,13 @@ function theme_cdm_block_IdentificationKeys($variables) {
       }
 
       $markup = '<li class="descriptionText DescriptionElement">';
-      $name_used_in_source_link_to_show_use = l($description_source->originalNameString, path_to_name($originalTaxonUsedInSource->uuid), array(
-        'absolute' => TRUE,
-        'html' => TRUE,
-      ));
+      $name_used_in_source_link_to_show_use = l(
+        $description_source->originalNameString,
+        path_to_name($originalTaxonUsedInSource->uuid, null, null, true),
+        array(
+          'absolute' => TRUE,
+          'html' => TRUE,
+        ));
       $markup .= $name_used_in_source_link_to_show_use . ': ';
       $markup .= $useSummary;
       foreach ($description->sources as $element_source) {

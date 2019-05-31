@@ -175,27 +175,41 @@ dl.media-caption {
 /*
  * Registration page & items
  */
-.name_type_designation .type_status{
-  font-weight: bold;
-}
+.registration {
 
-.registration-date-and-institute {
-  color: #999;
-}
-
-.typified-name .cdm\:TaxonName {
-  color: #999;
-}
-
-.registration-summary {
-  .registered_name .name {
+  .name_type_designation .type_status{
     font-weight: bold;
   }
-  .referenced_typified_name {
+
+  .registration-date-and-institute {
     color: #999;
   }
-  .label {
-    font-weight: bold;
+
+  .published-name {
+    .TaxonName .name {
+      font-weight: bold;
+    }
+  }
+  .typified-name .cdm\:TaxonName {
+    color: #999;
+    a {
+      color: #999;
+    }
+    .TaxonName .name {
+      font-weight: bold;
+    }
+  }
+
+  .registration-summary {
+    .registered_name .name {
+      font-weight: bold;
+    }
+    .referenced_typified_name {
+      color: #999;
+    }
+    .label {
+      font-weight: bold;
+    }
   }
 }
 

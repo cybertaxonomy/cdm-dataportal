@@ -86,9 +86,9 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
         assertEquals("Expecting 3 anchor tags in \"Chromosome Numbers\"", 5, linksInFeatureBlock.size());
         assertEquals("chromosome_numbers", linksInFeatureBlock.get(0).getAttribute("name"));
         assertTrue(linksInFeatureBlock.get(1).getAttribute("href").endsWith("cdm_dataportal/reference/863b9b1b-6c2a-4066-af90-ea9a3775598c"));
-        assertTrue(linksInFeatureBlock.get(2).getAttribute("href").endsWith("cdm_dataportal/name/a1dfcc80-2121-46bb-b8b2-c267a9e0725b"));
+        assertTrue(linksInFeatureBlock.get(2).getAttribute("href").contains("cdm_dataportal/name/a1dfcc80-2121-46bb-b8b2-c267a9e0725b"));
         assertTrue(linksInFeatureBlock.get(3).getAttribute("href").endsWith("cdm_dataportal/reference/07a97be7-b3fa-4f76-838d-ac7e1e6e9d70"));
-        assertTrue(linksInFeatureBlock.get(4).getAttribute("href").endsWith("cdm_dataportal/name/a1dfcc80-2121-46bb-b8b2-c267a9e0725b"));
+        assertTrue(linksInFeatureBlock.get(4).getAttribute("href").contains("cdm_dataportal/name/a1dfcc80-2121-46bb-b8b2-c267a9e0725b"));
     }
 
 }

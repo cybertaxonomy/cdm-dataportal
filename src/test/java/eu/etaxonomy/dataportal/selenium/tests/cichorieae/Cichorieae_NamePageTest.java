@@ -8,9 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.UUID;
 
 import org.junit.Test;
@@ -46,8 +43,8 @@ public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
 
     @Test
     public void intybellia_rosea_cass() throws Exception {
-        GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + intybellia_rosea_cass_Uuid);
-        assertEquals(getContext().prepareTitle("Crepis purpurea"), p.getTitle());
+        GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + intybellia_rosea_cass_Uuid + "/null/null/redirect_to_taxon");
+        assertEquals(getContext().prepareTitle("Crepis purpurea"), driver.getTitle());
         TaxonSynonymyPage synonymyPage = new TaxonSynonymyPage(driver, getContext());
         WebElement intybellia_rosea_cass_synonym = synonymyPage.getHeterotypicalGroupSynonym(1, 1);
         assertNotNull("Synonym 'Intybellia rosea Cass.' should be highlighted", intybellia_rosea_cass_synonym.findElement(By.className("highlite")));
@@ -56,8 +53,8 @@ public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
 
     @Test
     public void lapsana_zacintha_L() throws Exception {
-        GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + lapsana_zacintha_Uuid);
-        assertEquals(getContext().prepareTitle("Crepis zacintha"), p.getTitle());
+        GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + lapsana_zacintha_Uuid + "/null/null/redirect_to_taxon");
+        assertEquals(getContext().prepareTitle("Crepis zacintha"), driver.getTitle());
         TaxonSynonymyPage synonymyPage = new TaxonSynonymyPage(driver, getContext());
 
         assertEquals("≡ Lapsana zacintha L., Sp. Pl.: 811. 1753", synonymyPage.getHomotypicalGroupSynonymName(1));
