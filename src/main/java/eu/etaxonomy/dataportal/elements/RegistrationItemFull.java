@@ -42,6 +42,14 @@ public class RegistrationItemFull extends RegistrationItem{
         return nameTypeDesignations;
     }
 
+    public List<BaseElement> getNameRelationsipsElements() {
+        return nameRelationsipsElements;
+    }
+
+    public List<BaseElement> getNameRelationsipFootnotes() {
+        return nameRelationsipFootnotes;
+    }
+
     public WebElement getCitation() {
         return citation;
     }

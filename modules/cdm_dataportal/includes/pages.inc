@@ -902,6 +902,112 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   return $render_array;
 }
 
+
+/**
+ * Returns HTML containing the synonymy for the accepted taxon.
+ *
+ * Shows the whole synonymy for the accepted taxon.
+ * The synonymy list is headed by the complete scientific name
+ * of the accepted taxon with nomenclatural reference.
+ *
+ * @param object $taxon
+ * @param boolean $add_accepted_taxon
+ *
+ * @return array
+ *  Drupal render array for the synonymy
+ *
+ * @throws Exception
+ *
+ * @ingroup compose
+ */
+function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
+
+  RenderHints::pushToRenderStack('taxon_page_synonymy');
+
+  // footnote key for the homotypic group and accepted taxon,
+  // both should have the same footnote key
+  RenderHints::setFootnoteListKey(RenderHints::getRenderPath());
+
+  $synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, array($taxon->uuid));
+
+  $out = '';
+
+  // Render accepted taxon.
+  //
+  // foonotes of the accepted taxon will be rendered in the homotypic group section
+  // even if there are not synonyms in the homotypic group
+  // homotypic group and accepted taxon should have the same footnote key
+  $referenceUri = '';
+  if ($add_accepted_taxon) {
+    // remember the last part of the render path
+    $synonymy_render_path = RenderHints::getRenderPath();
+    // set new render path for the accepted taxon so
+    // it can be styled differently via the name render part definitions
+    RenderHints::pushToRenderStack('accepted_taxon');
+    $accepted_name = '';
+    if (variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0)) {
+      $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
+      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon->sec->titleCache . '</div>';
+    }
+    if (isset($taxon->name->nomenclaturalReference)) {
+      $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+    }
+
+    $accepted_name .= '<div class="accepted-name">';
+    $accepted_name .= render_taxon_or_name($taxon, NULL, $referenceUri);
+
+    $name_relations = cdm_name_relationships_for_taxon($taxon);
+    $name_relationships = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
+    // Render relationships of accepted name.
+    if(isset($name_relationships['list']['items'][0])){
+      $accepted_name .= ' ' . drupal_render($name_relationships);
+    }
+
+    // handle annotations of the name and taxon
+    $special_annotations_array = array();
+    $special_annotations_array[] = $taxon->name;
+    $special_annotations_array[] = $taxon;
+    $accepted_name .= theme('cdm_annotations_as_footnotekeys', array(
+        'cdmBase_list' => $special_annotations_array,
+        'footnote_list_key' => $synonymy_render_path . '-annotations')
+    );
+    $accepted_name .= '</div>';
+    RenderHints::popFromRenderStack();
+  }
+
+  // --- Render homotypic synonymy group
+  if (!empty($accepted_name)) {
+    $out .= $accepted_name;
+  }
+
+  // Render the homotypicSynonymyGroup including the type information.
+  $out .= theme(
+    'cdm_homotypicSynonymyGroup',
+    array(
+      'synonymList' => $synomymie->homotypicSynonymsByHomotypicGroup,
+      'accepted_taxon_name_uuid' => $taxon->name->uuid
+    )
+  );
+
+
+  // Render accepted taxon heterotypic synonymy groups.
+  if ($synomymie->heterotypicSynonymyGroups) {
+    foreach ($synomymie->heterotypicSynonymyGroups as $homotypicalGroup) {
+      $out .= theme('cdm_heterotypicSynonymyGroup', array('homotypicalGroup' => $homotypicalGroup));
+    }
+  }
+  // Render taxon relationships.
+  if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)) {
+    $taxonRelationshipsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, $taxon->uuid);
+    $out .= cdm_taxonRelationships($taxonRelationshipsDTO, $taxon);
+  }
+
+  RenderHints::popFromRenderStack();
+
+  return markup_to_render_array($out);
+}
+
+
 /**
  * composes and returns an render array for the experts associated with the given taxon
  *
@@ -1069,6 +1175,17 @@ function cdm_dataportal_preprocess_menu_local_tasks(&$variables) {
 
   $hidden_tabs = taxon_page_tabs_hidden_add();
 
+  if (!variable_get(CDM_SEARCH_BLAST_ENABLED)) {
+      if (is_array($variables['primary'])) {
+          foreach ($variables['primary'] as $key => &$element) {
+              if ($element['#link']['path'] == 'cdm_dataportal/search/blast') {
+                  // remove the tab
+                  unset($variables['primary'][$key]);
+              }
+
+          }
+      }
+  }
   if (is_array($variables['primary'])) {
     foreach ($variables['primary'] as $key => &$element) {
 
@@ -1326,6 +1443,204 @@ function compose_cdm_named_area_page($named_area_uuid)
 
   RenderHints::popFromRenderStack();
   return $render_array;
+}
+
+
+/**
+ * Returns a drupal render array for a single reference page.
+ *
+ * Composes a page with all data on a single reference.
+ *
+ * @param string $uuid
+ *   An uuid for a cdm reference.
+ *
+ * @return array
+ *  A drupal render array
+ *
+ * @throws Exception
+ *
+ * @ingroup compose
+ */
+function compose_cdm_reference_page($uuid) {
+
+  $pathelement = "reference_page";
+  RenderHints::pushToRenderStack($pathelement);
+  $reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
+  if (isset($reference->titleCache)) {
+    drupal_set_title($reference->titleCache, PASS_THROUGH);
+  }
+
+  $field_order = array(
+    "title",
+    "abbrevTitle",
+    // "titleCache" abbrevTitleCache
+    // "citation",
+    "authorship",
+    "editor",
+    "publisher",
+    "placePublished",
+    "datePublished",
+    "year",
+    "edition",// Class Book.
+    "volume",// Class Article.
+    "seriesPart",
+    "inReference",
+    "nomRefBase", // Class BookSection, Book, Article.
+    "pages",// Class Article.
+    "series",// Class Article, PrintSeries.
+    "school",// Class Thesis.
+    "institution",// Class Report.
+    "organization",// Class Proceedings.
+    "nextVersion",
+    "previousVersion",
+    "isbn",// Class Book.
+    "issn",// Class Journal.
+    "doi",
+    "uri"
+  );
+
+  $table_rows = array();
+
+  if (!isset($reference->authorship)) {
+    $authorship = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
+    $reference->authorship = isset($authorship->titleCache) ? $authorship->titleCache : '';
+  }
+
+  if (!isset($reference->inReference)) {
+    $reference->inReference = cdm_ws_get(CDM_WS_REFERENCE, array(
+      $reference->uuid,
+      "inReference",
+    ));
+  }
+
+  foreach ($field_order as $fieldname) {
+
+    if (isset($reference->$fieldname)) {
+
+      if ($fieldname == "datePublished") {
+        $period = $reference->$fieldname;
+        $datePublished = timePeriodToString($period);
+        if (isset($datePublished) && $datePublished != '') {
+          $table_rows[] = array(
+            t("Date published"),
+            $datePublished,
+          );
+        }
+      }
+      elseif ($fieldname == "doi" && is_object($reference->doi)) {
+        $table_rows[] = array(
+          t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
+          cdm_doi($reference->doi, false)
+        );
+      }
+      elseif ($fieldname == "uri" && isset($reference->uri) && $reference->uri) {
+        $table_rows[] = array(
+          t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
+          cdm_external_uri($reference->uri, false)
+        );
+      }
+      elseif (is_object($reference->$fieldname)) {
+        if ($fieldname == "authorship") {
+          $dump = $reference->$fieldname;
+          $teammembers = "teamMembers";
+          $team = $dump->$teammembers;
+          $nameArray = array();
+
+          foreach ($team as $member) {
+            if (strlen($member->lastname) > 0) {
+              $nname = $member->lastname;
+              $name = $nname;
+              if (strlen($member->firstname) > 0) {
+                $vname = $member->firstname;
+                $name = $vname . " " . $nname;
+              }
+              $nameArray[] = $name;
+            }
+            else {
+              if (strlen($member->titleCache) > 0) {
+                $nameArray[] = $member->titleCache;
+              }
+            }
+          }
+          $value = join($nameArray, ", ");
+        }
+        elseif ($fieldname == "inReference") {
+          $type = $reference->$fieldname->type;
+          $value = l($reference->$fieldname->titleCache, path_to_reference($reference->$fieldname->uuid));
+          switch ($type) {
+            case "Book":
+              $fieldname = "in book";
+              break;
+            case "Journal":
+              $fieldname = "in journal";
+              break;
+            case "Proceedings":
+              $fieldname = "in proceedings";
+              break;
+          }
+        }
+        else {
+          $value = $reference->$fieldname->titleCache;
+        }
+
+
+        if (isset($value) && $value != '') {
+          $table_rows[] = array(
+            t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
+            $value,
+          );
+        }
+
+      }
+      else {
+        if (isset($reference->$fieldname) && $reference->$fieldname != '') {
+          $table_rows[] = array(
+            t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
+            $reference->$fieldname,
+          );
+        }
+      }
+    }
+  }
+
+  $out = theme_table(array(
+    'header' => array(),
+    'rows' => $table_rows,
+    'attributes' => array(
+      'class' => html_class_attribute_ref($reference)
+    ),
+    'caption' => NULL,
+    'colgroups' => NULL,
+    'sticky' => NULL,
+    'empty' => NULL,
+  ));
+
+  if(isset($reference->referenceAbstract)){
+    $out .= '<h2 class="block-title">Abstract</h2><div class="abstract">' . $reference->referenceAbstract . '</div>';
+  }
+
+
+  // Annotations below the table
+  $annotations = cdm_fetch_visible_annotations($reference);
+  $out .= theme("cdm_annotations", array('annotations' => $annotations));
+
+  $registration_working_set = cdm_ws_get("registrationWorkingSetDTO", array($uuid));
+  if($registration_working_set && count($registration_working_set->registrationDTOs) > 0){
+    $out .= "<h3>Nomenclatural acts:</h3><div class=\"cdm-item-list registration-item-list\">";
+    foreach($registration_working_set->registrationDTOs as $registration_dto){
+      if($registration_dto->status == "PUBLISHED"){
+        $registration_render_a = compose_registration_dto_compact($registration_dto, 'citation');
+        $registration_render_a["#prefix"] = "<div class=\"item item-registration\">";
+        $registration_render_a["#suffix"] = "</div>";
+        $out .= drupal_render($registration_render_a);
+      }
+    }
+    $out .= "</div>";
+  }
+
+  RenderHints::popFromRenderStack();
+
+  return markup_to_render_array($out);
 }
 
 /**

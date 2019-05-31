@@ -505,14 +505,14 @@ function cdm_dataportal_menu() {
     'access arguments' => array('access cdm content'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
-if (variable_get(CDM_BLAST)) {
+  if (variable_get(CDM_SEARCH_BLAST_ENABLED)) {
     $items['cdm_dataportal/search/blast'] = array(
         'title' => 'Blast', // will be passed through t()
         'page callback' => 'cdm_dataportal_view_search_blast',
         'access arguments' => array('access cdm content'),
-        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'type' => MENU_LOCAL_TASK,
     );
-}
+  }
   $items['cdm_dataportal/search/taxon_by_description'] = array(
     'title' => 'By content category', // will be passed through t()
     'page callback' => 'cdm_dataportal_view_search_taxon_by_description',
@@ -526,11 +526,12 @@ if (variable_get(CDM_BLAST)) {
   );
 
 
-    $items['cdm_dataportal/search/results/specimen'] = array(
-        'page callback' => 'cdm_dataportal_view_search_results_specimen',
-        'access arguments' => array('access cdm content'),
-        'type' => MENU_CALLBACK,
-    );
+  $items['cdm_dataportal/search/results/specimen'] = array(
+      'page callback' => 'cdm_dataportal_view_search_results_specimen',
+      'access arguments' => array('access cdm content'),
+      'type' => MENU_CALLBACK,
+  );
+
   /*
    * MENU_CALLBACK at cdm_dataportal/registration-search is needed to make the
    * tabs in the subordinate paths work, accessing this 'page' will cause the
@@ -585,7 +586,7 @@ if (variable_get(CDM_BLAST)) {
   $items['cdm_dataportal/name/%'] = array(
     // 'page callback' => 'cdm_dataportal_view_name',
     'page callback' => 'cdm_dataportal_name_page_view',
-    'page arguments' => array(2, 3, 4),
+    'page arguments' => array(2, 3, 4, 5),
     'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
@@ -822,7 +823,7 @@ function cdm_dataportal_block_view($delta) {
       if (variable_get('cdm_dataportal_show_advanced_search', 1)) {
         $block['content'] .= '<div>' . l(t('Advanced Search'), 'cdm_dataportal/search') . '</div>';
       }
-      if (variable_get(CDM_BLAST)){
+      if (variable_get(CDM_SEARCH_BLAST_ENABLED)){
           $block['content'] .= '<div>' . l(t('Blast Search'), 'cdm_dataportal/search/blast') . '</div>';
       }
       return $block;
@@ -1714,6 +1715,9 @@ function cdm_dataportal_named_area_page_view($uuid) {
  *   The uuid of the CDM TaxonName to show a name page for
  * @param string $taxon_to_hide_uuid
  *   A taxon which should not be displayed in the taxon list
+ * @param $redirect_to_taxon
+ *   Automatically redirect to the related taxon if there is only one
+ *   accepted taxon for this name.
  * @param string $highlite_synonym_uuid
  *   Optinal parameter wich takes another taxon uuid, if given the
  *   target taxon pages will show the syonymy tab where the taxon
@@ -1723,11 +1727,15 @@ function cdm_dataportal_named_area_page_view($uuid) {
  * @return mixed
  *   The formatted name page as node.
  */
-function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = NULL) {
+function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid = NULL, $redirect_to_taxon = false) {
 
   cdm_check_valid_portal_page();
 
-  $taxonname_page = cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $synonym_uuid);
+  $taxonname_page = cdm_dataportal_name_view(
+    is_uuid($taxon_name_uuid) ? $taxon_name_uuid : null,
+    is_uuid($taxon_to_hide_uuid) ? $taxon_to_hide_uuid : null,
+    $redirect_to_taxon == 'redirect_to_taxon',
+    is_uuid($synonym_uuid) ? $synonym_uuid : null);
   if (!empty($taxonname_page)) {
     return cdm_node_show(NODETYPE_NAME, $taxon_name_uuid, $taxonname_page->title, $taxonname_page->content);
   }
@@ -1754,18 +1762,23 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $s
  *   The uuid of the CDM TaxonName to show a name page for
  * @param string $taxon_to_hide_uuid
  *   A taxon which should not be displayed in the taxon list
+ * @param $redirect_to_taxon
+ *   Automatically redirect to the related taxon if there is only one
+ *   accepted taxon for this name.
  * @param string $highlite_synonym_uuid
- *   Optinal parameter wich takes another taxon uuid, if given the
- *   target taxon pages will show the syonymy tab where the taxon
- *   refenrenced by the $highlite_synonym_uuid will be highlighted
+ *   Optional parameter which takes another taxon uuid, if given the
+ *   target taxon pages will show the synonymy tab where the taxon
+ *   referenced by the $highlite_synonym_uuid will be highlighted
  *   in case it is found on this page.
  *
- * @return object
+ * @return object|boolean
  *   An object with two fields:
  *     - title: the page title
  *     - content: the page content
+ *   or FALSE
+ *
  */
-function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highlite_synonym_uuid = NULL) {
+function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redirect_to_taxon, $highlite_synonym_uuid = NULL) {
   // Getting the full taxonname object from the server.
   $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($taxon_name_uuid));
   if (!$taxon_name) {
@@ -1791,7 +1804,8 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highli
     }
   }
   // Show the taxa list or go to the singular taxon.
-  if (sizeof($taxon_pager->records) == 1) {// Single taxon case.
+  if (sizeof($taxon_pager->records) == 1 && $redirect_to_taxon) {
+    // redirect to the taxon if there is only one.
     $singleTaxon = array_pop($taxon_pager->records);
     if ($singleTaxon->class != "Taxon") {
       // It is a Synonym -> look for the accepted.
@@ -1813,15 +1827,28 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $highli
       }
     }
   }
-  else {// More than one taxa case.
+  else {
+    // display the name page content
     $taxon_name_page = new stdClass();
     $taxon_name_page->title = theme('cdm_name_page_title', array('taxon_name' => $taxon_name));
+    $content = array();
+
+    $content['taxon_name'] = markup_to_render_array(render_taxon_or_name($taxon_name));
+
+    // name relationships
+    $name_relations = cdm_ws_fetch_all(str_replace("$0", $taxon_name->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
+    if(count($name_relations) > 0){
+      $content['name_relationships'] = compose_name_relationships_list($name_relations, $taxon_name->uuid, null);
+    }
+    // related taxa
     if ($taxon_pager->records) {
-      $taxon_name_page->content = compose_list_of_taxa($taxon_pager->records);
+      $content['related_taxa_header'] = markup_to_render_array("<h5>Taxa for this name:</h5>");
+      $content['related_taxa'] = compose_list_of_taxa($taxon_pager->records);
     }
     else {
-      $taxon_name_page->content = 'This name is not assigned to a taxon.';
+      $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.');
     }
+    $taxon_name_page->content = $content;
     return $taxon_name_page;
   }
 }
@@ -1883,12 +1910,7 @@ function cdm_dataportal_registration_view($registration_identifier_encoded) {
  *
  * NOTE: The advance search form allows searching for taxa.
  */
-function cdm_dataportal_view_search_advanced($arg) {
-    if (isset($arg)){
-        if ($arg == 'blast'){
-            return cdm_dataportal_view_search_blast();
-        }
-    }
+function cdm_dataportal_view_search_advanced() {
   drupal_set_title(t('Advanced search'), PASS_THROUGH);
   return drupal_get_form('cdm_dataportal_search_taxon_form_advanced');
 }
@@ -2219,21 +2241,22 @@ function path_to_registration($identifier) {
  *   target taxon pages will show the synonymy tab where the taxon
  *   referenced by the $highlite_synonym_uuid will be highlighted
  *   in case it is found on this page.
+ * @param $redirect_to_taxon
+ *   If true, the name page will redirect to the related taxon if there is a single one
+ *   for this name only.
  *
  * @return string
  *  URI path element as string
  */
-function path_to_name($name_uuid, $taxon_to_hide_uuid = NULL, $highlited_synonym_uuid  = NULL) {
+function path_to_name($name_uuid, $taxon_to_hide_uuid = NULL, $highlited_synonym_uuid  = NULL, $redirect_to_taxon = false) {
   $res = FALSE;
   if ($name_uuid) {
-    $res = 'cdm_dataportal/name/' . $name_uuid;
+    $res = 'cdm_dataportal/name/' . $name_uuid .
+    '/' . (is_uuid($taxon_to_hide_uuid) ? $taxon_to_hide_uuid : "null") .
+    '/' . (is_uuid($highlited_synonym_uuid) ? $highlited_synonym_uuid : "null") .
+    '/' . ($redirect_to_taxon ? "redirect_to_taxon" : "");
   }
-  if($taxon_to_hide_uuid){
-    $res .= '/' . $taxon_to_hide_uuid;
-    if($highlited_synonym_uuid){
-      $res .= '/' . $highlited_synonym_uuid;
-    }
-  }
+
   return $res;
 }
 

@@ -35,8 +35,8 @@
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
   define('CDM_DATAPORTAL_SPECIMEN_DERIVATE_TREE', 0);
 
-  define('CDM_WS_PORTAL_BLAST', 'http://127.0.0.1:9001/api/sequence');
-  define('CDM_BLAST', 0);
+  define('CDM_SEARCH_BLAST_SERVICE_URI', 'http://127.0.0.1:9001/api/sequence');
+  define('CDM_SEARCH_BLAST_ENABLED', 0);
   define('CDM_REGISTRATION_PRESISTENT_IDENTIFIER_AS_LINK', 'cdm_registration_presistent_identifier_as_link');
 
   /* annotationTypeKeys */
@@ -417,12 +417,27 @@ define('CDM_STANDARD_IMAGE_VIEWER_DEFAULT', serialize(array(
  */
 define('CDM_TAXON_RELATIONSHIP_TYPES', 'cdm_taxon_relationship_types');
 
-define('CDM_NAME_RELATIONSHIP_TYPES', 'cdm_name_relationship_types');
-define('CDM_NAME_RELATIONSHIP_TYPES_DEFAULT', serialize(
+define('CDM_NAME_RELATIONSHIP_INLINE_TYPES', 'cdm_name_relationship_types');
+define('CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT', serialize(
     array(
       UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
       UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
       UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR => UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR
+    )
+  )
+);
+
+define('CDM_NAME_RELATIONSHIP_LIST_TYPES', 'cdm_name_relationship_list_types');
+define('CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT', serialize(
+    array(
+      UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
+      UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
+      UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR => UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR,
+      UUID_NAMERELATIONSHIPTYPE_BASIONYM => UUID_NAMERELATIONSHIPTYPE_BASIONYM,
+      UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT => UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT,
+      UUID_NAMERELATIONSHIPTYPE_VALIDATED_BY_NAME => UUID_NAMERELATIONSHIPTYPE_VALIDATED_BY_NAME,
+      UUID_NAMERELATIONSHIPTYPE_LATER_VALIDATED_BY_NAME => UUID_NAMERELATIONSHIPTYPE_LATER_VALIDATED_BY_NAME,
+      UUID_NAMERELATIONSHIPTYPE_REPLACED_SYNONYM => UUID_NAMERELATIONSHIPTYPE_REPLACED_SYNONYM
     )
   )
 );
@@ -2168,7 +2183,7 @@ function cdm_settings_layout_taxon() {
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
       '#description' => 'This section let\'s you define how each of the feature blocks is displayed.
-      A sub form is for each of the features of currently selected feature tree allows to configre each feature block individually.
+      A sub form for each of the the currently selected feature tree allows to configure each feature block individually.
       The subforms have the following settings in common:<br />
       <h6>List type:</h6><div>Whether the description elements are displayed as list or not. Three different list types are available</div>
       <h6>Link to reference:</h6><div>Render the reference as link, ignored if the element is NOT a DescriptionElementSource</div>
@@ -2537,18 +2552,6 @@ ie	introduced: formerly introduced
       synonym you want to see the "accept of" text for the accepted synonym.'),
   );
 
-  /* === currently unused ===
-  $nameRelationshipTypeOptions = cdm_vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE);
-  $form['taxon_synonymy']['name_relationships']['name_relationships_to_show'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Display name relationships') . ':',
-    '#default_value' => variable_get('name_relationships_to_show', 0),
-    '#options' => $nameRelationshipTypeOptions,
-    '#description' => t('Select the name relationships you want to show for the
-      accepted taxa.'),
-  );
- */
-
   $form['taxon_synonymy']['taxon_relations'] = array(
     '#type' => 'fieldset',
     '#title' => t('Taxon relationships'),
@@ -2569,8 +2572,7 @@ ie	introduced: formerly introduced
   $form['taxon_synonymy']['taxon_relations'][CDM_TAXON_RELATIONSHIP_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Taxon relationship types') . ':',
-    '#description' => t('Only taxon relationships of the selected type will be
-      displayed'),
+    '#description' => 'Only taxon relationships of the selected type will be displayed',
     '#options' => $taxon_relationship_type_options,
     '#default_value' => $taxon_relationship_type_defaults,
     '#disabled' => !variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT),
@@ -2583,14 +2585,24 @@ ie	introduced: formerly introduced
     '#collapsed' => FALSE
   );
 
-  $name_relationship_type_options = cdm_vocabulary_as_option(UUID_NAME_RELATIONSHIP_TYPE, '_cdm_relationship_type_term_label_callback');
-  $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_TYPES] = array(
+  $name_relationship_type_options = cdm_vocabulary_as_option(
+      UUID_NAME_RELATIONSHIP_TYPE,
+      '_cdm_relationship_type_term_label_callback',
+      false,
+      array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
+        . UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM . '|'
+        . UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST . '|'
+        . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '|'
+        . UUID_NAMERELATIONSHIPTYPE_MISSPELLING . '|'
+        . UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT . '/' )
+  );
+  $form['taxon_synonymy']['name_relations'][CDM_NAME_RELATIONSHIP_INLINE_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Name relationship types') . ':',
-    '#description' => t('Only name relationships of the selected type will be
-      displayed'),
+    '#description' => 'This setting only affects specific types of name relations which are displayed appended to scientific name. 
+    A full listing of all name relationships for a scientific name is provided by the taxon ' . l('name page', 'admin/config/cdm_dataportal/settings/layout/name-page') . '.',
     '#options' => $name_relationship_type_options,
-    '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_TYPES, unserialize(CDM_NAME_RELATIONSHIP_TYPES_DEFAULT)),
+    '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, unserialize(CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT)),
   );
 
   // ====== SPECIMENS ====== //
@@ -2785,17 +2797,17 @@ function cdm_settings_layout_search() {
          <p>To perform a blast search a blast database for the cdm instance is needed.</p> '),
     );
 
-    $form['blast_search_settings'][CDM_BLAST] = array(
+    $form['blast_search_settings'][CDM_SEARCH_BLAST_ENABLED] = array(
         '#type' => 'checkbox',
         '#title' => t('Activate Blast search') . ':',
-        '#default_value' => variable_get(CDM_BLAST, 0), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
+        '#default_value' => variable_get(CDM_SEARCH_BLAST_ENABLED, 0), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
 
         '#description' => t('Activate the blast search for this portal, this works only with an existing blast database!'),
     );
-    $form['blast_search_settings'][CDM_WS_PORTAL_BLAST] = array(
+    $form['blast_search_settings'][CDM_SEARCH_BLAST_SERVICE_URI] = array(
         '#type' => 'textfield',
         '#title' => t('Webservice URL for blast search') . ':',
-        '#default_value' => variable_get(CDM_WS_PORTAL_BLAST, 'http://127.0.0.1:9001/api/sequence'), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
+        '#default_value' => variable_get(CDM_SEARCH_BLAST_SERVICE_URI, 'http://127.0.0.1:9001/api/sequence'), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
 
         '#description' => t('Enter the webservice URL for blast search'),
     );
