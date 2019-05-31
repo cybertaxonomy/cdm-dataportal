@@ -1400,6 +1400,11 @@ function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_
 function cdm_type_designation_status_filter_terms_as_options($none_option_label, $with_empty_option = false){
   $filter_terms = cdm_ws_get(CDM_WS_TYPE_DESIGNATION_STATUS_FILTER_TERMS);
 
+  if(!is_array($filter_terms)){
+    // HOTFIX for Phycobank to mock the missing cdm webservice in cdm version 5.7.0
+    $filter_terms = json_decode('[{"label":"orig. des.","class":"TypeDesignationStatusFilter","key":"orig. des.","uuids":["40032a44-973b-4a64-b25e-76f86c3a753c"]},{"label":"Isoepitype","class":"TypeDesignationStatusFilter","key":"isoepitype","uuids":["95b90696-e103-4bc0-b60b-c594983fb566"]},{"label":"Isotype","class":"TypeDesignationStatusFilter","key":"isotype","uuids":["93ef8257-0a08-47bb-9b36-542417ae7560"]},{"label":"mon.","class":"TypeDesignationStatusFilter","key":"mon.","uuids":["3fc639b2-9a64-45f8-9a81-657a4043ad74"]},{"label":"Unknown type category","class":"TypeDesignationStatusFilter","key":"unknown type category","uuids":["7194020b-a326-4b47-9bfe-9f31a30aba7f"]},{"label":"not applicable","class":"TypeDesignationStatusFilter","key":"not applicable","uuids":["91a9d6a9-7754-41cd-9f7e-be136f599f7e"]},{"label":"Holotype","class":"TypeDesignationStatusFilter","key":"holotype","uuids":["a407dbc7-e60c-46ff-be11-eddf4c5a970d"]},{"label":"automatic","class":"TypeDesignationStatusFilter","key":"automatic","uuids":["e89d8b21-615a-4602-913f-1625bf39a69f"]},{"label":"Epitype","class":"TypeDesignationStatusFilter","key":"epitype","uuids":["989a2715-71d5-4fbe-aa9a-db9168353744"]},{"label":"Paratype","class":"TypeDesignationStatusFilter","key":"paratype","uuids":["eb7df2e5-d9a7-479d-970c-c6f2b0a761d7"]},{"label":"Lectotype","class":"TypeDesignationStatusFilter","key":"lectotype","uuids":["05002d46-083e-4b27-8731-2e7c28a8825c","4177c938-b741-40e1-95e5-4c53bd1ed87d"]},{"label":"Isolectotype","class":"TypeDesignationStatusFilter","key":"isolectotype","uuids":["7a1a8a53-78f4-4fc0-89f7-782e94992d08"]}]');
+  }
+
   if(isset($filter_terms) && is_array($filter_terms)) {
     foreach ($filter_terms as $filter_term) {
       $options[join(',', $filter_term->uuids)] = $filter_term->label;
