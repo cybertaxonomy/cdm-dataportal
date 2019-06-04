@@ -89,7 +89,6 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals(
                 "4. Lem, Nonsens species of the developers Vol1. 2001",
                 footnotes .get(3).getText());
-
     }
 
     @Test
@@ -112,7 +111,6 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "3. Lem, Nonsens species of the developers Vol1. 2001",
                 footnotes.get(2).getText());
 
-
     }
 
     /**
@@ -129,7 +127,6 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         WebElement accName = p.getAcceptedName();
         assertEquals("Bulbostylis pauciflora (Liebm.) C. B. Clarke, nom. cons. [non Bulbostylis pauciflora (Kunth) D.C.]", accName.getText());
         assertEquals("is conserved against", accName.findElement(By.className("symbol")).getAttribute("title"));
-
     }
 
     /**
@@ -148,7 +145,6 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         WebElement synonym2 = p.getHeterotypicalGroupSynonym(1, 2);
         assertEquals("≡\nNepenthes tupmanniana Bonstedt in Parey Blumeng. 1: 663. 1931 [non Nepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858]", synonym2.getText());
         assertEquals("is misspelling for", synonym2.findElement(By.className("symbol")).getAttribute("title"));
-
     }
 
 }

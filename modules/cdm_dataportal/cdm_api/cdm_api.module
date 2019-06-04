@@ -981,7 +981,8 @@ function cdm_ws_base_uri($cdm_type_simple)
  * @param bool $absoluteURI
  *   TRUE when the URL should be treated as absolute URL.
  *
- * @return the a CDM Pager object
+ * @return object
+ *   A CDM Pager object
  *
  */
 function cdm_ws_page($resourceURI, $pageSize, $pageNumber, array $query = array(), $method = 'GET', $absoluteURI = FALSE) {
@@ -992,7 +993,93 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber, array $query = array(
   return cdm_ws_get($resourceURI, NULL, queryString($query), $method, $absoluteURI);
 }
 
+
 /**
+ * Sends a http GET request to the generic page method which allows for filtering entities by Restrictions.
+ *
+ * @param $cdm_entity_type
+ * @param array $restrictions
+ *   An array of Restriction objects
+ * @param array $init_strategy
+ *   The init strategy to initialize the entity beans while being loaded from the
+ *   persistent storage by the cdm
+ * @param int $page_size
+ *   The maximum number of entities returned per page.
+ *   The default page size as configured in the cdm server
+ *   will be used if set to NULL
+ *   to return all entities in a single page).
+ * @param int $page_index
+ *   The number of the page to be returned, the first page has the
+ *   pageNumber = 0
+ *
+ * @return object
+ *   A CDM Pager object
+ *
+ */
+function cdm_ws_page_by_restriction($cdm_entity_type, array $restrictions, array $init_strategy, $page_size, $page_index) {
+
+  $restrictions_json = array(); // json_encode($restrictions);
+  foreach ($restrictions as $restr){
+    $restrictions_json[] = json_encode($restr);
+  }
+  return cdm_ws_page(
+      'portal/' . cdm_ws_base_uri($cdm_entity_type),
+      $page_size,
+      $page_index,
+      array(
+        'restriction' => $restrictions_json,
+        'initStrategy' => $init_strategy
+      ),
+      "GET"
+    );
+}
+
+/**
+ * Fetches all entities returned by the the generic page method for the Restrictions applied as filter.
+ *
+ * @param $cdm_entity_type
+ * @param array $restrictions
+ *   An array of Restriction objects
+ * @param array $init_strategy
+ *   The init strategy to initialize the entity beans while being loaded from the
+ *   persistent storage by the cdm
+ * @param int $page_size
+ *   The maximum number of entities returned per page.
+ *   The default page size as configured in the cdm server
+ *   will be used if set to NULL
+ *   to return all entities in a single page).
+ * @param int $page_index
+ *   The number of the page to be returned, the first page has the
+ *   pageNumber = 0
+ *
+ * @return array
+ *   A array of CDM entities
+ *
+ */
+function cdm_ws_fetch_all_by_restriction($cdm_entity_type, array $restrictions, array $init_strategy){
+  $page_index = 0;
+  // using a bigger page size to avoid to many multiple requests
+  $page_size = 500;
+  $entities = array();
+
+  while ($page_index !== FALSE && $page_index < 1){
+    $pager =  cdm_ws_page_by_restriction($cdm_entity_type, $restrictions, $init_strategy, $page_size, $page_index);
+    if(isset($pager->records) && is_array($pager->records)) {
+      $entities = array_merge($entities, $pager->records);
+      if(!empty($pager->nextIndex)){
+        $page_index = $pager->nextIndex;
+      } else {
+        $page_index = FALSE;
+      }
+    } else {
+      $page_index = FALSE;
+    }
+  }
+  return $entities;
+}
+
+
+  /**
  * Fetches all entities from the given REST endpoint using the pager mechanism.
  *
  * @param string $resourceURI

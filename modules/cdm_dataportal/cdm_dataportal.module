@@ -1788,26 +1788,27 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
   cdm_load_tagged_full_title($taxon_name);
   // Searching for all the taxa connected with the taxon name on the tree
   // in use.
-  $name_cache = cdm_ws_get(CDM_WS_NAME_NAMECAHE, array($taxon_name_uuid));
-  $request_params = array();
-  $request_params['query'] = $name_cache;
-  $request_params['tree'] = get_current_classification_uuid();
-  $request_params['doTaxa'] = 1;
-  $request_params['doSynonyms'] = 1;
-  $request_params['doTaxaByCommonNames'] = 0;
-  $request_params['matchMode'] = "EXACT";
-  $taxon_pager = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIND, NULL, queryString($request_params));
+  $name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
+  $restrictions = array(new Restriction("name.titleCache","EXACT", array($name->titleCache), 'AND'));
+  $init_strategy = array(
+    "name.titleCache",
+    "name.nomenclaturalReference.authorship",
+    "name.nomenclaturalReference.inReference.authorship",
+    "name.nomenclaturalReference.inReference.inReference.authorship",
+    "name.nomenclaturalReference.inReference.inReference.inReference.authorship"
+  );
+  $taxa = cdm_ws_fetch_all_by_restriction("Taxon", $restrictions, $init_strategy);
 
   // Removing the name where we came from.
-  foreach ($taxon_pager->records as $k => &$taxon) {
+  foreach ($taxa as $k => &$taxon) {
     if ($taxon->uuid == $taxon_to_hide_uuid) {
-      unset($taxon_pager->records[$k]);
+      unset($taxa[$k]);
     }
   }
   // Show the taxa list or go to the singular taxon.
-  if (sizeof($taxon_pager->records) == 1 && $redirect_to_taxon) {
+  if (sizeof($taxa) == 1 && $redirect_to_taxon) {
     // redirect to the taxon if there is only one.
-    $singleTaxon = array_pop($taxon_pager->records);
+    $singleTaxon = array_pop($taxa);
     if ($singleTaxon->class != "Taxon") {
       // It is a Synonym -> look for the accepted.
       $accepted_taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid), 'classificationFilter=' . get_current_classification_uuid());
@@ -1845,9 +1846,9 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
       $content['name_relationships'] = compose_name_relationships_list($name_relations, $taxon_name->uuid, null);
     }
     // related taxa
-    if ($taxon_pager->records) {
+    if ($taxa) {
       $content['related_taxa_header'] = markup_to_render_array("<h5>Taxa for this name:</h5>");
-      $content['related_taxa'] = compose_list_of_taxa($taxon_pager->records);
+      $content['related_taxa'] = compose_list_of_taxa($taxa);
     }
     else {
       $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.');

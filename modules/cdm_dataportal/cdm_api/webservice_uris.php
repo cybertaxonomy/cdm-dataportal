@@ -3,6 +3,9 @@
  * @file
  * CDM Server URI definitions.
  */
+
+define('CDM_WS_PORTAL_GENERIC', 'portal/$0');
+
 define('CDM_WS_PORTAL_AGENT', 'portal/agent');
 define('CDM_WS_REFERENCE', 'reference');
 define('CDM_WS_REFERENCE_AUTHORTEAM', 'reference/$0/authorship');
