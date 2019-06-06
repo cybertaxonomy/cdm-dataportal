@@ -159,38 +159,72 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
         );
     }
     else if(variable_get('cdm_dataportal_specimen_derivate_tree')){
+
+        $expand_icon = font_awesome_icon_markup(
+            'fa-plus-square-o',
+            array(
+                'alt' => 'Show details',
+                'class' => array('expand_icon')
+            )
+        );
+        $collapse_icon = font_awesome_icon_markup(
+            'fa-minus-square-o',
+            array(
+                'alt' => 'Show details',
+                'class' => array('collapse_icon')
+            )
+        );
+        $tableId = "specimen_tree_table";
         $specimen_table = array(
             '#theme' => 'table',
             '#weight' => 2,
             // prefix attributes and rows with '#' to let it pass toF the theme function,
             // otherwise it is handled as child render array
-            '#attributes' => array('class' => 'specimens'),
+            '#attributes' => array('class' => 'specimens',
+                                    'id' => $tableId),
             '#rows' => array(),
         );
         $specimen_array = compose_specimen_array($specimensOrObservations);
-
+        $rowcount = 0;
         foreach($specimen_array as $value){
             $renderArray = array(
                 '#theme' => 'item_list',
-                '#items' => array($value),
+                '#items' => $value['children'],
                 '#type' => 'ul');
             $output = drupal_render($renderArray);
-//            $specimen_table['#rows'][] = array(
-//                // An array of table rows. collabsible row
-//                'data' => "",
-//                'class' => array('expand_column')
-//            );
-            $specimen_table['#rows'][] = array(
-                // An array of table rows. Every row is an array of cells, or an associative array
-                'data' => array($output),
-                'class' =>  array(
-                    'descriptionElement',
-                    'descriptionElement_IndividualsAssociation'
-                ),
-            );
 
+            $specimen_table['#rows'][] = array(
+                'data' =>array(
+                    array(
+                        'data' => $expand_icon . $collapse_icon,
+                        'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+                    ),
+                    $value['data']),
+
+                'id' => 'label' . $rowcount, // summary row id
+                'class' => array('summary_row'),
+            );
+            $specimen_table['#rows'][] = array(
+                'data' =>  array(
+                        array(
+                            'data' => "", //empty first column
+                            'class' => array('expand_column')
+                        ),
+                        array(
+                        'data' => $output
+
+                        )
+                    ),
+                    'class' =>  array('detail_row')
+//                'class' =>  array(
+//                    'descriptionElement',
+//                    'descriptionElement_IndividualsAssociation'
+ //               ),
+            );
+            $rowcount++;
 
         }
+        drupal_add_js_rowToggle("#".$tableId);
 
         $render_array['specimen_list'] = $specimen_table;
 

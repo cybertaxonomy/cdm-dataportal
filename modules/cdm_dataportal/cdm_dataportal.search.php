@@ -786,31 +786,17 @@ function cdm_dataportal_search_request($search_endpoint)
  */
 function cdm_dataportal_blast_search_request($search_endpoint)
 {
-
     $form_params = array();
 
     if (isset($_REQUEST['search']) && is_array($_REQUEST['search'])) {
         array_deep_copy($_REQUEST['search'], $form_params['data']);
     }
-
-
-    //$query = trim($_REQUEST['query']);
-    $form_params['data'] = formatParams($_REQUEST['search']);
-
-    /*if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
-        $form_params = array_merge($form_params, $_REQUEST['pager']);
-    }*/
-
-    $form_params['query']= trim($_REQUEST['query']);
-
-
+    $form_params['data'] = formatWSParams($_REQUEST['search']);
+    $form_params['query']= trim($_REQUEST['query']).$form_params['data'];
     // Store in session.
     $_SESSION['cdm']['search'] = $form_params;
-
     return $form_params;
 }
-
-
 
 /**
  * Provides the classification to which the last search has been limited to..
@@ -933,7 +919,7 @@ function cdm_dataportal_search_blast_execute() {
     // parameters if necessary.
     $request_params = cdm_dataportal_blast_search_request($_REQUEST['ws']);
    // $url = drupal_http_build_query($_REQUEST['ws'], $request_params);
-
+    $request_params['timeout'] = 200;
     $taxon_pager = drupal_http_request($_REQUEST['ws'].'?sequence='.$request_params['query'], $request_params);
 
     return $taxon_pager;

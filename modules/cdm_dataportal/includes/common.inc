@@ -600,3 +600,16 @@ function formatParams($params) {
     return $paramString;
 }
 
+function formatWSParams($params) {
+    if (is_array($params)){
+        $keys =array_keys($params);
+        $paramString = '';
+        foreach ($keys as $k ){
+            if ($k != 'pageNumber' && $k != 'pageSize'){
+                $paramString .= '&'.$k.'='.urlencode($params[$k]);
+            }
+        }
+    }
+    return $paramString;
+}
+

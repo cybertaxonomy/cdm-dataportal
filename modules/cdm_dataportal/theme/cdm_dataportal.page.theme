@@ -99,14 +99,81 @@ function theme_cdm_specimen_page_title($variables)
         $out .= "Specimen ";
     }
 
-  if($collection){
-    $out .= $collection." ";
-  }
-  $out .= $specimenID;
+    if($collection){
+        $out .= $collection." ";
+    }
+    $out .= $specimenID;
 
-  RenderHints::popFromRenderStack();
+    RenderHints::popFromRenderStack();
 
-  return '<span class="' . $specimen->class . '">' . $out . '</span>';
+    return '<span class="' . $specimen->class . '">' . $out . '</span>';
+}
+
+/**
+ * Returns HTML for the default title of a specimen page.
+ *  * The returned title is a the identifier of the specimen.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - specimen: The specimen being formatted for the title.
+ *
+ * @return string
+ *  Markup for the title of a specimen page
+ *
+ * @ingroup themeable
+ */
+function theme_cdm_specimen_dto_page_title($variables)
+{
+
+    $specimen = $variables['specimen'];
+    RenderHints::pushToRenderStack('specimen_page_title');
+    $referenceUri = '';
+    $out = '';
+
+    $collection = null;
+    if (!($specimen->class == 'FieldUnit')) {
+        if ($specimen->collection) {
+            if ($specimen->collection->code) {
+                $collection = $specimen->collection->code;
+            } elseif ($specimen->collection->name) {
+                $collection = $specimen->collection->name;
+            }
+        }
+        if ($specimen->accessionNumber) {
+            $specimenID = $specimen->accessionNumber;
+        } elseif ($specimen->barcode) {
+            $specimenID = $specimen->barcode;
+        } elseif ($specimen->catalogNumber) {
+            $specimenID = $specimen->catalogNumber;
+        } elseif ($specimen->titleCache) {
+            $specimenID = $specimen->titleCache;
+        }
+        if (!isset($specimenID) and !isset($collection)) {
+            $specimenID = $specimen->uuid;
+        }
+    }else{
+        if ($specimen->titleCache) {
+            $specimenID = $specimen->titleCache;
+        }
+        if (!isset($specimenID) and !isset($collection)) {
+            $specimenID = $specimen->uuid;
+        }
+    }
+
+    if ($specimen ->class == 'FieldUnit'){
+        $out .= "FieldUnit ";
+    }else{
+        $out .= "Specimen ";
+    }
+
+    if($collection){
+        $out .= $collection." ";
+    }
+    $out .= $specimenID;
+
+    RenderHints::popFromRenderStack();
+
+    return '<span class="' . $specimen->class . '">' . $out . '</span>';
 }
 
 /**

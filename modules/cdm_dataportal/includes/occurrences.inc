@@ -469,9 +469,9 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 $taxon_name = cdm_ws_get(CDM_WS_NAME, $determinationEvent->taxonName->uuid);
                                 $taxon_name->taggedName = cdm_ws_get(CDM_WS_NAME, array($determinationEvent->taxonName->uuid, "taggedName"));
                                 $name_link = path_to_name($determinationEvent->taxonName->uuid);
-                            }else if ($determinationEvent->taxon) {
-                                 $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
-                                 $name_link = path_to_taxon($determinationEvent->taxon->uuid);
+                            } else if ($determinationEvent->taxon) {
+                                $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
+                                $name_link = path_to_taxon($determinationEvent->taxon->uuid);
                             }
                             if ($taxon_name) {
                                 $taxon_html = render_taxon_or_name($taxon_name, $name_link);
@@ -501,9 +501,9 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         foreach ($value as $description) {
                             $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $description->uuid);
 
-                        if($description->imageGallery == TRUE) {
-                            continue;
-                        }
+                            if ($description->imageGallery == TRUE) {
+                                continue;
+                            }
                             $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->childNodes, $description->elements);
                             $description_render_elements = _block_get_renderable_array(make_feature_block_list($elements_by_feature, null));
                             $dd_elements[] = $description_render_elements;
@@ -512,7 +512,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
                         break;
                     case '_derivedUnitMedia':
-                        if ($isSpecimen_page){
+                        if ($isSpecimen_page) {
                             $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
                             $captionElements = array(
                                 '#uri' => t('open media'),
@@ -528,10 +528,10 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 'alternativeMediaUri' => NULL,
                                 'galleryLinkUri' => NULL,
                             ));
-                            @_description_list_group_add($groups, "Detail Images:" , markup_to_render_array($gallery_html),'',20);
+                            @_description_list_group_add($groups, "Detail Images:", markup_to_render_array($gallery_html), '', 20);
                         }
 
-                       // $dd_elements[] = markup_to_render_array($gallery_html);
+                        // $dd_elements[] = markup_to_render_array($gallery_html);
 
                         break;
                     case 'sources':
@@ -546,8 +546,8 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             NULL,
                             ''
                         );
-                        if(!empty($annotations_and_sources['source_references'])){
-                            @_description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources['source_references']),'',12 );
+                        if (!empty($annotations_and_sources['source_references'])) {
+                            @_description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources['source_references']), '', 12);
                         }
                         break;
 
@@ -559,14 +559,14 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             foreach ($derivedFrom->originals as $original) {
                                 $pathToSpecimen = path_to_specimen($original->uuid);
                                 $description = "";
-                                if (isset( $derivedFrom->description) && $derivedFrom->description != ''){
+                                if (isset($derivedFrom->description) && $derivedFrom->description != '') {
                                     $description = $derivedFrom->description . ": ";
                                 }
 
                                 $originals[] = markup_to_render_array(l($description . $original->titleCache, $pathToSpecimen, array('attributes' => array('target' => '_blank'))));
-                                if ($original->class == 'FieldUnit'){
+                                if ($original->class == 'FieldUnit') {
                                     $label = t('Field data');
-                                }else{
+                                } else {
                                     $label = t('Derived from');
                                 }
                                 @_description_list_group_add($groups, $label . ':',
@@ -588,10 +588,11 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                     }
 
                                     $derived_units[] = markup_to_render_array(l($description . $derived_unit->titleCache, $pathToSpecimen, array('attributes' => array('target' => '_blank'))));
-                                 }
-                            } @_description_list_group_add($groups, t('Derivates') . ':',
+                                }
+                            }
+                            @_description_list_group_add($groups, t('Derivates') . ':',
                                 $derived_units,
-                                    '', 100);
+                                '', 100);
 
                         }
                         break;
@@ -616,7 +617,43 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                     case 'storedUnder':
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), render_taxon_or_name($value));
                         break;
+                    case 'dnaQuality':
+                        $sub_dl_groups = array();
 
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('purificationMethod'), $value->purificationMethod, NULL, 1);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('ratioOfAbsorbance260_230'), $value->ratioOfAbsorbance260_230, NULL, 2);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('ratioOfAbsorbance260_280'), $value->ratioOfAbsorbance260_280, NULL, 3);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('concentration'), $value->concentration, NULL, 4);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('concentrationUnit'), $value->concentrationUnit, NULL, 4);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('qualityTerm'), $value->qualityTerm, NULL, 4);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('qualityCheckDate'), $value->qualityCheckDate, NULL, 4);
+
+                        if (is_array($sub_dl_groups) && sizeof($sub_dl_groups)>0) {
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
+                                array(
+                                    array('#markup' => $value->titleCache),
+                                    array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
+                                )
+                            );
+                        }
+                        break;
+
+                    case 'preservation':
+                        $sub_dl_groups = array();
+
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('medium'), $value->medium, NULL, 1);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('temperature'), $value->temperature, NULL, 2);
+                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('definedMaterialOrMethod'), $value->definedMaterialOrMethod, NULL, 3);
+
+                        if (is_array($sub_dl_groups) && sizeof($sub_dl_groups)>0) {
+                            @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
+                                array(
+                                    array('#markup' => $value->titleCache),
+                                    array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
+                                )
+                            );
+                        }
+                        break;
 
                     /* ---- Specimen --- */
                     case 'sequences':
@@ -1064,7 +1101,9 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                     case 'kindOfUnit':
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 1);
                         break;
-
+                    case 'accessionNumber':
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 0);
+                        break;
 
                     case 'preferredStableUri':
 
@@ -1092,7 +1131,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                         );
                         $gallery_html = compose_cdm_media_gallerie(array(
                             'mediaList' => $value,
-                            'galleryName' => $specimen_or_observation->label,
+                            'galleryName' => $specimen_or_observation->uuid,
                             'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
                             'cols' => $gallery_settings['cdm_dataportal_media_cols'],
                             'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
@@ -1209,6 +1248,19 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                     case 'derivationEvents':
                         //@_description_list_group_add($groups, t('Association type'), $value->description);
                         break;
+                    case 'determinedNames':
+                        $dd_elements = array();
+                        foreach ($value as $name) {
+                            $taxon_name = cdm_ws_get(CDM_WS_NAME, $name->key);
+                            $taxon_name->taggedName = cdm_ws_get(CDM_WS_NAME, array($name->key, "taggedName"));
+                            $name_link = path_to_name($name->key);
+
+                            //$taxon_html = render_taxon_or_name($taxon_name, $name_link);
+                            $taxon_html = l($taxon_name->titleCache, $name_link, array('attributes' => array('target' => '_blank')));
+                            $dd_elements[] = $taxon_html;
+                        }
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label("Identification(s)"), $dd_elements,'', 100);
+                        break;
 
 
                     default:
@@ -1240,13 +1292,31 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
             $output .= $gallery_html;
         }
         $pathToSpecimen = path_to_specimen($specimen_or_observation->uuid);
-        $output .=  l("detail page", $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+        $output .=  l("Detail page", $pathToSpecimen, array('attributes' => array('target' => '_blank')));
     } // END of $specimenOrObservation exists
 
     return $output;
 }
 
 function compose_table_of_blast_result(array $data){
+   // get icon images
+  $expand_icon = font_awesome_icon_markup(
+      'fa-plus-square-o',
+      array(
+          'alt' => 'Show details',
+          'class' => array('expand_icon')
+      )
+  );
+  $collapse_icon = font_awesome_icon_markup(
+      'fa-minus-square-o',
+      array(
+          'alt' => 'Show details',
+          'class' => array('collapse_icon')
+      )
+  );
+  //$detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
+    $rowcount = 0;
+    $rows = array();
 
     foreach ($data as $row_data){
         $pathToSpecimen = path_to_specimen_by_accession_number($row_data['id']);
@@ -1254,6 +1324,10 @@ function compose_table_of_blast_result(array $data){
 
         $rows[] =  array(
             'data' => array(
+                array(
+                    'data' => $expand_icon . $collapse_icon,
+                    'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+                ),
                 array(
                     'data' => $row_data['def'],
                 ),
@@ -1263,21 +1337,53 @@ function compose_table_of_blast_result(array $data){
                 array(
                     'data' => $row_data['hsp_align_length'],
                 ),
-              //  array(
-              //     'data' => $row_data['midline'],
-              //  ),
                 array(
-                    'data' => $row_data['hsp_evalue'],
+                   'data' => $row_data['hsp_identity'],
+                ),
+                array(
+                    'data' => $row_data['hsp_identity']/$row_data['hsp_align_length']*100,
                 )
-            )
+            ),
+            'id' => 'blast_summary' . $rowcount, // summary row id
+            'class' => array('summary_row'),
         );
+        $detail_html = "";
+
+        $detail_html .= create_label("Details") . $row_data["hsp_align_length"] . "<br>";
+
+
+        $detail_html .= "<br>";
+        $detail_html .= $row_data["hsp_midline"];
+
+        //$detail_html .= "<br>";
+
+        $rows[] = array(
+            'data' => array(
+                array(
+                    'data' => "", //empty first column
+                    'class' => array('expand_column')
+                ),
+                array(
+                    'data' => $detail_html,
+                    'colspan' => 5,
+                ),
+            ),
+            'id' => 'blast_detail' . $rowcount,//details row ID
+            'class' => array('detail_row'),
+        );
+        $rowcount++;
     }
+
     $tableId = "blast_result_table";
     $blast_result_table = array(
         "#theme" => "table",
         "#weight" => 2,
         "#header" => array(
-                        "Name", "id", "Align Length", "e Value"),
+            array(
+                'data' => "",
+                'class' => array('expand_column')
+            ),
+                        "Name", "Accession Number", "Align Length", "Identity", "% Identity"),
         "#rows" => $rows,
         "#attributes" => array(
             "id" => $tableId,
@@ -1287,11 +1393,9 @@ function compose_table_of_blast_result(array $data){
 
     drupal_add_js_rowToggle("#".$tableId);
 
-    $render_array['content'] = $blast_result_table;
+    $render_array[$tableId] = $blast_result_table;
     $out = drupal_render($render_array);
    //$blast_result_page-> content = drupal_render($render_array);
    return $out;
 }
-
-
 
