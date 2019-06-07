@@ -1847,7 +1847,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     }
     // related taxa
     if ($taxa) {
-      $content['related_taxa_header'] = markup_to_render_array("<h5>Taxa for this name:</h5>");
+      $content['related_taxa_header'] = markup_to_render_array("<h4>Taxa for this name</h4>");
       $content['related_taxa'] = compose_list_of_taxa($taxa);
     }
     else {
