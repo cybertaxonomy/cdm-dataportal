@@ -600,7 +600,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     return $render_array;
   }
 
-  $render_array['sub_headline'] = markup_to_render_array(ucfirst(join(" & ", registration_types($registration_dto))),false, '<h3 class="regsitration_type">' . t('Event: '), '</h3>' );
+  $render_array['sub_headline'] = markup_to_render_array(join(", ", registration_types($registration_dto)),false, '<h3 class="regsitration_type">' . t('Event: '), '</h3>' );
 
   // name and typedesignation in detail
   if($registration_dto->nameRef){
@@ -1409,40 +1409,45 @@ function compare_name_relations_by_term_order_index($name_rel1, $name_rel2){
 function registration_types($registration_dto){
   $reg_type_labels = array();
   if(isset($registration_dto->nameRef)){
-    $reg_type_labels[] = t("new name");
-    $reg_type_labels[] = t("new taxon");
+    $reg_type_labels["name"] = t("new name");
+    $reg_type_labels["taxon"] = t("new taxon");
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
+    $is_new_combination = true;
     foreach($name_relations as $name_rel){
       if(isset($name_rel->type->uuid)){
         $name_is_from_name = $registration_dto->nameRef->uuid == $name_rel->fromName->uuid;
         switch($name_rel->type->uuid) {
           case UUID_NAMERELATIONSHIPTYPE_BASIONYM:
             if(!$name_is_from_name){
-              $reg_type_labels[] = t("new combination");
+              $reg_type_labels["basionym"] = t("new combination");
+              $is_new_combination = true;
             }
             break;
           case UUID_NAMERELATIONSHIPTYPE_REPLACED_SYNONYM:
             if(!$name_is_from_name) {
-              $reg_type_labels[] = t("new name");
+              $is_new_combination = true;
             }
             break;
           case UUID_NAMERELATIONSHIPTYPE_VALIDATED_BY_NAME:
             if(!$name_is_from_name) {
-              $reg_type_labels[] = t("validation");
+              $reg_type_labels["validation"] = t("validation");
             }
             break;
           case UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT:
             if(!$name_is_from_name) {
-              $reg_type_labels[] = t("orthographical correction");
+              $reg_type_labels["orth_var"] = t("orthographical correction");
             }break;
           default:
             // NOTHING
         }
       }
     }
+    if($is_new_combination){
+      unset($reg_type_labels["taxon"]);
+    }
   }
   if(isset($registration_dto->orderdTypeDesignationWorkingSets)){
-    $reg_type_labels[] = t("new nomeclatural type");
+    $reg_type_labels[] = t("new nomenclatural type");
   }
   return $reg_type_labels;
 }
