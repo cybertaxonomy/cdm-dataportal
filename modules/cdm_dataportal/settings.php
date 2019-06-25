@@ -1526,8 +1526,9 @@ function drop_all_cdm_nodes_submit($form, &$form_state) {
 
 /**
  * LAYOUT settings
- * @return
- *   todo
+ *
+ * @return array
+ *   The form structure.
  */
 function cdm_settings_layout() {
 
@@ -1931,7 +1932,8 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
 }
 
 /**
- * @todo document this function.
+ * @return array
+ *   The form structure.
  */
 function cdm_settings_layout_taxon() {
   $collapsed = FALSE;
@@ -2706,7 +2708,8 @@ function _cdm_map_visibility_setting($map_id)
 }
 
 /**
- * @todo document this function.
+ * @return array
+ *   The form structure.
  */
 function cdm_settings_layout_search() {
 
@@ -2830,7 +2833,8 @@ function cdm_settings_layout_search() {
 }
 
 /**
- * @todo document this function.
+ * @return array
+ *   The form structure.
  */
 function cdm_settings_layout_media() {
 
@@ -2886,6 +2890,9 @@ function cdm_settings_layout_media() {
 
 /**
  * GEOSERVICE and Map settings.
+ *
+ *  @return array
+ *   The form structure.
  */
 function cdm_settings_geo($form, &$form_state) {
 
@@ -3412,7 +3419,8 @@ function wms_layer_settings($default_settings, $title, $description, $add_projec
 
 
 /**
- * @todo document this function.
+ * @return array
+ *   The form structure.
  */
 function cdm_settings_cache() {
 
