@@ -7,8 +7,10 @@
 
   // TODO Genus UUID.
 
-  define('TAXONTREE_RANKLIMIT', 'cdm_taxontree_ranklimit');
-  define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
+const CDM_NAME_PAGE_AUTOREDIRECT = 'cdm_name_page_autoredirect';
+
+define('TAXONTREE_RANKLIMIT', 'cdm_taxontree_ranklimit');
+define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
   define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
   define('CDM_TAXONTREE_INCLUDES', 'taxontree_includes');
 
@@ -1631,6 +1633,22 @@ function cdm_settings_layout() {
       '#title' => t('Show advanced search link'),
       '#default_value' => variable_get('cdm_dataportal_show_advanced_search', 1),
       '#description' => t('Check this box if the link to advanced search should be show below the search box.'),
+  );
+
+  // --- Name page autoredirect feature --- //
+  $form['name_page'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Name page'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  $form['name_page'][CDM_NAME_PAGE_AUTOREDIRECT] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Always redirect to taxon',
+    '#default_value' => variable_get(CDM_NAME_PAGE_AUTOREDIRECT, 0),
+    '#description' => t('By checking this option you can globally enable the redirection behavior of the name page. 
+    Depending on the context from which a user navigates to the name page the data portal chooses to show the name page or it redirects to the related taxon if there is only one. 
+    This option allows to enable this behavior also for contexts in which the redirection normally is not active.'),
   );
 
   // --- Registrations --- //

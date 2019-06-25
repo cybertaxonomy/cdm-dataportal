@@ -2268,7 +2268,7 @@ function path_to_name($name_uuid, $taxon_to_hide_uuid = NULL, $highlited_synonym
     $res = 'cdm_dataportal/name/' . $name_uuid .
     '/' . (is_uuid($taxon_to_hide_uuid) ? $taxon_to_hide_uuid : "null") .
     '/' . (is_uuid($highlited_synonym_uuid) ? $highlited_synonym_uuid : "null") .
-    '/' . ($redirect_to_taxon ? "redirect_to_taxon" : "");
+    '/' . ($redirect_to_taxon || variable_get(CDM_NAME_PAGE_AUTOREDIRECT, 0) ? "redirect_to_taxon" : "");
   }
 
   return $res;
