@@ -437,7 +437,7 @@ function cdm_dataportal_menu() {
         // Expected callback arguments: uuid.
     );
 
-    $items['cdm_dataportal/specimen/accession_number'] = array(
+   $items['cdm_dataportal/specimen/accession_number'] = array(
         'page callback' => 'cdm_dataportal_specimen_by_accession_number_page_view',
         'access arguments' => array('access cdm content'),
         'type' => MENU_CALLBACK,
@@ -505,14 +505,13 @@ function cdm_dataportal_menu() {
     'access arguments' => array('access cdm content'),
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
-  if (variable_get(CDM_SEARCH_BLAST_ENABLED)) {
-    $items['cdm_dataportal/search/blast'] = array(
-        'title' => 'Blast', // will be passed through t()
-        'page callback' => 'cdm_dataportal_view_search_blast',
-        'access arguments' => array('access cdm content'),
-        'type' => MENU_LOCAL_TASK,
-    );
-  }
+  $items['cdm_dataportal/search/blast'] = array(
+    'title' => 'Blast', // will be passed through t()
+    'page callback' => 'cdm_dataportal_view_search_blast',
+    'access arguments' => array('access cdm content'),
+    'type' => MENU_LOCAL_TASK,
+  );
+
   $items['cdm_dataportal/search/taxon_by_description'] = array(
     'title' => 'By content category', // will be passed through t()
     'page callback' => 'cdm_dataportal_view_search_taxon_by_description',
@@ -1603,7 +1602,9 @@ function cdm_dataportal_specimen_by_accession_number_page_view($accession_number
         $specimen_or_observation = cdm_ws_get(CDM_WS_OCCURRENCE_ACCESSION_NUMBER, null, 'accessionNumber=' . $accession_number);
 
         if (isset($specimen_or_observation) && $specimen_or_observation){
-            cdm_dataportal_specimen_page_view($specimen_or_observation->uuid, $specimen_or_observation);
+
+            $nodes = cdm_dataportal_specimen_page_view($specimen_or_observation->uuid, $specimen_or_observation);
+            return $nodes;
         }
 
     }
@@ -1613,7 +1614,7 @@ function cdm_dataportal_specimen_by_accession_number_page_view($accession_number
  * @param string $uuid the UUID of the specimen
  * @return array|string
  */
-function cdm_dataportal_specimen_page_view($uuid) {
+function cdm_dataportal_specimen_page_view($uuid, $specimenDTO = null) {
 
     //cdm_check_valid_taxon_page($chapter);
     //cdm_dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
@@ -1628,7 +1629,63 @@ function cdm_dataportal_specimen_page_view($uuid) {
     }
 
     // Display the page for the specimen defined by $uuid.
-    $specimenpage = cdm_dataportal_specimen_view($uuid);
+    if (isset($specimenDTO)){
+        //$specimenpage = compose_specimen_array($specimenDTO);
+        $dto_array = array($specimenDTO);
+        $specimen_array = compose_specimen_array($dto_array);
+        $specimen_table = array(
+            '#theme' => 'table',
+            '#weight' => 2,
+            // prefix attributes and rows with '#' to let it pass toF the theme function,
+            // otherwise it is handled as child render array
+
+            '#attributes' => array('class' => 'specimens'),
+            '#rows' => array(),
+            '#prefix' => '<div id="specimens">',
+            '#suffix' => '</div>',
+
+
+        );
+        foreach($specimen_array as $value){
+            $renderArray = array(
+                '#theme' => 'item_list',
+                '#items' => array($value),
+                '#type' => 'ul');
+            $output = drupal_render($renderArray);
+//            $specimen_table['#rows'][] = array(
+//                // An array of table rows. collabsible row
+//                'data' => "",
+//                'class' => array('expand_column')
+//            );
+            $specimen_table['#rows'][] = array(
+                // An array of table rows. Every row is an array of cells, or an associative array
+                'data' => array($output),
+                'class' =>  array(
+                    'descriptionElement',
+                    'descriptionElement_IndividualsAssociation'
+                ),
+            );
+
+
+        }
+        $specimenpage = new stdClass();
+
+        $specimenpage->title = theme('theme_cdm_specimen_dto_page_title', array(
+            'specimen' => $specimenDTO
+        ));
+
+        $render_array['markup'] = $specimen_table;
+
+//        $render_array['specimens'] = array(
+//            '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
+//            'content' => $specimen_table, // returns render array
+//            '#suffix' => '</div>',
+//        );
+        $specimenpage->content = drupal_render($render_array);
+    }else{
+        $specimenpage = cdm_dataportal_specimen_view($uuid);
+    }
+
     if (!empty($specimenpage)) {
         return cdm_node_show(NODETYPE_TAXON, $uuid, $specimenpage->title, $specimenpage->content);
     }

@@ -48,3 +48,5 @@ function addRowToggle(selector) {
 //    ,function(event){
 //        jQuery(event.target).parent(".summary_row").css("background","");
 //    })
+
+

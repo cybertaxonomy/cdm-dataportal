@@ -474,7 +474,9 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 $name_link = path_to_taxon($determinationEvent->taxon->uuid);
                             }
                             if ($taxon_name) {
-                                $taxon_html = render_taxon_or_name($taxon_name, $name_link);
+                                //$taxon_html = render_taxon_or_name($taxon_name, $name_link);
+
+                                $taxon_html = l($taxon_name->titleCache, $name_link, array('attributes' => array('target' => '_blank')));
                                 $dd_elements[$weight] = $taxon_html;
                             }
                             if (isset($determinationEvent->modifier)) {
