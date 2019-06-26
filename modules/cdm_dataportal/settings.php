@@ -2828,7 +2828,7 @@ function cdm_settings_layout_search() {
     $form['blast_search_settings'][CDM_SEARCH_BLAST_SERVICE_URI] = array(
         '#type' => 'textfield',
         '#title' => t('Webservice URL for blast search') . ':',
-        '#default_value' => variable_get(CDM_SEARCH_BLAST_SERVICE_URI, 'http://127.0.0.1:9001/api/sequence'), // '05b0dd06-30f8-477d-bf4c-30d9def56320' =>  Caucasia (Ab + Ar + Gg + Rf(CS)) (Cc)
+        '#default_value' => variable_get(CDM_SEARCH_BLAST_SERVICE_URI, 'http://130.133.70.28:9001/api/sequence'),
 
         '#description' => t('Enter the webservice URL for blast search'),
     );

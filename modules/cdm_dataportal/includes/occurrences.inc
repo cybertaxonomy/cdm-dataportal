@@ -1323,7 +1323,7 @@ function compose_table_of_blast_result(array $data){
     foreach ($data as $row_data){
         $pathToSpecimen = path_to_specimen_by_accession_number($row_data['id']);
         $specimenPageLink = l($row_data['id'], $pathToSpecimen, array('attributes' => array('target' => '_blank')));
-
+        $ncbiLink = l($row_data['id'], 'https://www.ncbi.nlm.nih.gov/nuccore/'.$row_data['id'].'?report=graph', array('attributes' => array('target' => '_blank')));
         $rows[] =  array(
             'data' => array(
                 array(
@@ -1340,7 +1340,7 @@ function compose_table_of_blast_result(array $data){
                     'data' => $row_data['hsp_align_length'],
                 ),
                 array(
-                   'data' => $row_data['hsp_identity'],
+                   'data' => $ncbiLink,
                 ),
                 array(
                     'data' => $row_data['hsp_identity']/$row_data['hsp_align_length']*100,
@@ -1385,7 +1385,7 @@ function compose_table_of_blast_result(array $data){
                 'data' => "",
                 'class' => array('expand_column')
             ),
-                        "Name", "Accession Number", "Align Length", "Identity", "% Identity"),
+                        "Name", "Accession Number", "Align Length", "NCBI", "% Identity"),
         "#rows" => $rows,
         "#attributes" => array(
             "id" => $tableId,

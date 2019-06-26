@@ -1605,6 +1605,8 @@ function cdm_dataportal_specimen_by_accession_number_page_view($accession_number
 
             $nodes = cdm_dataportal_specimen_page_view($specimen_or_observation->uuid, $specimen_or_observation);
             return $nodes;
+        }else{
+            return '';
         }
 
     }
