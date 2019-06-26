@@ -229,6 +229,15 @@ function garland_diptera_cdm_feature_name($feature_name){
   }
 }
 
+/**
+ * This method was overriding the theme_cdm_OriginalSource() method in earlier versions of the dataportal module.
+ * The theme_cdm_OriginalSource() has now been turned into a compose method. This method here has thus been become
+ * useless, but is kept as reference in case the diptera portal needs to be reactivated.
+ *
+ * @param $descriptionElementSource
+ * @param bool $doLink
+ * @return string
+ */
 function garland_diptera_cdm_OriginalSource($descriptionElementSource, $doLink = TRUE){
 
     //ev. delegate to theme_cdm_ReferencedEntityBase

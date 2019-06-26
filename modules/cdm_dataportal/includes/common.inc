@@ -81,11 +81,10 @@ function cdm_entity_has_marker($cdm_entitiy, $marker_type_uuid) {
  *
  * @param array $sources
  *    The array of CDM IdentifiableSource instances
- * @param bool $do_theme if set TRUE the sources will be themed
- *        by theme_cdm_OriginalSource
- * @return multitype:
+ * @return array
+ *  An array of drupal render arrays
  */
-function oder_sources($sources, $do_theme = false){
+function oder_and_render_original_sources($sources){
     $sort_array = array();
     foreach ($sources as $source) {
 
@@ -130,12 +129,7 @@ function oder_sources($sources, $do_theme = false){
         $order_key .= "_";
       }
 
-
-      if($do_theme) {
-        $sort_array[$order_key] = theme('cdm_OriginalSource', array('source' => $source));
-      } else {
-        $sort_array[$order_key] = $source;
-      }
+      $sort_array[$order_key] = render_original_source($source);
     }
     ksort($sort_array);
     return array_values ($sort_array);
@@ -144,7 +138,7 @@ function oder_sources($sources, $do_theme = false){
 /**
  * Compare callback to be used in usort to sort image sources of CDM OriginalSource instances.
  *
- * TODO the compare strategy implemented in oder_sources() is probably better but is not taking the
+ * TODO the compare strategy implemented in oder_and_render_original_sources() is probably better but is not taking the
  * originalName into account.
  *
  * @param $a

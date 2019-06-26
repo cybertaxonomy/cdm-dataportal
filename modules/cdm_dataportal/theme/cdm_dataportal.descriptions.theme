@@ -106,7 +106,7 @@ function theme_cdm_IdentificationKey($variables) {
   if (isset($identificationKey->sources) && is_array($identificationKey->sources)) {
     // order and display sources.
     //TODO can the method handle_annotations_and_sources() be used here?
-    $sources = oder_sources($identificationKey->sources, TRUE);
+    $sources = oder_and_render_original_sources($identificationKey->sources);
     $out .= '<div class="sources">';
     $out .=  implode('', $sources);
     $out .= '</div>';
@@ -425,10 +425,10 @@ function theme_cdm_block_IdentificationKeys($variables) {
       $markup .= $name_used_in_source_link_to_show_use . ': ';
       $markup .= $useSummary;
       foreach ($description->sources as $element_source) {
-        $markup .= " (" . theme('cdm_OriginalSource', array(
-            'source' => $element_source,
-            'doLink' => $feature_block_settings['link_to_reference'] == 1,
-            'do_link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1)) . ")";
+        $markup .= " (" . render_original_source(
+            $element_source,
+            $feature_block_settings['link_to_reference'] == 1,
+            $feature_block_settings['link_to_name_used_in_source'] == 1) . ")";
       }
       $hasUseRecords = FALSE;
       $descriptionUseRecordOut = '<div class="use-records"><table><th>Use Category</th><th>Use Sub Category</th><th>Plant Part</th><th>Human Group</th><th>Ethnic Group</th><th>Country</th>';

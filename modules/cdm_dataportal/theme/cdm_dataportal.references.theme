@@ -146,14 +146,16 @@ function cdm_doi($doi, $iconified = true) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Renders a representation for an CDM OriginalSourceBase entity
+ *
+ * @param $source
+ *  The cdm OriginalSourceBase entity
+ * @param $do_link_to_reference
+ * @param $do_link_to_name_used_in_source
+ * @return string
  */
-function theme_cdm_OriginalSource($variables) {
+function render_original_source($source, $do_link_to_reference, $do_link_to_name_used_in_source) {
   $out = '';
-  $source = $variables['source'];
-  $do_link_to_reference = $variables['doLink'];
-  $do_link_to_name_used_in_source = $variables['do_link_to_name_used_in_source'];
 
   if (isset($source->citation)) {
     $out = theme('cdm_reference', array(

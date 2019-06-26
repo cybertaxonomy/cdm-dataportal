@@ -386,12 +386,10 @@ function cdm_create_footnotes(
     if (_is_original_source_type($source)) {
       $fn_key = FootnoteManager::addNewFootnote(
         $sources_footnote_list_key,
-        theme('cdm_OriginalSource', array(
-          'source' => $source,
-          'doLink' => $do_link_to_reference,
-          'do_link_to_name_used_in_source' => $do_link_to_name_used_in_source
-
-        )),
+        render_original_source($source,
+          $do_link_to_reference,
+          $do_link_to_name_used_in_source
+        ),
         $original_source_footnote_tag
       );
       // Ensure uniqueness of the footnote keys.
@@ -561,12 +559,10 @@ function handle_annotations_and_sources_config($feature_block_settings){
     if ($config['sources_as_content'] == 1) {
       foreach ($entity->sources as $source) {
         if (_is_original_source_type($source)) {
-          $reference_citation = theme('cdm_OriginalSource',
-            array(
-              'source' => $source,
-              'doLink' => $config['link_to_reference'] == 1,
-              'do_link_to_name_used_in_source' => $config['link_to_name_used_in_source'] == 1,
-            )
+          $reference_citation = render_original_source(
+              $source,
+             $config['link_to_reference'] == 1,
+              $config['link_to_name_used_in_source'] == 1
           );
 
           if ($reference_citation) {
