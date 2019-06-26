@@ -159,7 +159,7 @@ function cdm_doi($doi, $iconified = true) {
  * @param $do_link_to_name_used_in_source
  * @return string
  */
-function render_original_source($source, $do_link_to_reference, $do_link_to_name_used_in_source) {
+function render_original_source($source, $do_link_to_reference = true, $do_link_to_name_used_in_source = false) {
   $out = '';
 
   if (isset($source->citation)) {
