@@ -494,14 +494,14 @@ function theme_cdm_media_page($variables) {
   }
 
   $media_metadata = read_media_metadata($media);
-  // $title = $media->titleCache;
-  $title = $media_metadata['title'];
+  $title = 'Media';
+  if($media_metadata['title']){
+    $title .= ' ' .$media_metadata['title'];
+  } else if(isset($media_metadata['filename'])){
+    $title .= ' (' .$media_metadata['filename'] .')';
+  }
 
   $imageMaxExtend = variable_get('image-page-maxextend', 400);
-
-  if (!$title) {
-    $title = 'Media ' . $media->uuid . '';
-  }
 
   drupal_set_title($title, PASS_THROUGH);
 
