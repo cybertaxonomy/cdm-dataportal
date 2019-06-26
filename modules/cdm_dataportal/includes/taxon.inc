@@ -417,6 +417,7 @@ function cdm_accepted_for($accepted_for_uuid) {
   if ($synonym) {
     $out .= '<span class="acceptedFor">';
     $out .= t('is accepted for ');
+    $referenceUri = null;
     if (isset($synonym->name->nomenclaturalReference)) {
       $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
     }
