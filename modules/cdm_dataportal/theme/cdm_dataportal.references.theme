@@ -85,6 +85,11 @@ function theme_cdm_reference($variables) {
   }
 
   if (isset($reference->uri)){
+    if($reference->type == 'WebPage'){
+      // the cdm cache strategy adds the uri to the titleCache which is unwanted in this case,
+      // so is is removed from there
+      $out = str_replace('- ' . $reference->uri, '',  $out);
+    }
     $out .= cdm_external_uri($reference->uri);
   }
 

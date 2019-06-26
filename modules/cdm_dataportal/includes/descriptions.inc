@@ -573,6 +573,8 @@ function handle_annotations_and_sources_config($feature_block_settings){
             }
           }
 
+          // also put the name in source into the array, these are already included in the $reference_citation but are
+          // still required to be available separately in some contexts.
           $name_in_source_render_array = compose_name_in_source(
             $source,
             $config['link_to_name_used_in_source'] == 1
