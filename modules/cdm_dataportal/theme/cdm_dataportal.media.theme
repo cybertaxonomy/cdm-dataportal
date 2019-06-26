@@ -295,7 +295,8 @@ function theme_cdm_media_caption($variables) {
   }
 
   if(!empty($annotations_and_sources['source_references'])){
-    _description_list_group_add($groups, t('Sources') . ':', markup_to_render_array(join(', ', $annotations_and_sources['source_references'])) );
+    $sources_label = count($annotations_and_sources['source_references']) > 1 ? t('Sources') : t('Source');
+    _description_list_group_add($groups, $sources_label . ':', markup_to_render_array(join(', ', $annotations_and_sources['source_references'])) );
   }
 
   // TODO add all other metadata elements generically.
