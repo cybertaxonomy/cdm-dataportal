@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
-import java.util.List;
-
 import org.apache.log4j.Level;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -23,43 +21,44 @@ import org.openqa.selenium.WebElement;
  */
 public class DrupalBlock extends BaseElement {
 
-	private String header;
-
-	protected WebElement content;
-
-	protected List<WebElement> featureBlockelements;
+	WebElement titleElement;
 
 
 	public DrupalBlock(WebElement element) {
+	    this(element, false);
+	}
+
+	public DrupalBlock(WebElement element, boolean hasHiddenTitle) {
 
 		super(element);
 
 		logger.setLevel(Level.TRACE);
         logger.trace("DrupalBlock() - constructor after super()");
 
-		content = element.findElement(By.className("content"));
-		featureBlockelements = element.findElements(By.className("feature-block-elements"));
-
-		logger.trace("DrupalBlock() - block content loaded");
 		try {
-			WebElement headerElement = element.findElement(By.tagName("h2"));
-			header = headerElement.getText();
-			logger.trace("DrupalBlock() - header text ready");
+		    titleElement = element.findElement(By.className("block-title"));
 		} catch (NoSuchElementException e){
-			// IGNORE //
+		    try {
+		        titleElement = element.findElement(By.className("title"));
+		    } catch  (NoSuchElementException e2){
+		        if(!hasHiddenTitle){
+		            throw e2;
+		        }
+		    }
 		}
 	}
 
-	public String getHeader() {
-		return header;
+	public String getHeaderText() {
+		return titleElement.getText();
 	}
 
-	public WebElement getContent() {
-		return content;
+	public String getContentText() {
+	    String titleText = getHeaderText();
+	    String elementText = getElement().getText();
+	    if(elementText.startsWith(titleText)){
+	        elementText = elementText.substring(titleText.length(), elementText.length());
+	    }
+		return elementText;
 	}
-
-	public List<WebElement> getFeatureBlockElements() {
-        return featureBlockelements;
-    }
 
 }

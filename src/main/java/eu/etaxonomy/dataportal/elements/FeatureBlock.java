@@ -47,10 +47,7 @@ public class FeatureBlock extends DrupalBlock {
 
     private final List<WebElement> descriptionItemElements;
 
-    private WebElement titleElement;
-
-    private WebElement contentContainer;
-
+    protected List<WebElement> featureBlockelements;
 
     /**
      *
@@ -125,30 +122,27 @@ public class FeatureBlock extends DrupalBlock {
         return titleElement;
     }
 
-    @Override
-    public WebElement getContent() {
-        return contentContainer;
+    public FeatureBlock(WebDriver driver, WebElement element, String enclosingTag, String ... elementTags) {
+        this(driver, element, false, enclosingTag, elementTags);
     }
 
+    public FeatureBlock(WebDriver driver, WebElement element, boolean hasHiddenTitle, String enclosingTag, String ... elementTags) {
 
-    public FeatureBlock(WebDriver driver, WebElement element, String enclosingTag, String ... elementTags) {
-
-        super(element);
+        super(element, hasHiddenTitle);
 //        logger.setLevel(Level.TRACE);
         logger.trace("FeatureBlock() - constructor after super()");
 
         this.driver = driver;
         this.elementTags = elementTags;
 
-        titleElement =  element.findElement(By.className("title"));
+        WebElement featureBlockElementsWrapper =  element.findElement(By.className("feature-block-elements"));
 
-        contentContainer = element.findElement(By.className("content"));
+        featureBlockelements = element.findElements(By.className("feature-block-element"));
 
-        WebElement descriptionElementsRepresentation =  element.findElement(By.className("feature-block-elements"));
-        featureType = descriptionElementsRepresentation.getAttribute("id");
+        featureType = featureBlockElementsWrapper.getAttribute("id");
 
         //TODO throw exception instead of making an assertion! selenium should have appropriate exceptions
-        assertEquals("Unexpected tag enclosing description element representations", enclosingTag, descriptionElementsRepresentation.getTagName());
+        assertEquals("Unexpected tag enclosing description element representations", enclosingTag, featureBlockElementsWrapper.getTagName());
 
         logger.trace("FeatureBlock() - loading all elements ...");
         descriptionItemElements = new ArrayList<WebElement>();
@@ -158,7 +152,7 @@ public class FeatureBlock extends DrupalBlock {
             HashMap<String, List<WebElement>> elementsByTag = new HashMap<String, List<WebElement>>();
             Integer lastSize = null;
             for (String elementTag : elementTags) {
-                List<WebElement> foundElements = descriptionElementsRepresentation.findElements(By.tagName(elementTag));
+                List<WebElement> foundElements = featureBlockElementsWrapper.findElements(By.tagName(elementTag));
                 if(lastSize != null && foundElements.size() != lastSize){
                     throw new NoSuchElementException("Mulitpart element lists differ in size");
                 }
@@ -176,13 +170,18 @@ public class FeatureBlock extends DrupalBlock {
         } else {
             // handle single elements
             String elementTag = elementTags[0];
-            for(WebElement el : descriptionElementsRepresentation.findElements(By.tagName( elementTag ))) {
+            for(WebElement el : featureBlockElementsWrapper.findElements(By.tagName( elementTag ))) {
                 descriptionItemElements.add(el);
 //                descriptionElements.add(new DescriptionElementRepresentation(el));
             }
         }
         logger.trace("FeatureBlock() - loading all elements DONE");
 
+    }
+
+
+    public List<WebElement> getFeatureBlockElements() {
+        return featureBlockelements;
     }
 
 
