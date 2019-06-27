@@ -429,7 +429,7 @@ function infer_mime_type($filepath) {
  * @return
  *  the formatted string representation of the $datetime
  */
-function format_datetime($datetime, $format = 'Y-m-d H:i:s'){
+function format_datetime($datetime, $format = 'Y-m-d H:i:s', $strip_zeros = true){
   return date($format, strtotime($datetime));
 }
 
@@ -540,20 +540,20 @@ function partialToDate($partial, $stripZeros = TRUE, $format= "YYYY-MM-DD") {
     $d = partialToDay($partial);
   }
 
-  $y = $y ? $y : '00';
+  $y = $y ? $y : '0000';
   $m = $m ? $m : '00';
   $d = $d ? $d : '00';
 
   $date = '';
 
-  if ($y == '00' && $stripZeros) {
+  if ($y == '0000' && $stripZeros && $m == '00' && $d == '00') {
     return '';
   }
   else {
     $date = $y;
   }
 
-  if ($m == '00' && $stripZeros) {
+  if ($m == '00' && $stripZeros && $d == '00') {
     return $date;
   }
   else {

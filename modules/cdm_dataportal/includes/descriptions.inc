@@ -460,7 +460,7 @@ function compose_description_element($element, $feature_block_settings, $element
 
   $timescope_markup = '';
   if(isset($element->timeperiod)){
-    $timescope_markup = ' ' . timePeriodToString($element->timeperiod, false);
+    $timescope_markup = ' ' . timePeriodToString($element->timeperiod, true);
   }
 
   // handle the special case were the TextData is used as container for original source with name
