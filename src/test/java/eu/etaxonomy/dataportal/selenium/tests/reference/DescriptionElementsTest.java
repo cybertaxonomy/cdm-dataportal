@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 import java.util.UUID;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -46,7 +45,6 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
      *
      */
     @Test
-    @Ignore
     public void tesIssue3616() throws MalformedURLException {
 
 

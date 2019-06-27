@@ -93,7 +93,7 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
         FeatureBlock featureBlockDistribution = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
 
         assertEquals(featureLabel, featureBlockDistribution.getTitle().getText());
-        assertEquals(blockTextFull, featureBlockDistribution.getContent().getText().trim());
+        assertEquals(blockTextFull, featureBlockDistribution.getContentText().trim());
 
         featureBlockDistribution.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
 

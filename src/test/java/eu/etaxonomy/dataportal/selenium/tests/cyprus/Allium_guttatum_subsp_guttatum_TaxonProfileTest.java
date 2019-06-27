@@ -104,7 +104,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
         featureBlock = p.getFeatureBlockAt(4, "distribution", "div", "span");
 
         assertEquals("Distribution\nDivision 2A,B\nA. R. D. Meikle, Flora of Cyprus 2. 1985, B. R. Hand, Supplementary notes to the flora of Cyprus VI. in Willdenowia 39. 2009", featureBlock.getText());
-        assertEquals("Distribution", featureBlock.getHeader());
+        assertEquals("Distribution", featureBlock.getHeaderText());
         assertEquals("expecting two footnote keys", 2, featureBlock.countFootNoteKeys());
 
 //        ------- prepared for  bibliography ---------

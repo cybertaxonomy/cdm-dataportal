@@ -108,7 +108,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         FeatureBlock featureBlockDistribution = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
 
         assertEquals(featureLabel, featureBlockDistribution.getTitle().getText());
-        assertEquals(contentTextFull, featureBlockDistribution.getContent().getText().trim());
+        assertEquals(contentTextFull, featureBlockDistribution.getContentText().trim());
 
         featureBlockDistribution.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(1, featureBlockDistribution.getOriginalSourcesSections().size());
