@@ -7,8 +7,10 @@ is_compatible=$(compass --version | grep "0.12.7")
 if [[ -z "$is_compatible" ]]
 then
     echo "incompatible version of compass found: $(compass --version | head -n 1 - )"
+    echo "compass versions newer than no longer support CSS3Pie which is needed for cdm_dataportal/themes/zen_dataportal/sass/ie-legacy.scss "
     echo "install version 0.12.7 by"
     echo "  sudo gem uninstall compass --all"
+    echo "  sudo gem uninstall sass --all"
     echo "  sudo gem install compass --version 0.12.7"
     exit -1
 fi
