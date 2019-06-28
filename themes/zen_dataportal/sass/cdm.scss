@@ -12,7 +12,7 @@ $page-part-margin: $base-line-height * 1;
 
 /*  style links only for content in blocks and node and backbutton
     added also #identificationKey since there are not yet drupal nodes */
-.block, .node, #identificationKey {
+.block, .node, #identificationKey, #content {
   @include cdm-link-style;
 }
 

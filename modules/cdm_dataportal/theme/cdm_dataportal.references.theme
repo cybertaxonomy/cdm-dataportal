@@ -26,8 +26,11 @@
  *   An associative array containing:
  *   - reference
  *   - microReference
- *   - doLink:
- *      Whether to create a link to the reference page, links to the reference URI or DOI are always
+ *   - doTextLink:
+ *      Show the citation string as link to the reference page. This option does not affect links to the reference URI or DOI.
+ *      These links are always created when this data is available
+ *   - doIconLink:
+ *      Append an icon to the citation string which links to the reference page, links to the reference URI or DOI are always
  *      created when this data is available
  *   - referenceStyle: the value "zoology" will cause a specific rendeting of the
  *      reference suitable for zoological publications.
@@ -40,7 +43,8 @@
 function theme_cdm_reference($variables) {
   $reference = $variables['reference'];
   $microReference = $variables['microReference'];
-  $doLink = $variables['doLink'];
+  $doTextLink = $variables['doTextLink'];
+  $doIconLink = $variables['doIconLink'];
   $referenceStyle = $variables['referenceStyle'];
 
   if (!isset($reference->authorship)) {
@@ -61,7 +65,7 @@ function theme_cdm_reference($variables) {
   }
 
   $citation = trim($citation);
-  if (isset($doLink) && $doLink === TRUE) {
+  if (isset($doTextLink) && $doTextLink === TRUE) {
     $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
       'attributes' => array(
@@ -74,6 +78,9 @@ function theme_cdm_reference($variables) {
   }
   else {
     $out = '<span class="reference">' . $citation . '</span>';
+  }
+  if((isset($doIconLink) && $doIconLink === TRUE)) {
+    $out .= custom_icon_font_markup('e903');
   }
 
   if (!empty($microReference)) {
@@ -166,7 +173,7 @@ function render_original_source($source, $do_link_to_reference = true, $do_link_
     $out = theme('cdm_reference', array(
         'reference' => $source->citation,
         'microReference' => $source->citationMicroReference,
-        'doLink' => $do_link_to_reference,
+        'doIconLink' => $do_link_to_reference,
     ));
 
     $name_in_source_render_array = compose_name_in_source($source, $do_link_to_name_used_in_source);

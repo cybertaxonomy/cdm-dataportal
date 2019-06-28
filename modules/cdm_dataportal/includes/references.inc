@@ -88,7 +88,7 @@ function cdm_reference_pager($referencePager, $path, $parameters) {
       $out .= '<li>' . theme('cdm_reference', array(
           'reference' => $reference,
           'microReference' => NULL,
-          'doLink' => TRUE,
+          'doTextLink' => TRUE,
         )) . '</li>';
     }
     $out .= '</ul>';

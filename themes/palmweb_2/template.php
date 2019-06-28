@@ -251,7 +251,8 @@ function xxx_palmweb_2_cdm_media_caption($variables){
 function xxx_palmweb_2_cdm_reference($variables) {
   $reference = $variables['reference'];
   $microReference = $variables['microReference'];
-  $doLink = $variables['doLink'];
+  $doTextLink = $variables['doTextLink'];
+  $doIconLink = $variables['doIconLink'];
   $referenceStyle = $variables['referenceStyle'];
 
   if(!isset($reference->authorship)){
@@ -271,7 +272,7 @@ function xxx_palmweb_2_cdm_reference($variables) {
     $citation = $reference->titleCache;
   }
 
-  if ($doLink) {
+  if ($doTextLink) {
     $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
     'attributes' => array('class' => 'reference'),

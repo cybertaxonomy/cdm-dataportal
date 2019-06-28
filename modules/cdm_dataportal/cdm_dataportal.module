@@ -366,14 +366,34 @@ function _add_js_taxonomic_children($jquery_selector) {
   }
 
 /**
+ * @param string $glyph_name
+ *   The name of the gloyph (e.g. 'icon-interal-link-alt-solid') for the foll list please
+ *   refer to modules/cdm_dataportal/fonts/custom-icon-font
+ * @param array $attributes
+ * @return string
+ */
+  function custom_icon_font_markup($glyph_name = NULL, $attributes = array()){
+    _add_font_custom_icon_font();
+
+
+    if($glyph_name){
+      if(!isset($attributes['class'])){
+        $attributes['class'] = array();
+      }
+      $attributes['class'][] = $glyph_name;
+
+      return '<i ' . drupal_attributes($attributes) . '></i>';
+    }
+
+    return '';
+  }
+
+/**
  * Adds the css  containing the font awesome icons to the html header.
  */
 function _add_font_awesome_font()
 {
-//<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-
   $font_awesome_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
-  //$font_awesome_css_uri="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css";
 
   drupal_add_html_head_link(
     array(
@@ -383,6 +403,21 @@ function _add_font_awesome_font()
   );
 }
 
+/**
+ * Adds the css  containing the font awesome icons to the html header.
+ */
+function _add_font_custom_icon_font()
+{
+
+  $custom_icon_font_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/fonts/custom-icon-font/style.css';
+
+  drupal_add_html_head_link(
+    array(
+      'href' => $custom_icon_font_css_uri,
+      'rel' => 'stylesheet'
+    )
+  );
+}
 
 /* ====================== hook implementations ====================== */
   /**

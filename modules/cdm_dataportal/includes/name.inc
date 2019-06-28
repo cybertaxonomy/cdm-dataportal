@@ -659,7 +659,8 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   if ($with_citation) {
     $render_array['citation'] = markup_to_render_array(
       "<p class=\"citation " . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
-      . l($registration_dto->bibliographicInRefCitationString, path_to_reference($registration_dto->citationUuid))
+      . $registration_dto->bibliographicInRefCitationString
+      . l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), path_to_reference($registration_dto->citationUuid), array('html' => true))
       . "</p>",
       50);
   }

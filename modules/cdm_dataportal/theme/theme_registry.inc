@@ -117,7 +117,8 @@ function cdm_dataportal_theme() {
     'cdm_reference' => array('variables' => array(
         'reference' => NULL,
         'microReference' => NULL,
-        'doLink' => FALSE,
+        'doTextLink' => FALSE,
+        'doIconLink' => FALSE,
         'referenceStyle' => NULL,
     )),
 

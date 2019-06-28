@@ -118,7 +118,7 @@ function theme_cdm_typedesignations($variables) {
 
       if (!empty($type_designation->citation)) {
 
-        $citation_footnote_str = theme('cdm_reference', array('reference' => $type_designation->citation));
+        $citation_footnote_str = theme('cdm_reference', array('reference' => $type_designation->citation, 'doIconLink' => true));
         $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $type_designation->citation->uuid);
 
         if (isset($author_team->titleCache)) {
