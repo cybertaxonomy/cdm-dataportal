@@ -10,10 +10,15 @@
 
 $page-part-margin: $base-line-height * 1;
 
-/*  style links only for content in blocks and node and backbutton
-    added also #identificationKey since there are not yet drupal nodes */
+// style links only for content in blocks and node and backbutton
+// added also #identificationKey since there are not yet drupal nodes
+// #content requires the fix below!
 .block, .node, #identificationKey, #content {
   @include cdm-link-style;
+}
+
+#content a.tabs-primary__tab-link{
+  color: #333; // increasing specificity to avoid the color of the tabs to be overwritten
 }
 
 #page-toc {
