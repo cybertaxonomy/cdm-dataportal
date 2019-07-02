@@ -726,7 +726,11 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         if (is_object($value) || is_array($value)) {
                             drupal_set_message("Unhandled type in compose_cdm_specimen_or_observation() for field " . $field, "warning");
                         } else {
-                            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), cdm_occurrence_field_name_label($value));
+                            if ($field == 'RecordBase' && $value == 'DnaSample') {
+                                _description_list_group_add($groups, cdm_occurrence_field_name_label($field), 'DNA Sample');
+                            } else {
+                                _description_list_group_add($groups, cdm_occurrence_field_name_label($field), cdm_occurrence_field_name_label($value));
+                            }
                         }
 
                 }
@@ -1269,7 +1273,12 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                         if (is_object($value) || is_array($value)) {
                             drupal_set_message("Unhandled type in compose_cdm_specimenOrObservation() for field " . $field, "warning");
                         } else {
-                            _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
+                            if ($field == 'recordBase' && $value == 'Dna Sample'){
+                                _description_list_group_add($groups, cdm_occurrence_field_name_label($field), 'DNA Sample');
+                            }else{
+                                _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
+                            }
+
                         }
 
                 }
