@@ -936,6 +936,7 @@ function cdm_dataportal_search_registrations_filter_execute()
   static $query_param_map = array(
     'identifier' => 'identifierFilterPattern',
     'taxon_name'=> 'taxonNameFilterPattern',
+    'reference_citation' => 'referenceFilterPattern',
     'type_designation_status_uuids' => 'typeDesignationStatusUuids',
   );
 
@@ -955,6 +956,14 @@ function cdm_dataportal_search_registrations_filter_execute()
     $request_params['taxonNameFilterPattern'] = trim($request_params['taxonNameFilterPattern']);
     if(!$request_params['taxonNameFilterPattern']){
       unset($request_params['taxonNameFilterPattern']);
+    }
+  }
+  // reference_citation
+  if(isset($request_params['referenceFilterPattern'])){
+    // trim and remove empty taxon name query strings
+    $request_params['referenceFilterPattern'] = trim($request_params['referenceFilterPattern']);
+    if(!$request_params['referenceFilterPattern']){
+      unset($request_params['referenceFilterPattern']);
     }
   }
 
@@ -1081,6 +1090,7 @@ function cdm_dataportal_search_registration_filter_form($form, &$form_state) {
   static $filter_presets_empty = array(
     'identifier'=> null,
     'taxon_name'=> null,
+    'reference_citation'=> null,
     'type_designation_status_uuids' => null
   );
 
@@ -1108,6 +1118,13 @@ function cdm_dataportal_search_registration_filter_form($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Scientific name'),
     '#default_value' => $filter_presets['taxon_name'],
+    '#size' => 20,
+    '#maxlength' => 128
+  );
+  $form['reference_citation'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Publication'),
+    '#default_value' => $filter_presets['reference_citation'],
     '#size' => 20,
     '#maxlength' => 128
   );
