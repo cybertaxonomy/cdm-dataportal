@@ -1114,7 +1114,7 @@ function cdm_dataportal_search_registration_filter_form($form, &$form_state) {
   $form['type_designation_status_uuids'] = array(
     '#type' => 'select',
     '#title' => t('Type designation status'),
-    '#multiple' => true, // FIXME re-enable once #8287 is fixed
+    '#multiple' => true,
     '#options' => cdm_type_designation_status_filter_terms_as_options('- none -'),
     '#default_value' => $filter_presets['type_designation_status_uuids'],
     "#description" => '<i>' . t('Ctrl + Click to unselect') . '</i>'
