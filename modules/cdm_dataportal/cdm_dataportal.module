@@ -2130,7 +2130,7 @@ function cdm_dataportal_view_search_registrations_results($mode = 'filter') {
 
 
 /**
- * Provides the standart image wich indicated a loading process
+ * Provides the standard image which indicated a loading process
  *
  * @return string
  *  The img html tag
