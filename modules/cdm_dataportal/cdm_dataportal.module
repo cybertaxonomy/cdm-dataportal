@@ -1945,7 +1945,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
       $content['related_taxa'] = compose_list_of_taxa($taxa);
     }
     else {
-      $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.', null, '<div class="no_taxon_message">', '</div>');
+      $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.', null, '<div class="no-taxon-message">', '</div>');
     }
 
     $taxon_name_page->content = $content;
