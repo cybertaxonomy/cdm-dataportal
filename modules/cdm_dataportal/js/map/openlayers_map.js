@@ -577,7 +577,7 @@
          */
         var createDataLayer = function(mapResponseObj, dataType){
 
-          console.log("creating data layer of type " + dataType);
+          console.log("createDataLayer() : creating data layer of type " + dataType);
 
           dataLayerOptions = makeWMSLayerOptions();
           dataLayerOptions.displayOutsideMaxExtent = true; // move into makeWMSLayerOptions?
@@ -620,7 +620,7 @@
               layers.push(pointLayer);
             } else {
               // it is a response from for a distribution map
-              console.log("start with adding distribution layers :");
+              console.log("createDataLayer() : start with adding distribution layers :");
               for ( var i in mapResponseObj.layers) {
                 var layerData = mapResponseObj.layers[i];
 
@@ -647,7 +647,8 @@
               if(mapResponseObj.bbox !== undefined){
                 // mapResponseObj.bbox are bounds for the projection of the specific layer
                 var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
-                newBounds.transform(layers[0].projection, map.getProjectionObject());
+                //newBounds.transform(layers[0].projection, map.getProjectionObject());
+                newBounds.transform(CdmOpenLayers.projections.epsg_4326, referenceProjection());
                 if(dataBounds !== null){
                   dataBounds.extend(newBounds);
                 } else if(newBounds !== undefined){
@@ -655,7 +656,7 @@
                 }
 
                 zoomToBounds = dataBounds;
-                console.log("data layer zoomToBounds: " + zoomToBounds);
+                console.log("createDataLayer() : data layer zoomToBounds: " + zoomToBounds);
                 zoomToClosestLevel = false;
               }
             }
