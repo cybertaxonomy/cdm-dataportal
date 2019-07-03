@@ -30,12 +30,12 @@ function addRowToggle(selector) {
         //color summary row when hovering over it
     jQuery(selector + " .summary_row").mouseenter(
         function(event){
-            jQuery(event.target).parent(".summary_row").css("background","#FFCC00");
+            jQuery(event.target).parent(".summary_row").addClass( "row-active" );
         })
 
     jQuery(selector + " .summary_row").mouseleave(
         function(event){
-            jQuery(event.target).parent(".summary_row").css("background","");
+            jQuery(event.target).parent(".summary_row").removeClass("row-active");
         })
         //show mouse cursor as a link
         .css('cursor', 'hand').css('cursor', 'pointer');
