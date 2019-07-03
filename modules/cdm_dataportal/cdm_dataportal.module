@@ -1537,15 +1537,7 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all') {
 
   cdm_check_valid_taxon_page($chapter);
   cdm_dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
-  // show a warning in case the javascript development mode is anabled
-  if(variable_get('cdm_js_devel_mode', FALSE)) {
-    drupal_set_message(t('The !url1 is enabled.
-        WARNING: this is a performance penalty and must be turned off on production websites.', array(
-          '!url1' => l('java-script development mode', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-cdm-js-devel-mode'))
-    )),
-    'warning'
-        );
-  }
+
 
   // Display the page for the taxon defined by $uuid.
   // set_last_taxon_page_tab(arg(3));
@@ -1653,17 +1645,8 @@ function cdm_dataportal_specimen_by_accession_number_page_view($accession_number
  */
 function cdm_dataportal_specimen_page_view($uuid, $specimenDTO = null) {
 
-    //cdm_check_valid_taxon_page($chapter);
+    cdm_check_valid_portal_page();
     //cdm_dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
-    // show a warning in case the javascript development mode is anabled
-    if(variable_get('cdm_js_devel_mode', FALSE)) {
-        drupal_set_message(t('The !url1 is enabled.
-        WARNING: this is a performance penalty and must be turned off on production websites.', array(
-            '!url1' => l('java-script development mode', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-cdm-js-devel-mode'))
-        )),
-            'warning'
-        );
-    }
 
     // Display the page for the specimen defined by $uuid.
     if (isset($specimenDTO)){
@@ -2801,6 +2784,17 @@ function cdm_check_valid_taxon_page($chapter){
 
 }
 
+function check_js_devel_mode_disabled() {
+  if(variable_get('cdm_js_devel_mode', FALSE)) {
+    drupal_set_message(t('The !url1 is enabled.
+        WARNING: this is a performance penalty and must be turned off on production websites.', array(
+      '!url1' => l('java-script development mode', 'admin/config/cdm_dataportal/settings', array('fragment' => 'edit-cdm-js-devel-mode'))
+    )),
+      'warning'
+    );
+  }
+}
+
 /**
  * Checks if the current page is a valid portal page and responds with HTTP status 404 (not found) otherwise.
  * The test applied by default it a check for the query parameter 'q' ending with a file suffix like '*.*'
@@ -2818,6 +2812,7 @@ function cdm_check_valid_portal_page($preg_pattern = null){
     http_response_code(404); // 404 = Not Found
     exit('HTTP 404');
   }
+  check_js_devel_mode_disabled();
 }
 
 /**
