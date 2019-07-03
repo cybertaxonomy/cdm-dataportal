@@ -3239,7 +3239,7 @@ function cdm_settings_geo($form, &$form_state) {
     '#type' => 'checkbox',
     '#title' => 'Enable overlay layer',
     '#weight' => -100,
-    '#default_value' => $map_distribution['openlayers']['wms_overlay_layer']['is_enabled'] === 1  ? 1 : 0
+    '#default_value' => isset($map_distribution['openlayers']['wms_overlay_layer']['is_enabled']) && $map_distribution['openlayers']['wms_overlay_layer']['is_enabled'] === 1  ? 1 : 0
   );
 
   /*
