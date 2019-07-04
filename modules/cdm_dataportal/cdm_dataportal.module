@@ -1946,6 +1946,16 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
       $content['map'] = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
     }
 
+    // registrations
+    $registrationDTOs= cdm_ws_fetch_all(CDM_WS_REGISTRATION_DTO,  array('nameUuid' => $taxon_name_uuid));
+    if(isset($registrationDTOs) && count($registrationDTOs ) > 0 ){
+      $content['registrations'][] = markup_to_render_array('<h2>' . t("Registrations") . '</h2>') ;
+      foreach ($registrationDTOs as $regDTO){
+        $content['registrations'][] = compose_registration_dto_compact($regDTO);
+      }
+    }
+
+
     // related taxa
     if ($taxa) {
       $content['related_taxa_header'] = markup_to_render_array("<h2>Taxa for this name</h2>");

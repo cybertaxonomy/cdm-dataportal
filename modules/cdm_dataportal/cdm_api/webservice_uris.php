@@ -162,6 +162,7 @@ define('CDM_WS_PORTAL_MEDIA', 'portal/media');
 
 define('CDM_WS_MEDIA_METADATA', 'media/$0/metadata');
 
+define('CDM_WS_REGISTRATION_DTO', "registrationDTO");
 define('CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER', "registrationDTO/identifier/");
 define('CDM_WS_REGISTRATION_STATUS_BY_IDENTIFIER', "registration/identifier/$0/status");
 
