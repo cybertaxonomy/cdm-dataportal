@@ -149,6 +149,7 @@ define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumbe
 define('CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON', 'occurrence/byAssociatedTaxon');
 define('CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON', 'occurrence/specimensOrObservationsByAssociatedTaxon');
 define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');
+define('CDM_WS_PORTAL_DERIVEDUNIT_FACADE', 'portal/derivedUnitFacade/$0');
 
 define('CDM_WS_IDENTIFICATIONKEY', 'identificationKey');
 define('CDM_WS_MEDIAKEY', 'mediaKey');

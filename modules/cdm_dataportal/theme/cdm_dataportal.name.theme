@@ -68,12 +68,14 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
  */
 function theme_cdm_typedesignations($variables) {
   $type_designations = $variables['typeDesignations'];
+  $enclosing_tag = $variables['enclosing_tag'];
+  $element_tag = $variables['element_tag'];
 
   // need to add element to render path since type designations
   // need other name render template
   RenderHints::pushToRenderStack('typedesignations');
 
-  $out = '<ul class="typeDesignations">';
+  $out = '<' . $enclosing_tag .' class="typeDesignations">';
   $typeDesignation_footnotes = FALSE;
   $is_lectotype = FALSE;
   $specimen_type_designations = array();
@@ -90,11 +92,11 @@ function theme_cdm_typedesignations($variables) {
       }
       // It's a NameTypeDesignation.
       if ($type_designation->notDesignated) {
-        $out .= '<li class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated') . '</li>';
+        $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated') . '</'. $element_tag .'>';
       }
       elseif ($type_designation->typeName) {
         $link_to_name_page = url(path_to_name($type_designation->typeName->uuid));
-        $out .= '<li class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
+        $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
 
         if ($type_designation->citation) {
           $out .= type_designation_citation_layout($type_designation, $separator);
@@ -162,7 +164,7 @@ function theme_cdm_typedesignations($variables) {
 
       $derivedUnitFacadeInstance = null;
 
-      $out .= '<li class="' . html_class_attribute_ref($type_designation) . '">';
+      $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '">';
       $out .= '<span class="status">'
         . ((isset($type_designation->typeStatus->representation_L10n)) ? $type_designation->typeStatus->representation_L10n : t('Type'))
         . $typeReference
@@ -184,12 +186,12 @@ function theme_cdm_typedesignations($variables) {
         (isset($derivedUnitFacadeInstance->collection->titleCache) ? $derivedUnitFacadeInstance->collection->titleCache : FALSE)
       );
       $out .= theme('cdm_footnote_key', array('footnoteKey' => $_fkey, 'separator' => $separator));
-      $out .= '</li>';
+      $out .= '</'. $element_tag .'>';
 
     }
   }
 
-  $out .= '</ul>';
+  $out .= '</' . $enclosing_tag .'>';
 
   RenderHints::popFromRenderStack();
 
@@ -324,7 +326,7 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
   $type_designations = type_designations_for_synonymy_group($synonymList);
   $accepted_name_type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $accepted_taxon_name_uuid);
   if($accepted_name_type_designations  && count($accepted_name_type_designations) > 0){
-    $type_designations = array_merge($accepted_name_type_designations, $type_designations);
+    $type_designations = array_merge($accepted_name_type_designations, $type_designations); 
   }
 
   if (count($type_designations) > 0 || is_array($prependedSynonyms) || is_array($synonymList)) {
