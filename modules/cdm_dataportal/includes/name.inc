@@ -1452,3 +1452,30 @@ function registration_types($registration_dto){
   }
   return $reg_type_labels;
 }
+
+/**
+ * Collects and deduplicates the type designations associated with the passes synonyms.
+ *
+ * @param $synonymy_group
+ *    An array containing a homotypic or heterotypic group of names.
+ * @return array
+ *    The type designations
+ */
+function type_designations_for_synonymy_group($synonymy_group) {
+  $type_designations_map = array();
+  foreach ($synonymy_group as $synonym) {
+    $type_designations_by_name = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
+    if ($type_designations_by_name) {
+      foreach ($type_designations_by_name as $td) {
+        if (!isset($type_designations_map[$td->uuid])) {
+          $type_designations_map[$td->uuid] = $td;
+        }
+      }
+    }
+  }
+  if(count($type_designations_map) > 0){
+    return array_values($type_designations_map);
+  } else {
+    return array();
+  }
+}

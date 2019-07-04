@@ -256,20 +256,20 @@ function theme_cdm_homotypicSynonymLine($variables) {
  * @see http://drupal.org/node/1354
  */
 function theme_cdm_heterotypicSynonymyGroup($variables) {
-  $homotypicalGroup = $variables['homotypicalGroup'];
+  $homotypical_group = $variables['homotypicalGroup'];
   RenderHints::pushToRenderStack('heterotypicSynonymyGroup');
 
   $out = '';
   $out = '<div class="heterotypic-synonymy-group"><ul class="heterotypicSynonymyGroup">';
-  $footnoteListKey = (isset($homotypicalGroup[0]) ? $homotypicalGroup[0]->uuid : 'NULL');
+  $footnoteListKey = (isset($homotypical_group[0]) ? $homotypical_group[0]->uuid : 'NULL');
   RenderHints::setFootnoteListKey($footnoteListKey);
 
+  $type_designations= type_designations_for_synonymy_group($homotypical_group);
+
   $is_first_entry = TRUE;
-  $type_designations = NULL;
-  foreach ($homotypicalGroup as $synonym) {
+  foreach ($homotypical_group as $synonym) {
     if ($is_first_entry) {
       $is_first_entry = FALSE;
-      $type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
       // Is first list entry.
       $out .= '<li class="firstentry synonym">' . cdm_related_taxon($synonym, UUID_HETEROTYPIC_SYNONYM_OF) . '</li>';
     }
@@ -278,7 +278,7 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
     }
   }
 
-  if ($type_designations) {
+  if (count($type_designations) > 0) {
     $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
   }
   $out .= '</ul>';
@@ -317,11 +317,7 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
 
   RenderHints::pushToRenderStack('homotypicSynonymyGroup');
 
-  $homonym_typeDesignations = NULL;
-
-  // TODO improve typeDesignations retrieval: wouldn't it be sufficient to retrieve all typeDesignations
-  // only from the accepted taxon?
-  $accepted_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $accepted_taxon_name_uuid);
+  $type_designations_in_group = NULL;
 
   $out = '<div class="homotypic-synonymy-group">';
 
@@ -333,22 +329,14 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
     }
   }
 
-  $homonym_typeDesignations = NULL;
-  if (isset($synonymList[0])) {
+
+    if (isset($synonymList[0])) {
     foreach ($synonymList as $synonym) {
       $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
     }
-    $homonym_typeDesignations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonymList[0]->name->uuid);
   }
 
-  // type designations
-  if ($accepted_typeDesignations) {
-    $type_designations = filter_cdm_entity_list($homonym_typeDesignations, $accepted_typeDesignations);
-  }
-  else {
-    $type_designations = $homonym_typeDesignations;
-  }
-
+  $type_designations = type_designations_for_synonymy_group($synonymList);
   if ($type_designations) {
     $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
   }
