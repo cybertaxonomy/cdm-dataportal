@@ -321,7 +321,13 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
 
   $out = '<div class="homotypic-synonymy-group">';
 
-  if (isset ($accepted_typeDesignations) || is_array($prependedSynonyms) || is_array($synonymList)) {
+  $type_designations = type_designations_for_synonymy_group($synonymList);
+  $accepted_name_type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $accepted_taxon_name_uuid);
+  if($accepted_name_type_designations  && count($accepted_name_type_designations) > 0){
+    $type_designations = array_merge($accepted_name_type_designations, $type_designations);
+  }
+
+  if (count($type_designations) > 0 || is_array($prependedSynonyms) || is_array($synonymList)) {
     $out .= '<ul class="homotypicSynonyms">';
   if (!empty($prependedSynonyms)) {
     foreach ($prependedSynonyms as $taxon) {
@@ -330,14 +336,13 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
   }
 
 
-    if (isset($synonymList[0])) {
+  if (isset($synonymList[0])) {
     foreach ($synonymList as $synonym) {
       $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
     }
   }
 
-  $type_designations = type_designations_for_synonymy_group($synonymList);
-  if ($type_designations) {
+  if (count($type_designations) > 0) {
     $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
   }
 
