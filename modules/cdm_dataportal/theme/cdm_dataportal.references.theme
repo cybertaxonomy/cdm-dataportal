@@ -80,7 +80,7 @@ function theme_cdm_reference($variables) {
     $out = '<span class="reference">' . $citation . '</span>';
   }
   if((isset($doIconLink) && $doIconLink === TRUE)) {
-    $out .= custom_icon_font_markup('e903');
+    $out .= l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), path_to_reference($reference->uuid), array('html' => true));
   }
 
   if (!empty($microReference)) {
