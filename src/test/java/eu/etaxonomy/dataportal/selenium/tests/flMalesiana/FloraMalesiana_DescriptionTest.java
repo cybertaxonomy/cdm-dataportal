@@ -8,9 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -65,7 +62,13 @@ public class FloraMalesiana_DescriptionTest extends CdmDataPortalTestBase{
         FeatureBlock descriptionBlock = p.getFeatureBlockAt(0, "description", "div", "div");
         assertNotNull(descriptionBlock);
         List<WebElement> featureBlockElements = descriptionBlock.getFeatureBlockElements();
-        assertEquals("Tree, up to 35(-53) m, dbh up to at least 6 cm, often with buttresses up to 3 m high, 4 m wide, and 3 cm thick. Branchlets 4-10 mm thick, fulvous -tomentose, glabrescent and then shiny purple-brown, older parts more or less pustular lenti-cellate. Leaves up to 2 m long; Sepals cream to greenish, persistent and black in fruit, Petals cuneate at base, broad-elliptic to broad-ovate, 2.5-3.5 b) 2.2-2.5 mm, creamy-white, margin below the insertion of the scale long-ciliate, furthermore sparsely ciliate, apex crenulate, inside glabrous; Stamens: Fruits ellipsoid to subglobular, widest about or above the middle, narrowed to short-stipitate at base, 3-4-angular to 3-4-ribbed in cross section, 20-30 by 14-25 mm, yellowish green to dark-yellow when ripe, patently short-hairy inside, often sterile but well developed.", featureBlockElements.get(0).getText());
+        assertEquals("Tree, up to 35(-53) m, dbh up to at least 6 cm, often with buttresses up to 3 m high, 4 m wide, and 3 cm thick.", featureBlockElements.get(0).getText());
+        assertEquals("Branchlets 4-10 mm thick, fulvous -tomentose, glabrescent and then shiny purple-brown, older parts more or less pustular lenti-cellate.", featureBlockElements.get(1).getText());
+        assertEquals("Leaves up to 2 m long;", featureBlockElements.get(2).getText());
+        assertEquals("Sepals cream to greenish, persistent and black in fruit,", featureBlockElements.get(3).getText());
+        assertEquals("Petals cuneate at base, broad-elliptic to broad-ovate, 2.5-3.5 b) 2.2-2.5 mm, creamy-white, margin below the insertion of the scale long-ciliate, furthermore sparsely ciliate, apex crenulate, inside glabrous;", featureBlockElements.get(4).getText());
+        assertEquals("Stamens:", featureBlockElements.get(5).getText());
+        assertEquals("Fruits ellipsoid to subglobular, widest about or above the middle, narrowed to short-stipitate at base, 3-4-angular to 3-4-ribbed in cross section, 20-30 by 14-25 mm, yellowish green to dark-yellow when ripe, patently short-hairy inside, often sterile but well developed.",featureBlockElements.get(6).getText());
 
     }
 

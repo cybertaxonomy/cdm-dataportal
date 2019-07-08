@@ -114,7 +114,8 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertEquals(1, featureBlockDistribution.getOriginalSourcesSections().size());
         // NOTE: the first source has been deleted in latest data
         // assertTrue(LinkElement.testIfLinkElement(featureBlockDistribution.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "World Checklist of Monocotyledons", getContext().getBaseUri().toString()));
-        assertTrue(LinkElement.testIfLinkElement(featureBlockDistribution.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(evans_et_al_referenceCitation, featureBlockDistribution.getOriginalSourcesSections().get(0).getElement().findElement(By.className("reference")).getText());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockDistribution.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
 
         assertNotNull("Expecting an OpenLayers map", featureBlockDistribution.getElement().findElement(By.id("openlayers-map-distribution")));
         assertEquals("Map uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)", featureBlockDistribution.getElement().findElement(By.className("distribution_map_caption")).getText());
@@ -145,7 +146,8 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertEquals(blockTextFull, featureBlockBioEco.getText());
         featureBlockBioEco.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(1, featureBlockBioEco.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlockBioEco.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(evans_et_al_referenceCitation, featureBlockBioEco.getOriginalSourcesSections().get(0).getElement().findElement(By.className("reference")).getText());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockBioEco.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
     @Test
@@ -170,7 +172,8 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertEquals(blockTextFull, featureBlockConservation.getText());
         featureBlockConservation.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(1, featureBlockConservation.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlockConservation.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(evans_et_al_referenceCitation, featureBlockConservation.getOriginalSourcesSections().get(0).getElement().findElement(By.className("reference")).getText());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockConservation.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
     @Test
@@ -195,7 +198,8 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertEquals(blockTextFull, featureBlockCommonName.getText());
         featureBlockCommonName.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(1, featureBlockCommonName.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlockCommonName.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(evans_et_al_referenceCitation, featureBlockCommonName.getOriginalSourcesSections().get(0).getElement().findElement(By.className("reference")).getText());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockCommonName.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
 
     }
 
@@ -221,7 +225,8 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertEquals(blockTextFull, featureBlockUses.getText());
         featureBlockUses.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(1, featureBlockUses.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlockUses.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(evans_et_al_referenceCitation, featureBlockUses.getOriginalSourcesSections().get(0).getElement().findElement(By.className("reference")).getText());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockUses.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
     @Test
@@ -248,7 +253,8 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(featureBlockDiscussion.getText().endsWith(blockTextEnd));
         featureBlockDiscussion.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(1, featureBlockDiscussion.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlockDiscussion.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(evans_et_al_referenceCitation, featureBlockDiscussion.getOriginalSourcesSections().get(0).getElement().findElement(By.className("reference")).getText());
+        assertTrue(LinkElement.testIfLinkElement(featureBlockDiscussion.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
     @Test
@@ -275,7 +281,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(featureBlockMaterials.getText().endsWith(blockTextEnd));
         featureBlockMaterials.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(1, featureBlockMaterials.getOriginalSourcesSections().size());
-        assertTrue(LinkElement.testIfLinkElement(featureBlockMaterials.getOriginalSourcesSections().get(0).getLinksInElement().get(0), evans_et_al_referenceCitation, "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
+        assertEquals(evans_et_al_referenceCitation, featureBlockMaterials.getOriginalSourcesSections().get(0).getElement().findElement(By.className("reference")).getText());
     }
 
 }

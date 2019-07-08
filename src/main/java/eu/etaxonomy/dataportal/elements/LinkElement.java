@@ -52,19 +52,26 @@ public class LinkElement extends BaseElement {
 		return super.toString() + ": " + (getUrl() != null ? getUrl() : "NO URL") + "";
 	}
 
-	public static boolean testIfLinkElement(BaseElement element, String text, String href) {
-		return testIfLinkElement(element.getElement(), text, href);
+	public static boolean testIfLinkElement(BaseElement element, String href) {
+		return testIfLinkElement(element.getElement(), null, href);
 	}
 
-	/**
-	 * @param hrefEndsWith
-	 *   The actual link is must end with this. The full URL works of course also.
-	 */
-	public static boolean testIfLinkElement(WebElement element, String text, String hrefEndsWith) {
-		assertEquals("a", element.getTagName());
-		assertTrue(element.getAttribute("href").endsWith(hrefEndsWith));
-		assertEquals(text, element.getText());
-		return true;
-	}
+
+	public static boolean testIfLinkElement(BaseElement element, String text, String href) {
+        return testIfLinkElement(element.getElement(), text, href);
+    }
+
+    /**
+     * @param hrefEndsWith
+     *   The actual link is must end with this. The full URL works of course also.
+     */
+    public static boolean testIfLinkElement(WebElement element, String text, String hrefEndsWith) {
+        assertEquals("a", element.getTagName());
+        assertTrue(element.getAttribute("href").endsWith(hrefEndsWith));
+        if(text != null){
+            assertEquals(text, element.getText());
+        }
+        return true;
+    }
 
 }

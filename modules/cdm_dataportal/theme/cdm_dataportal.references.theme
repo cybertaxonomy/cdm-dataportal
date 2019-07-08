@@ -65,6 +65,9 @@ function theme_cdm_reference($variables) {
   }
 
   $citation = trim($citation);
+  if((isset($doIconLink) && $doIconLink === TRUE)) {
+    $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), path_to_reference($reference->uuid), array('html' => true));
+  }
   if (isset($doTextLink) && $doTextLink === TRUE) {
     $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
@@ -74,13 +77,10 @@ function theme_cdm_reference($variables) {
       'absolute' => TRUE,
       'html' => TRUE,
     ));
-    $out .= '</span>';
+    $out .= $iconlink . '</span>';
   }
   else {
-    $out = '<span class="reference">' . $citation . '</span>';
-  }
-  if((isset($doIconLink) && $doIconLink === TRUE)) {
-    $out .= l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), path_to_reference($reference->uuid), array('html' => true));
+    $out = '<span class="reference">' . $citation . $iconlink . '</span>';
   }
 
   if (!empty($microReference)) {
