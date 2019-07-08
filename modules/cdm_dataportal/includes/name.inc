@@ -1458,11 +1458,16 @@ function registration_types($registration_dto){
  *
  * @param $synonymy_group
  *    An array containing a homotypic or heterotypic group of names.
+ * @param $accepted_taxon_name_uuid
+ *    The uuid of the accepted taxon name. Optional parameter. The type designations associated
+ *    with the accepted name will be added to the resulting list also.
  * @return array
  *    The type designations
  */
-function type_designations_for_synonymy_group($synonymy_group) {
+function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_name_uuid = null) {
   $type_designations_map = array();
+
+  // 1.
   foreach ($synonymy_group as $synonym) {
     $type_designations_by_name = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
     if ($type_designations_by_name) {
@@ -1473,6 +1478,16 @@ function type_designations_for_synonymy_group($synonymy_group) {
       }
     }
   }
+
+  if($accepted_taxon_name_uuid){
+    $accepted_name_type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $accepted_taxon_name_uuid);
+    if($accepted_name_type_designations  && count($accepted_name_type_designations) > 0){
+      foreach ($accepted_name_type_designations as $td){
+        $type_designations_map[$td->uuid] = $td;
+      }
+    }
+  }
+
   if(count($type_designations_map) > 0){
     return array_values($type_designations_map);
   } else {
