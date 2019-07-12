@@ -997,7 +997,7 @@ function compose_specimen_type_designations($type_entity_refs){
         }
       }
 
-      $render_array['type_designations'] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '">
+      $render_array['type_designations'][] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '">
           <span class="type_status">' . ucfirst($type_status) . "</span>: "
         . $derivedUnitFacadeInstance->titleCache
         . ($citation_markup ? ' '. $citation_markup : '')
