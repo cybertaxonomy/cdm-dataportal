@@ -949,6 +949,10 @@ function compose_specimen_type_designations($type_entity_refs){
     foreach($specimen_types as $specimen_type){
 
       $type_designation = cdm_ws_get(CDM_PORTAL_TYPEDESIGNATION, array($specimen_type->uuid));
+      $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_PORTAL_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);
+      // the media specimen is not contained in the $type_designation returned by CDM_PORTAL_TYPEDESIGNATION, so we need to fetch it separately
+      $mediaSpecimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid, 'mediaSpecimen'));
+
       $type_designation_list[] = $type_designation; // collect for the map
 
       $preferredStableUri = '';
@@ -960,8 +964,6 @@ function compose_specimen_type_designations($type_entity_refs){
         $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
       }
 
-      $mediaSpecimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid, 'mediaSpecimen'));
-      $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_PORTAL_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);
       if($mediaSpecimen){
         // compose output
         // mediaURI
