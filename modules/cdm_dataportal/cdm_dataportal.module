@@ -1946,6 +1946,8 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
       $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.', null, '<div class="no-taxon-message">', '</div>');
     }
 
+    $content['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
+
     $taxon_name_page->content = $content;
     RenderHints::popFromRenderStack();
     RenderHints::clearFootnoteListKey();
