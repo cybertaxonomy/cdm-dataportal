@@ -644,6 +644,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
         drupal_set_message("Unimplemented type: " . $tokens[0], 'error');
       }
     }
+    // type designations wich are in this nomenclatural act.
     if (count($name_type_designation_refs) > 0) {
       $render_array['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
       $render_array['name_type_designations']['#prefix'] = '<p class="name_type_designations">';
@@ -831,6 +832,65 @@ function registration_intitute_class_attribute($registration_dto)
   return $institutionTitleCache ? 'registration-' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '-', $institutionTitleCache)) : '';
 }
 
+
+/**
+ * Composes the textual representation for the type designation of taxon name identified by the uuid in with a map for the location data.
+
+ * @param $taxon_name_uuid
+ * @return array
+ *    A drupal render array wtit the following elements:
+ *    - 'type_designations'
+ *    - 'map'
+ *
+ * @ingroup compose
+ */
+function compose_type_designations($taxon_name_uuid)
+{
+  $render_array = array();
+  $type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $taxon_name_uuid);
+  if ($type_designations) {
+    $render_array['type_designations'] = markup_to_render_array(
+      theme('cdm_typedesignations', array('typeDesignations' => $type_designations, 'enclosing_tag' => 'p', 'element_tag' => 'div'))
+    );
+
+    $render_array['map'] = compose_type_designations_map($type_designations);
+  }
+  return $render_array;
+}
+
+/**
+ * Composes a map with the location points of the passed $type_designations.
+ *
+ * @param $type_designations
+ *
+ * @return array
+ *     A drupal render array or an empty array in case there are no point to show.
+ *
+ * @ingroup compose
+ */
+function compose_type_designations_map($type_designations)
+{
+  $points = array();
+  $map_render_array = array();
+  foreach ($type_designations as $td) {
+    if ($td->class == "SpecimenTypeDesignation") {
+      $derived_unit_facade = cdm_ws_get(CDM_WS_PORTAL_DERIVEDUNIT_FACADE, array($td->typeSpecimen->uuid));
+      if (isset($derived_unit_facade->exactLocation)) {
+        $points[] = $derived_unit_facade->exactLocation->latitude . ',' . $derived_unit_facade->exactLocation->longitude;
+      }
+    }
+  }
+
+  if (count($points) > 0) {
+    // os=1:c/ff0000/10/noLabel&od=1:52.52079,13.57781|-43.46333333333333,172.60355&legend=0
+    $occurrence_query = 'os=1:c/ff0000/10/noLabel&od=1:' . join('|', $points) . '&legend=0';
+    // $occurrence_query = 'os=1:c/ff0000/10/noLabel&od=1:52.52079,13.57781|-43.46333333333333,172.60355&legend=0';
+    $legend_format_query = null;
+    $distribution_query = NULL;
+    $map_render_array = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
+  }
+  return $map_render_array;
+}
 
 /**
  * Composes the TypedEntityReference to name type designations passed as associatve array.
