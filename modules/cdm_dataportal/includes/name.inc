@@ -652,7 +652,9 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
       $render_array['name_type_designations']['#weight'] = 20;
     }
     if (count($field_unit_uuids) > 0) {
-      $render_array['specimen_type_designations'] = compose_specimen_type_designations($specimen_type_designation_refs);
+      $specimen_type_designations_array = compose_specimen_type_designations($specimen_type_designation_refs);
+      $render_array['specimen_type_designations'] = $specimen_type_designations_array['type_designations'];
+      $render_array['map'] = $specimen_type_designations_array['map'];
     }
   }
 
@@ -835,7 +837,7 @@ function registration_intitute_class_attribute($registration_dto)
 
 /**
  * Composes the textual representation for the type designation of taxon name identified by the uuid in with a map for the location data.
-
+ *
  * @param $taxon_name_uuid
  * @return array
  *    A drupal render array wtit the following elements:
@@ -846,11 +848,14 @@ function registration_intitute_class_attribute($registration_dto)
  */
 function compose_type_designations($taxon_name_uuid)
 {
-  $render_array = array();
+  $render_array = array(
+    'type_designations' => array(),
+    'map' => array(),
+    );
   $type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $taxon_name_uuid);
   if ($type_designations) {
     $render_array['type_designations'] = markup_to_render_array(
-      theme('cdm_typedesignations', array('typeDesignations' => $type_designations, 'enclosing_tag' => 'p', 'element_tag' => 'div'))
+      theme('cdm_typedesignations', array('typeDesignations' => $type_designations, 'enclosing_tag' => 'div', 'element_tag' => 'div'))
     );
 
     $render_array['map'] = compose_type_designations_map($type_designations);
@@ -920,11 +925,18 @@ function compose_name_type_designations($type_entity_refs){
 }
 
 /**
- * Composes the TypedEntityReference to specimen type designations passed as associatve array.
+ * Composes the specimen type designations with map from the the $type_entity_refs
  *
  * @param $type_entity_refs array
  *   an associative array of specimen type type => TypedEntityReference for specimen type designations as
  *   produced by the eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager
+ *
+ * @return array
+ *    A drupal render array wtit the following elements:
+ *    - 'type_designations'
+ *    - 'map'
+ *
+ * @ingroup compose
  *
  * @ingroup compose
  */
@@ -932,10 +944,12 @@ function compose_specimen_type_designations($type_entity_refs){
 
   $render_array = array();
 
+  $type_designation_list = array();
   foreach($type_entity_refs as $type_status => $specimen_types){
     foreach($specimen_types as $specimen_type){
 
-      $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($specimen_type->uuid));
+      $type_designation = cdm_ws_get(CDM_PORTAL_TYPEDESIGNATION, array($specimen_type->uuid));
+      $type_designation_list[] = $type_designation; // collect for the map
 
       $preferredStableUri = '';
       $citation_markup = '';
@@ -947,6 +961,7 @@ function compose_specimen_type_designations($type_entity_refs){
       }
 
       $mediaSpecimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid, 'mediaSpecimen'));
+      $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_PORTAL_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);
       if($mediaSpecimen){
         // compose output
         // mediaURI
@@ -982,14 +997,19 @@ function compose_specimen_type_designations($type_entity_refs){
         }
       }
 
-      $render_array[] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '">
+      $render_array['type_designations'] = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '">
           <span class="type_status">' . ucfirst($type_status) . "</span>: "
-        . $specimen_type->label
+        . $derivedUnitFacadeInstance->titleCache
         . ($citation_markup ? ' '. $citation_markup : '')
         . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
         . $media
         . '</div>');
     }
+  }
+  if(count($type_designation_list) > 0 ){
+    $render_array['map'] = compose_type_designations_map($type_designation_list);
+  } else {
+    $render_array['map'] = array();
   }
   return $render_array;
 }

@@ -132,7 +132,7 @@ dl.media-caption {
 }
 
 /*
- * specimens
+ * specimens and type designations
  */
 #specimens {
   table.media_gallery {
@@ -175,6 +175,14 @@ dl.media-caption {
   .derived_from {
     clear: both;
   }
+}
+
+/*
+ * Map
+ */
+.openlayers-container {
+  margin-top: $zen-gutter-width / 4;
+  margin-bottom: $zen-gutter-width / 4;
 }
 
 /*

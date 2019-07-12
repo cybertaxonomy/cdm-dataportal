@@ -80,17 +80,18 @@ function theme_cdm_typedesignations($variables) {
   $is_lectotype = FALSE;
   $specimen_type_designations = array();
   $separator = ',';
+
   foreach ($type_designations as $type_designation) {
     if ($type_designation->class == 'SpecimenTypeDesignation') {
-      // SpecimenTypeDesignations should be ordered. Collect theme here only.
+      // --> SpecimenTypeDesignations should be ordered. Collect theme here only.
       $specimen_type_designations[] = $type_designation;
     }
-    // It is a lectotype?
     else {
+      // --> NameTypeDesignations
+      // It is a lectotype?
       if (isset($type_designation->typeStatus->uuid) && $type_designation->typeStatus->uuid == UUID_NTD_LECTOTYPE) {
         $is_lectotype = TRUE;
       }
-      // It's a NameTypeDesignation.
       if ($type_designation->notDesignated) {
         $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated') . '</'. $element_tag .'>';
       }
@@ -162,8 +163,6 @@ function theme_cdm_typedesignations($variables) {
 
       }
 
-      $derivedUnitFacadeInstance = null;
-
       $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '">';
       $out .= '<span class="status">'
         . ((isset($type_designation->typeStatus->representation_L10n)) ? $type_designation->typeStatus->representation_L10n : t('Type'))
@@ -171,6 +170,7 @@ function theme_cdm_typedesignations($variables) {
         . '</span>';
 
 
+      $derivedUnitFacadeInstance = null;
       if (isset($type_designation->typeSpecimen)) {
         $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);
       }
