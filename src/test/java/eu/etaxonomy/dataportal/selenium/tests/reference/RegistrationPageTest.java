@@ -193,7 +193,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertTrue(
-                regItem.getSpecimenTypeDesignations().get(0).getText().startsWith("Lectotype: [icon] (BHUPM 671)"));
+                regItem.getSpecimenTypeDesignations().get(0).getText().startsWith("Lectotype: Germany, Berlin, 2.4.1835 (BHUPM 671). Naturkundemuseum Berlin (MFN) - Ehrenberg Collection"));
         List<List<GalleryImage>> galleryImages = ElementUtils.getGalleryImages(regItem.getSpecimenTypeDesignations().get(0).getElement(), p.getWait());
         assertEquals("Expecting one row of images", 1, galleryImages.size());
         assertEquals("Expecting 1 image in row", 1, galleryImages.get(0).size());
@@ -201,7 +201,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "http://download.naturkundemuseum-berlin.de/Ehrenberg/Ec%20Drawings/Ec%20draw%20001-999/Ec%20draw%20600-699/ECdraw671.jpg",
                 galleryImages.get(0).get(0).getImageLink().getUrl());
         assertEquals(
-                "Isolectotype: (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
+                "Isolectotype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 regItem.getSpecimenTypeDesignations().get(1).getText());
         assertEquals(
                 "http://herbarium.bgbm.org/object/B400042045",
@@ -210,7 +210,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "http://herbarium.bgbm.org/object/B400042045",
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getUrl());
         assertEquals(
-                "Epitype: (CEDiT 2017E68).",
+                "Epitype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047 (CEDiT 2017E68).",
                 regItem.getSpecimenTypeDesignations().get(2).getText());
         assertEquals(
                 "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24.7.1838-8.1838",
