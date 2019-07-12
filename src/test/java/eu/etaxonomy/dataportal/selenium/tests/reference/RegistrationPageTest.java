@@ -85,7 +85,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Epitype: (B 40 0040871).",
+                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B 40 0040871).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
                 "for Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012",
@@ -128,7 +128,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1.11.2018, nom. illeg.",
                 regItem.getNameElement().getText());
         assertEquals(
-                "Holotype: (CBFS A–83–1).",
+                "Holotype: Iran, Islamic Republic of, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–83–1).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
                 "Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
@@ -172,7 +172,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Ramsaria avicennae Heidari & Hauer in Fottea 18(2): 146, fig. 3F, G. 1.11.2018",
                 regItem.getNameElement().getText());
         assertEquals(
-                "Holotype: (CBFS A–087–1).",
+                "Holotype: Iran, Islamic Republic of, Ramsar, alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–087–1).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
                 "Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
