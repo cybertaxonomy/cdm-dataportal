@@ -932,7 +932,7 @@ function compose_name_type_designations($type_entity_refs){
  *   produced by the eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager
  *
  * @return array
- *    A drupal render array wtit the following elements:
+ *    A drupal render array with the following elements:
  *    - 'type_designations'
  *    - 'map'
  *
