@@ -1438,7 +1438,7 @@ function compose_cdm_specimen_page($specimen_uuid)
 //        'content' => $specimen_table,
 //        '#suffix' => '</div>',
 //    );
-    $render_array['markup'] =  $specimen_table;
+    $render_array['specimen_table'] =  $specimen_table;
 
   RenderHints::popFromRenderStack();
   return $render_array;
