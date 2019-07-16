@@ -1079,10 +1079,10 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
             }
             if (count($type_status) > 0) {
                 $type_label = implode(', ', $type_status);
-            }
+          }
         }
 
-        if (isset($typeDesignation)){
+        if (isset($typeDesignation->typifiedNames)){
             $title = $type_label . ' for: ' . $typeDesignation->typifiedNames;
         }else{
             $title = $type_label;
