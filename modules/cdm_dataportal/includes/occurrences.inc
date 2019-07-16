@@ -760,7 +760,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
             '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation)),
         );
 
-        $derivatives[] = drupal_render($occurrence_elements);
+        $derivatives[] = $occurrence_elements;
         // all footnotes which has been assembled so far (e.g. from typeDesignations) to here
 //       $foonote_li_elements = theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey(), 'enclosingTag' => 'span'));
 //        if (!empty($foonote_li_elements)) {

@@ -1553,7 +1553,7 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all') {
 }
 
 /**
- * This function will genreate the taxon page part ($chapter) and returns a taxonpage object
+ * This function will generate the taxon page part ($chapter) and returns a taxonpage object
  * which has two fields, one for the page title and one for the content. Later on in the
  * process chain the value contained in these fields will be passed to the cdm_node_show()
  * function as the function parameters $title and $content.
