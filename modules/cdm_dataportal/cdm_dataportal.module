@@ -331,6 +331,29 @@ function _add_js_taxonomic_children($jquery_selector) {
     );
   }
 
+
+function _add_js_utis_client($jquery_selector){
+
+  drupal_add_js(drupal_get_path('module',
+      'cdm_dataportal') . '/js/utis-client/utis-client.js',
+    array(
+      'type' => 'file',
+      'weight' => JS_LIBRARY,
+      'cache' => TRUE,
+      'preprocess' => FALSE
+    )
+  );
+
+  drupal_add_js('jQuery(document).ready(function() {
+        jQuery( "' . $jquery_selector . '" ).utis_client(
+        {
+          spinnerIcon: \'' . font_awesome_icon_markup('fa-sync', array('class' => array('fa-3x',  'fas fa-spin'), 'style' => array('opacity: 0.3;'))) . '\'
+        });
+      });',
+    array('type' => 'inline')
+  );
+}
+
   /**
    * Provides the markup for an font awesome icon.
    *
@@ -838,6 +861,12 @@ function cdm_dataportal_block_info() {
     'visibility' => BLOCK_VISIBILITY_NOTLISTED,
     'pages' => "cdm_dataportal/registration-search\ncdm_dataportal/registration-search/*", // multiple page paths separated by "\n"!!!
   );
+  $block['utis_search'] =  array(
+    'title' => 'UTIS Search',
+    'info' => t('Query the Unified Taxonomic Information Service (UTIS)' ),
+    'cache' => DRUPAL_CACHE_PER_PAGE,
+    'visibility' => BLOCK_VISIBILITY_NOTLISTED
+  );
   return $block;
 }
 
@@ -930,6 +959,11 @@ function cdm_dataportal_block_view($delta) {
         )
     );
        return $block;
+    case 'utis_search':
+      _add_js_utis_client('.utis_client');
+      $block['subject'] = '<none>';
+      $block['content'] = '<div class="utis_client"/>';
+      return $block;
     default:
       return null;
   }
