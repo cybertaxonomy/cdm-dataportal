@@ -347,7 +347,7 @@ function _add_js_utis_client($jquery_selector){
   drupal_add_js('jQuery(document).ready(function() {
         jQuery( "' . $jquery_selector . '" ).utis_client(
         {
-          spinnerIcon: \'' . font_awesome_icon_markup('fa-sync', array('class' => array('fa-3x',  'fas fa-spin'), 'style' => array('opacity: 0.3;'))) . '\'
+          spinnerIcon: \'' . font_awesome_icon_markup('fa-sync', array('class' => array('fa-3x',  'fa-spin'), 'style' => array('opacity: 0.3;'))) . '\'
         });
       });',
     array('type' => 'inline')
@@ -962,7 +962,7 @@ function cdm_dataportal_block_view($delta) {
     case 'utis_search':
       _add_js_utis_client('.utis_client');
       $block['subject'] = '<none>';
-      $block['content'] = '<div class="utis_client"/>';
+      $block['content'] = '<div class="utis_client"></div>';
       return $block;
     default:
       return null;
