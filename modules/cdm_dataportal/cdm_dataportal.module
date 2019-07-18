@@ -393,7 +393,9 @@ function _add_js_taxonomic_children($jquery_selector) {
  */
 function _add_font_awesome_font()
 {
-  $font_awesome_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/fonts/font-awesome-4.6.3/css/font-awesome.min.css';
+  // $fa_font_version = 'font-awesome-4.6.3/css/font-awesome.min.css';
+  $fa_font_version = 'fontawesome-free-5.9.0-web/css/all.css';
+  $font_awesome_css_uri = base_path() . drupal_get_path('module', 'cdm_dataportal') . '/fonts/' . $fa_font_version;
 
   drupal_add_html_head_link(
     array(
