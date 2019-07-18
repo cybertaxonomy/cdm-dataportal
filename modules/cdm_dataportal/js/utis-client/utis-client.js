@@ -80,7 +80,7 @@
           type: 'text',
           placeholder: 'scientific name query string',
           name: 'query',
-          value: "Navicula",
+          // value: "Navicula", // search term preset for testing
           style: 'width:100%'
         }
       ).keypress(function(event){
