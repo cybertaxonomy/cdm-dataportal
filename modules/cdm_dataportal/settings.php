@@ -1048,7 +1048,7 @@ function cdm_dataportal_menu_admin(&$items) {
   );
 
   $items['admin/config/cdm_dataportal/settings/layout/taxon'] = array(
-    'title' => 'Taxon',
+    'title' => 'Taxon page',
     'description' => 'Configure and adjust the layout of your DataPortal ',
     'access arguments' => array('administer cdm_dataportal'),
     'page callback' => 'drupal_get_form',
@@ -1056,29 +1056,15 @@ function cdm_dataportal_menu_admin(&$items) {
     'weight' => 1,
     'type' => MENU_LOCAL_TASK,
   );
-  /*
-  $items[] = array(
-  'path' => 'admin/config/cdm_dataportal/layout/synonymy',
-  'title' => t('Synonymy'),
-  'description' => t('Configure and adjust the layout of your DataPortal '),
-  'access' => user_access('administer cdm_dataportal'),
-  'callback' => 'drupal_get_form',
-  'callback arguments' => array('cdm_settings_layout_synonymy'),
-  'weight' => 1,
-  'type' => MENU_LOCAL_TASK,
+  $items['admin/config/cdm_dataportal/settings/layout/name-page'] = array(
+    'title' => 'Name page',
+    'description' => 'Configure and adjust the layout of your DataPortal ',
+    'access arguments' => array('administer cdm_dataportal'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cdm_settings_layout_name_page'),
+    'weight' => 1,
+    'type' => MENU_LOCAL_TASK,
   );
-
-  $items[] = array(
-  'path' => 'admin/config/cdm_dataportal/layout/specimens',
-  'title' => t('Specimens'),
-  'description' => t('Configure and adjust the layout of your DataPortal '),
-  'access' => user_access('administer cdm_dataportal'),
-  'callback' => 'drupal_get_form',
-  'callback arguments' => array('cdm_settings_layout_specimens'),
-  'weight' => 1,
-  'type' => MENU_LOCAL_TASK,
-  );
-  */
   $items['admin/config/cdm_dataportal/settings/layout/search'] = array(
     'title' => 'Search',
     'description' => 'Configure and adjust the layout of your DataPortal ',
@@ -2847,6 +2833,50 @@ function cdm_settings_layout_search() {
     '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
     '#weight' => 1000,
   );
+  return system_settings_form($form);
+}
+
+
+/**
+ * @return array
+ *   The form structure.
+ */
+function cdm_settings_layout_name_page()
+{
+
+  $form = array();
+
+
+  $form['name_relations'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Name relationship listings'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE
+  );
+
+  $name_relationship_type_options = cdm_vocabulary_as_option(
+    UUID_NAME_RELATIONSHIP_TYPE,
+    '_cdm_relationship_type_term_label_callback',
+    false,
+    array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
+      . UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM . '|'
+      . UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST . '|'
+      . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '|'
+      . UUID_NAMERELATIONSHIPTYPE_MISSPELLING . '|'
+      . UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT . '/' )
+  );
+  $form['name_relations'][CDM_NAME_RELATIONSHIP_LIST_TYPES] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Name relationship types') . ':',
+    '#description' => 'This setting only affects specific types of name relations which are displayed as list. Another representations 
+    is the inline style used in the synonymy which may show a different (reduced) set of name relations. 
+    The according settings can be adjusted in the ' . l('taxon page settings section synonmy', 'admin/config/cdm_dataportal/settings/layout/taxon') . '.',
+    '#options' => $name_relationship_type_options,
+    '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, unserialize(CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT)),
+  );
+
+
+
   return system_settings_form($form);
 }
 
