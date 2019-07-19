@@ -195,6 +195,7 @@
    */
   executeQuery: function (plugin) {
 
+    plugin.resultContainer.show();
     plugin.spinnerContainer.show();
     $.getJSON(plugin.options.webserviceUrl + '/search',
       {
@@ -209,16 +210,19 @@
           plugin.resultContainer.empty();
           plugin.resultContainer.append(plugin.spinnerContainer);
         }
-        if (tnrMsg.query[0].response.length === 0 && plugin.pageIndex === 0) {
-          plugin.resultContainer.hide();
-        } else {
-          plugin.resultContainer.show()
-        }
         // in UTIS there is always only one query
         var response = tnrMsg.query[0].response;
+        var count = 0;
         $.each(response, function (index, record) {
-          plugin.spinnerContainer.before(plugin.makeResultEntry(record));
+          if(record.matchingNameString !== null){
+            // ignore deleted names (WoRMS, DiatomBase)
+            plugin.spinnerContainer.before(plugin.makeResultEntry(record));
+            count++;
+          }
         });
+        if(count === 0){
+          plugin.spinnerContainer.before($('<div/>', {'class': 'no-results', style: 'height: 100%; text-align: center; v-align: middle;'}).text("No results."))
+        }
         plugin.spinnerContainer.hide();
       });
   },
