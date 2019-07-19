@@ -2854,16 +2854,19 @@ function cdm_settings_layout_name_page()
     '#collapsed' => FALSE
   );
 
-  $name_relationship_type_options = cdm_vocabulary_as_option(
-    UUID_NAME_RELATIONSHIP_TYPE,
-    '_cdm_relationship_type_term_label_callback',
-    false,
-    array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
+  /*
+   * array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
       . UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM . '|'
       . UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST . '|'
       . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '|'
       . UUID_NAMERELATIONSHIPTYPE_MISSPELLING . '|'
       . UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT . '/' )
+
+   */
+  $name_relationship_type_options = cdm_vocabulary_as_option(
+    UUID_NAME_RELATIONSHIP_TYPE,
+    '_cdm_relationship_type_term_label_callback',
+    false
   );
   $form['name_relations'][CDM_NAME_RELATIONSHIP_LIST_TYPES] = array(
     '#type' => 'checkboxes',
