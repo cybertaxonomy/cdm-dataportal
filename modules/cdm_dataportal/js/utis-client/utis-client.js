@@ -12,7 +12,7 @@
 
   // Default options for the plugin as a simple object
   var defaults = {
-    providers: ['bgbm-phycobank', 'diatombase', 'worms'],
+    providers: {'bgbm-phycobank': 'PhycoBank', 'diatombase' : 'DiatomBase', 'worms': 'WoRMS'},
     // webserviceUrl : 'https://cybertaxonomy.eu/eu-bon/utis/1.3',
     webserviceUrl : 'http://test.e-taxonomy.eu/eubon-utis',
     pageSize: 20,
@@ -96,18 +96,18 @@
            style: 'display: inline-block; width:30%; vertical-align: top;'
         });
       var checkboxesArray = [];
-      $.each(this.opts.providers, function (index, value) {
-        var checkbox_id = 'checkbox_' + value;
+      $.each(Object.keys(plugin.options.providers), function (index, key) {
+        var checkbox_id = 'checkbox_' + key;
         var checkbox =   $("<input/>",
           {
             type: 'checkbox',
             name: 'provider',
             checked: index == 0 ? 'checked' : '',
-            value: value,
+            value: key,
             id:  checkbox_id
           }
         );
-        var label = $('<label for="' + checkbox_id + '" style="display: inline-block; vertical-align: top;">&nbsp;' +  value + '</label><br/>');
+        var label = $('<label for="' + checkbox_id + '" style="display: inline-block; vertical-align: top;">&nbsp;' +  plugin.options.providers[key] + '</label><br/>');
         // label.append(checkbox);
         checkBoxesDiv.append(checkbox).append(label);
 
