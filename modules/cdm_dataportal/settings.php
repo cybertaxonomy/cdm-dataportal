@@ -1606,7 +1606,7 @@ function cdm_settings_layout() {
       '#description' => t('Show original source citations in bibliography block, instead of rendering them with other
        annotations in each feature block.<br/><br/>Whether the Original Source reference of a Feature Block is actually put 
        into the bibliography also depends on the settings in the ' .
-        l("Taxon profile feature block settings", "settings/layout/taxon") .
+        l("Taxon profile feature block settings", "admin/config/cdm_dataportal/settings/layout/taxon") .
         '. For more information please refer to the description on the settings "<em>Sources as content</em>" & "<em>Sources as content to bibliography</em>" in that settings page.'),
   );
 
