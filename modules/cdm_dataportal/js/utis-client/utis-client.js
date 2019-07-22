@@ -13,9 +13,9 @@
   // Default options for the plugin as a simple object
   var defaults = {
     providers: {'bgbm-phycobank': 'PhycoBank', 'diatombase' : 'DiatomBase', 'worms': 'WoRMS'},
-    // webserviceUrl : 'https://cybertaxonomy.eu/eu-bon/utis/1.3',
+    webserviceUrl : 'https://cybertaxonomy.eu/eu-bon/utis/1.3',
     // webserviceUrl : 'http://test.e-taxonomy.eu/eubon-utis',
-    webserviceUrl : 'http://localhost:8081/',
+    // webserviceUrl : 'http://localhost:8081/',
     pageSize: 20,
     spinnerIcon: null
   };
