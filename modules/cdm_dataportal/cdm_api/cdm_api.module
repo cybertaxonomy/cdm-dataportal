@@ -1412,6 +1412,35 @@ function cdm_vocabulary_as_option($vocabulary_uuid, $term_label_callback = NULL,
 }
 
 /**
+ * Creates and array of defaults for drupal select form elements.
+ *
+ * @param $vocabulary_uuid
+ *   The UUID of the CDM Term Vocabulary
+ * @param $term_label_callback
+ *   An optional call back function which can be used to modify the term label
+ * @param bool $empty_option
+ *   An additional element do be placed at the beginning og the list. This element will be the default option.
+ * @param array $include_filter
+ *   An associative array consisting of a field name an regular expression. All term matching
+ *   these filter are included. The value of the field is converted to a String by var_export()
+ *   so a boolean 'true' can be matched by '/true/'
+ * @param string $order_by
+ *   One of the order by constants defined in this file
+ * @return array
+ *   the terms in an array (key: uuid => value: uuid) as defaults for a form element that allows multiple choices.
+ */
+function cdm_vocabulary_as_defaults($vocabulary_uuid, array $include_filter = null) {
+
+  $options = cdm_vocabulary_as_option($vocabulary_uuid, null, null, $include_filter);
+  $defaults = array();
+  foreach ($options as $uuid => $value){
+    $defaults[$uuid] = $uuid;
+  }
+
+  return $defaults;
+}
+
+/**
  * @param $term_type string one of
  *  - Unknown
  *  - Language

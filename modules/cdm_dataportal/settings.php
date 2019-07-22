@@ -413,7 +413,7 @@ define('CDM_STANDARD_IMAGE_VIEWER_DEFAULT', serialize(array(
 
 /**
  * The drupal variable key for the array containing the uuids of the taxon relationship types to display in
- * the snonymy.
+ * the synonymy.
  *
  * @var string
  */
@@ -430,23 +430,11 @@ define('CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT', serialize(
 );
 
 define('CDM_NAME_RELATIONSHIP_LIST_TYPES', 'cdm_name_relationship_list_types');
-define('CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT', serialize(
-    array(
-      UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
-      UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM => UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
-      UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR => UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR,
-      UUID_NAMERELATIONSHIPTYPE_BASIONYM => UUID_NAMERELATIONSHIPTYPE_BASIONYM,
-      UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT => UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT,
-      UUID_NAMERELATIONSHIPTYPE_VALIDATED_BY_NAME => UUID_NAMERELATIONSHIPTYPE_VALIDATED_BY_NAME,
-      UUID_NAMERELATIONSHIPTYPE_LATER_VALIDATED_BY_NAME => UUID_NAMERELATIONSHIPTYPE_LATER_VALIDATED_BY_NAME,
-      UUID_NAMERELATIONSHIPTYPE_REPLACED_SYNONYM => UUID_NAMERELATIONSHIPTYPE_REPLACED_SYNONYM
-    )
-  )
-);
+
 
 /**
  * The drupal variable for the configuration of the information aggregation along
- * the taxon relation ships. The mapped arrayis associative and holds two elements:
+ * the taxon relation ships. The mapped array is associative and holds two elements:
  *    - direct: the uuids of the taxon relationship types to take into account in invers
  *      direction.
  *    - invers: the uuids of the taxon relationship types to take into account in direct
@@ -2854,15 +2842,6 @@ function cdm_settings_layout_name_page()
     '#collapsed' => FALSE
   );
 
-  /*
-   * array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
-      . UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM . '|'
-      . UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST . '|'
-      . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '|'
-      . UUID_NAMERELATIONSHIPTYPE_MISSPELLING . '|'
-      . UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT . '/' )
-
-   */
   $name_relationship_type_options = cdm_vocabulary_as_option(
     UUID_NAME_RELATIONSHIP_TYPE,
     '_cdm_relationship_type_term_label_callback',
@@ -2875,7 +2854,7 @@ function cdm_settings_layout_name_page()
     is the inline style used in the synonymy which may show a different (reduced) set of name relations. 
     The according settings can be adjusted in the ' . l('taxon page settings section synonmy', 'admin/config/cdm_dataportal/settings/layout/taxon') . '.',
     '#options' => $name_relationship_type_options,
-    '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, unserialize(CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT)),
+    '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, cdm_vocabulary_as_defaults(UUID_NAME_RELATIONSHIP_TYPE)),
   );
 
 
