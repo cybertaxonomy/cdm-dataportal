@@ -1154,7 +1154,7 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
   }
   // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
-  $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, unserialize(CDM_NAME_RELATIONSHIP_LIST_TYPES_DEFAULT));
+  $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, cdm_vocabulary_as_defaults(UUID_NAME_RELATIONSHIP_TYPE));
   $name_rel_type_filter = array('direct' => array(), 'inverse' => array());
   foreach ($selected_name_rel_uuids as $uuid){
     $name_rel_type_filter['direct'][$uuid] = $uuid;
