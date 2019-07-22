@@ -33,8 +33,8 @@
     boundingBox: null,
     aspectRatio: 2, // w/h
     showLayerSwitcher: false,
-    baseLayerNames: ["mapproxy_vmap0"],
-    defaultBaseLayerName: 'mapproxy_vmap0',
+    baseLayerNames: ["open_topomap"],
+    defaultBaseLayerName: 'open_topomap',
     maxZoom: 15,
     minZoom: 0,
     debug: true,
@@ -396,7 +396,14 @@
        */
       var referenceProjection = function() {
         if(defaultBaseLayer){
-          return defaultBaseLayer.projection;
+          if(defaultBaseLayer.projection){
+            return defaultBaseLayer.projection;
+          } else if(defaultBaseLayer.sphericalMercator === true){
+            return CdmOpenLayers.projections.epsg_900913;
+          } else {
+            log("Error - referenceProjection() defaultBaseLayer " + defaultBaseLayer.name + " misses projection information");
+          }
+
         } else {
           log("Error - referenceProjection() defaultBaseLayer not set");
           return null;
@@ -645,10 +652,18 @@
             if(layers.length > 0) {
               // calculate zoomBounds using the first layer
               if(mapResponseObj.bbox !== undefined){
-                // mapResponseObj.bbox are bounds for the projection of the specific layer
+                // mapResponseObj.bbox are bounds  are always returned in EPSG:4326 since the point service does not know about the projection
                 var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
-                //newBounds.transform(layers[0].projection, map.getProjectionObject());
-                newBounds.transform(CdmOpenLayers.projections.epsg_4326, referenceProjection());
+                if(dataType === "POINT"){
+                  console.log("createDataLayer() : transforming newBounds: " + newBounds + " to referenceProjection()=" + referenceProjection() + "(map.getProjectionObject()=" + map.getProjectionObject() +")" );
+                  // newBounds.transform(layers[0].projection, map.getProjectionObject());
+                  newBounds.transform(CdmOpenLayers.projections.epsg_4326, referenceProjection());
+                } else {
+                  // Type == AREA
+                  console.log("createDataLayer() : no need to transform the newBounds: " + newBounds + " to referenceProjection()=" + referenceProjection());
+                  // expecting that the bounds are already in the correct projection.
+                }
+
                 if(dataBounds !== null){
                   dataBounds.extend(newBounds);
                 } else if(newBounds !== undefined){
