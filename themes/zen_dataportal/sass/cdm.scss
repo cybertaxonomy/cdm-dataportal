@@ -17,8 +17,14 @@ $page-part-margin: $base-line-height * 1;
   @include cdm-link-style;
 }
 
-article.node-cdm-name .name-page-name {
-  margin-top: $zen-gutter-width / 2;
+.node-cdm-name {
+  .name-page-name {
+    margin-top: $zen-gutter-width / 2;
+    margin-bottom: $zen-gutter-width / 2;
+  }
+  .registered_name{
+    font-weight: bold;
+  }
 }
 
 #content a.tabs-primary__tab-link{
@@ -194,7 +200,7 @@ dl.media-caption {
  */
 .registration {
 
-  .name_type_designation .type_status{
+  .type_status{
     font-weight: bold;
   }
 
