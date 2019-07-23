@@ -1951,7 +1951,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
 
     RenderHints::pushToRenderStack('name_page');
     RenderHints::setFootnoteListKey('name_page');
-    $content['taxon_name'] = markup_to_render_array(render_taxon_or_name($taxon_name));
+    $content['taxon_name'] = markup_to_render_array(render_taxon_or_name($taxon_name), null, '<div class="name-page-name">', '</div>');
 
 
     // name relationships
