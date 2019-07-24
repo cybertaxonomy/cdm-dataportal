@@ -915,7 +915,7 @@ function compose_name_type_designations($type_entity_refs){
       if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
         $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
       }
-      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type)  . '"><span class="type_status">'. ucfirst($type_status) . "</span>: "
+      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type)  . '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
         . $name_type->label
         . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
         . '</div>');
