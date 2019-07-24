@@ -854,6 +854,7 @@ function compose_type_designations($taxon_name_uuid)
     );
   $type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $taxon_name_uuid);
   if ($type_designations) {
+    usort($type_designations, 'compare_specimen_type_designation');
     $render_array['type_designations'] = markup_to_render_array(
       theme('cdm_typedesignations', array('typeDesignations' => $type_designations, 'enclosing_tag' => 'div', 'element_tag' => 'div'))
     );
@@ -945,6 +946,7 @@ function compose_specimen_type_designations($type_entity_refs){
   $render_array = array();
 
   $type_designation_list = array();
+  uksort($type_entity_refs, "compare_type_designation_status");
   foreach($type_entity_refs as $type_status => $specimen_types){
     foreach($specimen_types as $specimen_type){
 
@@ -1575,4 +1577,81 @@ function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_n
   } else {
     return array();
   }
+}
+
+
+/**
+ * Compares the status of two SpecimenTypeDesignations
+ *
+ * @param object $a
+ *   A SpecimenTypeDesignation.
+ * @param object $b
+ *   SpecimenTypeDesignation.
+ */
+function compare_specimen_type_designation($a, $b) {
+
+  $type_status_order = type_status_order();
+
+
+  $aQuantifier = FALSE;
+  $bQuantifier = FALSE;
+  if (isset($a->typeStatus->titleCache) && isset($b->typeStatus->titleCache)) {
+    $aQuantifier = array_search($a->typeStatus->titleCache, $type_status_order);
+    $bQuantifier = array_search($b->typeStatus->titleCache, $type_status_order);
+  }
+  if ($aQuantifier == $bQuantifier) {
+    // Sort alphabetically.
+    $a_text =  isset($a->typeSpecimen->titleCache) ? preg_replace('/[\[\]\"]/', '', $a->typeSpecimen->titleCache) : '';
+    $b_text =  isset($b->typeSpecimen->titleCache) ? preg_replace('/[\[\]\"]/', '', $b->typeSpecimen->titleCache) : '';
+    return strcasecmp($a_text, $b_text);
+  }
+  return ($aQuantifier < $bQuantifier) ? -1 : 1;
+}
+
+/**
+ * Compares the status of two SpecimenTypeDesignations
+ *
+ * @param object $a
+ *   A TypeDesignationStatusBase.
+ * @param object $b
+ *   TypeDesignationStatusBase.
+ */
+function compare_type_designation_status($a, $b) {
+
+  $type_status_order = type_status_order();
+
+
+  $aQuantifier = FALSE;
+  $bQuantifier = FALSE;
+  if (isset($a->label) && isset($b->label)) {
+    $aQuantifier = array_search($a->label, $type_status_order);
+    $bQuantifier = array_search($b->label, $type_status_order);
+  }
+  return ($aQuantifier < $bQuantifier) ? -1 : 1;
+}
+
+/**
+ * @return array
+ */
+function type_status_order()
+{
+  /*
+    This is the desired sort order as of now: Holotype Isotype Lectotype
+    Isolectotype Syntype.
+    TODO Basically, what we are trying to do is, we define
+    an ordered array of TypeDesignation-states and use the index of this array
+    for comparison. This array has to be filled with the cdm- TypeDesignation
+    states and the order should be parameterisable inside the dataportal.
+    */
+  // Make that static for now.
+  $type_status_order = array(
+    'Epitype',
+    'Holotype',
+    'Isotype',
+    'Lectotype',
+    'Isolectotype',
+    'Syntype',
+    'Paratype'
+  );
+  return $type_status_order;
 }

@@ -197,48 +197,6 @@ function theme_cdm_typedesignations($variables) {
   return $out;
 }
 
-/**
- * FIXME this definitively has to be in another spot.
- * just didn't know where to put it right now.
- * Compares the status of two SpecimenTypeDesignations
- *
- * @param object $a
- *   A SpecimenTypeDesignation.
- * @param object $b
- *   SpecimenTypeDesignation.
- */
-function compare_specimen_type_designation($a, $b) {
-  /*
-  This is the desired sort order as of now: Holotype Isotype Lectotype
-  Isolectotype Syntype.
-  TODO Basically, what we are trying to do is, we define
-  an ordered array of TypeDesignation-states and use the index of this array
-  for comparison. This array has to be filled with the cdm- TypeDesignation
-  states and the order should be parameterisable inside the dataportal.
-  */
-  // Make that static for now.
-  $typeOrder = array(
-    'Holotype',
-    'Isotype',
-    'Lectotype',
-    'Isolectotype',
-    'Syntype',
-  );
-
-  $aQuantifier = FALSE;
-  $bQuantifier = FALSE;
-  if (isset($a->typeStatus->label) && isset($b->typeStatus->label)) {
-    $aQuantifier = array_search($a->typeStatus->label, $typeOrder);
-    $bQuantifier = array_search($b->typeStatus->label, $typeOrder);
-  }
-  if ($aQuantifier == $bQuantifier) {
-    // Sort alphabetically.
-    $a_text =  isset($a->typeSpecimen->titleCache) ? preg_replace('/[\[\]\"]/', '', $a->typeSpecimen->titleCache) : '';
-    $b_text =  isset($b->typeSpecimen->titleCache) ? preg_replace('/[\[\]\"]/', '', $b->typeSpecimen->titleCache) : '';
-    return strcasecmp($a_text, $b_text);
-  }
-  return ($aQuantifier < $bQuantifier) ? -1 : 1;
-}
 
 /**
  * @todo Please document this function.
