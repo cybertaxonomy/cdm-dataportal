@@ -25,6 +25,9 @@ $page-part-margin: $base-line-height * 1;
   .registered_name{
     font-weight: bold;
   }
+  .type-status {
+    font-weight: bold;
+  }
 }
 
 #content a.tabs-primary__tab-link{
@@ -200,7 +203,7 @@ dl.media-caption {
  */
 .registration {
 
-  .type_status{
+  .type-status{
     font-weight: bold;
   }
 

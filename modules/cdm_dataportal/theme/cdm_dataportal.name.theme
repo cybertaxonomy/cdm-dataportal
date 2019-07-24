@@ -164,10 +164,9 @@ function theme_cdm_typedesignations($variables) {
       }
 
       $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '">';
-      $out .= '<span class="status">'
-        . ((isset($type_designation->typeStatus->representation_L10n)) ? $type_designation->typeStatus->representation_L10n : t('Type'))
-        . $typeReference
-        . '</span>';
+      $out .= '<span class="type-status">'
+        . ((isset($type_designation->typeStatus->representation_L10n)) ? $type_designation->typeStatus->representation_L10n : t('Type')) . '</span>'
+        . $typeReference;
 
 
       $derivedUnitFacadeInstance = null;
