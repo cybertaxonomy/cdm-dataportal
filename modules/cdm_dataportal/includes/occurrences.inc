@@ -989,28 +989,28 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
  * Creates an array from a list of FieldUnitDTOs.
  *
  *
- * @param object $specimenOrObservations
+ * @param object $fieldunit_dtos
  *   list of FieldUnitDTOs
  * @return array
  *   An array containing the hierarchy of the field units corresponding to the taxon
  *
  * @ingroup compose
  */
-function compose_specimen_array(array $specimenOrObservations){
+function compose_specimen_array(array $fieldunit_dtos){
     $items_specimen = array();
     $items = array();
 
     //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
-    foreach ($specimenOrObservations as &$specimenOrObservation) {
+    foreach ($fieldunit_dtos as &$fieldunit_dto) {
 
-        $items['data'] = $specimenOrObservation->listLabel ;
-        $specimen = compose_cdm_specimen_or_observation_tree_entry($specimenOrObservation);
+        $items['data'] = $fieldunit_dto->listLabel ;
+        $specimen = compose_cdm_specimen_or_observation_tree_entry($fieldunit_dto);
         $children = array();
         $child = array();
         $child['data'] =$specimen;
        // $children[] = create_specimen_array($specimenOrObservation->derivates);
-       if (isset($specimenOrObservation->derivates) && sizeof($specimenOrObservation->derivates) > 0){
-           $child['children']= compose_specimen_array($specimenOrObservation->derivates);
+       if (isset($fieldunit_dto->derivates) && sizeof($fieldunit_dto->derivates) > 0){
+           $child['children']= compose_specimen_array($fieldunit_dto->derivates);
        }
        $children[]=$child;
        $items['children'] = $children;
@@ -1408,5 +1408,135 @@ function compose_table_of_blast_result(array $data){
     $out = drupal_render($render_array);
    //$blast_result_page-> content = drupal_render($render_array);
    return $out;
+}
+
+
+/**
+ * Composes a BOTTOM-UP-SPECIMEN-TABLE
+ * @param $specimensOrObservations
+ * @return array
+ *  A drupal render array with the following keys:
+ *   - 'specimen_list'
+ *   - 'pager'
+ *
+ * @ingroup Compose
+ */
+function compose_specimens_table_bottom_up($specimensOrObservations)
+{
+
+  // --- generate the specimen list as table
+  $specimen_table = array(
+    '#theme' => 'table',
+    '#weight' => 2,
+    // prefix attributes and rows with '#' to let it pass toF the theme function,
+    // otherwise it is handled as child render array
+    '#attributes' => array('class' => 'specimens'),
+    '#rows' => array(),
+  );
+
+  if ($specimensOrObservations) {
+
+    foreach ($specimensOrObservations as $specimenOrObservation) {
+
+      $mediaList = array();
+      if (is_array($specimenOrObservation->_fieldObjectMedia)) {
+        $mediaList = array_merge($mediaList, $specimenOrObservation->_fieldObjectMedia);
+      }
+      if (is_array($specimenOrObservation->_derivedUnitMedia)) {
+        $mediaList = array_merge($mediaList, $specimenOrObservation->_derivedUnitMedia);
+      }
+
+
+      // typelabel will contain the typeStatus
+      $type_label = '';
+      $typeDesignationPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $specimenOrObservation->uuid);
+      if (isset($typeDesignationPager) and isset($typeDesignationPager->records)) {
+        $type_status = array();
+        foreach ($typeDesignationPager->records as $typeDesignation) {
+          if (isset($typeDesignation->typeStatus->representation_L10n)) {
+            $type_status[] = $typeDesignation->typeStatus->representation_L10n;
+          }
+        }
+        $type_label = implode(', ', $type_status);
+        if ($type_label) {
+          $type_label .= ': ';
+        }
+      }
+
+      // --- Specimen entry as dynamic label:
+      //     -> Dynabox for the specimenOrObservation
+      $gallery_name = $specimenOrObservation->uuid;
+
+      $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array($specimenOrObservation->uuid));
+      // --- Render associated media.
+      $gallery_html = '';
+      if (count($mediaList) > 0) {
+        $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+        $captionElements = array(
+          '#uri' => t('open media'),
+        );
+
+        $gallery_html = compose_cdm_media_gallerie(array(
+          'mediaList' => $mediaList,
+          'galleryName' => $gallery_name,
+          'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+          'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+          'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+          'captionElements' => $captionElements,
+          'mediaLinkType' => 'LIGHTBOX',
+          'alternativeMediaUri' => NULL,
+          'galleryLinkUri' => NULL,
+        ));
+      }
+      //here we should use the data we already have
+      $label_html = cdm_dynabox(
+        $specimenOrObservation->uuid,
+        $type_label . $specimenOrObservation->titleCache,
+        $derived_unit_ws_request,
+        'cdm_specimen_or_observation',
+        'Click for details',
+        array('div', 'div'),
+        array(),
+        null, // $content_element_selector
+        'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').hide(); }', // open_callback
+        'function(){ jQuery(\'#media_gallery_' . $gallery_name . '\').show(); }' // close_callback
+      );
+
+      // --- Render associated media.
+      $gallery_html = '';
+      if (count($mediaList) > 0) {
+        $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+        $captionElements = array(
+          '#uri' => t('open media'),
+        );
+
+        $gallery_html = compose_cdm_media_gallerie(array(
+          'mediaList' => $mediaList,
+          'galleryName' => $gallery_name,
+          'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+          'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+          'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+          'captionElements' => $captionElements,
+          'mediaLinkType' => 'LIGHTBOX',
+          'alternativeMediaUri' => NULL,
+          'galleryLinkUri' => NULL,
+        ));
+      }
+
+      $specimen_table['#rows'][] = array(
+        // An array of table rows. Every row is an array of cells, or an associative array
+        'data' => array(
+          // Each cell can be either a string or an associative array
+          $label_html . $gallery_html
+        ),
+        'class' => array(
+          'descriptionElement',
+          'descriptionElement_IndividualsAssociation'
+        ),
+      );
+    }
+  }
+
+  return $specimen_table;
 }
 
