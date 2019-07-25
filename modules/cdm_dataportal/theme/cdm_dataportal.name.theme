@@ -93,11 +93,11 @@ function theme_cdm_typedesignations($variables) {
         $is_lectotype = TRUE;
       }
       if ($type_designation->notDesignated) {
-        $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated') . '</'. $element_tag .'>';
+        $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '"><span class="type-status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>: ' . t('not designated') . '</'. $element_tag .'>';
       }
       elseif ($type_designation->typeName) {
         $link_to_name_page = url(path_to_name($type_designation->typeName->uuid));
-        $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '"><span class="status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
+        $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($type_designation) . '"><span class="type-status">' . ($is_lectotype ? 'Lectotype' : 'Type') . '</span>';
 
         if ($type_designation->citation) {
           $out .= type_designation_citation_layout($type_designation, $separator);
