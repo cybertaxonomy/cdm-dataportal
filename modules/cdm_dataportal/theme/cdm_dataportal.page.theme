@@ -46,19 +46,16 @@ function theme_cdm_taxon_page_title($variables) {
  * Returns HTML for the default title of a specimen page.
  *  * The returned title is a the identifier of the specimen.
  *
- * @param array $variables
- *   An associative array containing:
- *   - specimen: The specimen being formatted for the title.
+ * @param object $pecimen: The CDM SpecimenOrObeservation instnce
+ *     being formatted for the title.
  *
  * @return string
  *  Markup for the title of a specimen page
  *
- * @ingroup themeable
  */
-function theme_cdm_specimen_page_title($variables)
+function specimen_page_title($specimen)
 {
 
-    $specimen = $variables['specimen'];
     RenderHints::pushToRenderStack('specimen_page_title');
     $referenceUri = '';
     $out = '';
@@ -94,9 +91,9 @@ function theme_cdm_specimen_page_title($variables)
     }
 
     if ($specimen ->class == 'FieldUnit'){
-        $out .= "FieldUnit ";
+        $out .= '<span class="type-label">Field unit: </span>';
     }else{
-        $out .= "Specimen ";
+        $out .= '<span class="type-label">Specimen:  </span>';
     }
 
     if($collection){

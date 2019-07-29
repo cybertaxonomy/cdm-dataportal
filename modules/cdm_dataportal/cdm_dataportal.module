@@ -1661,101 +1661,117 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
 
   return $taxonpage;
 }
+
+
 function cdm_dataportal_specimen_by_accession_number_page_view($accession_number)
 {
-    if (isset($accession_number)) {
-        $specimen_or_observation = cdm_ws_get(CDM_WS_OCCURRENCE_ACCESSION_NUMBER, null, 'accessionNumber=' . $accession_number);
+  cdm_check_valid_portal_page();
 
-        if (isset($specimen_or_observation) && $specimen_or_observation){
+  $specimenpage = specimen_by_accession_number_view($accession_number);
 
-            $nodes = cdm_dataportal_specimen_page_view($specimen_or_observation->uuid, $specimen_or_observation);
-            return $nodes;
-        }else{
-            return '';
-        }
+  if (!empty($specimenpage)) {
+    return cdm_node_show_simulate($specimenpage->content);
+  }
+  else {
+    return '';
+  }
 
-    }
+
 }
+
 /**
  * Creates a specimen page view.
  * @param string $uuid the UUID of the specimen
  * @return array|string
  */
-function cdm_dataportal_specimen_page_view($uuid, $specimenDTO = null) {
+function cdm_dataportal_specimen_page_view($uuid) {
 
     cdm_check_valid_portal_page();
-
-    // Display the page for the specimen defined by $uuid.
-    if (isset($specimenDTO)){
-        //$specimenpage = compose_specimen_array($specimenDTO);
-        $dto_array = array($specimenDTO);
-        $specimen_array = compose_specimen_array($dto_array);
-        $specimen_table = array(
-            '#theme' => 'table',
-            '#weight' => 2,
-            // prefix attributes and rows with '#' to let it pass toF the theme function,
-            // otherwise it is handled as child render array
-
-            '#attributes' => array('class' => 'specimens'),
-            '#rows' => array(),
-            '#prefix' => '<div id="specimens">',
-            '#suffix' => '</div>',
-
-
-        );
-        foreach($specimen_array as $value){
-            $renderArray = array(
-                '#theme' => 'item_list',
-                '#items' => array($value),
-                '#type' => 'ul');
-            $output = drupal_render($renderArray);
-//            $specimen_table['#rows'][] = array(
-//                // An array of table rows. collabsible row
-//                'data' => "",
-//                'class' => array('expand_column')
-//            );
-            $specimen_table['#rows'][] = array(
-                // An array of table rows. Every row is an array of cells, or an associative array
-                'data' => array($output),
-                'class' =>  array(
-                    'descriptionElement',
-                    'descriptionElement_IndividualsAssociation'
-                ),
-            );
-
-
-        }
-        $specimenpage = new stdClass();
-
-        $specimenpage->title = theme('theme_cdm_specimen_dto_page_title', array(
-            'specimen' => $specimenDTO
-        ));
-
-        $render_array['markup'] = $specimen_table;
-
-//        $render_array['specimens'] = array(
-//            '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
-//            'content' => $specimen_table, // returns render array
-//            '#suffix' => '</div>',
-//        );
-        $specimenpage->content = drupal_render($render_array);
-    }else{
-        $specimenpage = cdm_dataportal_specimen_view($uuid);
-    }
-
+    $specimenpage = cdm_dataportal_specimen_view($uuid);
     if (!empty($specimenpage)) {
-        return cdm_node_show(NODETYPE_TAXON, $uuid, $specimenpage->title, $specimenpage->content);
+        return cdm_node_show_simulate($specimenpage->content);
     }
     else {
         return '';
     }
 }
 
+
+/**
+ * Creates a specimen page view.
+ * @param string $uuid the UUID of the specimen
+ * @return object
+ *  The page object with the following fields:
+ *   - 'title': the page title
+ *   - 'content' : the page content rendered as markup
+ */
+function specimen_by_accession_number_view($field_unit_dto = null) {
+
+  $field_unit_dto = cdm_ws_get(CDM_WS_OCCURRENCE_ACCESSION_NUMBER, null, 'accessionNumber=' . $accession_number);
+
+  // Display the page for the specimen defined by $uuid.
+  if (isset($field_unit_dto)){
+    $dto_array = array($field_unit_dto);
+    $specimen_array = specimen_render_array_items($dto_array);
+    $specimen_table = array(
+      '#theme' => 'table',
+      '#weight' => 2,
+      // prefix attributes and rows with '#' to let it pass toF the theme function,
+      // otherwise it is handled as child render array
+      '#attributes' => array('class' => 'specimens'),
+      '#rows' => array(),
+      '#prefix' => '<div id="specimens">',
+      '#suffix' => '</div>',
+    );
+    foreach($specimen_array as $value){
+      $renderArray = array(
+        '#theme' => 'item_list',
+        '#items' => array($value),
+        '#type' => 'ul');
+      $output = drupal_render($renderArray);
+//            $specimen_table['#rows'][] = array(
+//                // An array of table rows. collapsible row
+//                'data' => "",
+//                'class' => array('expand_column')
+//            );
+      $specimen_table['#rows'][] = array(
+        // An array of table rows. Every row is an array of cells, or an associative array
+        'data' => array($output),
+        'class' =>  array(
+          'descriptionElement',
+          'descriptionElement_IndividualsAssociation'
+        ),
+      );
+
+
+    }
+    $specimenpage = new stdClass();
+
+    $specimenpage->title = theme('theme_cdm_specimen_dto_page_title', array(
+      'specimen' => $field_unit_dto
+    ));
+
+//     $render_array['markup'] = $specimen_table;
+
+//        $render_array['specimens'] = array(
+//            '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
+//            'content' => $specimen_table, // returns render array
+//            '#suffix' => '</div>',
+//        );
+  }
+
+  return $specimenpage;
+}
+
+
 /**
  *
  * Creates a specimen view.
  * @param string $uuid the UUID of the specimen
- * @return array|string
+ * @return object
+ *    Page object with the fields
+ *    - title
+ *    - content
  */
 function cdm_dataportal_specimen_view($uuid) {
     //TODO: get the derivateDTO and don't call the webservice a second time in compose_cdm_specimen_page
@@ -1766,9 +1782,7 @@ function cdm_dataportal_specimen_view($uuid) {
     }
     $specimenpage = new stdClass();
 
-    $specimenpage->title = theme('cdm_specimen_page_title', array(
-        'specimen' => $specimen
-    ));
+    $specimenpage->title = specimen_page_title($specimen);
 
     // Render the specimen page.
     $render_array = compose_cdm_specimen_page($specimen);
@@ -2009,6 +2023,11 @@ function cdm_dataportal_registration_page_view($registration_identifier_encoded)
   return cdm_node_show_simulate($registration_page);
 }
 
+/**
+ * @param $registration_identifier_encoded
+ * @return array
+ *   The drupal render array for the registration view.
+ */
 function cdm_dataportal_registration_view($registration_identifier_encoded) {
 
   $registration_identifier = urldecode($registration_identifier_encoded);

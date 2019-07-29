@@ -985,6 +985,177 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
 
     return $sequence_elements;
 }
+
+/**
+ * Crates an array which can be used in render arrays to be passed to the theme_table() and theme_list().
+ * @param array $fieldunit_dtos
+ *     list of FieldUnitDTOs
+ */
+function specimen_render_array_items(array $fieldunit_dtos){
+
+  $render_array_items = array();
+  $items = array();
+
+  //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
+  foreach ($fieldunit_dtos as &$fieldunit_dto) {
+
+    $items['data'] = $fieldunit_dto->listLabel ;
+    $specimen = compose_cdm_specimen_or_observation_tree_entry($fieldunit_dto);
+    $children = array();
+    $child = array();
+    $child['data'] =$specimen;
+    // $children[] = create_specimen_array($specimenOrObservation->derivates);
+    if (isset($fieldunit_dto->derivates) && sizeof($fieldunit_dto->derivates) > 0){
+      $child['children']= specimen_render_array_items($fieldunit_dto->derivates);
+    }
+    $children[]=$child;
+    $items['children'] = $children;
+    $render_array_items[] = $items;
+  }
+  return $render_array_items;
+}
+
+/**
+ * Creates the drupal render array for the table showing all derivatives which
+ * stem from a common gathering event.
+ *
+ * @param $field_unit_uuids array
+ *  An array of uuids for cdm FieldUnit entities.
+ *
+ * @return array
+ *  A drupal render array for a table
+ *
+ * @ingroup compose
+ */
+
+function compose_compressed_specimen_derivate_table($field_unit_uuids) {
+
+  // prepare font icons
+  $expand_icon = font_awesome_icon_markup(
+    'fa-plus-square-o',
+    array(
+      'alt' => 'Show details',
+      'class' => array('expand_icon')
+    )
+  );
+  $collapse_icon = font_awesome_icon_markup(
+    'fa-minus-square-o',
+    array(
+      'alt' => 'Show details',
+      'class' => array('collapse_icon')
+    )
+  );
+  $detail_image_icon = '<img title="Detail Image" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/detail_image_derivate-16x16-32.png' . '"/>';
+  $checked_box_icon = '<img src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/step_done.gif' . '"/>';
+  $sequence_icon = '<img title="Molecular Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/sequence_derivate-16x16-32.png' . '"/>';
+  $character_data_icon = '<img title="Character Data" src="' . base_path() . drupal_get_path('module', 'cdm_dataportal') . '/images/character_data_derivate-16x16-32.png' . '"/>';
+
+  $rowcount = 0;
+  $rows = array();
+
+  foreach ($field_unit_uuids as $field_unit_uuid) {
+
+    //get derivate hierarchy for the FieldUnit
+    $derivateHierarchy = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($field_unit_uuid, 'derivateHierarchy'));
+    if ($derivateHierarchy) {
+      //summary row
+      $rows[] = array(
+        'data' => array(
+          array(
+            'data' => $expand_icon . $collapse_icon,
+            'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+          ),
+          array(
+            'data' => $derivateHierarchy->country,
+            'class' => array('summary_row_cell')
+          ),
+          array(
+            'data' => $derivateHierarchy->date,
+            'class' => array('summary_row_cell')
+          ),
+          array(
+            'data' => $derivateHierarchy->collectingString,
+            'class' => array('summary_row_cell')
+          ),
+          @array(
+            'data' => $derivateHierarchy->collection,
+            'class' => array('summary_row_cell')
+          ),
+          array(
+            'data' => $derivateHierarchy->hasType ? $checked_box_icon : "",
+            'class' => array('summary_row_cell', 'summary_row_icon')
+          ),
+          array(
+            'data' => $derivateHierarchy->hasSpecimenScan ? $checked_box_icon : "",
+            'class' => array('summary_row_cell', 'summary_row_icon')
+          ),
+          array(
+            'data' => ($derivateHierarchy->hasDna ? $sequence_icon : "") . " "
+              . ($derivateHierarchy->hasDetailImage ? $detail_image_icon : "") . " "
+              . ($derivateHierarchy->hasCharacterData ? $character_data_icon : ""),
+            'class' => array('summary_row_cell', 'summary_row_icon')
+          )
+        ),
+        'id' => 'derivate_summary' . $rowcount, // summary row id
+        'class' => array('summary_row'),
+      );
+
+      //assemble field unit details
+      $detail_html = "";
+      // - citation
+      if ($derivateHierarchy->citation) {
+        $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
+      }
+      //assemble specimen details
+      if ($derivateHierarchy->derivates) {
+        foreach ($derivateHierarchy->derivates as $preservedSpecimenDTO) {
+          $detail_html .= "<br>";
+          $detail_html .= render_cdm_specimenDTO_page($preservedSpecimenDTO);
+        }
+      }
+      $detail_html .= "<br>";
+      //detail row resp. one BIG detail cell
+      $rows[] = array(
+        'data' => array(
+          array(
+            'data' => "", //empty first column
+            'class' => array('expand_column')
+          ),
+          array(
+            'data' => $detail_html,
+            'colspan' => 7,
+          ),
+        ),
+        'id' => 'derivate_details' . $rowcount,//details row ID
+        'class' => array('detail_row'),
+      );
+      $rowcount++;
+    }
+  }
+
+  $tableId = "derivate_hierarchy_table";
+  $derivateHierarchyTable = array(
+    "#theme" => "table",
+    "#weight" => 2,
+    "#header" => array(
+      array(
+        'data' => "",
+        'class' => array('expand_column')
+      ),
+      "Country", "Date", "Collector + collecting number", "Herbaria", "Type", "Scan", "Derivatives"),
+    "#rows" => $rows,
+    "#attributes" => array(
+      "id" => $tableId,
+      "border" => 2
+    )
+  );
+
+  //add toggle functionality to derivate hierarchy table
+  drupal_add_js_rowToggle("#" . $tableId);
+
+  return $derivateHierarchyTable;
+}
+
 /**
  * Creates an array from a list of FieldUnitDTOs.
  *
@@ -996,27 +1167,79 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
  *
  * @ingroup compose
  */
-function compose_specimen_array(array $fieldunit_dtos){
-    $items_specimen = array();
-    $items = array();
+function compose_specimen_table_top_down(array $fieldunit_dtos){
 
-    //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
-    foreach ($fieldunit_dtos as &$fieldunit_dto) {
+  $specimen_render_array_items = specimen_render_array_items($fieldunit_dtos);
 
-        $items['data'] = $fieldunit_dto->listLabel ;
-        $specimen = compose_cdm_specimen_or_observation_tree_entry($fieldunit_dto);
-        $children = array();
-        $child = array();
-        $child['data'] =$specimen;
-       // $children[] = create_specimen_array($specimenOrObservation->derivates);
-       if (isset($fieldunit_dto->derivates) && sizeof($fieldunit_dto->derivates) > 0){
-           $child['children']= compose_specimen_array($fieldunit_dto->derivates);
-       }
-       $children[]=$child;
-       $items['children'] = $children;
-       $items_specimen[] = $items;
-    }
-    return $items_specimen;
+    // add icons
+  $expand_icon = font_awesome_icon_markup(
+    'fa-plus-square-o',
+    array(
+      'alt' => 'Show details',
+      'class' => array('expand_icon')
+    )
+  );
+  $collapse_icon = font_awesome_icon_markup(
+    'fa-minus-square-o',
+    array(
+      'alt' => 'Show details',
+      'class' => array('collapse_icon')
+    )
+  );
+  $tableId = "specimen_tree_table";
+  $specimen_table = array(
+    '#theme' => 'table',
+    '#weight' => 2,
+    // prefix attributes and rows with '#' to let it pass toF the theme function,
+    // otherwise it is handled as child render array
+    '#attributes' => array(
+      'class' => 'specimens',
+      'id' => $tableId
+    ),
+    '#rows' => array(),
+  );
+  $rowcount = 0;
+  foreach($specimen_render_array_items as $value){
+    $renderArray = array(
+      '#theme' => 'item_list',
+      '#items' => $value['children'],
+      '#type' => 'ul');
+    $output = drupal_render($renderArray);
+
+    $specimen_table['#rows'][] = array(
+      'data' =>array(
+        array(
+          'data' => $expand_icon . $collapse_icon,
+          'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+        ),
+        $value['data']
+      ),
+      'id' => 'label' . $rowcount, // summary row id
+      'class' => array('summary_row'),
+    );
+    $specimen_table['#rows'][] = array(
+      'data' =>  array(
+        array(
+          'data' => "", //empty first column
+          'class' => array('expand_column')
+        ),
+        array(
+          'data' => $output
+
+        )
+      ),
+      'class' =>  array('detail_row')
+//                'class' =>  array(
+//                    'descriptionElement',
+//                    'descriptionElement_IndividualsAssociation'
+      //               ),
+    );
+    $rowcount++;
+
+  }
+  drupal_add_js_rowToggle("#".$tableId);
+
+  return $specimen_table;
 }
 
 
@@ -1538,5 +1761,44 @@ function compose_specimens_table_bottom_up($specimensOrObservations)
   }
 
   return $specimen_table;
+}
+
+
+/**
+ * Orders occurrences by date but types should be on top of the list.
+ *
+ * @param $specimensOrObservations_or_fieldUnitDTO
+ *
+ * @return array
+ */
+function order_specimens_or_observations_by_date_and_type($specimensOrObservations)
+{
+// order occurrences by date but types should be on top of the list
+  $type_specimens = array();
+  $other_occurrences = array();
+  foreach ($specimensOrObservations as &$occurrence) {
+    $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
+    if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
+      $type_specimens[] = $occurrence;
+    } else {
+      $other_occurrences[] = $occurrence;
+    }
+  }
+  $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
+  return $specimensOrObservations;
+}
+
+/**
+ * Orders FieldUnitDTOs by date but types should be on top of the list.
+ *
+ * Delegates internally to order_specimens_or_observations_by_date_and_type()
+ *
+ * @param $fieldUnitDTOs
+ *
+ * @return array
+ */
+function order_fieldUnitDtos_by_date_and_type($fieldUnitDTOs)
+{
+  return order_specimens_or_observations_by_date_and_type($fieldUnitDTOs);
 }
 

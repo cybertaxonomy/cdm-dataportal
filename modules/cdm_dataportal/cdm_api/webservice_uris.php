@@ -135,6 +135,7 @@ define('CDM_WS_GEOSERVICE_OCCURRENCEMAP_FOR_FIELDUNITS', 'ext/edit/mapServicePar
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');
 
 define('CDM_WS_OCCURRENCE', 'occurrence');
+define('CDM_WS_OCCURRENCE_FILEUNIT_DTO', 'occurrence/$0/doGetOccurencesDTO');
 define('CDM_WS_PORTAL_OCCURRENCE', 'portal/occurrence');
 define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumber');
 /**
@@ -147,6 +148,8 @@ define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumbe
  * - pageNumber
  * - pageSize
  * - unknown_type
+ *
+ * returns Pager<SpecimenOrObservationBase>
  */
 define('CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON', 'occurrence/byAssociatedTaxon');
 define('CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON', 'occurrence/specimensOrObservationsByAssociatedTaxon');

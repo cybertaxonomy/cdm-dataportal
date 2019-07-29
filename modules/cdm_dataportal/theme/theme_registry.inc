@@ -103,7 +103,6 @@ function cdm_dataportal_theme() {
     'get_partDefinition' => array('variables' => array()),
 
     // Themes in cdm_dataportal.page.theme.
-    'cdm_specimen_page_title' => array('variables' => array('specimen' => NULL)),
     'cdm_taxon_page_title' => array('variables' => array('taxon' => NULL)),
     'cdm_name_page_title' => array('variables' => array('taxon_name' => NULL)),
     'cdm_media_page' => array('variables' => array(

@@ -232,8 +232,13 @@ function cdm_node_show($cdm_node_type, $uuid, $title, $content) {
  */
 function cdm_node_show_simulate($content)
 {
-  array_unshift($content, array("general-part" => markup_to_render_array("<div id=\"general\" class=\"page-part\"></div>")));
-  return drupal_render($content);
+  $general_div = "<div id=\"general\" class=\"page-part\"></div>";
+  if(is_array($content)){
+    array_unshift($content, array("general-part" => markup_to_render_array($general_div)));
+    return drupal_render($content);
+  } else {
+    return $general_div . $content;
+  }
 }
 
 
