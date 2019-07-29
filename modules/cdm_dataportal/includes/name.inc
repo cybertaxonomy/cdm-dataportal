@@ -839,14 +839,16 @@ function registration_intitute_class_attribute($registration_dto)
  * Composes the textual representation for the type designation of taxon name identified by the uuid in with a map for the location data.
  *
  * @param $taxon_name_uuid
+ * @param $show_specimen_details
  * @return array
  *    A drupal render array wtit the following elements:
  *    - 'type_designations'
  *    - 'map'
  *
+ * @throws Exception
  * @ingroup compose
  */
-function compose_type_designations($taxon_name_uuid)
+function compose_type_designations($taxon_name_uuid, $show_specimen_details = false)
 {
   $render_array = array(
     'type_designations' => array(),
@@ -860,6 +862,17 @@ function compose_type_designations($taxon_name_uuid)
     );
 
     $render_array['map'] = compose_type_designations_map($type_designations);
+  }
+  if($show_specimen_details){
+    $fileunit_dtos = array();
+    foreach($type_designations as $type_designation){
+      if(isset($type_designation->typeSpecimen)) {
+        $fileunit_dtos[] = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid));
+      }
+    }
+    if(count($fileunit_dtos) > 0) {
+     $render_array['specimens'] = compose_specimen_table_top_down($fileunit_dtos);
+    }
   }
   return $render_array;
 }

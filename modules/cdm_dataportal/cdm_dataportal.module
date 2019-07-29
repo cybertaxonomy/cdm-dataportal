@@ -1975,7 +1975,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     }
 
     // type designations
-    $type_designations_render_array = compose_type_designations($taxon_name->uuid);
+    $type_designations_render_array = compose_type_designations($taxon_name->uuid, true);
 
     $content['type_designations'] = $type_designations_render_array['type_designations'];
     $content['map'] = $type_designations_render_array['map'];
