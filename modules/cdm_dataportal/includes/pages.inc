@@ -39,7 +39,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     $specimensOrObservations = null;
     if (variable_get('cdm_dataportal_specimen_derivate_tree')){
       // get fieldUnitDTOs
-      $fieldUnitDTOs = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservationDTOs'));
+      $fieldUnitDTOs = cdm_ws_get(CDM_WS_TAXON_FIELDUNIT_DTOS, array( $taxon->uuid));
       $fieldUnitDTOs = order_fieldUnitDtos_by_date_and_type($fieldUnitDTOs);
     } else {
       // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
