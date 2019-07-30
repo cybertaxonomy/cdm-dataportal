@@ -1976,9 +1976,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
 
     // type designations
     $type_designations_render_array = compose_type_designations($taxon_name->uuid, true);
-
-    $content['type_designations'] = $type_designations_render_array['type_designations'];
-    $content['map'] = $type_designations_render_array['map'];
+    $content = array_merge($content, $type_designations_render_array);
     // registrations
     $registrationDTOs= cdm_ws_fetch_all(CDM_WS_REGISTRATION_DTO,  array('nameUuid' => $taxon_name_uuid));
     if(isset($registrationDTOs) && count($registrationDTOs ) > 0 ){

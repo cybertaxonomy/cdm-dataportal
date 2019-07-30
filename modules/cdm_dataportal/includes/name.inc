@@ -841,11 +841,11 @@ function registration_intitute_class_attribute($registration_dto)
  * @param $taxon_name_uuid
  * @param $show_specimen_details
  * @return array
- *    A drupal render array wtit the following elements:
+ *    A drupal render array with the following elements:
  *    - 'type_designations'
  *    - 'map'
+ *    - 'specimens'
  *
- * @throws Exception
  * @ingroup compose
  */
 function compose_type_designations($taxon_name_uuid, $show_specimen_details = false)
@@ -867,7 +867,7 @@ function compose_type_designations($taxon_name_uuid, $show_specimen_details = fa
     $fileunit_dtos = array();
     foreach($type_designations as $type_designation){
       if(isset($type_designation->typeSpecimen)) {
-        $fileunit_dtos[] = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid));
+        $fileunit_dtos[] = cdm_ws_get(CDM_WS_OCCURRENCE_FILEUNIT_DTO, array($type_designation->typeSpecimen->uuid));
       }
     }
     if(count($fileunit_dtos) > 0) {

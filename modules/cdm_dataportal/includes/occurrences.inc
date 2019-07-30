@@ -1189,7 +1189,6 @@ function compose_specimen_table_top_down(array $fieldunit_dtos){
   $tableId = "specimen_tree_table";
   $specimen_table = array(
     '#theme' => 'table',
-    '#weight' => 2,
     // prefix attributes and rows with '#' to let it pass toF the theme function,
     // otherwise it is handled as child render array
     '#attributes' => array(

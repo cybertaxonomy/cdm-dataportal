@@ -266,7 +266,7 @@ function cdm_map_openlayers($map_id, $occurrenceQuery = FALSE, $distributionQuer
 
   _add_js_openlayers_map($map_id, $map_settings, $event_listeners, $resizable);
 
-  $out = '<div id=""openlayers-container-' . $map_id . '" class="openlayers-container openlayers_width ui-widget-content" style="width: 100%;">';
+  $out = '<div id="openlayers-container-' . $map_id . '" class="openlayers-container openlayers_width ui-widget-content" style="width: 100%;">';
   $out .= '<div id="openlayers-map-' . $map_id . '" class="smallmap" style="width:100%; height:100%; margin: 10px;"';
 
   // Additional query parameters as set in the data portal admin section.

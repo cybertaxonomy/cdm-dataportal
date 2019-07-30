@@ -122,6 +122,7 @@ function cdm_dataportal_taxon_page_specimens($taxon) {
     }
     else if(variable_get('cdm_dataportal_specimen_derivate_tree')){
       $render_array['specimen_list'] = compose_specimen_table_top_down($fieldUnitDTOs);
+      $render_array['specimen_list']['#weight'] = 2;
     } else {
       $specimen_table = compose_specimens_table_bottom_up($specimensOrObservations);
 
