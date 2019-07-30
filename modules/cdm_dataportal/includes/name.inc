@@ -1561,35 +1561,16 @@ function registration_types($registration_dto){
  * @return array
  *    The type designations
  */
-function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_name_uuid = null) {
-  $type_designations_map = array();
-
-  // 1.
-  foreach ($synonymy_group as $synonym) {
-    $type_designations_by_name = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $synonym->name->uuid);
-    if ($type_designations_by_name) {
-      foreach ($type_designations_by_name as $td) {
-        if (!isset($type_designations_map[$td->uuid])) {
-          $type_designations_map[$td->uuid] = $td;
-        }
-      }
-    }
+function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_name_uuid = null)
+{
+  if (count($synonymy_group) > 0) {
+    $synonym = array_pop($synonymy_group);
+    $type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS_IN_HOMOTYPICAL_GROUP, $synonym->name->uuid);
   }
-
-  if($accepted_taxon_name_uuid){
-    $accepted_name_type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS, $accepted_taxon_name_uuid);
-    if($accepted_name_type_designations  && count($accepted_name_type_designations) > 0){
-      foreach ($accepted_name_type_designations as $td){
-        $type_designations_map[$td->uuid] = $td;
-      }
-    }
+  if($type_designations) {
+    return $type_designations;
   }
-
-  if(count($type_designations_map) > 0){
-    return array_values($type_designations_map);
-  } else {
-    return array();
-  }
+  return array();
 }
 
 
