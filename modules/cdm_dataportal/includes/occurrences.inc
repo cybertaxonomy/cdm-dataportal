@@ -103,7 +103,7 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
     //link to specimen page
     $pathToSpecimen = path_to_specimen($specimen->uuid);
     if (!$is_specimen_page) {
-        $specimenPageLink = l($specimen->accessionNumber, $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+        $specimenPageLink = l($specimen->accessionNumber, $pathToSpecimen);
         $detail_html .= "<strong>Specimen summary: $specimenPageLink</strong><br>";
     }
 
@@ -115,7 +115,7 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
         }
     }
     if ($specimen->preferredStableUri) {
-        $stableIdentifierLink = l($specimen->preferredStableUri, $specimen->preferredStableUri, array('attributes' => array('target' => '_blank')));
+        $stableIdentifierLink = l($specimen->preferredStableUri, $specimen->preferredStableUri);
         $detail_html .= create_label("Preferred stable URI") . $stableIdentifierLink . "<br>";
     }
     if ($is_specimen_page) {
@@ -230,7 +230,7 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
                 $detail_html .= "<br>";
             }
         } else {
-            $detail_html .= l("detail page", $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+            $detail_html .= l("detail page", $pathToSpecimen);
             $detail_html .= "<br>";
         }
     }
@@ -476,7 +476,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             if ($taxon_name) {
                                 //$taxon_html = render_taxon_or_name($taxon_name, $name_link);
 
-                                $taxon_html = l($taxon_name->titleCache, $name_link, array('attributes' => array('target' => '_blank')));
+                                $taxon_html = l($taxon_name->titleCache, $name_link);
                                 $dd_elements[$weight] = $taxon_html;
                             }
                             if (isset($determinationEvent->modifier)) {
@@ -565,7 +565,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                     $description = $derivedFrom->description . ": ";
                                 }
 
-                                $originals[] = markup_to_render_array(l($description . $original->titleCache, $pathToSpecimen, array('attributes' => array('target' => '_blank'))));
+                                $originals[] = markup_to_render_array(l($description . $original->titleCache, $pathToSpecimen));
                                 if ($original->class == 'FieldUnit') {
                                     $label = t('Field data');
                                 } else {
@@ -589,7 +589,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                         $description = $derived_unit->description . ": ";
                                     }
 
-                                    $derived_units[] = markup_to_render_array(l($description . $derived_unit->titleCache, $pathToSpecimen, array('attributes' => array('target' => '_blank'))));
+                                    $derived_units[] = markup_to_render_array(l($description . $derived_unit->titleCache, $pathToSpecimen));
                                 }
                             }
                             @_description_list_group_add($groups, t('Derivates') . ':',
@@ -957,7 +957,7 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
                     } else {
                         if (!is_array($value) && strpos($value, 'http:') !== false ){
                             //make links for urls
-                            $value = l($value, $value, array('attributes' => array('target' => '_blank')));
+                            $value = l($value, $value);
                             $value = markup_to_render_array($value);
                         }
 
@@ -1484,7 +1484,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                             $name_link = path_to_name($name->key);
 
                             //$taxon_html = render_taxon_or_name($taxon_name, $name_link);
-                            $taxon_html = l($taxon_name->titleCache, $name_link, array('attributes' => array('target' => '_blank')));
+                            $taxon_html = l($taxon_name->titleCache, $name_link);
                             $dd_elements[] = $taxon_html;
                         }
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label("Identification(s)"), $dd_elements,'', 100);
@@ -1525,7 +1525,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
             $output .= $gallery_html;
         }
         $pathToSpecimen = path_to_specimen($specimen_or_observation->uuid);
-        $output .=  l("Detail page", $pathToSpecimen, array('attributes' => array('target' => '_blank')));
+        $output .=  l("Detail page", $pathToSpecimen);
     } // END of $specimenOrObservation exists
 
     return $output;
@@ -1553,8 +1553,8 @@ function compose_table_of_blast_result(array $data){
 
     foreach ($data as $row_data){
         $pathToSpecimen = path_to_specimen_by_accession_number($row_data['id']);
-        $specimenPageLink = l($row_data['id'], $pathToSpecimen, array('attributes' => array('target' => '_blank')));
-        $ncbiLink = l($row_data['id'], 'https://www.ncbi.nlm.nih.gov/nuccore/'.$row_data['id'].'?report=graph', array('attributes' => array('target' => '_blank')));
+        $specimenPageLink = l($row_data['id'], $pathToSpecimen);
+        $ncbiLink = l($row_data['id'], 'https://www.ncbi.nlm.nih.gov/nuccore/'.$row_data['id'].'?report=graph');
         $rows[] =  array(
             'data' => array(
                 array(
