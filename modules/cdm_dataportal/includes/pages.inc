@@ -18,7 +18,7 @@
 
 
 /**
- * Creates a render array representing the ocurrences associetad with the $taxon.
+ * Composes a render array representing the ocurrences associetad with the $taxon.
  *
  * The resulting render array contains two elements:
  *  - 'map': A map showing all point locations of the occurences is availabale
@@ -29,8 +29,10 @@
  * @return
  *   A render array suitable for drupal_render()
  *
+ * @ingroup Compose
+ *
  */
-function cdm_dataportal_taxon_page_specimens($taxon) {
+function compose_cdm_taxon_page_specimens($taxon) {
 
     $render_array = array();
     RenderHints::pushToRenderStack('taxon_page_specimens');
@@ -352,7 +354,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   if (!taxon_page_tabs_hidden_check('specimens') && ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all'))) {
     $render_array['specimens'] = array(
         '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
-        'content' => cdm_dataportal_taxon_page_specimens($taxon), // returns render array
+        'content' => compose_cdm_taxon_page_specimens($taxon), // returns render array
         '#suffix' => '</div>',
     );
   }
