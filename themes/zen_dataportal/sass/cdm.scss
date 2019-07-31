@@ -17,6 +17,19 @@ $page-part-margin: $base-line-height * 1;
   @include cdm-link-style;
 }
 
+.node-cdm-name {
+  .name-page-name {
+    margin-top: $zen-gutter-width / 2;
+    margin-bottom: $zen-gutter-width / 2;
+  }
+  .registered_name{
+    font-weight: bold;
+  }
+  .type-status {
+    font-weight: bold;
+  }
+}
+
 #content a.tabs-primary__tab-link{
   color: #333; // increasing specificity to avoid the color of the tabs to be overwritten
 }
@@ -190,7 +203,7 @@ dl.media-caption {
  */
 .registration {
 
-  .name_type_designation .type_status{
+  .type-status{
     font-weight: bold;
   }
 

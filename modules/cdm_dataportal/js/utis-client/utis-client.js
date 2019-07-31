@@ -12,9 +12,15 @@
 
   // Default options for the plugin as a simple object
   var defaults = {
-    providers: {'bgbm-phycobank': 'PhycoBank', 'diatombase' : 'DiatomBase', 'worms': 'WoRMS'},
-    // webserviceUrl : 'https://cybertaxonomy.eu/eu-bon/utis/1.3',
-    webserviceUrl : 'http://test.e-taxonomy.eu/eubon-utis',
+    providers: {
+      'bgbm-phycobank': 'PhycoBank',
+      'diatombase' : 'DiatomBase',
+      'worms': 'WoRMS'
+      //'pesi': 'PESI'
+    },
+    webserviceUrl : 'https://cybertaxonomy.eu/eu-bon/utis/1.3',
+    // webserviceUrl : 'http://test.e-taxonomy.eu/eubon-utis',
+    //  webserviceUrl : 'http://localhost:8081/',
     pageSize: 20,
     spinnerIcon: null
   };
@@ -30,6 +36,7 @@
     this.spinnerContainer = null;
     this.pageIndex = 0;
     this.autoLoadTolerance = 20; // start autoloading x pixels before the bottom of the result container
+    this.externalLinkIconMarkup = '[open]';
 
     // firebug console stub (avoids errors if firebug is not active)
     if (typeof console === "undefined") {
@@ -159,6 +166,9 @@
         var icon = $(this.options.spinnerIcon);
         this.spinnerContainer.append(icon);
       }
+      if(this.options.externalLinkIcon !== undefined){
+        this.externalLinkIconMarkup = this.options.externalLinkIcon;
+      }
     },
 
   /**
@@ -220,7 +230,7 @@
             count++;
           }
         });
-        if(count === 0){
+        if(count === 0 && plugin.pageIndex === 0){
           plugin.spinnerContainer.before($('<div/>', {'class': 'no-results', style: 'height: 100%; text-align: center; v-align: middle;'}).text("No results."))
         }
         plugin.spinnerContainer.hide();
@@ -230,7 +240,12 @@
   makeResultEntry: function (record) {
 
     var resultEntry = $('<div/>', {'class': 'result-entry'});
-    resultEntry.append($('<div/>', {'class': 'matching-name', style: 'font-weight: bold;'}).text(record.matchingNameString));
+    var taxonContainer = $('<div/>');
+    taxonContainer.append($('<span/>', {'class': 'matching-name', style: 'font-weight: bold; padding-right: 0.3em;'}).text(record.matchingNameString));
+    if(record.taxon.url){
+      taxonContainer.append($('<a/>', {href: record.taxon.url, target: 'provider'}).append($(this.externalLinkIconMarkup)));
+    }
+    resultEntry.append(taxonContainer);
 
     var relation = record.matchingNameType;
     var taxonName = record.taxon.taxonName.scientificName;
@@ -242,7 +257,7 @@
           .append($('<span/>', {'class': 'taxon'}).text(taxonName));
       }
       resultEntry.append($('<div/>', {'class': 'checklist', style: 'opacity: 0.5; '}).text('Checklist: ') // text-align: right?
-          .append($('<a/>', { href: record.checklistUrl, target: 'checklist'}).text(record.checklist)
+          .append($('<a/>', { href: record.checklistUrl, target: 'provider'}).text(record.checklist)
           )
       );
     }

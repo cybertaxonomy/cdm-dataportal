@@ -32,7 +32,7 @@ public class TypeDesignationElement extends BaseElement {
 
     public TypeDesignationElement(WebElement element) {
         super(element);
-        status = element.findElement(By.cssSelector(".status"));
+        status = element.findElement(By.cssSelector(".type-status"));
         try {
             nameDescription = element.findElement(By.cssSelector(".description"));
         } catch (NoSuchElementException e) {

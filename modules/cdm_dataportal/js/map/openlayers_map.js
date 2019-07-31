@@ -72,7 +72,8 @@
      * when true the map is made resizable by adding the jQueryUI widget resizable
      * to the map container. This feature requires that the jQueryUI is loaded
      */
-    resizable: false
+    resizable: false,
+    wfsRootUrl: 'http://edit.africamuseum.be/geoserver/topp/ows'
   };
 })(jQuery);
 
@@ -89,11 +90,13 @@
         // EPSG:3857 from http://spatialreference.org/ref/sr-org/6864/proj4/
         // OpenStreetMap etc
         Proj4js.defs["EPSG:3857"] = '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
+        Proj4js.defs["EPSG:7777777"] = '+proj=lcc + 42 + 56 + 35 + 24 + 3000000 + 100000';
 
         var projections = {
                 epsg_4326: new OpenLayers.Projection("EPSG:4326"),
                 epsg_900913: new OpenLayers.Projection("EPSG:900913"),
-                epsg_3857:  new OpenLayers.Projection("EPSG:3857")
+                epsg_3857:  new OpenLayers.Projection("EPSG:3857"),
+                epsg_7777777:  new OpenLayers.Projection("EPSG:7777777")
         };
         var mapExtends = {
                 epsg_4326: new OpenLayers.Bounds(-180, -90, 180, 90),
@@ -226,6 +229,20 @@
               tdwg4: 'topp:tdwg_level_4'
       };
 
+      /**
+       * Known projections by layer name. This map helps avoid requesting the server for the
+       * projection. See readProjection()
+       */
+      var layerProjections = {
+        'topp:tdwg_level_1': CdmOpenLayers.projections.epsg_4326,
+        'topp:tdwg_level_2': CdmOpenLayers.projections.epsg_4326,
+        'topp:tdwg_level_3': CdmOpenLayers.projections.epsg_4326,
+        'topp:tdwg_level_4': CdmOpenLayers.projections.epsg_4326,
+        'topp:phytogeographical_regions_of_greece': CdmOpenLayers.projections.epsg_4326,
+        'topp:euromed_2013': CdmOpenLayers.projections.epsg_7777777,
+        'topp:flora_cuba_2016': CdmOpenLayers.projections.epsg_4326
+      };
+
       if(opts.resizable === true) {
         // resizable requires jQueryUI to  be loaded!!!
         mapContainerElement.resizable({
@@ -254,10 +271,9 @@
 
           initMap();
 
-          // now it is
+
           if(opts.boundingBox){
             boundingBox = OpenLayers.Bounds.fromString(opts.boundingBox);
-            boundingBox.transform(CdmOpenLayers.projections.epsg_4326, map.getProjectionObject());
           }
 
           // -- Distribution Layer --
@@ -288,7 +304,7 @@
               success: function(data){
                   var layers = createDataLayer(data, "AREA");
                   addLayers(layers);
-                  layerDataLoaded();
+                // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
               }
             });
           }
@@ -320,7 +336,7 @@
               success: function(data){
                   var layers = createDataLayer(data, "POINT");
                   addLayers(layers);
-                  layerDataLoaded();
+                  // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
               }
             });
           }
@@ -358,6 +374,23 @@
 
         };
 
+      /**
+       * Provides the layer name which can be used in WMS/WFS requests.
+       * The layerData.tdwg field contains invalid layer names in case of
+       * the tdwg layers. This function handles with this bug.
+       *
+       * @param layerData
+       * @returns String
+       *    the correct layer name
+       */
+        var fixLayerName = function(layerData){
+         var wmsLayerName = layerByNameMap[layerData.tdwg];
+         if(!wmsLayerName){
+           wmsLayerName = "topp:" + layerData.tdwg;
+         }
+         return wmsLayerName;
+        };
+
         var layerDataLoaded = function() {
           LAYER_DATA_CNT--;
           if(LAYER_DATA_CNT === 0){
@@ -366,7 +399,7 @@
         };
 
         var initPostDataLoaded = function () {
-          // all layers prepared, make the visible
+          // all layers prepared, make them visible
           map.layers.forEach(function(layer){
             layer.setVisibility(true);
           });
@@ -631,12 +664,13 @@
               for ( var i in mapResponseObj.layers) {
                 var layerData = mapResponseObj.layers[i];
 
-                console.log(" " + i +" -> " + layerData.tdwg);
+                var layerName = fixLayerName(layerData);
+                console.log(" " + i +" -> " +layerName);
                 var layer = new OpenLayers.Layer.WMS(
-                  layerData.tdwg,
+                  layerName,
                   mapResponseObj.geoserver + "/wms",
                   {
-                      layers: layerByNameMap[layerData.tdwg],
+                      layers: fixLayerName(layerData),
                       transparent:"true",
                       format:"image/png"
                   },
@@ -652,18 +686,26 @@
             if(layers.length > 0) {
               // calculate zoomBounds using the first layer
               if(mapResponseObj.bbox !== undefined){
-                // mapResponseObj.bbox are bounds  are always returned in EPSG:4326 since the point service does not know about the projection
                 var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
+                var projection;
                 if(dataType === "POINT"){
-                  console.log("createDataLayer() : transforming newBounds: " + newBounds + " to referenceProjection()=" + referenceProjection() + "(map.getProjectionObject()=" + map.getProjectionObject() +")" );
-                  // newBounds.transform(layers[0].projection, map.getProjectionObject());
-                  newBounds.transform(CdmOpenLayers.projections.epsg_4326, referenceProjection());
+                  projection = CdmOpenLayers.projections.epsg_4326;
+                  // mapResponseObj.bbox are bounds  are always returned in EPSG:4326 since the point service does not know about the projection
+                  // console.log("createDataLayer() POINT: referenceProjection()=" + referenceProjection() + ", map.getProjectionObject()=" + map.getProjectionObject() );
+                  processDataBounds(projection, newBounds, dataType, layerDataLoaded);
                 } else {
                   // Type == AREA
-                  console.log("createDataLayer() : no need to transform the newBounds: " + newBounds + " to referenceProjection()=" + referenceProjection());
-                  // expecting that the bounds are already in the correct projection.
+                  // the bounds are in the projection of the data layer
+                  // here we expect that all data layers are in the same projection and will use the first data layer as reference
+                  // the edit map service is most probably working the same and is not expected to be able to handle multiple data layers
+                  // with different projections
+                  readProjection(layers[0], function(projection) {
+                    processDataBounds(projection, newBounds, dataType, layerDataLoaded);
+                  })
                 }
 
+                console.log("createDataLayer() " + dataType + ": transforming newBounds " + newBounds + " from projection=" +  projection + " to referenceProjection()=" + referenceProjection());
+                newBounds.transform(projection, referenceProjection());
                 if(dataBounds !== null){
                   dataBounds.extend(newBounds);
                 } else if(newBounds !== undefined){
@@ -671,12 +713,10 @@
                 }
 
                 zoomToBounds = dataBounds;
-                console.log("createDataLayer() : data layer zoomToBounds: " + zoomToBounds);
+                console.log("createDataLayer() : viewport zoomToBounds are now: " + zoomToBounds);
                 zoomToClosestLevel = false;
               }
             }
-
-
 
             if(legendImgSrc != null && opts.legendPosition !== undefined && mapResponseObj.legend !== undefined){
                 var legendSrcUrl = mapResponseObj.geoserver + legendImgSrc + mapResponseObj.legend;
@@ -687,6 +727,88 @@
             return layers;
           }
 
+        };
+
+      /**
+       * transforms the newBounds from the projection to the referenceProjection() and finally calculates the
+       * zoomBounds for the viewport.
+       *
+       * @param projection
+       * @param newBounds
+       * @param layerDataTypeString
+       *    Only used for logging, (either "AREA" or "POINT")
+       * @param callback
+       */
+        var processDataBounds = function(projection, newBounds, layerDataTypeString, callback){
+
+          console.log("createDataLayer() " + layerDataTypeString + ": transforming newBounds " + newBounds + " from projection=" +  projection + " to referenceProjection()=" + referenceProjection());
+          newBounds.transform(projection, referenceProjection());
+          if(dataBounds !== null){
+            dataBounds.extend(newBounds);
+          } else if(newBounds !== undefined){
+            dataBounds = newBounds;
+          }
+
+          zoomToBounds = dataBounds;
+          console.log("createDataLayer() : viewport zoomToBounds are now: " + zoomToBounds);
+          zoomToClosestLevel = false;
+          callback();
+        };
+
+      /**
+       * Get the crs data from the WFS and read the projection name from it. Finally the supplied callback will
+       * be called with the matching projection object as parameter.
+       * @param layer
+       * @param callback
+       *   Function(Projection projection)
+       */
+        var readProjection = function(layer, callback){
+
+          var projection = layer.projection;
+
+          if(!projection) {
+            projection = layerProjections[layer.name];
+          }
+
+
+          if(projection) {
+            callback(projection);
+          } else {
+            // asking the edit map server would be the best:
+            //    > http://edit.africamuseum.be/geoserver/topp/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=topp:euromed_2013&maxFeatures=1&outputFormat=application/json
+            // or
+            //    > http://edit.africamuseum.be/geoserver/topp/ows?service=WFS&request=getCapabilities'
+            // but the latter returns only XML
+            var parameters = {
+              service: 'WFS',
+              version: '1.0.0',
+              request: 'GetFeature',
+              typeName: layer.name,
+              maxFeatures: 1, // only one feature
+              outputFormat: 'text/javascript',
+              format_options: 'callback:getJson'
+            };
+
+            jQuery.ajax({
+              url: opts.wfsRootUrl + "?" + jQuery.param(parameters),
+              dataType: 'jsonp',
+              jsonpCallback: 'getJson',
+              success: function(data, textStatus, jqXHR){
+                if(data.crs && data.crs.type && data.crs.properties.code){
+                  var projectionName = data.crs.type + "_" + data.crs.properties.code;
+                  log("projection name found in WFS response:" + projectionName);
+                  projection = CdmOpenLayers.projections[projectionName.toLowerCase()];
+                  callback(projection);
+                }
+              },
+              error : function(jqXHR, textStatus, errorThrown) {
+                log("projection name not found in WFS response, due to error: " + textStatus);
+                projection = CdmOpenLayers.projections.epsg_4326;
+                callback(projection);
+              }
+
+            });
+          }
         };
 
         /**

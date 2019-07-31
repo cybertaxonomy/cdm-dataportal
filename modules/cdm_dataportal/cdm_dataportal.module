@@ -347,7 +347,8 @@ function _add_js_utis_client($jquery_selector){
   drupal_add_js('jQuery(document).ready(function() {
         jQuery( "' . $jquery_selector . '" ).utis_client(
         {
-          spinnerIcon: \'' . font_awesome_icon_markup('fa-sync', array('class' => array('fa-3x',  'fa-spin'), 'style' => array('opacity: 0.3;'))) . '\'
+          spinnerIcon: \'' . font_awesome_icon_markup('fa-sync', array('class' => array('fa-3x',  'fa-spin'), 'style' => array('opacity: 0.3;'))) . '\',
+          externalLinkIcon: \'' . font_awesome_icon_markup('fa-external-link-alt') . '\'
         });
       });',
     array('type' => 'inline')
@@ -968,6 +969,7 @@ function cdm_dataportal_block_view($delta) {
       return null;
   }
 }
+
 
 /**
  * Provides the uuid of the taxon for pages with the path ./taxon/{taxon_uuid}
@@ -1949,7 +1951,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
 
     RenderHints::pushToRenderStack('name_page');
     RenderHints::setFootnoteListKey('name_page');
-    $content['taxon_name'] = markup_to_render_array(render_taxon_or_name($taxon_name));
+    $content['taxon_name'] = markup_to_render_array(render_taxon_or_name($taxon_name), null, '<div class="name-page-name">', '</div>');
 
 
     // name relationships
