@@ -1566,9 +1566,9 @@ function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_n
   if (count($synonymy_group) > 0) {
     $synonym = array_pop($synonymy_group);
     $type_designations = cdm_ws_get(CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS_IN_HOMOTYPICAL_GROUP, $synonym->name->uuid);
-  }
-  if($type_designations) {
-    return $type_designations;
+    if($type_designations) {
+      return $type_designations;
+    }
   }
   return array();
 }
