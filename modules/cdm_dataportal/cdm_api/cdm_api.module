@@ -202,30 +202,30 @@ function cdm_api_cron() {
  */
 function get_classifications_for_taxon($taxon) {
 
-  return cdm_ws_get(CDM_WS_TAXON_CLASSIFICATIONS, $taxon->uuid);;
+  return cdm_ws_get(CDM_WS_TAXON_CLASSIFICATIONS, $taxon->uuid);
 }
 
 /**
- * Returns the chosen FeatureTree for the taxon profile.
+ * Returns the chosen FeatureTree to be used as FeatureTree for the taxon profile.
  *
- * The FeatureTree profile returned is the one that has been set in the
+ * The FeatureTree returned is the term tree one that has been set in the
  * dataportal settings (layout->taxon:profile).
  * When the chosen FeatureTree is not found in the database,
  * the standard feature tree (UUID_DEFAULT_FEATURETREE) will be returned.
  *
- * @return mixed
- *   A cdm FeatureTree object.
+ * @return object
+ *   A cdm TermTree object.
  */
 function get_profile_feature_tree() {
   static $profile_featureTree;
 
   if($profile_featureTree == NULL) {
     $profile_featureTree = cdm_ws_get(
-      CDM_WS_FEATURETREE,
+      CDM_WS_TERMTREE,
       variable_get(CDM_PROFILE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE)
     );
     if (!$profile_featureTree) {
-      $profile_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
+      $profile_featureTree = cdm_ws_get(CDM_WS_TERMTREE, UUID_DEFAULT_FEATURETREE);
     }
   }
 
@@ -233,26 +233,26 @@ function get_profile_feature_tree() {
 }
 
 /**
- * Returns the chosen FeatureTree for SpecimenDescriptions.
+ * Returns the chosen TermTree to be used as FeatureTree for SpecimenDescriptions.
  *
- * The FeatureTree returned is the one that has been set in the
+ * The TermTree returned is the one that has been set in the
  * dataportal settings (layout->taxon:specimen).
- * When the chosen FeatureTree is not found in the database,
- * the standard feature tree (UUID_DEFAULT_FEATURETREE) will be returned.
+ * When the chosen TermTree is not found in the database,
+ * the standard term tree (UUID_DEFAULT_TERMTREE) will be returned.
  *
- * @return mixed
- *   A cdm FeatureTree object.
+ * @return object
+ *   A cdm TermTree object.
  */
 function cdm_get_occurrence_featureTree() {
   static $occurrence_featureTree;
 
   if($occurrence_featureTree == NULL) {
     $occurrence_featureTree = cdm_ws_get(
-      CDM_WS_FEATURETREE,
+      CDM_WS_TERMTREE,
       variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE)
     );
     if (!$occurrence_featureTree) {
-      $occurrence_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
+      $occurrence_featureTree = cdm_ws_get(CDM_WS_TERMTREE, UUID_DEFAULT_FEATURETREE);
     }
   }
   return $occurrence_featureTree;
@@ -274,12 +274,12 @@ function get_structured_description_featureTree() {
 
   if($structured_description_featureTree == NULL) {
     $structured_description_featureTree = cdm_ws_get(
-        CDM_WS_FEATURETREE,
+        CDM_WS_TERMTREE,
         variable_get(CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE)
     );
     if (!$structured_description_featureTree) {
       $structured_description_featureTree = cdm_ws_get(
-          CDM_WS_FEATURETREE,
+          CDM_WS_TERMTREE,
           UUID_DEFAULT_FEATURETREE
       );
     }
@@ -1856,7 +1856,8 @@ function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
  *    The nodes contained in CDM FeatureTree entitiy: $feature->root->childNodes
  * @param $feature_uuid
  *    The UUID of the Feature
- * @return returns the FeatureNode or null
+ * @return object
+ *    the FeatureNode or null
  */
 function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
 
@@ -2431,11 +2432,11 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
   // Set tree that contains all features.
   if ($add_default_feature_free) {
     $options[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
-    $feature_trees[] = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
+    $feature_trees[] = cdm_ws_get(CDM_WS_TERMTREE, UUID_DEFAULT_FEATURETREE);
   }
 
   // Get feature trees from database.
-  $persited_trees = cdm_ws_fetch_all(CDM_WS_FEATURETREES);
+  $persited_trees = cdm_ws_fetch_all(CDM_WS_TERMTREES);
   if (is_array($persited_trees)) {
     $feature_trees = array_merge($feature_trees, $persited_trees);
   }

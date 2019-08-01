@@ -48,7 +48,7 @@ function theme_FeatureTree_hierarchy($variables) {
   }
 
   $out = '';
-  $feature_tree = cdm_ws_get(CDM_WS_FEATURETREE,
+  $feature_tree = cdm_ws_get(CDM_WS_TERMTREE,
     array(
       $feature_tree_uuid,
     )

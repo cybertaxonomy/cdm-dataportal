@@ -73,7 +73,7 @@ define('CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'portal/taxon/f
 define('CDM_WS_TAXONNODE', 'taxonNode/$0');
 
 /**
- * /description/{uuid}/naturalLanguageDescription/{featuretree_uuid}
+ * /description/{uuid}/naturalLanguageDescription/{termtree_uuid}
  */
 define('CDM_WS_DESCRIPTION_NAMEDAREAS_IN_USE', 'description/namedAreasInUse');
 define('CDM_WS_DESCRIPTION_NATURALLANGUAGE_DESCRIPTION', 'description/$0/naturalLanguageDescription/$1');
@@ -128,12 +128,10 @@ define('CDM_WS_TERM_COMPARE', 'term/$0/compareTo/$1');
 define('CDM_WS_TERM', 'term');
 define('CDM_WS_PORTAL_TERM', 'portal/term/$0');
 
-/**
- * Returns FeatureTrees that are stored in this community store.
- */
-define('CDM_WS_FEATURETREE', 'portal/featureTree/$0');
-define('CDM_WS_FEATURETREES', 'portal/featureTree');
-// define('CDM_WS_FEATURETREE_CHILDREN', 'featureTree/$0/children');
+
+define('CDM_WS_TERMTREE', 'portal/termTree/$0');
+define('CDM_WS_TERMTREES', 'portal/termTree');
+// define('CDM_WS_TERMTREE_CHILDREN', 'termTree/$0/children');
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxonDistributionFor/$0');
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP_FOR_FIELDUNITS', 'ext/edit/mapServiceParameters/taxonOccurrencesForX');
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');

@@ -338,11 +338,11 @@ function get_csv_featureTree() {
 
  if($csv_featureTree == NULL) {
   $csv_featureTree = cdm_ws_get(
-    CDM_WS_FEATURETREE,
+    CDM_WS_TERMTREE,
     variable_get(CDM_CSV_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE)
   );
   if (!$csv_featureTree) {
-   $csv_featureTree = cdm_ws_get(CDM_WS_FEATURETREE, UUID_DEFAULT_FEATURETREE);
+   $csv_featureTree = cdm_ws_get(CDM_WS_TERMTREE, UUID_DEFAULT_FEATURETREE);
   }
  }
  return $csv_featureTree;
