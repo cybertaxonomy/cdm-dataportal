@@ -2436,7 +2436,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE) {
   }
 
   // Get feature trees from database.
-  $persited_trees = cdm_ws_fetch_all(CDM_WS_TERMTREES);
+  $persited_trees = cdm_ws_fetch_all(CDM_WS_TERMTREES, array("termType" => "Feature"));
   if (is_array($persited_trees)) {
     $feature_trees = array_merge($feature_trees, $persited_trees);
   }
