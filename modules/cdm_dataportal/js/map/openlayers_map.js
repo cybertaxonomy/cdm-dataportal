@@ -90,7 +90,7 @@
         // EPSG:3857 from http://spatialreference.org/ref/sr-org/6864/proj4/
         // OpenStreetMap etc
         Proj4js.defs["EPSG:3857"] = '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs';
-        Proj4js.defs["EPSG:7777777"] = '+proj=lcc + 42 + 56 + 35 + 24 + 3000000 + 100000';
+        Proj4js.defs["EPSG:7777777"] = '+proj=lcc +lat_1=42 +lat_2=56 +lat_0=35 +lon_0=24 +x_0=3000000 +y_0=100000 +ellps=intl +towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs';
 
         var projections = {
                 epsg_4326: new OpenLayers.Projection("EPSG:4326"),
