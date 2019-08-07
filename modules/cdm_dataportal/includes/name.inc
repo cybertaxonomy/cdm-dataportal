@@ -864,17 +864,6 @@ function compose_type_designations($taxon_name_uuid, $show_specimen_details = fa
 
     $render_array['map'] = compose_type_designations_map($type_designations);
   }
-  if($show_specimen_details){
-    $fileunit_dtos = array();
-    foreach($type_designations as $type_designation){
-      if(isset($type_designation->typeSpecimen)) {
-        $fileunit_dtos[] = cdm_ws_get(CDM_WS_OCCURRENCE_FILEUNIT_DTO, array($type_designation->typeSpecimen->uuid));
-      }
-    }
-    if(count($fileunit_dtos) > 0) {
-     $render_array['specimens'] = compose_specimen_table_top_down($fileunit_dtos);
-    }
-  }
   return $render_array;
 }
 
