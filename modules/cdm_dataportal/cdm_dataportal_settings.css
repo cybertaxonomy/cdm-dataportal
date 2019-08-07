@@ -57,12 +57,21 @@
     font-family: monospace;
 }
 
-#cdm-settings-geo .map-extent-bbox .degree-value {
+#cdm-settings-geo .map-extent-bbox .layer-value {
     color: forestgreen;
+    font-weight: bold;
+}
+
+#cdm-settings-geo .baselayer-extent-bbox .layer-value {
+    color: royalblue;
+}
+
+#cdm-settings-geo .map-extent-bbox .degree-value {
+    color: darkgrey;
 }
 
 #cdm-settings-geo .baselayer-extent-bbox .degree-value {
-    color: royalblue;
+    color: darkgrey;
 }
 
 .fieldset-float {

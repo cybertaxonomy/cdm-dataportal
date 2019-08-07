@@ -3041,13 +3041,14 @@ function cdm_settings_geo($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => 'Bounding box',
     '#default_value' => $map_distribution['bbox'],
-    '#description' => t('The bounding box (left, bottom, right, top) in degree defines the area to be initially displayed in maps.
-      Use "-180,-90,180,90" for the whole world. Leave <strong>empty</strong>
-      to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.</p>
-      <strong>TIP:</strong> You can use the map preview above to choose the <span class="map-extent-bbox"><strong>map extent bbox</strong> in <strong class="degree-value"">degree</strong></span> from the map.
-      (Maybe you need to change the map base layer to OpeLayers.)
+    '#description' =>
+      'The bounding box (left, bottom, right, top) defines the area to be initially displayed in maps. The bbox must be given in coordinates of the projection of the chosen layer. 
+      For the whole world use Use <code>-180,-90,180,90</code>" for EPSG:4326 layers, for Web Mercator maps Open Street Map or 
+      Google maps the maximum bounds of the world are <code>-27395030.933594,-13697515.466797,27395030.933594,13697515.466797</code>.
+      Leave <strong>empty</strong> to let the map <strong>automatically zoom</strong> to the bounds enclosing the shown data.</p>
+      <strong>TIP:</strong> You can use the map preview above to choose the <span class="map-extent-bbox"><strong class="layer-value">map extent bbox</strong></span> from the details information.
       Hold down Strg and drag with your mouse to select a bbox to zoom to. The bbox of the visible area of the map is always displayed
-      below the map from where you can copy the bbox string.</p>'),
+      below the map from where you can copy the bbox string.</p>',
   );
 
   $form[CDM_MAP_DISTRIBUTION]['maxZoom'] = array(

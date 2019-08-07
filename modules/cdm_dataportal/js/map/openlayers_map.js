@@ -511,10 +511,10 @@
                 info += "<dt>map width, height:<dt><dd>" + mapContainerElement.width() +  ", " + mapContainerElement.height() + "</dd>";
                 info += "<dt>map aspect ratio:<dt><dd>" + mapContainerElement.width() / mapContainerElement.height() + "</dd>";
                 if(map.getExtent() != null){
-                  info += "<dt>map extent bbox:<dt><dd class=\"map-extent-bbox\">" + map.getExtent().toBBOX() + ", <strong>degree:</strong> <span class=\"degree-value\">" + mapExtendDegree.toBBOX() + "</span></dd>";
+                  info += "<dt>map extent bbox:<dt><dd class=\"map-extent-bbox\"><span class=\"layer-value\">" + map.getExtent().toBBOX() + "</span>, (in degree:<span class=\"degree-value\">" + mapExtendDegree.toBBOX() + "</span>)</dd>";
                   info += "<dt>map maxExtent bbox:<dt><dd>" + map.getMaxExtent().toBBOX() + "</dd>";
-                  info += "<dt>baselayer extent bbox:<dt><dd class=\"baselayer-extent-bbox\">" +  map.baseLayer.getExtent().toBBOX() + ", <strong>degree:</strong> <span class=\"degree-value\">"
-                    + map.baseLayer.getExtent().clone().transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326) + "</span></dd>"
+                  info += "<dt>baselayer extent bbox:<dt><dd class=\"baselayer-extent-bbox\"><span class=\"layer-value\">" +  map.baseLayer.getExtent().toBBOX() + "</span>, (in degree: <span class=\"degree-value\">"
+                    + map.baseLayer.getExtent().clone().transform(map.baseLayer.projection, CdmOpenLayers.projections.epsg_4326) + "</span>)</dd>";
                   info += "<dt>baselayer projection:<dt><dd>" + map.baseLayer.projection.getCode() + "</dd>";
                 }
             } else {
