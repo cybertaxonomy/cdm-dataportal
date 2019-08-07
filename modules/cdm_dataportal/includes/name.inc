@@ -601,15 +601,20 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   }
 
   $render_array['sub_headline'] = markup_to_render_array(join(", ", registration_types($registration_dto)),-10, '<h3 class="regsitration_type">' . t('Event: '), '</h3>' );
+  $render_array['nomenclatural_act'] = array(
+    '#weight' => 0,
+    '#prefix' => '<div class="nomenclatural_act">',
+    '#suffix' => '</div>'
+  );
 
   // name
   if($registration_dto->nameRef){
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
     cdm_load_tagged_full_title($name);
-    $render_array['published_name'] = markup_to_render_array('<p class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</p>', 0);
+    $render_array['nomenclatural_act']['published_name'] = markup_to_render_array('<div class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</div>', 0);
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
-    $render_array['name_relations'] = compose_name_relationships_list($name_relations, $registration_dto->nameRef->uuid, null);
-    $render_array['name_relations']['#weight'] = 10;
+    $render_array['nomenclatural_act']['name_relations'] = compose_name_relationships_list($name_relations, $registration_dto->nameRef->uuid, null);
+    $render_array['nomenclatural_act']['name_relations']['#weight'] = 10;
   } else {
     // in this case the registration must have a
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->typifiedNameRef->uuid);
@@ -647,26 +652,28 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     }
     // type designations wich are in this nomenclatural act.
     if (count($name_type_designation_refs) > 0) {
-      $render_array['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
-      $render_array['name_type_designations']['#prefix'] = '<p class="name_type_designations">';
-      $render_array['name_type_designations']['#suffix'] = '</p>';
-      $render_array['name_type_designations']['#weight'] = 20;
+      $render_array['nomenclatural_act']['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
+      $render_array['nomenclatural_act']['name_type_designations']['#prefix'] = '<p class="name_type_designations">';
+      $render_array['nomenclatural_act']['name_type_designations']['#suffix'] = '</p>';
+      $render_array['nomenclatural_act']['name_type_designations']['#weight'] = 20;
     }
     if (count($field_unit_uuids) > 0) {
       $specimen_type_designations_array = compose_specimen_type_designations($specimen_type_designation_refs, true);
-      $render_array['specimen_type_designations'] = $specimen_type_designations_array['type_designations'];
+      $render_array['nomenclatural_act']['specimen_type_designations'] = $specimen_type_designations_array['type_designations'];
       $render_array['map'] = $specimen_type_designations_array['map'];
+      $render_array['map']['#weight'] = $render_array['nomenclatural_act']['#weight'] + 20;
     }
   }
 
   // citation
   if ($with_citation) {
     $render_array['citation'] = markup_to_render_array(
-      "<p class=\"citation " . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
+      "<div class=\"citation nomenclatural_act_citation" . html_class_attribute_ref(new TypedEntityReference("Reference", $registration_dto->citationUuid)) . "\">"
+      . "<span class=\"label\">published in: </span>"
       . $registration_dto->bibliographicInRefCitationString
       . l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), path_to_reference($registration_dto->citationUuid), array('html' => true))
-      . "</p>",
-      50);
+      . "</div>",
+      $render_array['nomenclatural_act']['#weight'] + 10 );
   }
 
   // registration date and office
