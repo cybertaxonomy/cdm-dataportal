@@ -1705,7 +1705,7 @@ function cdm_dataportal_specimen_page_view($uuid) {
  *   - 'title': the page title
  *   - 'content' : the page content rendered as markup
  */
-function specimen_by_accession_number_view($field_unit_dto = null) {
+function specimen_by_accession_number_view($accession_number = null) {
 
   $field_unit_dto = cdm_ws_get(CDM_WS_OCCURRENCE_ACCESSION_NUMBER, null, 'accessionNumber=' . $accession_number);
 
@@ -1751,8 +1751,8 @@ function specimen_by_accession_number_view($field_unit_dto = null) {
       'specimen' => $field_unit_dto
     ));
 
-//     $render_array['markup'] = $specimen_table;
-
+     $render_array['markup'] = $specimen_table;
+     $specimenpage->content = drupal_render($render_array);
 //        $render_array['specimens'] = array(
 //            '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
 //            'content' => $specimen_table, // returns render array
