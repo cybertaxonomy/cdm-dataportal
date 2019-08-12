@@ -175,7 +175,7 @@ function theme_cdm_typedesignations($variables) {
         $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);
       }
 
-      if (isset($derivedUnitFacadeInstance)) {
+      if (isset($derivedUnitFacadeInstance->titleCache)) {
         $specimen_markup = $derivedUnitFacadeInstance->titleCache;
         if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
           $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($type_designation->typeSpecimen->uuid)), $specimen_markup);
