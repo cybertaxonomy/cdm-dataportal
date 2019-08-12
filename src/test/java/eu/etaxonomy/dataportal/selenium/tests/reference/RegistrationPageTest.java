@@ -69,7 +69,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012",
                 regItem.getNameElement().getText());
         assertEquals(
-                "Novis, P. M., Braidwood, J. & Kilroy, C., Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species in Phytotaxa 64: 11-45. 2012",
+                "published in: Novis, P. M., Braidwood, J. & Kilroy, C., Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species in Phytotaxa 64: 11-45. 2012",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 14:21:52",
@@ -91,7 +91,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "for Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012",
                 regItem.getTypifiedNameElement().getText());
         assertEquals(
-                "Jahn, R., Abarca, N., Gemeinholzer, B. & al., Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum in Diatom Research 32: 75-107. 2017",
+                "published in: Jahn, R., Abarca, N., Gemeinholzer, B. & al., Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum in Diatom Research 32: 75-107. 2017",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 14:20:51",
@@ -131,7 +131,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Holotype: Iran, Islamic Republic of, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–83–1).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
-                "Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 14:16:45",
@@ -153,7 +153,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Orig. des.: Ramsaria avicennae Heidari & Hauer Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018:146",
                 regItem.getNameTypeDesignations().get(0).getText());
         assertEquals(
-                "Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 13:54:35",
@@ -175,7 +175,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Holotype: Iran, Islamic Republic of, Ramsar, alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–087–1).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
-                "Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 13:54:29",
@@ -194,6 +194,11 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertNotNull(regItem);
         assertTrue(
                 regItem.getSpecimenTypeDesignations().get(0).getText().startsWith("Lectotype: Germany, Berlin, 2.4.1835 (BHUPM 671). Naturkundemuseum Berlin (MFN) - Ehrenberg Collection"));
+        assertEquals(
+                "BHUPM 671",
+                regItem.getSpecimenTypeDesignations().get(0).getLinksInElement().get(0).getText());
+        assertTrue(
+                regItem.getSpecimenTypeDesignations().get(0).getLinksInElement().get(1).getUrl().endsWith("cdm_dataportal/reference/c5d980ff-8766-4322-9acb-7b0a499de707"));
         List<List<GalleryImage>> galleryImages = ElementUtils.getGalleryImages(regItem.getSpecimenTypeDesignations().get(0).getElement(), p.getWait());
         assertEquals("Expecting one row of images", 1, galleryImages.size());
         assertEquals("Expecting 1 image in row", 1, galleryImages.get(0).size());
@@ -204,11 +209,11 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Isolectotype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 regItem.getSpecimenTypeDesignations().get(1).getText());
         assertEquals(
-                "http://herbarium.bgbm.org/object/B400042045",
+                "M M-0289351",
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getText());
         assertEquals(
                 "http://herbarium.bgbm.org/object/B400042045",
-                regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getUrl());
+                regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(1).getText());
         assertEquals(
                 "Epitype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047 (CEDiT 2017E68).",
                 regItem.getSpecimenTypeDesignations().get(2).getText());
@@ -216,7 +221,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24.7.1838-8.1838",
                 regItem.getTypifiedNameElement().getText());
         assertEquals(
-                "Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H., Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany) in Systematics and Biodiversity. 2017",
+                "published in: Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H., Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany) in Systematics and Biodiversity. 2017",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-12 09:08:29",
