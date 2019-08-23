@@ -1729,11 +1729,6 @@ function specimen_by_accession_number_view($accession_number = null) {
         '#items' => array($value),
         '#type' => 'ul');
       $output = drupal_render($renderArray);
-//            $specimen_table['#rows'][] = array(
-//                // An array of table rows. collapsible row
-//                'data' => "",
-//                'class' => array('expand_column')
-//            );
       $specimen_table['#rows'][] = array(
         // An array of table rows. Every row is an array of cells, or an associative array
         'data' => array($output),
@@ -1753,11 +1748,6 @@ function specimen_by_accession_number_view($accession_number = null) {
 
      $render_array['markup'] = $specimen_table;
      $specimenpage->content = drupal_render($render_array);
-//        $render_array['specimens'] = array(
-//            '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
-//            'content' => $specimen_table, // returns render array
-//            '#suffix' => '</div>',
-//        );
   }
 
   return $specimenpage;
