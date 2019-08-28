@@ -172,14 +172,16 @@
           lineHeight = lineHeight.length == 0 ? 18 : lineHeight;
 
           scroller = cdm_taxontree_parent.find('div.' + vertical_scroller_selector);
-          scrollBy =  focusedElement.offset().top - scroller.offset().top;
+          scrollDistanceY =  focusedElement.offset().top - scroller.offset().top;
+          scrollDistanceX =  focusedElement.offset().left - scroller.offset().left;
           // console.log("cdm_taxontree.scrollToFocused() - lineHeight:" + lineHeight);
           //console.log("cdm_taxontree.scrollToFocused() -  scrollBy: " + scrollBy);
 
           byLinesDown = 3;
 
           isCichorieseTheme = $('div#header').length == 1;
-          scroller.scrollTop(scrollBy - (byLinesDown * lineHeight));
+          scroller.scrollTop(scrollDistanceY - (byLinesDown * lineHeight));
+          scroller.scrollLeft(scrollDistanceX);
         }
 
     }
