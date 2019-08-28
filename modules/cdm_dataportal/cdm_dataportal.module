@@ -619,7 +619,7 @@ function cdm_dataportal_menu() {
    * the MENU_LOCAL_TASK creates another tab
    */
   $items['cdm_dataportal/registration-search/taxongraph'] = array(
-    'title' => 'Taxonomic search', // will be passed through t()
+    'title' => 'Taxon graph search', // will be passed through t()
     'page callback' => 'cdm_dataportal_view_search_registrations_results',
     'page arguments' => array("taxongraph"),
     'access arguments' => array('access cdm content'),
