@@ -316,14 +316,13 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
 
   normalize_tagged_text($tagged_title);
 
-  $firstEntryIsValidNamePart =
+  $is_valid_tagged_title =
     isset($tagged_title)
     && is_array($tagged_title)
     && isset($tagged_title[0]->text)
     && is_string($tagged_title[0]->text)
     && $tagged_title[0]->text != ''
-    && isset($tagged_title[0]->type)
-    && $tagged_title[0]->type == 'name';
+    && isset($tagged_title[0]->type);
   $lastAuthorElementString = FALSE;
 
   $name_encasement = $is_invalid ? '"' : '';
@@ -332,6 +331,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
 
   if($doubtful_marker){
     $doubtful_marker_markup = '<span class="doubtful">' . $doubtful_marker . '</span>';
+    if($tagged_title[0]->text == '?' ){
+      // remove the first tagged text element
+      unset($tagged_title[0]);
+    }
   }
 
   // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
@@ -340,7 +343,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   }
 
   // Got to use second entry as first one, see ToDo comment below ...
-  if ($firstEntryIsValidNamePart) {
+  if ($is_valid_tagged_title) {
 
     $taggedName = $tagged_title;
     $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
@@ -373,6 +376,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
     $name = '<span class="' . $taxonName->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName, $skiptags) . $name_encasement . '</span>';
   }
   else {
+    // use titleCache instead
     $name = '<span class="' . $taxonName->class . '_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
   }
 
