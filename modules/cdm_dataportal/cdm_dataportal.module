@@ -1978,12 +1978,15 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
 
 
     // related taxa
-    if ($taxa) {
-      $content['related_taxa_header'] = markup_to_render_array("<h2>Taxa for this name</h2>");
-      $content['related_taxa'] = compose_list_of_taxa($taxa);
-    }
-    else {
-      $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.', null, '<div class="no-taxon-message">', '</div>');
+    $show_taxa_section = variable_get(CDM_NAME_PAGE_SECTION_TAXA, CDM_NAME_PAGE_SECTION_TAXA_DEFAULT);
+    if($show_taxa_section){
+      if ($taxa) {
+        $content['related_taxa_header'] = markup_to_render_array("<h2>Taxa for this name</h2>");
+        $content['related_taxa'] = compose_list_of_taxa($taxa);
+      }
+      else {
+        $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.', null, '<div class="no-taxon-message">', '</div>');
+      }
     }
 
     $content['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));

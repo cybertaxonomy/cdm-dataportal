@@ -9,6 +9,9 @@
 
 const CDM_NAME_PAGE_AUTOREDIRECT = 'cdm_name_page_autoredirect';
 
+const CDM_NAME_PAGE_SECTION_TAXA = 'cdm_name_page_section_taxa';
+const CDM_NAME_PAGE_SECTION_TAXA_DEFAULT = 1;
+
 define('TAXONTREE_RANKLIMIT', 'cdm_taxontree_ranklimit');
 define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
   define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
@@ -2857,7 +2860,12 @@ function cdm_settings_layout_name_page()
     '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, cdm_vocabulary_as_defaults(UUID_NAME_RELATIONSHIP_TYPE)),
   );
 
+  $form[CDM_NAME_PAGE_SECTION_TAXA] = array (
+    '#type' => 'checkbox',
+    '#title' => 'Show the associated taxa section',
+    '#default_value' => variable_get(CDM_NAME_PAGE_SECTION_TAXA, CDM_NAME_PAGE_SECTION_TAXA_DEFAULT)
 
+  );
 
   return system_settings_form($form);
 }
