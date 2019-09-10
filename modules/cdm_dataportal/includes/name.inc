@@ -604,10 +604,11 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     return $render_array;
   }
 
-  $render_array['sub_headline'] = markup_to_render_array(join(", ", registration_types($registration_dto)),-10, '<h3 class="regsitration_type">' . t('Event: '), '</h3>' );
+  $render_array['sub_headline'] = markup_to_render_array(join(", ", registration_types($registration_dto)),-10, '<h3 class="registration_type">' . t('Event: '), '</h3>' );
   $render_array['nomenclatural_act'] = array(
     '#weight' => 0,
     '#prefix' => '<div class="nomenclatural_act">',
+
     '#suffix' => '</div>'
   );
 
