@@ -2662,7 +2662,9 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
  *
  * @param array $cdm_entities
  *   An array of CdmBase instances or a single instance.
- * @param string $footnote_list_key_suggestion
+ * @param $footnote_list_key_suggestion string
+ *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined be set to
+ *    RenderHints::getFootnoteListKey().'-annotations' otherwise the supplied key will be used.
  *
  * @return array of footnote keys
  */

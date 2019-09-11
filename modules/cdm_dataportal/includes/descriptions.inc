@@ -1,4 +1,5 @@
 <?php
+const BIBLIOGRAPHY_FOOTNOTE_KEY = 'BIBLIOGRAPHY';
 
 /**
  * Returns the localized representations of the modifiers hold by the
@@ -316,8 +317,11 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
  *   A CDM DescriptionElement instance
  * @param $separator
  *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
- * @param $footnote_list_key_suggestion
- *   will be overridden for original sources if the bibliography block is enabled
+ * @param $footnote_list_key_suggestion string
+ *    This paramter will be overridden for original sources if the bibliography block is enabled.
+ *    optional parameter. If this paramter is left empty (null, 0, "") the footnote key will be determined by the nested
+ *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations will be set to
+ *    RenderHints::getFootnoteListKey().'-annotations'. @see cdm_annotations_as_footnotekeys()
  *
  * @return String
  *   The foot note keys
@@ -344,14 +348,29 @@ function cdm_create_description_element_footnotes(
 /**
  * Creates the footnotes for the given CDM instance.
  *
- * Footnotes are created for annotations and original sources.
+ * Footnotes are created for annotations and original sources whereas the resulting footnote keys depend on the
+ * parameters $footnote_list_key_suggestion and $is_bibliography_aware, see parameter $footnote_list_key_suggestion
+ * for more details.
+ *
+ * possible keys for
+ *     - annotation footnotes:
+ *       - $footnote_list_key_suggestion
+ *       - RenderHints::getFootnoteListKey().'-annotations'
+ *     - original source footnotes
+ *       - "BIBLIOGRAPHY" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 1 )
+ *       - "BIBLIOGRAPHY-$footnote_list_key_suggestion" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 0 )
+ *       - $footnote_list_key_suggestion (when $is_bibliography_aware)
  *
  * @param $descriptionElement
  *   A CDM DescriptionElement instance
  * @param $separator
  *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
- * @param $footnote_list_key_suggestion
- *   will be overridden for original sources if the bibliography block is enabled
+ * @param $footnote_list_key_suggestion string
+ *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
+ *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnote key for annotations will be set to
+ *    RenderHints::getFootnoteListKey().'-annotations'. @see cdm_annotations_as_footnotekeys()
+ *    For original sources the $footnote_list_key_suggestion will be overwritten by original_source_footnote_list_key() when
+ *    $is_bibliography_aware is set TRUE.
  * @$original_source_footnote_tag
  *    null will cause original_source_footnote_list_key to use the default
  *
@@ -400,10 +419,14 @@ function cdm_create_footnotes(
   $footnoteKeyListStr = '';
   asort($footNoteKeys);
   foreach ($footNoteKeys as $footNoteKey) {
-    $footnoteKeyListStr .= theme('cdm_footnote_key',
-      array(
-        'footnoteKey' => $footNoteKey,
-        'separator' => ($footnoteKeyListStr ? $separator : '')));
+    try{
+      $footnoteKeyListStr .= theme('cdm_footnote_key',
+        array(
+          'footnoteKey' => $footNoteKey,
+          'separator' => ($footnoteKeyListStr ? $separator : '')));
+    } catch (Exception $e) {
+      drupal_set_message("Exception: " . $e->getMessage(),  'error');
+    }
   }
   return $footnoteKeyListStr;
 }
@@ -536,7 +559,10 @@ function handle_annotations_and_sources_config($feature_block_settings){
    * @param $inline_text_prefix
    *   Only used to decide if the source references should be enclosed in brackets or not when displayed inline.
    *   This text will not be included into the response.
-   * @param $footnote_list_key_suggestion
+   * @param $footnote_list_key_suggestion string
+   *    optional parameter. If this paramter is left empty (null, 0, "") the footnote key will be determined by the nested
+   *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations will be set to
+   *    RenderHints::getFootnoteListKey().'-annotations'. @see cdm_annotations_as_footnotekeys()
    *
    * @return array
    *   an associative array with the following elements:
@@ -620,7 +646,18 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
 
   /**
+   * This method determines the footnote key for original sources to be shown in the bibliography block
    *
+   * The footnote key depends on the value of the 'enabled' value of the bibliography_settings
+   *    - enabled == 1 -> "BIBLIOGRAPHY"
+   *    - enabled == 0 -> "BIBLIOGRAPHY-$key_suggestion"
+   *
+   * @see get_bibliography_settings() and @see constant BIBLIOGRAPHY_FOOTNOTE_KEY
+   *
+   * @param $key_suggestion string
+   *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be retrieved by
+   *    calling RenderHints::getFootnoteListKey().
+
    *
    * @return string
    *  the footnote_list_key
@@ -630,7 +667,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
       $key_suggestion = RenderHints::getFootnoteListKey();
     }
     $bibliography_settings = get_bibliography_settings();
-    $footnote_list_key = $bibliography_settings['enabled'] == 1 ? 'BIBLIOGRAPHY' : 'BIBLIOGRAPHY-' . $key_suggestion;
+    $footnote_list_key = $bibliography_settings['enabled'] == 1 ? BIBLIOGRAPHY_FOOTNOTE_KEY : BIBLIOGRAPHY_FOOTNOTE_KEY . '-' . $key_suggestion;
     return $footnote_list_key;
   }
 
