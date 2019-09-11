@@ -927,7 +927,7 @@ function compose_name_type_designations($type_entity_refs){
   $preferredStableUri = '';
   foreach($type_entity_refs as $type_status => $name_types){
     foreach ($name_types as $name_type){
-      $type_designation = cdm_ws_get(CDM_TYPEDESIGNATION, array($name_type->uuid, 'preferredUri'));
+      $type_designation = cdm_ws_get(CDM_WS_TYPEDESIGNATION, array($name_type->uuid, 'preferredUri'));
       if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
         $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
       }
@@ -965,7 +965,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
   foreach($type_entity_refs as $type_status => $specimen_types){
     foreach($specimen_types as $specimen_type){
 
-      $type_designation = cdm_ws_get(CDM_PORTAL_TYPEDESIGNATION, array($specimen_type->uuid));
+      $type_designation = cdm_ws_get(CDM_WS_PORTAL_TYPEDESIGNATION, array($specimen_type->uuid));
       $type_designation_list[] = $type_designation; // collect for the map
 
       $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_PORTAL_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);

@@ -956,6 +956,11 @@ function cdm_ws_base_uri($cdm_type_simple)
       $ws_base_uri{0} = strtolower($ws_base_uri{0});
       break;
 
+    case 'TextualTypeDesignation':
+    case 'SpecimenTypeDesignation':
+    case 'NameTypeDesignation':
+      $ws_base_uri = CDM_WS_TYPEDESIGNATION;
+      break;
     default:
       $ws_base_uri = null;
   }

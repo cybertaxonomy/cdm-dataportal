@@ -25,8 +25,8 @@ define('CDM_WS_PORTAL_NAME_NAME_RELATIONS', 'portal/name/$0/nameRelations');
 
 define('CDM_WS_NOMENCLATURALSTATUS', 'nomenclaturalStatus/$0');
 
-define('CDM_TYPEDESIGNATION', 'typedesignation/$0');
-define('CDM_PORTAL_TYPEDESIGNATION', 'portal/typedesignation/$0');
+define('CDM_WS_TYPEDESIGNATION', 'typedesignation/$0');
+define('CDM_WS_PORTAL_TYPEDESIGNATION', 'portal/typedesignation/$0');
 
 
 define('CDM_WS_TAXON', 'taxon');
