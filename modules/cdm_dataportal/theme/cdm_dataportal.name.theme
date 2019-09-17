@@ -111,7 +111,7 @@ function theme_cdm_typedesignations($variables) {
         $link_to_name_page = url(path_to_name($name_type_designation->typeName->uuid));
         $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($name_type_designation) . '">' .  type_designation_status_label_markup($name_type_designation) ;
 
-        if ($name_type_designation->citation) {
+        if (!empty($name_type_designation->citation)) {
           $out .= type_designation_citation_layout($name_type_designation, $separator); // TODO type_designation_citation_layout() needs most probably to be replaced
 
         }
@@ -183,7 +183,7 @@ function theme_cdm_typedesignations($variables) {
         $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $specimen_type_designation->typeSpecimen->uuid);
       }
 
-      if (isset($derivedUnitFacadeInstance->titleCache)) {
+      if (!empty($derivedUnitFacadeInstance->titleCache)) {
         $specimen_markup = $derivedUnitFacadeInstance->titleCache;
         if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
           $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($specimen_type_designation->typeSpecimen->uuid)), $specimen_markup);
@@ -191,7 +191,7 @@ function theme_cdm_typedesignations($variables) {
         $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
            . $specimen_markup
            . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
-        if(isset($derivedUnitFacadeInstance->preferredStableUri)){
+        if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
           $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
         }
       }
