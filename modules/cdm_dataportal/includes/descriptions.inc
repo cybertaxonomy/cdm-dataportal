@@ -612,8 +612,6 @@ function handle_annotations_and_sources_config($feature_block_settings){
         }
       } // END of loop over sources
 
-    } // END of references inline
-
     // annotations footnotes separate.
     $annotations_and_sources['foot_note_keys'] = theme('cdm_annotations_as_footnotekeys',
       array(
@@ -622,24 +620,25 @@ function handle_annotations_and_sources_config($feature_block_settings){
       )
     );
 
+    } // END of references inline
+
     // sources as footnotes or put into into bibliography if requested ...
     if ($config['add_footnote_keys'] == 1) {
       if(empty($config['bibliography_aware'])) {
-        $annotations_and_sources['foot_note_keys'] .= cdm_create_footnotes(
+        $annotations_and_sources['foot_note_keys'] = cdm_create_footnotes(
           $entity, ',',
           $footnote_list_key_suggestion,
           $config['link_to_reference'] == 1,
           $config['link_to_name_used_in_source'] == 1
         );
       } else {
-        $annotations_and_sources['foot_note_keys'] .= cdm_create_description_element_footnotes(
+        $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes(
           $entity, ',',
           $footnote_list_key_suggestion,
           $config['link_to_reference'] == 1,
           $config['link_to_name_used_in_source'] == 1
         );
       }
-
     }
 
     return $annotations_and_sources;
