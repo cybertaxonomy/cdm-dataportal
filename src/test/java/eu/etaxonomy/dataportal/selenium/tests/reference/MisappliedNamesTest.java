@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
@@ -58,6 +57,14 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
      *
      * https://dev.e-taxonomy.eu/redmine/issues/5647
      * https://dev.e-taxonomy.eu/redmine/issues/7658
+     * https://dev.e-taxonomy.eu/redmine/issues/7766
+     *
+     * The expected sort order is: pro parte/partial synonyms,
+     * then invalid designations,
+     * then MANs
+     * followed (or including?) pro parte/partial MAN
+     * and finally concept relationships.
+     * (see https://dev.e-taxonomy.eu/redmine/issues/7766)
      *
      * NOTE: Species solaris has no authorship!!
      */
@@ -89,27 +96,20 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
     /**
      * Test to reproduce issue https://dev.e-taxonomy.eu/redmine/issues/7766
-     *
-     * TODO merge with  tesIssue5647 () once fixed
-     *
      */
     @Test
-    @Ignore
     public void tesIssue7766() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
-        assertEquals("≜⊃\nTrichocentrum undulatum (Sw.) Ackerman & M. W. Chase sec. My Classification3", p.getTaxonRelationships(1).getText());
-        assertEquals("∅ Achilllea santolina Lag. sec. Testor 2018+4", p.getTaxonRelationships(1).getText());
+        assertEquals("≜⊃\nTrichocentrum undulatum (Sw.) Ackerman & M. W. Chase sec. Kohlbecker 2016-2018", p.getTaxonRelationships(1).getText());
+        assertEquals("∅\nAchilllea santolina Lag. sec. Testor 2018+, rel. sec. A&S: 35", p.getTaxonRelationships(2).getText());
 
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
-        assertEquals(4, footnotes.size());
+        assertEquals(2, footnotes.size());
         assertEquals("1. A&S, Plantas vasculares de Oz", footnotes.get(0).getText());
         assertEquals("2. Lem, New Species in the solar system", footnotes.get(1).getText());
-        assertEquals("3. Kohlbecker, .....TODO .... 2016-2018", footnotes.get(0).getText());
-        assertEquals("4. Testor ... TODO ... 2018+", footnotes.get(1).getText());
-
     }
 
     /**
