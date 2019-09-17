@@ -976,6 +976,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
       cdm_term_representation($feature, 'Unnamed Feature'),
       $feature
     );
+    $block->content = array();
 
     // $$descriptionElements['TextData'] is added to to the feature node in merged_taxon_feature_tree()
     if (isset($descriptionElements['TextData'])) {
