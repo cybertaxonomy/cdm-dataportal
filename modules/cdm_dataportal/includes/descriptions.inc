@@ -308,44 +308,6 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
 }
 
 /**
- * Creates the footnotes for the given CDM DescriptionElement instance.
- *
- * Footnotes are created for annotations and original sources,
- * optionally the sources are put into a separate bibliography.
- *
- * @param $descriptionElement
- *   A CDM DescriptionElement instance
- * @param $separator
- *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
- * @param $footnote_list_key_suggestion string
- *    This paramter will be overridden for original sources if the bibliography block is enabled.
- *    optional parameter. If this paramter is left empty (null, 0, "") the footnote key will be determined by the nested
- *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations will be set to
- *    RenderHints::getFootnoteListKey().'-annotations'. @see cdm_annotations_as_footnotekeys()
- *
- * @return String
- *   The foot note keys
- */
-function cdm_create_description_element_footnotes(
-          $description_element,
-          $separator = ',',
-          $footnote_list_key_suggestion = null,
-          $do_link_to_reference = FALSE,
-          $do_link_to_name_used_in_source = FALSE
-    )
-{
-
-  return cdm_create_footnotes($description_element,
-    $separator,
-    $footnote_list_key_suggestion,
-    $do_link_to_reference,
-    $do_link_to_name_used_in_source,
-    true
-
-  );
-}
-
-/**
  * Creates the footnotes for the given CDM instance.
  *
  * Footnotes are created for annotations and original sources whereas the resulting footnote keys depend on the
@@ -622,23 +584,15 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
     } // END of references inline
 
-    // sources as footnotes or put into into bibliography if requested ...
+    // footnotes for sources and annotations or put into into bibliography if requested ...
     if ($config['add_footnote_keys'] == 1) {
-      if(empty($config['bibliography_aware'])) {
         $annotations_and_sources['foot_note_keys'] = cdm_create_footnotes(
           $entity, ',',
           $footnote_list_key_suggestion,
           $config['link_to_reference'] == 1,
-          $config['link_to_name_used_in_source'] == 1
+          $config['link_to_name_used_in_source'] == 1,
+          !empty($config['bibliography_aware'])
         );
-      } else {
-        $annotations_and_sources['foot_note_keys'] = cdm_create_description_element_footnotes(
-          $entity, ',',
-          $footnote_list_key_suggestion,
-          $config['link_to_reference'] == 1,
-          $config['link_to_name_used_in_source'] == 1
-        );
-      }
     }
 
     return $annotations_and_sources;
