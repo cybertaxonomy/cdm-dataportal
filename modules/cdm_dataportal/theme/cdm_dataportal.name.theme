@@ -107,7 +107,7 @@ function theme_cdm_typedesignations($variables) {
         $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($name_type_designation) . '">' .  type_designation_status_label_markup($name_type_designation)  . ': '
           . t('not designated') . '</'. $element_tag .'>';
       }
-      elseif ($name_type_designation->typeName) {
+      elseif (isset($name_type_designation->typeName)) {
         $link_to_name_page = url(path_to_name($name_type_designation->typeName->uuid));
         $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($name_type_designation) . '">' .  type_designation_status_label_markup($name_type_designation) ;
 
@@ -135,7 +135,7 @@ function theme_cdm_typedesignations($variables) {
         $citation_footnote_str = theme('cdm_reference', array('reference' => $specimen_type_designation->citation, 'doIconLink' => true));
         $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $specimen_type_designation->citation->uuid);
 
-        if (isset($author_team->titleCache)) {
+        if (!empty($author_team->titleCache)) {
           $year = @timePeriodToString($specimen_type_designation->citation->datePublished, true, 'YYYY');
           $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
           if ($authorteam_str == $specimen_type_designation->citation->titleCache) {
