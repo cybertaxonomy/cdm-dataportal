@@ -250,7 +250,7 @@ function theme_cdm_typedesignations($variables) {
 function type_designation_status_label_markup($type_designation)
 {
   return '<span class="type-status">'
-    . ((isset($type_designation->typeStatus->representation_L10n)) ? $type_designation->typeStatus->representation_L10n : t('Type')) . '</span>'
+    . ((isset($type_designation->typeStatus->representation_L10n)) ? ucfirst($type_designation->typeStatus->representation_L10n) : t('Type')) . '</span>'
     ;
 }
 
