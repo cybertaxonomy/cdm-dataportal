@@ -217,7 +217,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getText());
         assertTrue(
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(1).getUrl().endsWith("cdm_dataportal/reference/c5d980ff-8766-4322-9acb-7b0a499de707"));
-        List<List<GalleryImage>> galleryImages = ElementUtils.getGalleryImages(regItem.getSpecimenTypeDesignations().get(0).getElement(), p.getWait());
+        List<List<GalleryImage>> galleryImages = ElementUtils.getGalleryImages(regItem.getSpecimenTypeDesignations().get(1).getElement(), p.getWait());
         assertEquals("Expecting one row of images", 1, galleryImages.size());
         assertEquals("Expecting 1 image in row", 1, galleryImages.get(0).size());
         assertEquals(
