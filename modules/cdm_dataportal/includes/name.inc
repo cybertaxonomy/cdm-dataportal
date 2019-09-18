@@ -961,7 +961,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
   $render_array = array();
 
   $type_designation_list = array();
-  uksort($type_entity_refs, "compare_type_designation_status");
+  uksort($type_entity_refs, "compare_type_designation_status_labels");
   foreach($type_entity_refs as $type_status => $specimen_types){
     foreach($specimen_types as $specimen_type){
 
@@ -1637,6 +1637,29 @@ function compare_type_designation_status($a, $b) {
   if (isset($a->label) && isset($b->label)) {
     $aQuantifier = array_search($a->label, $type_status_order);
     $bQuantifier = array_search($b->label, $type_status_order);
+  }
+  return ($aQuantifier < $bQuantifier) ? -1 : 1;
+}
+
+
+/**
+ * Compares two SpecimenTypeDesignation status labels
+ *
+ * @param string $a
+ *   A TypeDesignationStatus label.
+ * @param string $b
+ *   A TypeDesignationStatus label.
+ */
+function compare_type_designation_status_labels($a, $b) {
+
+  $type_status_order = type_status_order();
+
+
+  $aQuantifier = FALSE;
+  $bQuantifier = FALSE;
+  if (isset($a) && isset($b)) {
+    $aQuantifier = array_search($a, $type_status_order);
+    $bQuantifier = array_search($b, $type_status_order);
   }
   return ($aQuantifier < $bQuantifier) ? -1 : 1;
 }
