@@ -150,7 +150,7 @@ function cdm_doi($doi, $iconified = true) {
       $doi_resolve_uri .= '/' . $doi->suffix;
     }
     if($iconified){
-      return l(font_awesome_icon_markup('fa-external-link-square', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
+      return l(font_awesome_icon_markup('fa-external-link-square-alt', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
     } else {
       return l($doi_resolve_uri, $doi_resolve_uri);
     }
