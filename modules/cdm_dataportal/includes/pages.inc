@@ -576,6 +576,23 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
     }
   }
 
+  $descriptionTypes = array();
+  $descriptionTypes['descriptionTypes'] = ("AGGREGATED");
+  $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon->uuid . '/descriptions', $descriptionTypes);
+
+  // descriptions pseudo feature
+  $feature_description = make_pseudo_feature('Aggregation Descriptions', 'AGGREGATION_DESCRIPTIONS');
+  $description_item = "";
+  foreach ($aggregatedDescriptions as $description){
+    $description_item .= render_cdm_description_link($description);
+  }
+  $description_block = feature_block(t('Aggregation Descriptions'), $feature_description);
+  $description_block->content = array();
+  $description_block->content[] = compose_feature_block_wrap_elements(array($description_item), $feature_description);
+
+  $pseudo_feature_block_toc_items['Aggregation Descriptions']= 'aggregation_descriptions';
+  $pseudo_feature_blocks[] = $description_block;
+
   $render_array['taxon_description_features'] = _block_get_renderable_array(
     array_merge($feature_block_list, $pseudo_feature_blocks)
   );
@@ -600,6 +617,19 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   return $render_array;
 }
 
+/**
+ * Renders the link which will lead to the description detail page
+ * @param $description the description which will be linked to
+ *
+ * @return string the HTML
+ */
+function render_cdm_description_link($description) {
+  $pathToDescription = path_to_description($description->uuid);
+  $attributes['class'][] = html_class_attribute_ref($description);
+  $descriptionPageLink = l($description->titleCache, $pathToDescription, array('attributes' => $attributes));
+  $detail_html = "$descriptionPageLink<br>";
+  return $detail_html;
+}
 
 /**
  * Returns HTML containing the synonymy for the accepted taxon.
@@ -1104,6 +1134,41 @@ function compose_cdm_specimen_page($specimen_uuid)
 
   RenderHints::popFromRenderStack();
   return $specimen; // $render_array;
+}
+
+/**
+ * Compose a description as a table of Feature<->State
+ * @param $description_uuid
+ * @return array
+ *    The drupal render array for the page
+ *
+ * @ingroup compose
+ */
+function compose_cdm_description($description_uuid)
+{
+  RenderHints::pushToRenderStack('description_page');
+
+  $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, array($description_uuid));
+
+  $render_array = array();
+
+  $header = array('Feature/Character', 'State');
+  $rows = array();
+  foreach ($description->elements as $element) {
+
+    switch ($element->class) {
+      case 'CategoricalData':
+        $rows[] = array($element->feature->representation_L10n, compose_state_data_strings($element));
+        break;
+      case 'QuantitativeData':
+        $rows[] = array($element->feature->representation_L10n, compose_quant_stats($element));
+        break;
+    }
+  }
+  $render_array[] = markup_to_render_array(theme('table', array('header' => $header, 'rows' => $rows)));
+
+  RenderHints::popFromRenderStack();
+  return $render_array;
 }
 
 /**

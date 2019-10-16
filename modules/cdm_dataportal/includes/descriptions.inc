@@ -1178,11 +1178,25 @@ function compose_description_element_categorical_data($element, $feature_block_s
 
   $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
 
-  $state_data_strings = array();
+  $out = compose_state_data_strings($element);
+
+  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
+
+  return $render_array;
+}
+
+/**
+ * Composes the HTML for the state data
+ * @param $element
+ *
+ * @return string
+ */
+function compose_state_data_strings($element) {
+  $state_data_strings = [];
   if (isset($element->stateData)) {
     foreach ($element->stateData as $state_data) {
 
-      $state  = NULL;
+      $state = NULL;
 
       if (isset($state_data->state)) {
         $state = cdm_term_representation($state_data->state);
@@ -1200,10 +1214,7 @@ function compose_description_element_categorical_data($element, $feature_block_s
   }
 
   $out = '<span class="' . html_class_attribute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
-
-  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
-
-  return $render_array;
+  return $out;
 }
 
 
@@ -1250,14 +1261,28 @@ function compose_description_element_quantitative_data($element, $feature_block_
    * - sources
    */
 
+  $out = compose_quant_stats($element);
+
+  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
+
+  return $render_array;
+}
+
+/**
+ * Composes the HTML for quantitative statistics
+ * @param $element
+ *
+ * @return string
+ */
+function compose_quant_stats($element) {
   $out = '';
   $type_representation = NULL;
   $min_max = min_max_array();
 
-  $other_values = array();
+  $other_values = [];
 
   if (isset($element->statisticalValues)) {
-    $other_values_markup = array();
+    $other_values_markup = [];
     foreach ($element->statisticalValues as $statistical_val) {
 
       // compile the full value string which also may contain modifiers
@@ -1315,10 +1340,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
   if (isset($element->modifyingText_L10n)) {
     $out = $element->modifyingText_L10n . ' ' . $out;
   }
-
-  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
-
-  return $render_array;
+  return $out;
 }
 
 

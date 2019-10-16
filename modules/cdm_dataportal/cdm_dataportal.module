@@ -498,6 +498,13 @@ function cdm_dataportal_menu() {
         // Expected callback arguments: uuid.
     );
 
+  $items['cdm_dataportal/description'] = array(
+        'page callback' => 'cdm_dataportal_description_page_view',
+        'access arguments' => array('access cdm content'),
+        'type' => MENU_CALLBACK,
+        // Expected callback arguments: uuid.
+    );
+
    $items['cdm_dataportal/specimen/accession_number'] = array(
         'page callback' => 'cdm_dataportal_specimen_by_accession_number_page_view',
         'access arguments' => array('access cdm content'),
@@ -1783,6 +1790,45 @@ function cdm_dataportal_specimen_view($uuid) {
 
 /**
  *
+ * Creates a description view.
+ * @param string $uuid the UUID of the description
+ * @return object
+ *    Page object with the fields
+ *    - title
+ *    - content
+ */
+function cdm_dataportal_description_view($uuid) {
+    $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $uuid);
+    if (empty($description)) {
+        drupal_set_title(t('Description does not exist'), PASS_THROUGH);
+        return FALSE;
+    }
+    $descriptionpage = new stdClass();
+
+    $descriptionpage->title = $description->titleCache;
+    drupal_set_title($descriptionpage->title); // not necessary if correctly implemented as drupal node
+
+    // Render the description page.
+    $render_array = compose_cdm_description($description->uuid);
+    $descriptionpage->content = drupal_render($render_array);
+
+    return $descriptionpage;
+}
+
+function cdm_dataportal_description_page_view($uuid) {
+
+  cdm_check_valid_portal_page();
+  $descriptionpage = cdm_dataportal_description_view($uuid);
+  if (!empty($descriptionpage)) {
+    return cdm_node_show_simulate($descriptionpage->content);
+  }
+  else {
+    return '';
+  }
+}
+
+/**
+ *
  * Creates a named area view.
  * @param string $uuid the UUID of the specimen
  *  * @return object
@@ -2270,6 +2316,16 @@ function path_to_taxon($uuid, $page_tab = FALSE) {
   else {
     return 'cdm_dataportal/taxon/' . $uuid . '/' . strtolower($tab);
   }
+}
+
+function path_to_description($uuid) {
+
+    if (!$uuid) {
+        return FALSE;
+    }
+    else {
+        return 'cdm_dataportal/description/' . $uuid;
+    }
 }
 
 function path_to_specimen($uuid) {
