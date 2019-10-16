@@ -1167,6 +1167,26 @@ function compose_cdm_description($description_uuid)
   }
   $render_array[] = markup_to_render_array(theme('table', array('header' => $header, 'rows' => $rows)));
 
+  $items = array();
+  if(isset($description->sources)){
+    foreach($description->sources as $source) {
+      if ($source->type == 'Aggregation' and $source->idNamespace == 'SpecimenDescription') {
+        $specimendescription = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, [$source->idInSource]);
+        $items[] = array(
+          'data' => render_cdm_description_link($specimendescription),
+        );
+      }
+    }
+  }
+
+  $render_array[] = array(
+    '#title' => 'Sources',
+    '#theme' => 'item_list',
+    '#type' => 'ul',
+    '#items' => $items
+  );
+
+
   RenderHints::popFromRenderStack();
   return $render_array;
 }
