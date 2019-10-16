@@ -663,7 +663,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
     if (count($pathParameters) <= $i) {
         drupal_set_message(
           t('cdm_compose_url(): missing pathParameter @index for !uri_pattern',
-            array('@index' => $i, '!uri-pattern' => $uri_pattern )),
+            array('@index' => $i, '!uri_pattern' => $uri_pattern )),
           'error');
       break;
     }
@@ -939,6 +939,26 @@ function cdm_ws_base_uri($cdm_type_simple)
       $ws_base_uri = CDM_WS_REFERENCE;
       break;
 
+    case 'Registration':
+      $ws_base_uri = CDM_WS_REFERENCE;
+      break;
+
+    case 'FieldUnit':
+    case 'DerivedUnit':
+    case 'DnaSample':
+    case 'MediaSpecimen':
+      $ws_base_uri = CDM_WS_OCCURRENCE;
+      break;
+
+    case 'Amplification':
+    case 'DerivationEvent':
+    case 'DeterminationEvent':
+    case 'GatheringEvent':
+    case 'MaterialOrMethodEvent':
+    case 'SingleRead':
+      $ws_base_uri = CDM_WS_EVENTBASE;
+      break;
+
     case 'Distribution':
     case 'TextData':
     case 'TaxonInteraction':
@@ -963,6 +983,10 @@ function cdm_ws_base_uri($cdm_type_simple)
       break;
     default:
       $ws_base_uri = null;
+      drupal_set_message(
+        t('cdm_ws_base_uri()  - cdm type name "@cdm_type_simple" unsupported',
+          array('@cdm_type_simple' => $cdm_type_simple )),
+        'error');
   }
   return $ws_base_uri;
 }

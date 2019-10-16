@@ -86,6 +86,10 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
     if (isset($tt->entityReference) && !in_array($tt->type, $skiptags)) {
       $base_uri = cdm_ws_base_uri($tt->entityReference->type);
       if($base_uri){
+        if(str_endsWith($base_uri, '$0')){
+          // sanitize placeholders at the end
+          $base_uri = substr($base_uri, 0, strlen($base_uri) - 2);
+        }
         $tagged_text_method = "/taggedText";
         if($base_uri == CDM_WS_NAME){
           $tagged_text_method = "/taggedName";

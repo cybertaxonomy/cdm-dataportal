@@ -175,3 +175,5 @@ define('CDM_WS_REGISTRATION_STATUS_BY_IDENTIFIER', "registration/identifier/$0/s
 
 define('CDM_WS_MANAGE_REINDEX', 'manage/reindex');
 define('CDM_WS_MANAGE_PURGE', 'manage/purge');
+
+define('CDM_WS_EVENTBASE', 'eventBase');
