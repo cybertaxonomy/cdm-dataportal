@@ -580,24 +580,25 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   $descriptionTypes['descriptionTypes'] = ("AGGREGATED");
   $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon->uuid . '/descriptions', $descriptionTypes);
 
-  // descriptions pseudo feature
-  $feature_description = make_pseudo_feature('Aggregation Descriptions', 'AGGREGATION_DESCRIPTIONS');
-  $description_item = "";
-  foreach ($aggregatedDescriptions as $description){
-    $description_item .= render_cdm_description_link($description);
+  if (isset($aggregatedDescriptions) and !empty($aggregatedDescriptions)) {
+    // descriptions pseudo feature
+    $feature_description = make_pseudo_feature('Aggregation Descriptions', 'AGGREGATION_DESCRIPTIONS');
+    $description_item = "";
+    foreach ($aggregatedDescriptions as $description) {
+      $description_item .= render_cdm_description_link($description);
+    }
+    $description_block = feature_block(t('Aggregation Descriptions'), $feature_description);
+    $description_block->content = [];
+    $description_block->content[] = compose_feature_block_wrap_elements([$description_item], $feature_description);
+
+    $pseudo_feature_block_toc_items['Aggregation Descriptions'] = 'aggregation_descriptions';
+    $pseudo_feature_blocks[] = $description_block;
+
+    $render_array['taxon_description_features'] = _block_get_renderable_array(
+      array_merge($feature_block_list, $pseudo_feature_blocks)
+    );
   }
-  $description_block = feature_block(t('Aggregation Descriptions'), $feature_description);
-  $description_block->content = array();
-  $description_block->content[] = compose_feature_block_wrap_elements(array($description_item), $feature_description);
-
-  $pseudo_feature_block_toc_items['Aggregation Descriptions']= 'aggregation_descriptions';
-  $pseudo_feature_blocks[] = $description_block;
-
-  $render_array['taxon_description_features'] = _block_get_renderable_array(
-    array_merge($feature_block_list, $pseudo_feature_blocks)
-  );
-
-  if($pseudo_feature_block_toc_items){
+  if ($pseudo_feature_block_toc_items){
     foreach ($pseudo_feature_block_toc_items as $label=>$fragment){
       cdm_toc_list_add_item($label, $fragment);
     }
