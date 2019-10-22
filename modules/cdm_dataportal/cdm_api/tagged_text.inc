@@ -410,21 +410,25 @@ function tagged_text_extract_reference_and_detail(&$tagged_text, $ref_tag_type =
 
 function tagged_text_extract_nomstatus(&$tagged_text) {
 
-  $extracted_tt = array();
+  $extracted_tt = [];
   if (is_array($tagged_text)) {
-    for ($i = 0; $i < count($tagged_text); $i++) {
-      if ($tagged_text[$i]->type == "nomStatus"){
-        $extracted_tt[] = $tagged_text[$i];
-        if(isset($tagged_text[$i + 1]) && $tagged_text[$i + 1]->type == "postSeparator"){
-          $extracted_tt[] = $tagged_text[$i + 1];
-          unset($tagged_text[$i + 1]);
+    $itemcnt = count($tagged_text); // preserve the count since the array may shrink while processing
+    for ($i = 0; $i < $itemcnt; $i++) {
+      if(isset($tagged_text[$i])){ // prevent from accessing removed indices
+        if ($tagged_text[$i]->type == "nomStatus"){
+          $extracted_status_items = [];
+          $extracted_status_items[] = $tagged_text[$i];
+          if(isset($tagged_text[$i + 1]) && $tagged_text[$i + 1]->type == "postSeparator"){
+            $extracted_status_items[] = $tagged_text[$i + 1];
+            unset($tagged_text[$i + 1]);
+          }
+          if ($tagged_text[$i - 1]->type == "separator"){
+            array_unshift($extracted_status_items, $tagged_text[$i - 1]);
+            unset($tagged_text[$i - 1]);
+          }
+          unset($tagged_text[$i]);
+          $extracted_tt = array_merge($extracted_tt, $extracted_status_items);
         }
-        if ($tagged_text[$i - 1]->type == "separator"){
-          array_unshift($extracted_tt, $tagged_text[$i - 1]);
-          unset($tagged_text[$i - 1]);
-        }
-        unset($tagged_text[$i]);
-        break;
       }
     }
   }

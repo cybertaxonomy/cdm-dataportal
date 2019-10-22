@@ -476,7 +476,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
         }
         array_setr(
           'status',
-          '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator'), 'span', $tt_to_markup_options) . '</span>', $renderTemplate);
+          '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator'), 'span', $tt_to_markup_options) . '</span>',
+          $renderTemplate);
     }
   }
 
