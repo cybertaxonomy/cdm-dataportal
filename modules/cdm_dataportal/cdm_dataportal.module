@@ -2655,7 +2655,7 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
  * @param object $source
  *   The original source entity
  * @param array $types
- *   An array of elementd of the OriginalSourceType enumeration
+ *   An array of element of the OriginalSourceType enumeration
  *   If not set the default will be used which is:
  *    - Lineage
  *    - PrimaryMediaSource
