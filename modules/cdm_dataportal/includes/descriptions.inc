@@ -1178,7 +1178,7 @@ function compose_description_element_categorical_data($element, $feature_block_s
 
   $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
 
-  $out = compose_state_data_strings($element);
+  $out = compose_state_data_span($element);
 
   $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
 
@@ -1191,7 +1191,19 @@ function compose_description_element_categorical_data($element, $feature_block_s
  *
  * @return string
  */
-function compose_state_data_strings($element) {
+function compose_state_data_span($element) {
+  $state_data_strings = compose_state_data($element);
+
+  $out = '<span class="' . html_class_attribute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
+  return $out;
+}
+
+/**
+ * @param $element
+ *
+ * @return array
+ */
+function compose_state_data($element) {
   $state_data_strings = [];
   if (isset($element->stateData)) {
     foreach ($element->stateData as $state_data) {
@@ -1212,9 +1224,7 @@ function compose_state_data_strings($element) {
 
     }
   }
-
-  $out = '<span class="' . html_class_attribute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
-  return $out;
+  return $state_data_strings;
 }
 
 

@@ -581,16 +581,16 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
     $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon->uuid . '/descriptions', $descriptionTypes);
     if (isset($aggregatedDescriptions) and !empty($aggregatedDescriptions)) {
         // descriptions pseudo feature
-        $feature_description = make_pseudo_feature('Aggregation Descriptions', 'AGGREGATION_DESCRIPTIONS');
+        $feature_description = make_pseudo_feature('Aggregated Descriptions', 'AGGREGATION_DESCRIPTIONS');
         $description_item = "";
         foreach ($aggregatedDescriptions as $description) {
             $description_item .= render_cdm_description_link($description);
         }
-        $description_block = feature_block(t('Aggregation Descriptions'), $feature_description);
+        $description_block = feature_block(t('Aggregated Descriptions'), $feature_description);
         $description_block->content = [];
         $description_block->content[] = compose_feature_block_wrap_elements([$description_item], $feature_description);
 
-        $pseudo_feature_block_toc_items['Aggregation Descriptions'] = 'aggregation_descriptions';
+        $pseudo_feature_block_toc_items['Aggregated Descriptions'] = 'aggregation_descriptions';
         $pseudo_feature_blocks[] = $description_block;
 
     }
@@ -627,8 +627,22 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
 function render_cdm_description_link($description) {
   $pathToDescription = path_to_description($description->uuid);
   $attributes['class'][] = html_class_attribute_ref($description);
-  $descriptionPageLink = l($description->titleCache, $pathToDescription, array('attributes' => $attributes));
-  $detail_html = $descriptionPageLink."<br>";
+  $descriptionString = '';
+  foreach ($description->elements as $element) {
+    switch ($element->class) {
+      case 'CategoricalData':
+        $state_data = compose_state_data($element);
+        $state_data = implode(', ', $state_data);
+        if(!empty($state_data)){
+          $descriptionString .= '<b>'.$element->feature->representation_L10n.'</b>: '. $state_data."; ";
+        }
+        break;
+      case 'QuantitativeData':
+//        $descriptionString .= '<b>'.$element->feature->representation_L10n.'</b>: '.compose_quant_stats($element)."; ";
+        break;
+    }
+  }
+  $detail_html = $descriptionString.l($description->titleCache, $pathToDescription, array('attributes' => $attributes))."<br><br>";
   return $detail_html;
 }
 
@@ -1180,7 +1194,7 @@ function compose_cdm_description($description_uuid) {
       case 'CategoricalData':
         $rows[] = [
           $element->feature->representation_L10n,
-          compose_state_data_strings($element),
+          compose_state_data_span($element),
         ];
         break;
       case 'QuantitativeData':
