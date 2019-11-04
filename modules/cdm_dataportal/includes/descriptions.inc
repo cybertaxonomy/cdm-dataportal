@@ -1212,15 +1212,19 @@ function compose_state_data($element) {
 
       if (isset($state_data->state)) {
         $state = cdm_term_representation($state_data->state);
+
+          if (isset($state_data->count)) {
+            $state .= ' ('.$state_data->count.')';
+          }
+    
+          if (isset($state_data->modifyingText_L10n)) {
+            $state .= ' ' . $state_data->modifyingText_L10n;
+          }
+    
+          $modifiers_strings = cdm_modifers_representations($state_data);
+    
+          $state_data_strings[] = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
       }
-
-      if (isset($state_data->modifyingText_L10n)) {
-        $state = ' ' . $state_data->modifyingText_L10n;
-      }
-
-      $modifiers_strings = cdm_modifers_representations($state_data);
-
-      $state_data_strings[] = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
 
     }
   }
