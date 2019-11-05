@@ -634,11 +634,11 @@ function render_cdm_description_link($description) {
         $state_data = compose_state_data($element);
         $state_data = implode(', ', $state_data);
         if(!empty($state_data)){
-          $descriptionString .= '<b>'.$element->feature->representation_L10n.'</b>: '. $state_data."; ";
+          $descriptionString .= '<i>'.$element->feature->representation_L10n.'</i>: '. $state_data."; ";
         }
         break;
       case 'QuantitativeData':
-//        $descriptionString .= '<b>'.$element->feature->representation_L10n.'</b>: '.compose_quant_stats($element)."; ";
+          $descriptionString .= '<i>'.$element->feature->representation_L10n.'</i>: '.compose_quant_stats($element)."; ";
         break;
     }
   }
