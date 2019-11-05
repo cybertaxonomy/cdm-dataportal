@@ -581,16 +581,16 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
     $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon->uuid . '/descriptions', $descriptionTypes);
     if (isset($aggregatedDescriptions) and !empty($aggregatedDescriptions)) {
         // descriptions pseudo feature
-        $feature_description = make_pseudo_feature('Aggregated Descriptions', 'AGGREGATION_DESCRIPTIONS');
+        $feature_description = make_pseudo_feature('Descriptions (aggregated)', 'AGGREGATION_DESCRIPTIONS');
         $description_item = "";
         foreach ($aggregatedDescriptions as $description) {
             $description_item .= render_cdm_description_link($description);
         }
-        $description_block = feature_block(t('Aggregated Descriptions'), $feature_description);
+        $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
         $description_block->content = [];
         $description_block->content[] = compose_feature_block_wrap_elements([$description_item], $feature_description);
 
-        $pseudo_feature_block_toc_items['Aggregated Descriptions'] = 'aggregation_descriptions';
+        $pseudo_feature_block_toc_items['Descriptions (aggregated)'] = 'aggregation_descriptions';
         $pseudo_feature_blocks[] = $description_block;
 
     }
