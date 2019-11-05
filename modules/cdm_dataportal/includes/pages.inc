@@ -624,7 +624,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
  *
  * @return string the HTML
  */
-function render_cdm_description_link($description) {
+function render_cdm_description_link($description, $linkText = $description->titleCache) {
   $pathToDescription = path_to_description($description->uuid);
   $attributes['class'][] = html_class_attribute_ref($description);
   $descriptionString = '';
@@ -642,7 +642,7 @@ function render_cdm_description_link($description) {
         break;
     }
   }
-  $detail_html = $descriptionString.l($description->titleCache, $pathToDescription, array('attributes' => $attributes))."<br><br>";
+  $detail_html = $descriptionString.l($linkText, $pathToDescription, array('attributes' => $attributes))."<br><br>";
   return $detail_html;
 }
 
@@ -1216,7 +1216,7 @@ function compose_cdm_description($description_uuid) {
       if ($source->type == 'Aggregation' and $source->idNamespace == 'SpecimenDescription') {
         $specimendescription = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, [$source->idInSource]);
         $items[] = [
-          'data' => render_cdm_description_link($specimendescription),
+          'data' => render_cdm_description_link($specimendescription, $specimendescription->describedSpecimenOrObservation->titleCache),
         ];
       }
     }
