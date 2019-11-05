@@ -625,7 +625,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
  * @return string the HTML
  */
 function render_cdm_description_link($description, $linkText = '') {
-  if(empty($linkText){
+  if(empty($linkText)){
     $linkText = $description->titleCache;
   }
   $pathToDescription = path_to_description($description->uuid);
