@@ -1190,6 +1190,8 @@ function compose_description_element_categorical_data($element, $feature_block_s
  * @param $element
  *
  * @return string
+ *
+ * @ingroup compose
  */
 function compose_state_data_span($element) {
   $state_data_strings = compose_state_data($element);
