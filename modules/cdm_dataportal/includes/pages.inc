@@ -1178,7 +1178,7 @@ function compose_cdm_specimen_page($specimen_uuid)
  * @ingroup compose
  */
 function compose_cdm_description($description_uuid) {
-  RenderHints::pushToRenderStack('description_page');
+  RenderHints::pushToRenderStack('description_table');
 
   $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, [$description_uuid]);
 
