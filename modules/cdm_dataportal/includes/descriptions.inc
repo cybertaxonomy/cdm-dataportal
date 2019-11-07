@@ -1169,8 +1169,8 @@ function compose_description_element_individuals_association($element, $feature_
  * @param bool $prepend_feature_label
  *   Used in nested feature trees to put the feature as label in front of the description element text representation.
  *
- * @return string
- *   a html representation of the given CategoricalData element
+ * @return array
+ *   a drupal render array for given CategoricalData element
  *
  * @ingroup compose
  */
@@ -1186,12 +1186,11 @@ function compose_description_element_categorical_data($element, $feature_block_s
 }
 
 /**
- * Composes the HTML for the state data
+ * Creates the markup for the state data
  * @param $element
  *
  * @return string
- *
- * @ingroup compose
+ *     The markup
  */
 function compose_state_data_span($element) {
   $state_data_strings = compose_state_data($element);
@@ -1260,10 +1259,10 @@ function compose_state_data($element) {
  *   Used in nested feature trees to put the feature as label in front of the description element text representation.
  *
  *
- * @return string
- *   a html representation of the given QuantitativeData element
+ * @return array
+ *   drupal render array for the given QuantitativeData element
  *
- * @ingroup themeable
+ * @ingroup compose
  */
 function compose_description_element_quantitative_data($element, $feature_block_settings, $prepend_feature_label = FALSE) {
   /*

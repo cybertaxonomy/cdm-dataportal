@@ -620,9 +620,11 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
 
 /**
  * Renders the link which will lead to the description detail page
- * @param $description the description which will be linked to
+ * @param object $description
+ *     the cdm description entity which will be linked to
  *
- * @return string the HTML
+ * @return string
+ *     the markup for the link
  */
 function render_cdm_description_link($description, $linkText = '') {
   if(empty($linkText)){
@@ -651,9 +653,11 @@ function render_cdm_description_link($description, $linkText = '') {
 
 /**
  * Renders the link which will lead to the specimen detail page
- * @param $specimen the specimen which will be linked to
+ * @param object $specimen
+ *    the cdm specimen entity which will be linked to
  *
- * @return string the HTML
+ * @return string
+ *     the markup for the link
  */
 function render_cdm_specimen_link($specimen) {
   $path = path_to_specimen($specimen->uuid);
