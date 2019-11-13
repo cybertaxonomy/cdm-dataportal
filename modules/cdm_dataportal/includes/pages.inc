@@ -584,7 +584,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
         $feature_description = make_pseudo_feature('Descriptions (aggregated)', 'AGGREGATION_DESCRIPTIONS');
         $description_item = "";
         foreach ($aggregatedDescriptions as $description) {
-            $description_item .= render_cdm_description_link($description);
+            $description_item .= render_cdm_description_link($description, $renderDescriptionElements = True);
         }
         $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
         $description_block->content = [];
@@ -626,25 +626,27 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
  * @return string
  *     the markup for the link
  */
-function render_cdm_description_link($description, $linkText = '') {
-  if(empty($linkText)){
+function render_cdm_description_link($description, $linkText = '', $renderDescriptionElements = False) {
+  if (empty($linkText)) {
     $linkText = $description->titleCache;
   }
   $pathToDescription = path_to_description($description->uuid);
   $attributes['class'][] = html_class_attribute_ref($description);
   $descriptionString = '';
-  foreach ($description->elements as $element) {
-    switch ($element->class) {
-      case 'CategoricalData':
-        $state_data = compose_state_data($element);
-        $state_data = implode(', ', $state_data);
-        if(!empty($state_data)){
-          $descriptionString .= '<i>'.$element->feature->representation_L10n.'</i>: '. $state_data."; ";
-        }
-        break;
-      case 'QuantitativeData':
-          $descriptionString .= '<i>'.$element->feature->representation_L10n.'</i>: '.compose_quant_stats($element)."; ";
-        break;
+  if ($renderDescriptionElements) {
+    foreach ($description->elements as $element) {
+      switch ($element->class) {
+        case 'CategoricalData':
+          $state_data = compose_state_data($element);
+          $state_data = implode(', ', $state_data);
+          if (!empty($state_data)) {
+            $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data . "; ";
+          }
+          break;
+        case 'QuantitativeData':
+          $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . compose_quant_stats($element) . "; ";
+          break;
+      }
     }
   }
   $detail_html = $descriptionString.l($linkText, $pathToDescription, array('attributes' => $attributes))."<br><br>";
