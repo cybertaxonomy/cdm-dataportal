@@ -1220,8 +1220,8 @@ function compose_cdm_description($description_uuid) {
   if (isset($description->sources) and !empty($description->sources)) {
     $items = [];
     foreach ($description->sources as $source) {
-      if ($source->type == 'Aggregation' and $source->idNamespace == 'SpecimenDescription') {
-        $specimendescription = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, [$source->idInSource]);
+      if ($source->type == 'Aggregation' and isset($source->cdmSource) and $source->cdmSource->class=='SpecimenDescription') {
+        $specimendescription = $source->cdmSource;
         $items[] = [
           'data' => render_cdm_description_link($specimendescription, $specimendescription->describedSpecimenOrObservation->titleCache),
         ];
