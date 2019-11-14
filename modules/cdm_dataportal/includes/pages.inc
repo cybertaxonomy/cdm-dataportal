@@ -577,7 +577,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   }
 
     $descriptionTypes = array();
-    $descriptionTypes['descriptionTypes'] = ("AGGREGATED");
+    $descriptionTypes['descriptionTypes'] = ("AGGREGATED_STRUC_DESC");
     $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon->uuid . '/descriptions', $descriptionTypes);
     if (isset($aggregatedDescriptions) and !empty($aggregatedDescriptions)) {
         // descriptions pseudo feature
