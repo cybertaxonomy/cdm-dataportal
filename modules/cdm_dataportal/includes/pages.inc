@@ -1225,7 +1225,7 @@ function compose_cdm_description($description_uuid) {
       if ($source->type == 'Aggregation' and isset($source->cdmSource) and $source->cdmSource->class=='SpecimenDescription') {
         $specimendescription = $source->cdmSource;
         $items[] = [
-          'data' => render_cdm_description_link($specimendescription, $specimendescription->describedSpecimenOrObservation->titleCache),
+          'data' => render_cdm_description_link($specimendescription),
         ];
       }
     }
