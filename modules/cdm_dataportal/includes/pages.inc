@@ -584,7 +584,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
         $feature_description = make_pseudo_feature('Descriptions (aggregated)', 'AGGREGATION_DESCRIPTIONS');
         $description_item = "";
         foreach ($aggregatedDescriptions as $description) {
-            $description_item .= render_cdm_description_link($description, $renderDescriptionElements = True);
+          $description_item .= render_cdm_description_link($description, '', TRUE);
         }
         $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
         $description_block->content = [];
