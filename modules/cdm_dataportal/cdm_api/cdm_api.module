@@ -1713,7 +1713,7 @@ function cdm_descriptionElementTypes_as_option($prependEmptyElement = FALSE) {
  *     The UUID of the taxon
  * @param $excludes
  *     UUIDs of features to be excluded
- * @return$feature_tree
+ * @return object
  *     The CDM FeatureTree which was given as parameter merged tree whereas the
  *     CDM FeatureNodes are extended by an additional field 'descriptionElements'
  *     witch will hold the according $descriptionElements.

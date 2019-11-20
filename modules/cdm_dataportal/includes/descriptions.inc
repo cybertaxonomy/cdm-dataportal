@@ -1807,10 +1807,10 @@ function compose_description_elements_distribution($description_elements){
    * hook_merged_taxon_feature_tree_alter()
    *
    * @param $taxon
-   *   A CDM Taxon instance
+   *    A CDM Taxon instance
    *
    * @return object
-   *  The merged feature tree
+   *    The merged feature tree
    *
    */
   function merged_taxon_feature_tree($taxon) {
