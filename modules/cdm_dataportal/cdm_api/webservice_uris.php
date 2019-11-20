@@ -87,7 +87,6 @@ define('CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR', 'portal/description/di
 
 define('CDM_WS_DESCRIPTIONELEMENT', 'descriptionElement/$0');
 define('CDM_WS_DESCRIPTIONELEMENT_BY_TAXON', 'portal/descriptionElement/byTaxon');
-define('CDM_WS_DESCRIPTIONELEMENT_SORTED_BY_TREE', 'portal/descriptionElement/elementsSortbyTree');
 define('CDM_WS_PORTAL_DESCRIPTIONELEMENT', 'portal/descriptionElement/$0');
 
 /**

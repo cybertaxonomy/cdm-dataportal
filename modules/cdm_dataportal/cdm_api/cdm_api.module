@@ -1743,31 +1743,6 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude
 }
 
 /**
- * Fetches all descriptions elements of the given description sorted by the
- * given term tree
- *
- * @param $description_uuid
- *     The UUID of the description
- * @param $term_tree_uuid
- *     The UUID of the term tree
- *
- * @return list
- *     A list of description elements sorted according to the term treee
- */
-function cdm_ws_description_element_sorted_by_term_tree($description_uuid, $term_tree_uuid) {
-
-  $description_elements = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_SORTED_BY_TREE,
-      array(
-      'description' => $description_uuid,
-      'termTree' => $term_tree_uuid,
-      ),
-      'POST'
-  );
-
-  return $description_elements;
-}
-
-/**
  * Returns a filtered a list of annotations for the cdm entity given as parameter $cdmBase.
  * If the annotations are not yet already loded with the cdm entity the cdm REST service will
  * be requested for the annotations.

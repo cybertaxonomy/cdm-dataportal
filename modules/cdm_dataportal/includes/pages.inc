@@ -584,7 +584,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
         $feature_description = make_pseudo_feature('Descriptions (aggregated)', 'AGGREGATION_DESCRIPTIONS');
         $description_item = "";
         foreach ($aggregatedDescriptions as $description) {
-          $description_item .= render_cdm_description_link($description, '', TRUE);
+          $description_item .= render_cdm_description($description, '', TRUE);
         }
         $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
         $description_block->content = [];
@@ -619,38 +619,59 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
 }
 
 /**
- * Renders the link which will lead to the description detail page
+ * Renders the description and adds a link to the description detail page
+ *
  * @param object $description
  *     the cdm description entity which will be linked to
  *
- * @return string
- *     the markup for the link
+ * @param string $linkText an optional link text; default is the description titleCache
+ * @param bool $renderDescriptionElements if True the description elements will be rendered
+ *
+ * @return string the markup for the description
  */
-function render_cdm_description_link($description, $linkText = '', $renderDescriptionElements = False) {
+function render_cdm_description($description, $linkText = '', $renderDescriptionElements = False) {
   if (empty($linkText)) {
     $linkText = $description->titleCache;
   }
   $pathToDescription = path_to_description($description->uuid);
   $attributes['class'][] = html_class_attribute_ref($description);
   $descriptionString = '';
-  if ($renderDescriptionElements) {
-    foreach ($description->elements as $element) {
-      switch ($element->class) {
-        case 'CategoricalData':
-          $state_data = compose_state_data($element);
-          $state_data = implode(', ', $state_data);
-          if (!empty($state_data)) {
-            $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data . "; ";
-          }
-          break;
-        case 'QuantitativeData':
-          $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . compose_quant_stats($element) . "; ";
-          break;
-      }
-    }
+  if($renderDescriptionElements){
+    $descriptionString = render_description_string($description, get_root_nodes_for_dataset($description));
   }
   $detail_html = $descriptionString.l($linkText, $pathToDescription, array('attributes' => $attributes))."<br><br>";
   return $detail_html;
+}
+
+/**
+ * @param $description
+ * @param $root_nodes
+ *
+ * @return string
+ */
+function render_description_string($description, $root_nodes) {
+  $descriptionString = '';
+  if (!empty($root_nodes)) {
+    foreach ($root_nodes as $root_node) {
+      foreach ($root_node->descriptionElements as $element) {
+        switch ($element->class) {
+          case 'CategoricalData':
+            $state_data = compose_state_data($element);
+            $state_data = implode(', ', $state_data);
+            if (!empty($state_data)) {
+              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data . "; ";
+            }
+            break;
+          case 'QuantitativeData':
+            $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . compose_quant_stats($element) . "; ";
+            break;
+        }
+      }
+      // recurse child nodes
+      $descriptionString .= render_description_string($description, $root_node->childNodes);
+    }
+  }
+  return $descriptionString;
 }
 
 /**
@@ -1195,25 +1216,14 @@ function compose_cdm_description($description_uuid) {
     $render_array[] = markup_to_render_array(render_cdm_specimen_link($description->describedSpecimenOrObservation));
   }
 
-  $header = ['Feature/Character', 'State'];
-  $rows = [];
-  foreach ($description->elements as $element) {
+  $root_nodes = [];
+  $root_nodes = get_root_nodes_for_dataset($description);
 
-    switch ($element->class) {
-      case 'CategoricalData':
-        $rows[] = [
-          $element->feature->representation_L10n,
-          compose_state_data_span($element),
-        ];
-        break;
-      case 'QuantitativeData':
-        $rows[] = [
-          $element->feature->representation_L10n,
-          compose_quant_stats($element),
-        ];
-        break;
-    }
-  }
+  $header = ['Feature/Character', 'State'];
+
+  $rows = [];
+  $rows = compose_description_element_rows($root_nodes, $rows);
+
   $render_array[] = markup_to_render_array(theme('table', [
     'header' => $header,
     'rows' => $rows,
@@ -1225,7 +1235,7 @@ function compose_cdm_description($description_uuid) {
       if ($source->type == 'Aggregation' and isset($source->cdmSource) and $source->cdmSource->class=='SpecimenDescription') {
         $specimendescription = $source->cdmSource;
         $items[] = [
-          'data' => render_cdm_description_link($specimendescription),
+          'data' => render_cdm_description($specimendescription),
         ];
       }
     }
@@ -1240,6 +1250,62 @@ function compose_cdm_description($description_uuid) {
 
   RenderHints::popFromRenderStack();
   return $render_array;
+}
+
+/**
+ * For a given description returns the root nodes according to the
+ *corresponding term tree. The term tree is determined as follow:
+ * 1. If description is part of a descriptive data set the term tree of that
+ *    data set is used (FIXME handle multiple term trees)
+ * 2. Otherwise the portal taxon profile tree is used
+ * @param $description
+ *
+ * @return array
+ */
+function get_root_nodes_for_dataset($description) {
+  if (!empty($description->descriptiveDataSets)) {
+    foreach ($description->descriptiveDataSets as $dataSet) {
+      break;// FIXME handle multiple term trees
+    }
+    $tree = cdm_ws_get(CDM_WS_TERMTREE, $dataSet->descriptiveSystem->uuid);
+    $root_nodes = _mergeFeatureTreeDescriptions($tree->root->childNodes, $description->elements);
+  }
+  else {
+    $root_nodes = _mergeFeatureTreeDescriptions(get_profile_feature_tree()->root->childNodes, $description->elements);
+  }
+  return $root_nodes;
+}
+
+/**
+ * @param $root_nodes
+ * @param $rows
+ *
+ * @return array
+ */
+function compose_description_element_rows($root_nodes, $rows) {
+  foreach ($root_nodes as $root_node) {
+    foreach ($root_node->descriptionElements as $element) {
+      switch ($element->class) {
+        case 'CategoricalData':
+          if (!empty($element->stateData)) {
+            $rows[] = [
+              $element->feature->representation_L10n,
+              compose_state_data_span($element),
+            ];
+          }
+          break;
+        case 'QuantitativeData':
+          $rows[] = [
+            $element->feature->representation_L10n,
+            compose_quant_stats($element),
+          ];
+          break;
+      }
+    }
+    // recurse child nodes
+    $rows = compose_description_element_rows($root_node->childNodes, $rows);
+  }
+  return $rows;
 }
 
 /**
