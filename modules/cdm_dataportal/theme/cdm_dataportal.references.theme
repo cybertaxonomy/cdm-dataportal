@@ -181,7 +181,7 @@ function render_original_source($source, $do_link_to_reference = TRUE, $do_link_
     ]);
   }
   if(isset($source->cdmSource)){
-    $out .= render_cdm_entity_reference($source->cdmSource);
+    $out .= render_cdm_entity_link($source->cdmSource);
   }
 
   if($out){

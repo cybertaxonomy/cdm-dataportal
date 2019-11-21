@@ -613,15 +613,25 @@ function formatWSParams($params) {
  *
  * @return string the markup
  */
-function render_cdm_entity_reference($cdm_entity, $icon_link = TRUE) {
+function render_cdm_entity_link($cdm_entity) {
 
   switch ($cdm_entity->class) {
     case 'TaxonDescription':
-      return render_cdm_description($cdm_entity);
+      $link =  render_cdm_description($cdm_entity);
       break;
     default:
-      return '<span class="error">UNSUPPORTED CDM ENTITY TYPE</span>';
+      $link = '<span class="error">UNSUPPORTED CDM ENTITY TYPE</span>';
   }
-
+  return $link;
 }
 
+/**
+ * Creates an icon which links to the given path
+ * @param $path
+ *
+ * @return string
+ */
+function icon_link($path) {
+  $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), $path, ['html' => TRUE]);
+  return $iconlink;
+}

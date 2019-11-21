@@ -631,28 +631,14 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
  */
 function render_cdm_description($description, $show_description_elements = False, $descriptive_dataset_uuid = NULL) {
 
-  $link_text = $description->titleCache;
-  $pathToDescription = path_to_description($description->uuid, $descriptive_dataset_uuid);
-  $attributes['class'][] = html_class_attribute_ref($description);
-  $description_string = '';
+  $out = '<span class="' . html_class_attribute_ref($description) . '">' . $description->titleCache . '</span>';
+  $path_to_description = path_to_description($description->uuid, $descriptive_dataset_uuid);
   if($show_description_elements){
-    $description_string = render_description_string($description, get_root_nodes_for_dataset($description));
+    $out = render_description_string($description, get_root_nodes_for_dataset($description));
   }
-  //  $detail_html = $descriptionString.l($link_text, $pathToDescription, array('attributes' => $attributes))."<br><br>";
-  $iconlink = get_icon_link($pathToDescription);
-  $detail_html = (empty($description_string)?$link_text:$description_string).$iconlink."<br><br>";
-  return $detail_html;
-}
+  $out .= icon_link($path_to_description);;
 
-/**
- * Creates an icon which links to the given path
- * @param $path
- *
- * @return string
- */
-function get_icon_link($path) {
-  $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), $path, ['html' => TRUE]);
-  return $iconlink;
+  return $out;
 }
 
 /**
@@ -697,7 +683,7 @@ function render_description_string($description, $root_nodes) {
 function render_cdm_specimen_link($specimen) {
   $path = path_to_specimen($specimen->uuid);
   $attributes['class'][] = html_class_attribute_ref($specimen);
-  return $specimen->titleCache.get_icon_link($path);
+  return $specimen->titleCache.icon_link($path);
 }
 
 /**
@@ -711,7 +697,7 @@ function render_cdm_specimen_link($specimen) {
 function render_cdm_taxon($taxon) {
   $path = path_to_taxon($taxon->uuid);
   $attributes['class'][] = html_class_attribute_ref($taxon);
-  return $taxon->titleCache.get_icon_link($path);
+  return $taxon->titleCache.icon_link($path);
 }
 
 /**
@@ -1275,7 +1261,7 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
       $path = path_to_description($description->uuid, $dataSet->uuid);
       $attributes['class'][] = html_class_attribute_ref($description);
       $items[] = [
-        'data' => $dataSet->titleCache . get_icon_link($path),
+        'data' => $dataSet->titleCache . icon_link($path),
       ];
     }
     $render_array[] = [
