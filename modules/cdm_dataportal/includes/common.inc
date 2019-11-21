@@ -607,3 +607,21 @@ function formatWSParams($params) {
     return $paramString;
 }
 
+/**
+ *
+ * @param $cdm_entity
+ *
+ * @return string the markup
+ */
+function render_cdm_entity_reference($cdm_entity, $icon_link = TRUE) {
+
+  switch ($cdm_entity->class) {
+    case 'TaxonDescription':
+      return render_cdm_description($cdm_entity);
+      break;
+    default:
+      return '<span class="error">UNSUPPORTED CDM ENTITY TYPE</span>';
+  }
+
+}
+

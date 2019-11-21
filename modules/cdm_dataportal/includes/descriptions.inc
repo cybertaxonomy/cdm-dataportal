@@ -367,7 +367,8 @@ function cdm_create_footnotes(
     if (_is_original_source_type($source)) {
       $fn_key = FootnoteManager::addNewFootnote(
         $sources_footnote_list_key,
-        render_original_source($source,
+        render_original_source(
+          $source,
           $do_link_to_reference,
           $do_link_to_name_used_in_source
         ),
@@ -548,9 +549,9 @@ function handle_annotations_and_sources_config($feature_block_settings){
       foreach ($entity->sources as $source) {
         if (_is_original_source_type($source)) {
           $reference_citation = render_original_source(
-              $source,
-             $config['link_to_reference'] == 1,
-              $config['link_to_name_used_in_source'] == 1
+            $source,
+            $config['link_to_name_used_in_source'] == 1,
+            $config['link_to_reference'] == 1
           );
 
           if ($reference_citation) {

@@ -584,7 +584,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
         $feature_description = make_pseudo_feature('Descriptions (aggregated)', 'AGGREGATION_DESCRIPTIONS');
         $description_item = "";
         foreach ($aggregatedDescriptions as $description) {
-          $description_item .= render_cdm_description($description, '', TRUE);
+          $description_item .= render_cdm_description($description, TRUE, '');
         }
         $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
         $description_block->content = [];
@@ -624,22 +624,23 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
  * @param object $description
  *     the cdm description entity which will be linked to
  *
- * @param string $linkText an optional link text; default is the description titleCache
- * @param bool $renderDescriptionElements if True the description elements will be rendered
+ * @param bool $show_description_elements if True the description elements will be rendered
+ *
+ * @param string $link_text an optional link text; default is the description titleCache
  *
  * @return string the markup for the description
  */
-function render_cdm_description($description, $linkText = '', $renderDescriptionElements = False) {
-  if (empty($linkText)) {
-    $linkText = $description->titleCache;
+function render_cdm_description($description, $show_description_elements = FALSE, $link_text = '') {
+  if (empty($link_text)) {
+    $link_text = $description->titleCache;
   }
   $pathToDescription = path_to_description($description->uuid);
   $attributes['class'][] = html_class_attribute_ref($description);
   $descriptionString = '';
-  if($renderDescriptionElements){
+  if($show_description_elements){
     $descriptionString = render_description_string($description, get_root_nodes_for_dataset($description));
   }
-  $detail_html = $descriptionString.l($linkText, $pathToDescription, array('attributes' => $attributes))."<br><br>";
+  $detail_html = $descriptionString.l($link_text, $pathToDescription, array('attributes' => $attributes))."<br><br>";
   return $detail_html;
 }
 
