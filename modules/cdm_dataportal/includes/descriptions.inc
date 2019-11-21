@@ -2073,3 +2073,58 @@ function make_pseudo_feature($representation_L10n, $pseudo_feature_key = null){
 }
 
 
+/**
+ * Renders the description and adds a link to the description detail page
+ *
+ * @param object $description
+ *     the cdm description entity which will be linked to
+ *
+ * @param bool $show_description_elements if True the description elements will be rendered
+ * @param $descriptive_dataset_uuid the data set which should be passed to the description detail page
+ *
+ * @return string the markup for the description
+ */
+function render_cdm_description($description, $show_description_elements = False, $descriptive_dataset_uuid = NULL) {
+
+  $out = '<span class="' . html_class_attribute_ref($description) . '">' . $description->titleCache . '</span>';
+  $path_to_description = path_to_description($description->uuid, $descriptive_dataset_uuid);
+  if($show_description_elements){
+    $out = render_description_string($description, get_root_nodes_for_dataset($description));
+  }
+  $out .= icon_link($path_to_description);;
+
+  return $out;
+}
+
+/**
+ * @param $description
+ * @param $root_nodes
+ *
+ * @return string
+ */
+function render_description_string($description, $root_nodes) {
+  $descriptionString = '';
+  if (!empty($root_nodes)) {
+    foreach ($root_nodes as $root_node) {
+      foreach ($root_node->descriptionElements as $element) {
+        switch ($element->class) {
+          case 'CategoricalData':
+            $state_data = compose_state_data($element);
+            $state_data = implode(', ', $state_data);
+            if (!empty($state_data)) {
+              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data . "; ";
+            }
+            break;
+          case 'QuantitativeData':
+            $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . compose_quant_stats($element) . "; ";
+            break;
+        }
+      }
+      // recurse child nodes
+      $descriptionString .= render_description_string($description, $root_node->childNodes);
+    }
+  }
+  return $descriptionString;
+}
+
+
