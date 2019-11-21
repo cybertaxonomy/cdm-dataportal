@@ -1261,7 +1261,16 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
       $title .= ' for ' . $associated_description_cdm_entity;
     }
     drupal_set_title($title);
+    if(isset($description->types)){
+      foreach ($description->types as $type) {
+        if($type == 'CLONE_FOR_SOURCE'){
+          $render_array[] = markup_to_render_array("Aggregation source from ".$description->created.'<br><br>');
+          break;
+        }
+      }
+    }
   }
+
 
   if (isset($description->describedSpecimenOrObservation)) {
     $render_array[] = markup_to_render_array("<b>Specimen</b><br>");
