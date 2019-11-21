@@ -582,9 +582,9 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
     if (isset($aggregatedDescriptions) and !empty($aggregatedDescriptions)) {
         // descriptions pseudo feature
         $feature_description = make_pseudo_feature('Descriptions (aggregated)', 'AGGREGATION_DESCRIPTIONS');
-        $description_item = "";
+        $description_item = '';
         foreach ($aggregatedDescriptions as $description) {
-          $description_item .= render_cdm_description($description, TRUE, '');
+          $description_item .= render_cdm_description($description, TRUE);
         }
         $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
         $description_block->content = [];
@@ -626,15 +626,11 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
  *
  * @param bool $show_description_elements if True the description elements will be rendered
  *
- * @param string $link_text an optional link text; default is the description titleCache
- *
  * @return string the markup for the description
  */
-function render_cdm_description($description, $show_description_elements = FALSE, $link_text = '') {
-  if (empty($link_text)) {
-    $link_text = $description->titleCache;
-  }
-  $pathToDescription = path_to_description($description->uuid);
+function render_cdm_description($description, $show_description_elements = False, $descriptive_dataset_uuid = NULL) {
+  $link_text = $description->titleCache;
+  $pathToDescription = path_to_description($description->uuid, $descriptive_dataset_uuid);
   $attributes['class'][] = html_class_attribute_ref($description);
   $descriptionString = '';
   if($show_description_elements){
@@ -1205,12 +1201,39 @@ function compose_cdm_specimen_page($specimen_uuid)
  *
  * @ingroup compose
  */
-function compose_cdm_description($description_uuid) {
+function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = NULL) {
   RenderHints::pushToRenderStack('description_table');
 
-  $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, [$description_uuid]);
-
   $render_array = [];
+
+  $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, [$description_uuid]);
+  $dataSet = NULL;
+  // find dataset
+  if($descriptive_dataset_uuid != NULL){
+    foreach ($description->descriptiveDataSets as $set) {
+      if($set->uuid == $descriptive_dataset_uuid){
+        $dataSet = $set;
+        break;
+      }
+    }
+  }
+  if (!isset($dataSet) && !empty($description->descriptiveDataSets)) {
+    // FIXME handle multiple data sets #8741
+    foreach ($description->descriptiveDataSets as $dataSet) {
+      break;
+    }
+  }
+  // generate page title
+  $associated_description_cdm_entity = isset($description->describedSpecimenOrObservation)
+    ? $description->describedSpecimenOrObservation->titleCache
+    : (isset($description->taxon) ? $description->taxon->titleCache : NULL);
+  if (isset($dataSet)) {
+    $title = 'Descriptive Data ' . $dataSet->titleCache;
+    if (isset($associated_description_cdm_entity)) {
+      $title .= ' for ' . $associated_description_cdm_entity;
+    }
+    drupal_set_title($title);
+  }
 
   if (isset($description->describedSpecimenOrObservation)) {
     $render_array[] = markup_to_render_array("<b>Specimen</b><br>");
