@@ -2328,8 +2328,8 @@ function path_to_description($uuid, $descriptive_dataset_uuid = NULL) {
         return FALSE;
     }
     else {
-        return 'cdm_dataportal/description/' . $uuid.
-          '/' . (is_uuid($descriptive_dataset_uuid) ? $descriptive_dataset_uuid : "null");
+      return 'cdm_dataportal/description/' . $uuid
+        . (is_uuid($descriptive_dataset_uuid) ? '/' . $descriptive_dataset_uuid : '');
     }
 }
 
