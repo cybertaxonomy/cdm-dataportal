@@ -688,6 +688,21 @@ function render_cdm_specimen_link($specimen) {
 }
 
 /**
+ * Renders the link which will lead to the taxon detail page
+ * @param object $taxon
+ *    the taxon which will be linked to
+ *
+ * @return string
+ *     the markup for the link
+ */
+function render_cdm_taxon($taxon) {
+  $path = path_to_taxon($taxon->uuid);
+  $attributes['class'][] = html_class_attribute_ref($taxon);
+  $link = l($taxon->titleCache, $path, array('attributes' => $attributes));
+  return $link;
+}
+
+/**
  * Returns HTML containing the synonymy for the accepted taxon.
  *
  * Shows the whole synonymy for the accepted taxon.
@@ -1239,6 +1254,10 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
   if (isset($description->describedSpecimenOrObservation)) {
     $render_array[] = markup_to_render_array("<b>Specimen</b><br>");
     $render_array[] = markup_to_render_array(render_cdm_specimen_link($description->describedSpecimenOrObservation));
+  }
+  if (isset($description->taxon)) {
+    $render_array[] = markup_to_render_array("<b>Taxon</b><br>");
+    $render_array[] = markup_to_render_array(render_cdm_taxon($description->taxon));
   }
 
   $root_nodes = [];
