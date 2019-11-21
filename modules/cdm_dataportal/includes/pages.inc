@@ -625,6 +625,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
  *     the cdm description entity which will be linked to
  *
  * @param bool $show_description_elements if True the description elements will be rendered
+ * @param $descriptive_dataset_uuid the data set which should be passed to the description detail page
  *
  * @return string the markup for the description
  */
