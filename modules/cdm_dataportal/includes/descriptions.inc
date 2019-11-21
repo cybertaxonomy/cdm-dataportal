@@ -550,8 +550,8 @@ function handle_annotations_and_sources_config($feature_block_settings){
         if (_is_original_source_type($source)) {
           $reference_citation = render_original_source(
             $source,
-            $config['link_to_name_used_in_source'] == 1,
-            $config['link_to_reference'] == 1
+            $config['link_to_reference'] == 1,
+            $config['link_to_name_used_in_source'] == 1
           );
 
           if ($reference_citation) {
