@@ -1237,15 +1237,15 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
   $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, [$description_uuid]);
   $dataSet = NULL;
   // find dataset
-  if($descriptive_dataset_uuid != NULL){
+  if ($descriptive_dataset_uuid != NULL) {
     foreach ($description->descriptiveDataSets as $set) {
-      if($set->uuid == $descriptive_dataset_uuid){
+      if ($set->uuid == $descriptive_dataset_uuid) {
         $dataSet = $set;
         break;
       }
     }
   }
-  if (!isset($dataSet) && !empty($description->descriptiveDataSets) && sizeof($description->descriptiveDataSets)==1) {
+  if (!isset($dataSet) && !empty($description->descriptiveDataSets) && sizeof($description->descriptiveDataSets) == 1) {
     foreach ($description->descriptiveDataSets as $dataSet) {
       break;
     }
@@ -1260,22 +1260,22 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
       $title .= ' for ' . $associated_description_cdm_entity;
     }
     drupal_set_title($title);
-    if(isset($description->types)){
+    if (isset($description->types)) {
       foreach ($description->types as $type) {
-        if($type == 'CLONE_FOR_SOURCE'){
-          $render_array[] = markup_to_render_array("Aggregation source from ".$description->created.'<br><br>');
+        if ($type == 'CLONE_FOR_SOURCE') {
+          $render_array[] = markup_to_render_array("Aggregation source from " . $description->created . '<br><br>');
           break;
         }
       }
     }
   }
-  else{
+  else {
     $items = [];
     foreach ($description->descriptiveDataSets as $dataSet) {
       $path = path_to_description($description->uuid, $dataSet->uuid);
       $attributes['class'][] = html_class_attribute_ref($description);
       $items[] = [
-        'data' => $dataSet->titleCache.get_icon_link($path),
+        'data' => $dataSet->titleCache . get_icon_link($path),
       ];
     }
     $render_array[] = [
@@ -1303,10 +1303,12 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
   $rows = [];
   $rows = compose_description_element_rows($root_nodes, $rows);
 
-  $render_array[] = markup_to_render_array(theme('table', [
-    'header' => $header,
-    'rows' => $rows,
-  ]));
+  if (!empty($rows)) {
+    $render_array[] = markup_to_render_array(theme('table', [
+      'header' => $header,
+      'rows' => $rows,
+    ]));
+  }
 
   if (isset($description->sources) and !empty($description->sources)) {
     $items = [];
