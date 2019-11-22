@@ -1211,7 +1211,7 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
         $path = path_to_description($description->uuid, $dataSet->uuid);
         $attributes['class'][] = html_class_attribute_ref($description);
         $items[] = [
-          'data' => $dataSet->titleCache . get_icon_link($path),
+          'data' => $dataSet->titleCache . icon_link($path),
         ];
       }
       $render_array[] = [
