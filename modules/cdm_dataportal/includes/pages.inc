@@ -1169,7 +1169,7 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
 
   $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, [$description_uuid]);
   $dataSet = NULL;
-  // find dataset
+  // dataset passed as parameter
   if ($descriptive_dataset_uuid != NULL) {
     foreach ($description->descriptiveDataSets as $set) {
       if ($set->uuid == $descriptive_dataset_uuid) {
@@ -1178,45 +1178,49 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
       }
     }
   }
-  if (!isset($dataSet) && !empty($description->descriptiveDataSets) && sizeof($description->descriptiveDataSets) == 1) {
-    foreach ($description->descriptiveDataSets as $dataSet) {
-      break;
+  if(!empty($description->descriptiveDataSets)) {
+    // only one dataset present
+    if (!isset($dataSet) && sizeof($description->descriptiveDataSets) == 1) {
+      foreach ($description->descriptiveDataSets as $dataSet) {
+        break;
+      }
     }
-  }
-  // generate page title
-  if (isset($dataSet)) {
-    $associated_description_cdm_entity = isset($description->describedSpecimenOrObservation)
-      ? $description->describedSpecimenOrObservation->titleCache
-      : (isset($description->taxon) ? $description->taxon->titleCache : NULL);
-    $title = 'Descriptive Data ' . $dataSet->titleCache;
-    if (isset($associated_description_cdm_entity)) {
-      $title .= ' for ' . $associated_description_cdm_entity;
-    }
-    drupal_set_title($title);
-    if (isset($description->types)) {
-      foreach ($description->types as $type) {
-        if ($type == 'CLONE_FOR_SOURCE') {
-          $render_array[] = markup_to_render_array("Aggregation source from " . $description->created . '<br><br>');
-          break;
+    // generate page title
+    if (isset($dataSet)) {
+      $associated_description_cdm_entity = isset($description->describedSpecimenOrObservation)
+        ? $description->describedSpecimenOrObservation->titleCache
+        : (isset($description->taxon) ? $description->taxon->titleCache : NULL);
+      $title = 'Descriptive Data ' . $dataSet->titleCache;
+      if (isset($associated_description_cdm_entity)) {
+        $title .= ' for ' . $associated_description_cdm_entity;
+      }
+      drupal_set_title($title);
+      if (isset($description->types)) {
+        foreach ($description->types as $type) {
+          if ($type == 'CLONE_FOR_SOURCE') {
+            $render_array[] = markup_to_render_array("Aggregation source from " . $description->created . '<br><br>');
+            break;
+          }
         }
       }
     }
-  }
-  else {
-    $items = [];
-    foreach ($description->descriptiveDataSets as $dataSet) {
-      $path = path_to_description($description->uuid, $dataSet->uuid);
-      $attributes['class'][] = html_class_attribute_ref($description);
-      $items[] = [
-        'data' => $dataSet->titleCache . icon_link($path),
+    // multiple datasets present
+    else {
+      $items = [];
+      foreach ($description->descriptiveDataSets as $dataSet) {
+        $path = path_to_description($description->uuid, $dataSet->uuid);
+        $attributes['class'][] = html_class_attribute_ref($description);
+        $items[] = [
+          'data' => $dataSet->titleCache . get_icon_link($path),
+        ];
+      }
+      $render_array[] = [
+        '#title' => 'Available data sets for description',
+        '#theme' => 'item_list',
+        '#type' => 'ul',
+        '#items' => $items,
       ];
     }
-    $render_array[] = [
-      '#title' => 'Available data sets for description',
-      '#theme' => 'item_list',
-      '#type' => 'ul',
-      '#items' => $items,
-    ];
   }
 
   if (isset($description->describedSpecimenOrObservation)) {
