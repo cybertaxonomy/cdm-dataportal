@@ -1302,22 +1302,24 @@ function get_root_nodes_for_dataset($description) {
  */
 function compose_description_element_rows($root_nodes, $rows) {
   foreach ($root_nodes as $root_node) {
-    foreach ($root_node->descriptionElements as $element) {
-      switch ($element->class) {
-        case 'CategoricalData':
-          if (!empty($element->stateData)) {
+    if(isset($root_node->descriptionElements)) {
+      foreach ($root_node->descriptionElements as $element) {
+        switch ($element->class) {
+          case 'CategoricalData':
+            if (!empty($element->stateData)) {
+              $rows[] = [
+                $element->feature->representation_L10n,
+                compose_state_data_span($element),
+              ];
+            }
+            break;
+          case 'QuantitativeData':
             $rows[] = [
               $element->feature->representation_L10n,
-              compose_state_data_span($element),
+              compose_quant_stats($element),
             ];
-          }
-          break;
-        case 'QuantitativeData':
-          $rows[] = [
-            $element->feature->representation_L10n,
-            compose_quant_stats($element),
-          ];
-          break;
+            break;
+        }
       }
     }
     // recurse child nodes
