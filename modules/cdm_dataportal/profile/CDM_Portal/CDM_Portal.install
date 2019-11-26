@@ -270,7 +270,9 @@ function CDM_Portal_install() {
     'theme' => $default_theme,
     'status' => 1,
     'weight' => 0,
-    'region' => 'footer'
+    'region' => 'footer',
+    'pages' => '',
+    'cache' => DRUPAL_CACHE_GLOBAL
   ));
   $new_blocks[] = array(
     'block' => $block_powered_by_edit
@@ -286,6 +288,7 @@ function CDM_Portal_install() {
     'weight' => -11,
     'region' => 'sidebar_first',
     'pages' => '',
+    'cache' => DRUPAL_NO_CACHE
   ));
   $new_blocks[] = array(
       'block' => $block_search_taxa
@@ -298,7 +301,9 @@ function CDM_Portal_install() {
     'theme' => $default_theme,
     'status' => 1,
     'weight' => 10,
-    'region' => 'navigation'
+    'region' => 'navigation',
+    'pages' => '',
+    'cache' => DRUPAL_CACHE_GLOBAL
   ));
   $new_blocks[] = array(
     'block' => $block_back_to_search_results
@@ -314,6 +319,7 @@ function CDM_Portal_install() {
     'weight' => -50,
     'region' => 'sidebar_first',
     'pages' => '',
+    'cache' => DRUPAL_NO_CACHE
   ));
 
   $new_blocks[] = array(
@@ -321,7 +327,7 @@ function CDM_Portal_install() {
       'block_role' => array(
           'module' => 'cdm_api',
           'delta' => 'cdm_ws_debug',
-          'rid' => $admin_role->rid
+          'rid' => $admin_role->rid,
       )
   );
 
