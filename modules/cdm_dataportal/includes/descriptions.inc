@@ -2106,18 +2106,20 @@ function render_description_string($description, $root_nodes) {
   $descriptionString = '';
   if (!empty($root_nodes)) {
     foreach ($root_nodes as $root_node) {
-      foreach ($root_node->descriptionElements as $element) {
-        switch ($element->class) {
-          case 'CategoricalData':
-            $state_data = compose_state_data($element);
-            $state_data = implode(', ', $state_data);
-            if (!empty($state_data)) {
-              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data . "; ";
-            }
-            break;
-          case 'QuantitativeData':
-            $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . compose_quant_stats($element) . "; ";
-            break;
+      if(isset($root_node->descriptionElements)) {
+        foreach ($root_node->descriptionElements as $element) {
+          switch ($element->class) {
+            case 'CategoricalData':
+              $state_data = compose_state_data($element);
+              $state_data = implode(', ', $state_data);
+              if (!empty($state_data)) {
+                $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data . "; ";
+              }
+              break;
+            case 'QuantitativeData':
+              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . compose_quant_stats($element) . "; ";
+              break;
+          }
         }
       }
       // recurse child nodes
