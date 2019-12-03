@@ -1250,7 +1250,7 @@ function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = 
   if (isset($description->sources) and !empty($description->sources)) {
     $items = [];
     foreach ($description->sources as $source) {
-      if ($source->type == 'Aggregation' and isset($source->cdmSource) and $source->cdmSource->class=='SpecimenDescription') {
+      if ($source->type == 'Aggregation' and isset($source->cdmSource)){
         $specimendescription = $source->cdmSource;
         $items[] = [
           'data' => render_cdm_description($specimendescription),
