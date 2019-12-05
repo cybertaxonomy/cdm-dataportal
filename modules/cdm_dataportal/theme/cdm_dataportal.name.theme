@@ -95,7 +95,7 @@ function theme_cdm_typedesignations($variables) {
       case 'TextualTypeDesignation':
         $textual_type_designations[] = $type_designation;
         break;
-      default:  throw new Exception('Unknown type designation class');
+      default:  throw new Exception('Unknown type designation class: ' . $type_designation->class);
     }
   }
 
