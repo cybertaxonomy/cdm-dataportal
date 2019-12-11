@@ -165,7 +165,13 @@ function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
        * Special case: Child nodes with empty statements but taxa as leaf are to
        * treated as if all those taxa where direct children of the source node.
        */
-      $islinkToManyTaxa = !isset($child->children[0]->statement) && isset($child->children[0]->taxon->uuid);
+      $target_taxon_child = [];
+      foreach($child->children as $sub_child) {
+        if(!isset($sub_child->statement) && isset($sub_child->taxon->uuid)){
+          $target_taxon_child[$sub_child->uuid] = $sub_child;
+        }
+      }
+      $islinkToManyTaxa = count($target_taxon_child) > 0;
       $islinkToTaxon = isset($child->taxon->uuid);
       $islinkToSubKey = isset($child->subkey->uuid);
       $islinkToOtherNode = isset($child->otherNode);

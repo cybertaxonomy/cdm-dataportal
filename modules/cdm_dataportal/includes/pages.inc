@@ -1384,6 +1384,10 @@ function compose_cdm_reference_page($uuid) {
   $pathelement = "reference_page";
   RenderHints::pushToRenderStack($pathelement);
   $reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
+  if (!$reference) {
+    drupal_set_title(t('Reference does not exist'), PASS_THROUGH);
+    return null;
+  }
   if (isset($reference->titleCache)) {
     drupal_set_title($reference->titleCache, PASS_THROUGH);
   }

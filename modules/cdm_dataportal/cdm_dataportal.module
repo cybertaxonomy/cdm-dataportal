@@ -1239,6 +1239,10 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
   cdm_check_valid_portal_page();
 
   $media = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $mediaUuid);
+  if (!$media) {
+    drupal_set_title(t('Media does not exist'), PASS_THROUGH);
+    return FALSE;
+  }
   return theme('cdm_media_page', array(
     'media' => $media,
     'mediarepresentation_uuid' => $mediarepresentation_uuid,
@@ -1545,6 +1549,10 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
   cdm_check_valid_portal_page();
 
   $polytomousKey = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, $polytomousKeyUuid);
+  if (!$polytomousKey) {
+    drupal_set_title(t('Polytomous key does not exist'), PASS_THROUGH);
+    return FALSE;
+  }
 
   $sourcePager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, array($polytomousKeyUuid, 'sources'));
   if (is_array($sourcePager->records)) {
@@ -1827,7 +1835,8 @@ function cdm_dataportal_description_page_view($uuid, $descriptive_dataset_uuid =
     return cdm_node_show_simulate($descriptionpage->content);
   }
   else {
-    return '';
+    drupal_set_title(t('Description does not exist'), PASS_THROUGH);
+    return false;
   }
 }
 
@@ -1845,7 +1854,7 @@ function cdm_dataportal_named_area_view($uuid) {
   $named_area = cdm_ws_get(CDM_WS_PORTAL_TERM, $uuid);
   if (empty($named_area) || $named_area->class !== 'NamedArea') {
     drupal_set_title(t('Named area does not exist'), PASS_THROUGH);
-    return FALSE;
+    return null;
   }
   $named_area_page = new stdClass();
 
