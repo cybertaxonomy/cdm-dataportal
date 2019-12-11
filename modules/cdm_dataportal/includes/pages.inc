@@ -1386,7 +1386,7 @@ function compose_cdm_reference_page($uuid) {
   $reference = cdm_ws_get(CDM_WS_REFERENCE, $uuid);
   if (!$reference) {
     drupal_set_title(t('Reference does not exist'), PASS_THROUGH);
-    return null;
+    return "";
   }
   if (isset($reference->titleCache)) {
     drupal_set_title($reference->titleCache, PASS_THROUGH);

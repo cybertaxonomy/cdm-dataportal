@@ -1241,7 +1241,7 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
   $media = cdm_ws_get(CDM_WS_PORTAL_MEDIA, $mediaUuid);
   if (!$media) {
     drupal_set_title(t('Media does not exist'), PASS_THROUGH);
-    return FALSE;
+    return "";
   }
   return theme('cdm_media_page', array(
     'media' => $media,
@@ -1551,7 +1551,7 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
   $polytomousKey = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, $polytomousKeyUuid);
   if (!$polytomousKey) {
     drupal_set_title(t('Polytomous key does not exist'), PASS_THROUGH);
-    return FALSE;
+    return "";
   }
 
   $sourcePager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, array($polytomousKeyUuid, 'sources'));
@@ -1811,20 +1811,22 @@ function cdm_dataportal_specimen_view($uuid) {
  */
 function cdm_dataportal_description_view($uuid, $descriptive_dataset_uuid = NULL) {
     $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $uuid);
+    $description_page = new stdClass();
     if (empty($description)) {
-        drupal_set_title(t('Description does not exist'), PASS_THROUGH);
-        return FALSE;
+      $description_page->title = t('Description does not exist');
+      drupal_set_title($description_page->title, PASS_THROUGH); // not necessary if correctly implemented as drupal node
+      $description_page->content = "";
+
+    } else {
+      $description_page->title = $description->titleCache;
+      drupal_set_title($description_page->title); // not necessary if correctly implemented as drupal node
+
+      // Render the description page.
+      $render_array = compose_cdm_description($description->uuid, $descriptive_dataset_uuid);
+      $description_page->content = drupal_render($render_array);
     }
-    $descriptionpage = new stdClass();
 
-    $descriptionpage->title = $description->titleCache;
-    drupal_set_title($descriptionpage->title); // not necessary if correctly implemented as drupal node
-
-    // Render the description page.
-    $render_array = compose_cdm_description($description->uuid, $descriptive_dataset_uuid);
-    $descriptionpage->content = drupal_render($render_array);
-
-    return $descriptionpage;
+    return $description_page;
 }
 
 function cdm_dataportal_description_page_view($uuid, $descriptive_dataset_uuid = NULL) {
@@ -1835,8 +1837,7 @@ function cdm_dataportal_description_page_view($uuid, $descriptive_dataset_uuid =
     return cdm_node_show_simulate($descriptionpage->content);
   }
   else {
-    drupal_set_title(t('Description does not exist'), PASS_THROUGH);
-    return false;
+    return NULL;
   }
 }
 
