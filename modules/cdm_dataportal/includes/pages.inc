@@ -1162,7 +1162,7 @@ function compose_cdm_specimen_page($specimen_uuid)
  *
  * @ingroup compose
  */
-function compose_cdm_description($description_uuid, $descriptive_dataset_uuid = NULL) {
+function compose_cdm_description_table($description_uuid, $descriptive_dataset_uuid = NULL) {
   RenderHints::pushToRenderStack('description_table');
 
   $render_array = [];

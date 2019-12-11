@@ -1822,7 +1822,7 @@ function cdm_dataportal_description_view($uuid, $descriptive_dataset_uuid = NULL
       drupal_set_title($description_page->title); // not necessary if correctly implemented as drupal node
 
       // Render the description page.
-      $render_array = compose_cdm_description($description->uuid, $descriptive_dataset_uuid);
+      $render_array = compose_cdm_description_table($description->uuid, $descriptive_dataset_uuid);
       $description_page->content = drupal_render($render_array);
     }
 
