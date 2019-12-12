@@ -1,5 +1,7 @@
 <?php
-const BIBLIOGRAPHY_FOOTNOTE_KEY = 'BIBLIOGRAPHY';
+
+const BIBLIOGRAPHY_FOOTNOTE_KEY = PSEUDO_FEATURE_BIBLIOGRAPHY;
+
 
 /**
  * Returns the localized representations of the modifiers hold by the
@@ -138,8 +140,14 @@ function cdm_merge_description_elements(&$target, &$source) {
  * @param string $fragment
  *   Optional parameter to define a url fragment different from the $label,
  *   if the $fragment is not defined the $label will be used
+ * @param boolean $as_first_element
+ *   Place the new item as fist one. This parameter is ignored when $weight is being set
+ * @param integer $weight
+ *   Defines the weight for the ordering the item in the toc list.
+ *   The item will be placed at the end if weigth is NULL.
  */
-function cdm_toc_list_add_item($label, $class_attribute_suffix, $fragment = NULL, $as_first_element = FALSE) {
+function cdm_toc_list_add_item($label, $class_attribute_suffix, $fragment = NULL, $as_first_element = FALSE, $weight = null) {
+
   $toc_list_items = &cdm_toc_list();
 
   if (!$fragment) {
@@ -157,12 +165,18 @@ function cdm_toc_list_add_item($label, $class_attribute_suffix, $fragment = NULL
       $fragment
     );
 
-  if ($as_first_element) {
-    array_unshift($toc_list_items, $new_item);
+  if ($weight === null && $as_first_element) {
+    reset($toc_list_items);
+    $weight = key($toc_list_items); // returns null for empty arrays
+    $weight = $weight !== null ? $weight - FEATURE_BLOCK_WEIGHT_INCREMENT : 0;
   }
-  else {
-    $toc_list_items[] = $new_item;
+  else if($weight === null) {
+      end($toc_list_items);
+      $weight = key($toc_list_items); // returns null for empty arrays
+      $weight = $weight !== null ? $weight + FEATURE_BLOCK_WEIGHT_INCREMENT : 0;
   }
+  $toc_list_items[$weight] = $new_item;
+  ksort($toc_list_items); // sort so that the last element has always the highest weight
 
 }
 
@@ -684,7 +698,10 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
     RenderHints::pushToRenderStack('feature_block');
     // Create a drupal block for each feature
+    $block_weight = - FEATURE_BLOCK_WEIGHT_INCREMENT;
     foreach ($mergedFeatureNodes as $feature_node) {
+
+      $block_weight = $block_weight + FEATURE_BLOCK_WEIGHT_INCREMENT;
 
       if ((isset($feature_node->descriptionElements['#type']) ||
           has_feature_node_description_elements($feature_node)) && $feature_node->term->uuid != UUID_IMAGE) { // skip empty or suppressed features
@@ -760,7 +777,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
             /*
              * Footnotes for the feature block
              */
-            $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $feature_node->term->uuid)));
+            $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => PSEUDO_FEATURE_BIBLIOGRAPHY . '-' . $feature_node->term->uuid)));
             $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => $feature_node->term->uuid)));
             $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $feature_node->term->uuid)));
           }
@@ -770,8 +787,8 @@ function handle_annotations_and_sources_config($feature_block_settings){
         drupal_alter('cdm_feature_node_block_content', $block->content, $feature_node->term, $feature_node->descriptionElements);
 
         if(!$block_content_is_empty){ // skip empty block content
-          $block_list[] = $block;
-          cdm_toc_list_add_item(cdm_term_representation($feature_node->term), $feature_node->term->uuid);
+          $block_list[$block_weight] = $block;
+          cdm_toc_list_add_item(cdm_term_representation($feature_node->term), $feature_node->term->uuid, null, FALSE, $block_weight);
         } // END: skip empty block content
       } // END: skip empty or suppressed features
       RenderHints::popFromRenderStack();
@@ -780,6 +797,8 @@ function handle_annotations_and_sources_config($feature_block_settings){
     RenderHints::popFromRenderStack();
 
     drupal_alter('cdm_feature_node_blocks', $block_list, $taxon);
+
+    ksort($block_list);
 
     return  $block_list;
   }

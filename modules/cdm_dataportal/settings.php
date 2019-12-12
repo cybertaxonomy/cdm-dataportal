@@ -5,7 +5,10 @@
  */
 
 
-  // TODO Genus UUID.
+const FEATURE_BLOCK_WEIGHT_INCREMENT = 2;
+const PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS = 'AGGREGATION_DESCRIPTIONS';
+const PSEUDO_FEATURE_BIBLIOGRAPHY = 'BIBLIOGRAPHY';
+const PSEUDO_FEATURE_NUMBER_OF_TAXA = 'NUMBER_OF_TAXA';
 
 const CDM_NAME_PAGE_AUTOREDIRECT = 'cdm_name_page_autoredirect';
 
@@ -125,6 +128,15 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
 
 
 define('FEATURE_BLOCK_SETTINGS', 'feature_block_settings');
+
+define('CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS', 'cdm_pseudo_feature_block_weights');
+define('CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS_DEFAULT', serialize(
+  [
+    PSEUDO_FEATURE_NUMBER_OF_TAXA => 0 - FEATURE_BLOCK_WEIGHT_INCREMENT,
+    PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS => 100,
+    PSEUDO_FEATURE_BIBLIOGRAPHY => 102
+  ]
+));
 
 define('DISTRIBUTION_CONDENSED', 'distribution_condensed');
 define('DISTRIBUTION_CONDENSED_INFO_PATH', 'distribution_condensed_info_path');
@@ -2150,7 +2162,7 @@ function cdm_settings_layout_taxon() {
       <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's
       features such as description, distribution, common names"),
   );
-  $featureTrees = cdm_get_featureTrees_as_options(TRUE);
+  $featureTrees = cdm_get_featureTrees_as_options(TRUE, TRUE);
   $profile_feature_tree = get_profile_feature_tree();
   $profile_feature_tree_uuid = $profile_feature_tree->uuid;
   if(!isset($featureTrees['options'][$profile_feature_tree_uuid])) {
@@ -2163,10 +2175,32 @@ function cdm_settings_layout_taxon() {
     '#options' =>  $featureTrees['options'],
     '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
     '#options_suffixes' => $featureTrees['treeRepresentations'],
-    '#description' => t('The Feature Tree selected here define the feature blocks which are visible in the taxon
-      profile page.'
+    '#description' => t('The Feature Tree selected defines the type and order 
+    of the according feature blocks visible in the taxon profile page. A feature block 
+    only is shown if any data for it is present. The block weight is shown after the feature label in brackets'
     ),
   );
+
+  $pseudo_feature_weights = get_array_variable_merged(CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS, CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS_DEFAULT);
+  $form['taxon_profile']['feature_blocks'][CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS] = array(
+    '#title'  => 'Pseudo feature block weight',
+    '#type' => 'fieldset',
+    '#collapsible' => false,
+    '#tree' => true,
+    '#description' => 'Weights for the pseudo feature blocks. The weight value defines the 
+    position in the list of blocks. The weight of normal feature is defined by the position 
+    of the according feature. Please see the specific feature details above to find the feature weight.'
+  );
+  foreach ([PSEUDO_FEATURE_NUMBER_OF_TAXA, PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS, PSEUDO_FEATURE_BIBLIOGRAPHY] as $ps_feature) {
+    $form['taxon_profile']['feature_blocks'][CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS][$ps_feature] = array(
+      '#title' => $ps_feature,
+      '#type'  => 'textfield',
+      '#element_validate' => array('element_validate_number'),
+      '#size' => 4,
+      '#default_value' => $pseudo_feature_weights[$ps_feature]
+    );
+  }
+
 
   // ---- FEATURE TREE BLOCKS > LAYOUT PER FEATURE BLOCK ---- //
   $profile_feature_tree = get_profile_feature_tree();

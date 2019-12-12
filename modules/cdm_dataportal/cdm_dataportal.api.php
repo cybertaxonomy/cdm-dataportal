@@ -29,40 +29,47 @@
  */
 function hook_cdm_feature_node_blocks_alter(&$block_list, $taxon = NULL) {
 
-    if ($taxon) {
-        // taxon is only given if called from within the taxon general page part
-        $numberOfChildren = count(
-          cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON,
-              array (get_current_classification_uuid(),
-              $taxon->uuid
-              )
-          )
-        );
-        $subRank = 'sub taxa';
-        if ($taxon->name->rank->titleCache == "Genus") {
-            $subRank = "species";
-        } else if ($taxon->name->rank->titleCache == "Species") {
-            if($numberOfChildren==1){
-                $subRank = "infraspecific taxon";
-            }
-            else {
-                $subRank = "infraspecific taxa";
-            }
-        }
-        if ($numberOfChildren > 0) {
-            $block = feature_block('Number of Taxa');
-            // FIXME use compose_feature_block_wrap_elements() in next line
-            $block->content = array(markup_to_render_array(
-                '<ul class="feature-block-elements"><li>'
-                . $numberOfChildren . " " . $subRank
-                . '</li></ul>')
-            );
-            array_unshift($block_list, $block);
-            cdm_toc_list_add_item('Number of Taxa', 'number-of-taxa', NULL, TRUE);
-        }
+  if ($taxon) {
+    // taxon is only given if called from within the taxon general page part
+    $numberOfChildren = count(
+      cdm_ws_get(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON,
+        [
+          get_current_classification_uuid(),
+          $taxon->uuid,
+        ]
+      )
+    );
+    $subRank = 'sub taxa';
+    if ($taxon->name->rank->titleCache == "Genus") {
+      $subRank = "species";
     }
+    else {
+      if ($taxon->name->rank->titleCache == "Species") {
+        if ($numberOfChildren == 1) {
+          $subRank = "infraspecific taxon";
+        }
+        else {
+          $subRank = "infraspecific taxa";
+        }
+      }
+    }
+    if ($numberOfChildren > 0) {
 
-    return $block_list;
+      $pseudo_feature_weights = get_array_variable_merged(CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS, CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS_DEFAULT);
+      $feature_num_of_taxa = make_pseudo_feature('Number of Taxa', PSEUDO_FEATURE_NUMBER_OF_TAXA);
+      $block = feature_block(t('Number of Taxa'), $feature_num_of_taxa);
+      $block->content[] = compose_feature_block_wrap_elements([
+        markup_to_render_array(
+          '<ul class="feature-block-elements"><li>'
+          . $numberOfChildren . " " . $subRank
+          . '</li></ul>')]
+        , $feature_num_of_taxa);
+      $block_list[$pseudo_feature_weights[PSEUDO_FEATURE_NUMBER_OF_TAXA]] = $block;
+      cdm_toc_list_add_item('Number of Taxa', 'number-of-taxa', NULL, TRUE);
+    }
+  }
+
+  return $block_list;
 }
 
 /**

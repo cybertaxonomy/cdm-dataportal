@@ -16,10 +16,6 @@
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
 
-const PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS = 'AGGREGATION_DESCRIPTIONS';
-
-const PSEUDO_FEATURE_BIBLIOGRAPHY = 'BIBLIOGRAPHY';
-
 
 /**
  * Composes a render array representing the ocurrences associetad with the $taxon.
@@ -557,15 +553,14 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
     $render_array['synonymy'] = $synonymy_a;
   }
 
-  $pseudo_feature_blocks = array();
-  $pseudo_feature_block_toc_items = array();
+//  $pseudo_feature_block_toc_items = array();
 
 
   // Render the sections for each real feature
   $feature_block_list = make_feature_block_list($merged_tree->root->childNodes, $taxon);
 
   // >>>>>>>>>>>>>>>>>>> PSEUDO FEATURES >>>>>>>>>>>>>>>>>>>
-
+  $pseudo_feature_weights = get_array_variable_merged(CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS, CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS_DEFAULT);
   // Bibliography
   $bibliography_settings = get_bibliography_settings();
   if($bibliography_settings['enabled'] == 1){
@@ -577,8 +572,8 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
       $bibliography_block->content = array();
       $bibliography_block->content[] = compose_feature_block_wrap_elements(array($bibliography_item), $feature_bibliography);
 
-      $pseudo_feature_block_toc_items['Bibliography']= 'bibliography';
-      $pseudo_feature_blocks[] = $bibliography_block;
+      cdm_toc_list_add_item('Bibliography', 'bibliography');
+      $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]] = $bibliography_block;
     }
   }
 
@@ -597,21 +592,23 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
       $description_block->content = [];
       $description_block->content[] = compose_feature_block_wrap_elements([$description_item], $feature_description);
 
-      $pseudo_feature_block_toc_items['Descriptions (aggregated)'] = 'aggregation_descriptions';
-      $pseudo_feature_blocks[] = $description_block;
+      cdm_toc_list_add_item('Descriptions (aggregated)', 'aggregation_descriptions');
+      $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS]] = $description_block;
+
 
   }
-  $render_array['taxon_description_features'] = _block_get_renderable_array(
-      array_merge($feature_block_list, $pseudo_feature_blocks)
-  );
 
-  // update TOC
+  // sort by weight
+  ksort($feature_block_list);
+  $render_array['taxon_description_features'] = _block_get_renderable_array($feature_block_list);
+
+/*  // update TOC
   if ($pseudo_feature_block_toc_items){
     foreach ($pseudo_feature_block_toc_items as $label=>$fragment){
       cdm_toc_list_add_item($label, $fragment);
     }
   }
-
+*/
   // <<<<<<<<<<<<<<<<<<< PSEUDO FEATURES <<<<<<<<<<<<<<<<<<<
 
   // create the table of content

@@ -67,8 +67,6 @@ function cdm_dataportal_theme() {
 
     // Themes in cdm_dataportal.descriptions.theme.
     'cdm_feature_name' => array('variables' => array('feature_name' => NULL)),
-    'FeatureTree_hierarchy' => array('variables' => array('FeatureTreeUuid' => NULL)),
-    'FeatureTree_hierarchy_children' => array('variables' => array('node' => NULL)),
     'cdm_IdentificationKey' => array('variables' => array(
         'identificationKey' => NULL,
         'doLinkToKeyPage' => TRUE,

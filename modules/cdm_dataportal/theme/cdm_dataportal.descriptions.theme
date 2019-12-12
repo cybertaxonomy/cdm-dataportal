@@ -37,12 +37,13 @@ function theme_cdm_feature_name($variables) {
 
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Renders a hierarchical representation of the CDM FeatureTree identified by its uuid
+ *
+ * @param string $feature_tree_uuid
+ *    The CDM FeatureTree uuid
  */
-function theme_FeatureTree_hierarchy($variables) {
+function render_feature_tree_hierarchy($feature_tree_uuid, $show_weight = FALSE) {
 
-  $feature_tree_uuid = $variables['FeatureTreeUuid'];
   if (!is_uuid($feature_tree_uuid)) {
     return NULL;
   }
@@ -56,28 +57,34 @@ function theme_FeatureTree_hierarchy($variables) {
 
   if (isset($feature_tree) && isset($feature_tree->root)) {
     $out = '<ul class="' . $feature_tree->class . '">';
-    $out .= theme('FeatureTree_hierarchy_children', array('node' => $feature_tree->root));
+    $out .= render_feature_tree_hierarchy_children($feature_tree->root, $show_weight);
     $out .= '</ul>';
   }
   return $out;
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Renders a hierarchical representation of the children of the CDM FeatureNode
+ * passed as object.
+ *
+ * @param object $feature_node
+ *    The CDM FeatureNode
  */
-function theme_FeatureTree_hierarchy_children($variables) {
+function render_feature_tree_hierarchy_children($feature_node, $show_weight = FALSE) {
 
-  $feature_node = $variables['node'];
   $out = '';
+  $item_index = 0;
   if (isset($feature_node->childNodes)) {
-
     foreach ($feature_node->childNodes as $child_feature_node) {
       $out .= '<li>' . check_plain($child_feature_node->term->representation_L10n);
+      if($show_weight){
+        $out .= ' [' .$item_index . ']';
+      }
       if (isset($child_feature_node->childNodes) && count($child_feature_node->childNodes) > 0) {
-        $out .= '<ul>' . theme('FeatureTree_hierarchy_children', array('node' => $child_feature_node)) . '</ul>';
+        $out .= '<ul>' . render_feature_tree_hierarchy_children($child_feature_node, $show_weight) . '</ul>';
       }
       $out .= '</li>';
+      $item_index = $item_index + FEATURE_BLOCK_WEIGHT_INCREMENT;
     }
   }
   return $out;
