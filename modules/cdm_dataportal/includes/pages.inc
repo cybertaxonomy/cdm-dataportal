@@ -572,8 +572,8 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
       $bibliography_block->content = array();
       $bibliography_block->content[] = compose_feature_block_wrap_elements(array($bibliography_item), $feature_bibliography);
 
-      cdm_toc_list_add_item('Bibliography', 'bibliography');
       $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]] = $bibliography_block;
+      cdm_toc_list_add_item('Bibliography', 'bibliography', null, false, $pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]);
     }
   }
 
@@ -592,8 +592,8 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
       $description_block->content = [];
       $description_block->content[] = compose_feature_block_wrap_elements([$description_item], $feature_description);
 
-      cdm_toc_list_add_item('Descriptions (aggregated)', 'aggregation_descriptions');
       $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS]] = $description_block;
+      cdm_toc_list_add_item('Descriptions (aggregated)', 'aggregation_descriptions', null, false, $pseudo_feature_weights[PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS]);
 
 
   }
