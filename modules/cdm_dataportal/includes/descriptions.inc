@@ -1235,7 +1235,7 @@ function compose_state_data($element) {
         $state = cdm_term_representation($state_data->state);
 
           if (isset($state_data->count)) {
-            $state .= ' ('.$state_data->count.')';
+            $state .= ' (' . $state_data->count . ')';
           }
     
           if (isset($state_data->modifyingText_L10n)) {
@@ -1243,11 +1243,14 @@ function compose_state_data($element) {
           }
     
           $modifiers_strings = cdm_modifers_representations($state_data);
-    
-          $state_data_strings[] = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
+          $state_data_markup = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
+          // we could use strip_tags() to reduce the markup to text for the key but this is expensive
+          $sort_key = str_pad($state_data->count, 6, '0', STR_PAD_LEFT) . '_' . $state_data_markup;
+          $state_data_strings[$sort_key] = $state_data_markup;
       }
 
     }
+    krsort($state_data_strings);
   }
   return $state_data_strings;
 }
