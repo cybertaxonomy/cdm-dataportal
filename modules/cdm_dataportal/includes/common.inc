@@ -631,7 +631,7 @@ function render_cdm_entity_link($cdm_entity) {
  *
  * @return string
  */
-function icon_link($path) {
-  $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), $path, ['html' => TRUE]);
+function icon_link($path, $fragment = '') {
+  $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), $path, ['html' => TRUE, 'fragment' => $fragment] );
   return $iconlink;
 }

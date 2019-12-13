@@ -1822,7 +1822,7 @@ function cdm_dataportal_description_view($uuid, $descriptive_dataset_uuid = NULL
       drupal_set_title($description_page->title); // not necessary if correctly implemented as drupal node
 
       // Render the description page.
-      $render_array = compose_cdm_description_table($description->uuid, $descriptive_dataset_uuid);
+      $render_array = compose_description_table($description->uuid, $descriptive_dataset_uuid);
       $description_page->content = drupal_render($render_array);
     }
 
@@ -2305,7 +2305,6 @@ function do_showThumbnails() {
  * @param string $page_tab
  *   Overwriting the preset mechanism by defining specific value for the
  *   taxon page tab.
- *
  * @return string
  *   The created URL.
  */
@@ -2319,17 +2318,18 @@ function path_to_taxon($uuid, $page_tab = FALSE) {
   }
 
   if ($page_tab) {
-    return 'cdm_dataportal/taxon/' . $uuid . '/' . $page_tab;
+    $url = 'cdm_dataportal/taxon/' . $uuid . '/' . $page_tab;
   }
   elseif (!$tab || strtolower($tab) == 'general') {
-    return 'cdm_dataportal/taxon/' . $uuid;
+    $url = 'cdm_dataportal/taxon/' . $uuid;
   }
   elseif (get_last_taxon_page_tab() &&   $tab == $values[CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX]) {
-    return 'cdm_dataportal/taxon/' . $uuid . '/' . get_last_taxon_page_tab();
+    $url = 'cdm_dataportal/taxon/' . $uuid . '/' . get_last_taxon_page_tab();
   }
   else {
-    return 'cdm_dataportal/taxon/' . $uuid . '/' . strtolower($tab);
+    $url = 'cdm_dataportal/taxon/' . $uuid . '/' . strtolower($tab);
   }
+  return $url;
 }
 
 function path_to_description($uuid, $descriptive_dataset_uuid = NULL) {

@@ -198,22 +198,23 @@ function &cdm_toc_list(){
  * Prepares an empty Drupal block for displaying description elements of a specific CDM Feature.
  *
  * The block can also be used for pseudo Features like a bibliography. Pseudo features are
- * derived from other data on the fly and so not exist as such in the cdm data. In case
- * of pseudo features the $feature is left empty
+ * derived from other data on the fly and so not exist as such in the cdm data. For pseudo
+ * features the $feature can be created using make_pseudo_feature().
  *
  * @param $feature_name
  *   A label describing the feature, usually the localized feature representation.
  * @param object $feature
- *   The CDM Feature for which the block is created. (optional)
+ *   The CDM Feature for which the block is created.
  * @return object
  *   A Drupal block object
  */
-function feature_block($feature_name, $feature = NULL) {
-  $block = new stdclass(); // Empty object.
+function feature_block($feature_name, $feature) {
+  $block = new stdclass();
   $block->module = 'cdm_dataportal';
-  $block->delta = generalizeString($feature_name);
   $block->region = NULL;
-  $class_attribute = $feature ? html_class_attribute_ref($feature) : '';
+  $class_attribute = html_class_attribute_ref($feature);
+  $block_delta = $feature->uuid;
+  $block->delta = generalizeString($block_delta);
   $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '">'
     . theme('cdm_feature_name', array('feature_name' => $feature_name))
     . '</span>';
@@ -1234,7 +1235,9 @@ function compose_state_data($element) {
       if (isset($state_data->state)) {
         $state = cdm_term_representation($state_data->state);
 
+          $sample_count = 0;
           if (isset($state_data->count)) {
+            $sample_count = $state_data->count;
             $state .= ' (' . $state_data->count . ')';
           }
     
@@ -1245,7 +1248,7 @@ function compose_state_data($element) {
           $modifiers_strings = cdm_modifers_representations($state_data);
           $state_data_markup = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
           // we could use strip_tags() to reduce the markup to text for the key but this is expensive
-          $sort_key = str_pad($state_data->count, 6, '0', STR_PAD_LEFT) . '_' . $state_data_markup;
+          $sort_key = str_pad($sample_count, 6, '0', STR_PAD_LEFT) . '_' . $state_data_markup;
           $state_data_strings[$sort_key] = $state_data_markup;
       }
 
@@ -1299,7 +1302,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
    * - sources
    */
 
-  $out = compose_quant_stats($element);
+  $out = render_quantitative_statistics($element);
 
   $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
 
@@ -1312,7 +1315,7 @@ function compose_description_element_quantitative_data($element, $feature_block_
  *
  * @return string
  */
-function compose_quant_stats($element) {
+function render_quantitative_statistics($element) {
   $out = '';
   $type_representation = NULL;
   $min_max = min_max_array();
@@ -1320,6 +1323,7 @@ function compose_quant_stats($element) {
   $other_values = [];
 
   if (isset($element->statisticalValues)) {
+    $out = '<span class=\"' . html_class_attribute_ref($element) . '\">';
     $other_values_markup = [];
     foreach ($element->statisticalValues as $statistical_val) {
 
@@ -1363,6 +1367,7 @@ function compose_quant_stats($element) {
 
 
     $out .= $min_max_markup . ' ' . implode($other_values_markup, ', ');
+    $out .= '</span>';
   }
 
   if (isset($element->unit)) {
@@ -2113,7 +2118,7 @@ function render_cdm_description($description, $show_description_elements = False
   if($show_description_elements){
     $out = render_description_string($description, get_root_nodes_for_dataset($description));
   }
-  $out .= icon_link($path_to_description);;
+  $out .= icon_link($path_to_description);
 
   return $out;
 }
@@ -2139,7 +2144,7 @@ function render_description_string($description, $root_nodes) {
               }
               break;
             case 'QuantitativeData':
-              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . compose_quant_stats($element) . "; ";
+              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . render_quantitative_statistics($element) . "; ";
               break;
           }
         }
@@ -2161,7 +2166,7 @@ function render_description_string($description, $root_nodes) {
  *
  * @ingroup compose
  */
-function compose_cdm_description_table($description_uuid, $descriptive_dataset_uuid = NULL) {
+function compose_description_table($description_uuid, $descriptive_dataset_uuid = NULL) {
   RenderHints::pushToRenderStack('description_table');
 
   $render_array = [];
@@ -2231,7 +2236,6 @@ function compose_cdm_description_table($description_uuid, $descriptive_dataset_u
     $render_array[] = markup_to_render_array(render_cdm_taxon($description->taxon));
   }
 
-  $root_nodes = [];
   $root_nodes = get_root_nodes_for_dataset($description);
 
   $header = ['Feature/Character', 'State'];
@@ -2250,9 +2254,21 @@ function compose_cdm_description_table($description_uuid, $descriptive_dataset_u
     $items = [];
     foreach ($description->sources as $source) {
       if ($source->type == 'Aggregation' and isset($source->cdmSource)){
-        $specimendescription = $source->cdmSource;
+        $cdm_source_entity = $source->cdmSource;
+        switch($cdm_source_entity->class){
+          case 'Taxon':
+            $source_link_markup = render_taxon_or_name($cdm_source_entity) . icon_link(path_to_taxon($cdm_source_entity->uuid, false), generalizeString(PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS));
+            break;
+          case 'TaxonDescription':
+          case 'SpecimenDescription':
+          case 'NameDescription':
+            $source_link_markup = render_cdm_description($cdm_source_entity);
+            break;
+          default:
+            $source_link_markup = '<span class="error">unhandled CdmSource</span>';
+        }
         $items[] = [
-          'data' => render_cdm_description($specimendescription),
+          'data' => $source_link_markup
         ];
       }
     }
@@ -2315,7 +2331,7 @@ function compose_description_element_rows($root_nodes, $rows) {
           case 'QuantitativeData':
             $rows[] = [
               $element->feature->representation_L10n,
-              compose_quant_stats($element),
+              render_quantitative_statistics($element),
             ];
             break;
         }
