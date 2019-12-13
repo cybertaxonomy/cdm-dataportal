@@ -1197,8 +1197,6 @@ function compose_description_element_individuals_association($element, $feature_
  */
 function compose_description_element_categorical_data($element, $feature_block_settings, $prepend_feature_label = FALSE) {
 
-  $enclosing_tag = cdm_feature_block_element_tag_name($feature_block_settings);
-
   $out = compose_state_data_span($element);
 
   $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
