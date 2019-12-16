@@ -214,19 +214,22 @@ function compare_text_data($a, $b) {
 
 /**
  * Creates an array suitable to be used in min_max_markup()
+ * The min max structure is suitable for being used in the context
+ * of GatheringEvents and StatisticalMeasures (see render_quantitative_statistics())
  *
  * @return array
  */
-function min_max_array()
-{
-// FIXME use UUIDs instead? how about idInVocab?
-  $min_max = array(
-      'Extreme Min' => NULL,
-      'Min' => NULL,
-      'Average' => NULL,
-      'Max' => NULL,
-      'Extreme Max' => NULL,
-  );
+function min_max_array() {
+
+  $min_max = [
+    'Min' => NULL,
+    'TypicalLowerBoundary' => NULL,
+    'Average' => NULL,
+    'TypicalUpperBoundary' => NULL,
+    'Max' => NULL,
+    'Variance' => NULL,
+    'StandardDeviation' => NULL,
+  ];
   return $min_max;
 }
 
@@ -234,6 +237,11 @@ function min_max_array()
  * Creates markup from a min max array.
  *
  * NOTE: use  min_max_array() to create an appropriate array
+ *
+ * Internally Min will be translated to TypicalLowerBoundary if no such value is present.
+ * The same also accounts for Max and TypicalUpperBoundary.
+ *
+ * For further details see #3742, #8766
  *
  * @param $min_max
  *  the min-max array
@@ -244,47 +252,89 @@ function min_max_array()
 function min_max_markup($min_max, $unit = '') {
 
   $min_max_markup = '';
-  // create min-max string
-  if ($min_max['Min'] !== NULL && $min_max['Max'] !== NULL && $min_max['Min']->_value == $min_max['Max']->_value) {
-    // min and max are identical
+
+  // --- sanitize values
+  if(min_max_equals($min_max, 'Min', 'TypicalLowerBoundary')){
+    $min_max['Min'] = NULL;
+  }
+
+  if(min_max_equals($min_max, 'Max', 'TypicalUpperBoundary')){
+    $min_max['Max'] = NULL;
+  }
+
+  if($min_max['TypicalLowerBoundary'] === null && $min_max['Min'] !== null){
+    $min_max['TypicalLowerBoundary'] = $min_max['Min'];
+    $min_max['Min'] = NULL;
+  }
+
+  if($min_max['TypicalUpperBoundary'] === null && $min_max['Max']  !== null){
+    $min_max['TypicalUpperBoundary'] = $min_max['Max'];
+    $min_max['Max'] = NULL;
+  }
+
+  if (min_max_equals($min_max, 'Min', 'Max')) {
     $min_max['Average'] = $min_max['Min'];
     $min_max['Min'] = NULL;
     $min_max['Max'] = NULL;
   }
 
-  // check for inconsistent cases, eg. only Max and average given
-  if ($min_max['Min'] === NULL && $min_max['Max'] !== NULL) {
+  // --- check for inconsistent cases, eg. only Max and average given
+  if ($min_max['TypicalLowerBoundary'] === NULL && $min_max['TypicalUpperBoundary']  !== null) {
     // min missing
-    $min_max['Min'] = '?';
+    $min_max['TypicalLowerBoundary'] = '?';
   }
-  if ($min_max['Min'] !== NULL && $min_max['Max'] === NULL) {
+  if ($min_max['TypicalLowerBoundary'] !== null && $min_max['TypicalUpperBoundary'] === NULL) {
     // max missing
-    $min_max['Max'] = '?';
+    $min_max['TypicalUpperBoundary'] = '?';
   }
-
 
   foreach ($min_max as $key => $statistical_val) {
     if ($statistical_val !== NULL) {
-
       if ($statistical_val == '?') {
         $val_markup = $statistical_val;
       } else {
         $val_markup = '<span class="'
             . html_class_attribute_ref($statistical_val) . ' '
-            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ">'
+            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ' . $key .'" title="'. $key. '">'
             . $statistical_val->_value . '</span>';
       }
 
       if (strlen($min_max_markup)) {
         $min_max_markup .= '–';
       }
-      if (str_beginsWith($key, 'Extreme')) {
-        $val_markup = "($val_markup)";
+      switch ($key) {
+        case 'Min':
+        case 'Max':
+          $val_markup = "($val_markup)";
+          break;
+        case 'Variance':
+          $val_markup = 'σ²=' . $val_markup;
+          break;
+        case 'StandardDeviation':
+          $val_markup = 'σ=' . $val_markup;
+          break;
       }
       $min_max_markup .= $val_markup;
     }
   }
+
+
+
   return $min_max_markup . ' ' . $unit;
+}
+
+/**
+ * Used internally in min_max_markup() do determine equality of min_max values
+ *
+ * @param $min_max
+ * @param $key1
+ * @param $key2
+ *
+ * @return bool
+ */
+function min_max_equals($min_max,  $key1, $key2){
+
+  return $min_max[$key1] !== NULL && $min_max[$key2] !== NULL && $min_max[$key1]->_value ==  $min_max[$key2]->_value;
 }
 
 /**
@@ -297,7 +347,7 @@ function min_max_markup($min_max, $unit = '') {
  * - field_base_nameError = error value
  *
  * @param $object
- *    The object having min max measurement fields
+ *    The object having min max measurement fields e.g.: GatheringEvent
  * @param string $field_base_name
  *    The base name for all measurement fields. This name is at the same time the full name of the
  *    min value.

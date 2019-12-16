@@ -1197,34 +1197,23 @@ function compose_description_element_individuals_association($element, $feature_
  */
 function compose_description_element_categorical_data($element, $feature_block_settings, $prepend_feature_label = FALSE) {
 
-  $out = compose_state_data_span($element);
+  $state_data_markup = render_state_data($element);
 
-  $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid, $prepend_feature_label);
+  $render_array = compose_description_element($element, $feature_block_settings, $state_data_markup, $element->feature->uuid, $prepend_feature_label);
 
   return $render_array;
 }
 
 /**
- * Creates the markup for the state data
  * @param $element
  *
  * @return string
- *     The markup
+ * the markup
  */
-function compose_state_data_span($element) {
-  $state_data_strings = compose_state_data($element);
+function render_state_data($element) {
 
-  $out = '<span class="' . html_class_attribute_ref($element) . '">' . implode(', ', $state_data_strings) . '</span>';
-  return $out;
-}
+  $state_data_items = [];
 
-/**
- * @param $element
- *
- * @return array
- */
-function compose_state_data($element) {
-  $state_data_strings = [];
   if (isset($element->stateData)) {
     foreach ($element->stateData as $state_data) {
 
@@ -1236,7 +1225,7 @@ function compose_state_data($element) {
           $sample_count = 0;
           if (isset($state_data->count)) {
             $sample_count = $state_data->count;
-            $state .= ' (' . $state_data->count . ')';
+            $state .= ' [' . $state_data->count . ']';
           }
     
           if (isset($state_data->modifyingText_L10n)) {
@@ -1247,13 +1236,14 @@ function compose_state_data($element) {
           $state_data_markup = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
           // we could use strip_tags() to reduce the markup to text for the key but this is expensive
           $sort_key = str_pad($sample_count, 6, '0', STR_PAD_LEFT) . '_' . $state_data_markup;
-          $state_data_strings[$sort_key] = $state_data_markup;
+          $state_data_items[$sort_key] = $state_data_markup;
       }
 
     }
-    krsort($state_data_strings);
+    krsort($state_data_items);
+    $out = '<span class="' . html_class_attribute_ref($element) . '">' . join(', ', $state_data_items) .  '</span>';
   }
-  return $state_data_strings;
+  return $out;
 }
 
 
@@ -1336,8 +1326,8 @@ function render_quantitative_statistics($element) {
 
       // either put into min max array or into $other_values
       // for generic output to be appended to 'min-max' string
-      if (array_key_exists($statistical_val->type->titleCache, $min_max)) {
-        $min_max[$statistical_val->type->titleCache] = $statistical_val;
+      if (array_key_exists(statistical_measure_term2min_max_key($statistical_val->type), $min_max)) {
+        $min_max[statistical_measure_term2min_max_key($statistical_val->type)] = $statistical_val;
       }
       else {
         $other_values[] = $statistical_val;
@@ -1353,14 +1343,20 @@ function render_quantitative_statistics($element) {
       $statistical_val_type_representation = NULL;
       if (isset($statistical_val->type)) {
         $statistical_val_type_representation = cdm_term_representation($statistical_val->type);
-        // $statistical_val->type->termType;
-        // $statistical_val->type->userFriendlyTypeName;
       }
-      $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
-        . $statistical_val->_value . '</span>';
-      $value_markup = $value_markup .
-        ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
-      $other_values_markup[] = $value_markup;
+
+      switch (statistical_measure_term2min_max_key($statistical_val->type)){
+        case 'SampleSize':
+          $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
+            . '[' . $statistical_val->_value . ']</span>';
+          $type_markup = '';
+          break;
+        default:
+        $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
+          . $statistical_val->_value . '</span>';
+         $type_markup = ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
+      }
+      $other_values_markup[] = $value_markup . $type_markup;
     }
 
 
@@ -1382,6 +1378,22 @@ function render_quantitative_statistics($element) {
     $out = $element->modifyingText_L10n . ' ' . $out;
   }
   return $out;
+}
+
+function statistical_measure_term2min_max_key($term){
+  static $uuid2key = [
+    UUID_STATISTICALMEASURE_MIN => 'Min',
+    UUID_STATISTICALMEASURE_MAX => 'Max',
+    UUID_STATISTICALMEASURE_AVERAGE => 'Average',
+    UUID_STATISTICALMEASURE_SAMPLESIZE => 'SampleSize',
+    UUID_STATISTICALMEASURE_VARIANCE => 'Variance',
+    UUID_STATISTICALMEASURE_TYPICALLOWERBOUNDARY => 'TypicalLowerBoundary',
+    UUID_STATISTICALMEASURE_TYPICALUPPERBOUNDARY => 'TypicalUpperBoundary',
+    UUID_STATISTICALMEASURE_STANDARDDEVIATION => 'StandardDeviation',
+    UUID_STATISTICALMEASURE_EXACTVALUE => 'ExactValue',
+    UUID_STATISTICALMEASURE_STATISTICALMEASUREUNKNOWNDATA => 'StatisticalMeasureUnknownData'
+  ];
+  return $uuid2key[$term->uuid];
 }
 
 
@@ -2135,8 +2147,7 @@ function render_description_string($description, $root_nodes) {
         foreach ($root_node->descriptionElements as $element) {
           switch ($element->class) {
             case 'CategoricalData':
-              $state_data = compose_state_data($element);
-              $state_data = implode(', ', $state_data);
+              $state_data = render_state_data($element);
               if (!empty($state_data)) {
                 $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data . "; ";
               }
@@ -2322,7 +2333,7 @@ function compose_description_element_rows($root_nodes, $rows) {
             if (!empty($element->stateData)) {
               $rows[] = [
                 $element->feature->representation_L10n,
-                compose_state_data_span($element),
+                render_state_data($element),
               ];
             }
             break;
