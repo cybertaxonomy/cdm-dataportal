@@ -213,7 +213,7 @@ function feature_block($feature_name, $feature) {
   $block->module = 'cdm_dataportal';
   $block->region = NULL;
   $class_attribute = html_class_attribute_ref($feature);
-  $block_delta = $feature->uuid;
+  $block_delta = $feature->class !== 'PseudoFeature' ? $feature_name : $feature->label;
   $block->delta = generalizeString($block_delta);
   $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '">'
     . theme('cdm_feature_name', array('feature_name' => $feature_name))
@@ -2102,7 +2102,8 @@ function cdm_block_use_description_content($taxon_uuid, $feature) {
 function make_pseudo_feature($representation_L10n, $pseudo_feature_key = null){
   $feature = new stdClass;
   $feature->representation_L10n = $representation_L10n;
-  $feature->uuid = $pseudo_feature_key;
+  $feature->uuid = NULL; // $pseudo_feature_key;
+  $feature->label = $pseudo_feature_key;
   $feature->class = 'PseudoFeature';
 
   return $feature;
@@ -2116,8 +2117,10 @@ function make_pseudo_feature($representation_L10n, $pseudo_feature_key = null){
  * @param object $description
  *     the cdm description entity which will be linked to
  *
- * @param bool $show_description_elements if True the description elements will be rendered
- * @param $descriptive_dataset_uuid the data set which should be passed to the description detail page
+ * @param bool $show_description_elements
+ *     if True the description elements will be rendered
+ * @param $descriptive_dataset_uuid
+ *     the data set which should be passed to the description detail page
  *
  * @return string the markup for the description
  */
