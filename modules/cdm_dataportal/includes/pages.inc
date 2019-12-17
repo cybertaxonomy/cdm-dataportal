@@ -641,20 +641,6 @@ function render_cdm_specimen_link($specimen) {
 }
 
 /**
- * Renders the link which will lead to the taxon detail page
- * @param object $taxon
- *    the taxon which will be linked to
- *
- * @return string
- *     the markup for the link
- */
-function render_cdm_taxon($taxon) {
-  $path = path_to_taxon($taxon->uuid);
-  $attributes['class'][] = html_class_attribute_ref($taxon);
-  return $taxon->titleCache.icon_link($path);
-}
-
-/**
  * Returns HTML containing the synonymy for the accepted taxon.
  *
  * Shows the whole synonymy for the accepted taxon.

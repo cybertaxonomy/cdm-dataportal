@@ -2178,7 +2178,8 @@ function render_description_string($description, $root_nodes) {
  *
  * @ingroup compose
  */
-function compose_description_table($description_uuid, $descriptive_dataset_uuid = NULL) {
+function  compose_description_table($description_uuid, $descriptive_dataset_uuid = NULL) {
+
   RenderHints::pushToRenderStack('description_table');
 
   $render_array = [];
@@ -2194,6 +2195,7 @@ function compose_description_table($description_uuid, $descriptive_dataset_uuid 
       }
     }
   }
+
   if(!empty($description->descriptiveDataSets)) {
     // only one dataset present
     if (!isset($dataSet) && sizeof($description->descriptiveDataSets) == 1) {
@@ -2201,26 +2203,33 @@ function compose_description_table($description_uuid, $descriptive_dataset_uuid 
         break;
       }
     }
-    // generate page title
+
+    // generate description title
+    RenderHints::pushToRenderStack('title');
     if (isset($dataSet)) {
-      $associated_description_cdm_entity = isset($description->describedSpecimenOrObservation)
-        ? $description->describedSpecimenOrObservation->titleCache
-        : (isset($description->taxon) ? $description->taxon->titleCache : NULL);
-      $title = 'Descriptive Data ' . $dataSet->titleCache;
-      if (isset($associated_description_cdm_entity)) {
-        $title .= ' for ' . $associated_description_cdm_entity;
+
+      $described_entity_title = NULL;
+      if(isset($description->describedSpecimenOrObservation)){
+        $described_entity_title = $description->describedSpecimenOrObservation->titleCache;
+      } else if($description->taxon) {
+          $described_entity_title = render_taxon_or_name($description->taxon);
       }
-      drupal_set_title($title);
+      $title = 'Descriptive Data ' . $dataSet->titleCache .
+        ($described_entity_title ? ' for ' . $described_entity_title : '');
+      }
+      $render_array['title'] = markup_to_render_array($title, null, '<h3 class="title">', '</h3>');
+    RenderHints::popFromRenderStack();
+
       if (isset($description->types)) {
         foreach ($description->types as $type) {
           if ($type == 'CLONE_FOR_SOURCE') {
-            $render_array[] = markup_to_render_array("Aggregation source from " . $description->created . '<br><br>');
+            $render_array['source'] = markup_to_render_array("Aggregation source from " . $description->created . '<br><br>');
             break;
           }
         }
       }
     }
-    // multiple datasets present
+    // multiple datasets present see #8714 "Show multiple datasets per description as list of links"
     else {
       $items = [];
       foreach ($description->descriptiveDataSets as $dataSet) {
@@ -2230,22 +2239,22 @@ function compose_description_table($description_uuid, $descriptive_dataset_uuid 
           'data' => $dataSet->titleCache . icon_link($path),
         ];
       }
-      $render_array[] = [
+      $render_array['description_elements'] = [
         '#title' => 'Available data sets for description',
         '#theme' => 'item_list',
         '#type' => 'ul',
         '#items' => $items,
       ];
     }
-  }
+
 
   if (isset($description->describedSpecimenOrObservation)) {
-    $render_array[] = markup_to_render_array("<b>Specimen</b><br>");
-    $render_array[] = markup_to_render_array(render_cdm_specimen_link($description->describedSpecimenOrObservation));
+    $render_array['specimen'] = markup_to_render_array("<b>Specimen</b><br>");
+    $render_array['specimen_link'] = markup_to_render_array(render_cdm_specimen_link($description->describedSpecimenOrObservation));
   }
   if (isset($description->taxon)) {
-    $render_array[] = markup_to_render_array("<b>Taxon</b><br>");
-    $render_array[] = markup_to_render_array(render_cdm_taxon($description->taxon));
+    $render_array['taxon'] = markup_to_render_array("<b>Taxon</b><br>");
+    $render_array['taxon_link'] = markup_to_render_array(render_taxon_or_name($description->taxon, path_to_taxon($description->taxon->uuid)));
   }
 
   $root_nodes = get_root_nodes_for_dataset($description);
@@ -2292,8 +2301,8 @@ function compose_description_table($description_uuid, $descriptive_dataset_uuid 
     ];
   }
 
-
   RenderHints::popFromRenderStack();
+
   return $render_array;
 }
 

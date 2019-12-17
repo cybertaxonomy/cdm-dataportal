@@ -253,9 +253,9 @@ function get_partDefinition($taxonNameType) {
  *
  * @param $taxonName
  *    cdm TaxonName instance
- * @param $nameLink
+ * @param $name_link
  *    URI to the taxon, @see path_to_taxon(), must be processed by url() before passing to this method
- * @param $refenceLink
+ * @param $reference_link
  *    URI to the reference, @see path_to_reference(), must be processed by url() before passing to this method
  * @param $show_annotations
  *    turns the display of annotations on
@@ -273,7 +273,7 @@ function get_partDefinition($taxonNameType) {
  *  The markup for a taxon name.
  *
  */
-function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refenceLink = NULL,
+function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $reference_link = NULL,
   $show_annotations = true, $is_type_designation = false, $skiptags = array(), $is_invalid = false) {
 
   $is_doubtful = false;
@@ -294,7 +294,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   }
 
 
-  $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $nameLink, $refenceLink);
+  $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
   $partDefinition = get_partDefinition($taxonName->nameType);
 
   // Apply definitions to template.
@@ -499,25 +499,27 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $nameLink = NULL, $refe
   $descriptionHtml = '';
   if (array_setr('description', TRUE, $renderTemplate)) {
     $descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxonName->uuid);
-    foreach ($descriptions as $description) {
-      if (!empty($description)) {
-        foreach ($description->elements as $description_element) {
-          $second_citation = '';
-          if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
-            $second_citation = '[& ' . $description_element->multilanguageText_L10n->text . '].';
-          }
-          $descriptionHtml .= $second_citation;
-          $descriptionHtml .= cdm_description_element_media(
-              $description_element,
-              array(
-                'application/pdf',
-                'image/png',
-                'image/jpeg',
-                'image/gif',
-                'text/html',
-              )
-          );
+    if($descriptions){
+      foreach ($descriptions as $description) {
+        if (!empty($description)) {
+          foreach ($description->elements as $description_element) {
+            $second_citation = '';
+            if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
+              $second_citation = '[& ' . $description_element->multilanguageText_L10n->text . '].';
+            }
+            $descriptionHtml .= $second_citation;
+            $descriptionHtml .= cdm_description_element_media(
+                $description_element,
+                array(
+                  'application/pdf',
+                  'image/png',
+                  'image/jpeg',
+                  'image/gif',
+                  'text/html',
+                )
+            );
 
+          }
         }
       }
     }

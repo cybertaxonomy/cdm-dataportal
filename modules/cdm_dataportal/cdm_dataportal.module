@@ -1823,6 +1823,11 @@ function cdm_dataportal_description_view($uuid, $descriptive_dataset_uuid = NULL
 
       // Render the description page.
       $render_array = compose_description_table($description->uuid, $descriptive_dataset_uuid);
+      if($render_array['title']){
+        $page_title = strip_tags($render_array['title']['#markup']);
+        drupal_set_title($page_title);
+        unset($render_array['title']);
+      }
       $description_page->content = drupal_render($render_array);
     }
 
