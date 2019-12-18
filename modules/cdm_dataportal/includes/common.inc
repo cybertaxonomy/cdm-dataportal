@@ -320,7 +320,7 @@ function min_max_markup($min_max, $unit = '') {
 
 
 
-  return $min_max_markup . ' ' . $unit;
+  return $min_max_markup . ($unit ? ' ' . $unit : '');
 }
 
 /**
