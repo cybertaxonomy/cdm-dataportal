@@ -56,6 +56,12 @@ $page-part-margin: $base-line-height * 1;
     float: left;
   }
 
+  .block-cdm-dataportal-feature {
+    .content-caption {
+      text-align: right;
+    }
+  }
+
   .block-cdm-dataportal-feature,  .media-caption, .specimens {
     clear: both;
     margin-bottom: $page-part-margin;
@@ -185,6 +191,7 @@ $page-part-margin: $base-line-height * 1;
         font-weight: bold;
       }
     }
+
     ul.typeDesignations {
       clear: both;
     }

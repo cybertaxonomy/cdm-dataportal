@@ -62,7 +62,7 @@
  *   The render path can consist of multiple dot separated elements
  *   @see RenderHints::getRenderPath()
  * @param string $nameLink
- *   The link path ot URL to be used for name parts if a link is forseen in the template
+ *   The link path or URL to be used for name parts if a link is forseen in the template
  *   matching the given $renderPath.
  * @param string $referenceLink
  *   The link path ot URL to be used for nomenclatural reference parts if a link is forseen

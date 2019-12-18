@@ -2133,6 +2133,8 @@ function render_cdm_description($description, $show_description_elements = False
   }
   $out .= icon_link($path_to_description);
 
+  $out .= '<div class="content-caption">Bracketed numbers denote sample size.</div>';
+
   return $out;
 }
 
@@ -2254,7 +2256,7 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
   }
   if (isset($description->taxon)) {
     $render_array['taxon'] = markup_to_render_array("<b>Taxon</b><br>");
-    $render_array['taxon_link'] = markup_to_render_array(render_taxon_or_name($description->taxon, path_to_taxon($description->taxon->uuid)));
+    $render_array['taxon_link'] = markup_to_render_array(render_taxon_or_name($description->taxon, url(path_to_taxon($description->taxon->uuid))));
   }
 
   $root_nodes = get_root_nodes_for_dataset($description);
