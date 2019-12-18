@@ -2146,22 +2146,28 @@ function render_cdm_description($description, $show_description_elements = False
  */
 function render_description_string($description, $root_nodes) {
   $descriptionString = '';
+  $item_cnt = 0;
   if (!empty($root_nodes)) {
     foreach ($root_nodes as $root_node) {
       if(isset($root_node->descriptionElements)) {
         foreach ($root_node->descriptionElements as $element) {
+          $feature_label = $element->feature->representation_L10n;
+          if($item_cnt == 0){
+            $feature_label = ucfirst($feature_label);
+          }
           switch ($element->class) {
             case 'CategoricalData':
               $state_data = render_state_data($element);
               if (!empty($state_data)) {
-                $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data;
+                $descriptionString .= '<i>' . $feature_label . '</i>: ' . $state_data . " ";
               }
               break;
             case 'QuantitativeData':
-              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . render_quantitative_statistics($element);
+              $descriptionString .= '<i>' . $feature_label . '</i>: ' . render_quantitative_statistics($element) . " ";
               break;
           }
         }
+        $item_cnt++;
       }
       // recurse child nodes
       $descriptionString .= render_description_string($description, $root_node->childNodes);
