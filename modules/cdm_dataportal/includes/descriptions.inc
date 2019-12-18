@@ -2154,11 +2154,11 @@ function render_description_string($description, $root_nodes) {
             case 'CategoricalData':
               $state_data = render_state_data($element);
               if (!empty($state_data)) {
-                $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data . "; ";
+                $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . $state_data;
               }
               break;
             case 'QuantitativeData':
-              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . render_quantitative_statistics($element) . "; ";
+              $descriptionString .= '<i>' . $element->feature->representation_L10n . '</i>: ' . render_quantitative_statistics($element);
               break;
           }
         }
