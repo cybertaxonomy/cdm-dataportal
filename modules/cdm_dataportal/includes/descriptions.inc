@@ -2268,6 +2268,8 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
     $render_array[] = markup_to_render_array(theme('table', [
       'header' => $header,
       'rows' => $rows,
+      'caption' => "Bracketed numbers denote sample size.",
+      'title' => "Table"
     ]));
   }
 

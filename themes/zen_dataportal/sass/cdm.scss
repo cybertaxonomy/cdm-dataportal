@@ -30,250 +30,259 @@ $page-part-margin: $base-line-height * 1;
   }
 }
 
-#content a.tabs-primary__tab-link{
-  color: #333; // increasing specificity to avoid the color of the tabs to be overwritten
-}
+#content {
+  a.tabs-primary__tab-link {
+    color: #333; // increasing specificity to avoid the color of the tabs to be overwritten
+  }
 
-#page-toc {
-  float:right;
-    background-color: $page-background-color;
-  h3 {
-    margin-top: 0;
-    line-height: $base-line-height;
+  table {
+    caption-side: bottom;
+    caption {
+      text-align: right;
+    }
   }
 }
 
-#taxonProfileImage{
-  float: left;
-}
+  #page-toc {
+    float:right;
+    background-color: $page-background-color;
+    h3 {
+      margin-top: 0;
+      line-height: $base-line-height;
+    }
+  }
 
-.block-cdm-dataportal-feature,  .media-caption, .specimens {
-  clear: both;
-  margin-bottom: $page-part-margin;
-  dt {
+  #taxonProfileImage{
+    float: left;
+  }
+
+  .block-cdm-dataportal-feature,  .media-caption, .specimens {
+    clear: both;
+    margin-bottom: $page-part-margin;
+    dt {
       float: left;
       font-weight: bold;
       margin-right: 0.3em;
-  }
-  dd {
-    margin: 0;
-    margin-left: $zen-gutter-width;
-  }
-  dl dl {
-    margin: 0; /* reset default from cdm_dataportal.css */
-  }
-}
-
-.breadcrumbs li {
-  padding: 0 0 0 0;
-}
-
-/*
- * Search results
- */
-
-
-#search_results{
-  @include cdm-link-style;
-
-  table {
-    margin: 1em 0;
-  }
-}
-
-div.cdm-item-list div.item {
-  margin: $base-line-height / 2 0;
-}
-
-/*
- * Taxon page and parts
- */
-
-.page-part {
-  margin-bottom: $page-part-margin;
-  clear: none;
-}
-
-/*
- * definition list container rendered by the
- * drupal theme function theme_description_list()
- */
-.description_list {
-  h3 {
-    font-size: $base-font-size;
-    line-height: $base-line-height;
-    font-weight: bold;
-  }
-}
-
-
-
-/*
- * Synonymy
- */
-
-#synonymy {
-  div.accepted-name {
-    margin-bottom: -1em;
-    margin-top: 1em;
-  }
-
-  .homotypic-synonymy-group, .heterotypic-synonymy-group, .taxon-relationships {
-    border-bottom: 1px solid #DEDEDE;
-    /* replace padding by margin */
-    margin: 1em 0px;
-    padding: 0;
-  }
-}
-
-/*
- * Media
- */
-dl.media-caption {
-  margin: 0;
-}
-.media-caption {
-  dd {
-    margin-left: 0;
-    .title {
-      font-size: 100%;
+    }
+    dd {
+      margin: 0;
+      margin-left: $zen-gutter-width;
+    }
+    dl dl {
+      margin: 0; /* reset default from cdm_dataportal.css */
     }
   }
-}
-.image-gallerie td.caption {
-  padding-bottom: 1em;
-}
 
-/*
- * specimens and type designations
- */
-#specimens {
-  table.media_gallery {
-    margin-top: 0.2em;
+  .breadcrumbs li {
+    padding: 0 0 0 0;
   }
+
+  /*
+   * Search results
+   */
+
+
+  #search_results{
+    @include cdm-link-style;
+
+    table {
+      margin: 1em 0;
+    }
+  }
+
+  div.cdm-item-list div.item {
+    margin: $base-line-height / 2 0;
+  }
+
+  /*
+   * Taxon page and parts
+   */
+
+  .page-part {
+    margin-bottom: $page-part-margin;
+    clear: none;
+  }
+
+  /*
+   * definition list container rendered by the
+   * drupal theme function theme_description_list()
+   */
   .description_list {
-    clear: both;
     h3 {
-      margin-top: 0;
-      background-color: #ddd;
-    }
-    h4 {
-      clear: left;
-      margin-bottom: 0;
-      font-style: italic;
-    }
-  }
-  .dynabox_content {
-    margin-left: $zen-gutter-width / 2;
-    margin-right: $zen-gutter-width / 2;
-  }
-  .block-cdm-dataportal-feature {
-    margin-left: $zen-gutter-width;
-    margin-bottom: 0;
-    h2 {
       font-size: $base-font-size;
       line-height: $base-line-height;
       font-weight: bold;
     }
   }
-  ul.typeDesignations {
-    clear: both;
-  }
-  .dna-sequence div {
-    font-size: $base-font-size;
-    font-family: monospace;
-    clear: left;
-    padding-left: $zen-gutter-width;
-  }
-  .derived_from {
-    clear: both;
-  }
-}
-
-/*
- * Map
- */
-.openlayers-container {
-  margin-top: $zen-gutter-width / 4;
-  margin-bottom: $zen-gutter-width / 4;
-}
-
-/*
- * Registration page & items
- */
-.registration {
-
-  .type-status{
-    font-weight: bold;
-  }
-
-  .registration-date-and-institute {
-    color: #999;
-  }
 
 
-  .published-name {
-    .TaxonName .name {
-      font-weight: bold;
+
+  /*
+   * Synonymy
+   */
+
+  #synonymy {
+    div.accepted-name {
+      margin-bottom: -1em;
+      margin-top: 1em;
+    }
+
+    .homotypic-synonymy-group, .heterotypic-synonymy-group, .taxon-relationships {
+      border-bottom: 1px solid #DEDEDE;
+      /* replace padding by margin */
+      margin: 1em 0px;
+      padding: 0;
     }
   }
-  .typified-name .cdm\:TaxonName {
-    color: #999;
-    a {
+
+  /*
+   * Media
+   */
+  dl.media-caption {
+    margin: 0;
+  }
+  .media-caption {
+    dd {
+      margin-left: 0;
+      .title {
+        font-size: 100%;
+      }
+    }
+  }
+  .image-gallerie td.caption {
+    padding-bottom: 1em;
+  }
+
+  /*
+   * specimens and type designations
+   */
+  #specimens {
+    table.media_gallery {
+      margin-top: 0.2em;
+    }
+    .description_list {
+      clear: both;
+      h3 {
+        margin-top: 0;
+        background-color: #ddd;
+      }
+      h4 {
+        clear: left;
+        margin-bottom: 0;
+        font-style: italic;
+      }
+    }
+    .dynabox_content {
+      margin-left: $zen-gutter-width / 2;
+      margin-right: $zen-gutter-width / 2;
+    }
+    .block-cdm-dataportal-feature {
+      margin-left: $zen-gutter-width;
+      margin-bottom: 0;
+      h2 {
+        font-size: $base-font-size;
+        line-height: $base-line-height;
+        font-weight: bold;
+      }
+    }
+    ul.typeDesignations {
+      clear: both;
+    }
+    .dna-sequence div {
+      font-size: $base-font-size;
+      font-family: monospace;
+      clear: left;
+      padding-left: $zen-gutter-width;
+    }
+    .derived_from {
+      clear: both;
+    }
+  }
+
+  /*
+   * Map
+   */
+  .openlayers-container {
+    margin-top: $zen-gutter-width / 4;
+    margin-bottom: $zen-gutter-width / 4;
+  }
+
+  /*
+   * Registration page & items
+   */
+  .registration {
+
+    .type-status{
+      font-weight: bold;
+    }
+
+    .registration-date-and-institute {
       color: #999;
     }
-    .TaxonName .name {
-      font-weight: bold;
-    }
-  }
 
-  .registration-summary {
-    .registered_name .name {
-      font-weight: bold;
+
+    .published-name {
+      .TaxonName .name {
+        font-weight: bold;
+      }
     }
-    .referenced_typified_name {
+    .typified-name .cdm\:TaxonName {
       color: #999;
+      a {
+        color: #999;
+      }
+      .TaxonName .name {
+        font-weight: bold;
+      }
     }
-    .label {
-      font-weight: bold;
+
+    .registration-summary {
+      .registered_name .name {
+        font-weight: bold;
+      }
+      .referenced_typified_name {
+        color: #999;
+      }
+      .label {
+        font-weight: bold;
+      }
     }
   }
-}
 
-/*
- * Theme settings page
- */
-#system-theme-settings {
+  /*
+   * Theme settings page
+   */
+  #system-theme-settings {
 
-  .image-preview {
-    width: 600px;
-    max-height: 150px;
-    overflow: auto; // let it scroll
-    img {
-      max-width: none; /* reset style in mormalize.scss */
+    .image-preview {
+      width: 600px;
+      max-height: 150px;
+      overflow: auto; // let it scroll
+      img {
+        max-width: none; /* reset style in mormalize.scss */
+      }
+
     }
-
   }
-}
 
-/*****************************************************************************************
- * RESPONSIVE
- *
- * using the same media queries here as in layout/_responsive.scss
- *****************************************************************************************/
+  /*****************************************************************************************
+   * RESPONSIVE
+   *
+   * using the same media queries here as in layout/_responsive.scss
+   *****************************************************************************************/
 
-#classification-breadcrumbs {
-  font-size: 1.5em;
-  line-height: 1.5em;
-}
-
-@media all and (min-width: 480px) and (max-width: 959px) {
-
-
-}
-
-@media all and (min-width: 960px) {
   #classification-breadcrumbs {
-    font-size: 1em;
+    font-size: 1.5em;
+    line-height: 1.5em;
   }
-}
+
+  @media all and (min-width: 480px) and (max-width: 959px) {
+
+
+  }
+
+  @media all and (min-width: 960px) {
+    #classification-breadcrumbs {
+      font-size: 1em;
+    }
+  }
