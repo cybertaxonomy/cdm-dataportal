@@ -2155,12 +2155,11 @@ function render_cdm_description($description, $show_description_elements = False
  *
  * @return string
  */
-function render_description_string($description, $root_nodes) {
+function render_description_string($description, $root_nodes, &$item_cnt = 0) {
 
   $out = '';
 
   $description_strings= [];
-  $item_cnt = 0;
   if (!empty($root_nodes)) {
     foreach ($root_nodes as $root_node) {
       if(isset($root_node->descriptionElements)) {
@@ -2185,9 +2184,9 @@ function render_description_string($description, $root_nodes) {
       }
 
       // recurse child nodes
-      $child_markup = render_description_string($description, $root_node->childNodes);
+      $child_markup = render_description_string($description, $root_node->childNodes, $item_cnt);
       if($child_markup){
-        $description_strings[] = render_description_string($description, $root_node->childNodes);
+        $description_strings[] = $child_markup;
       }
     }
     $out  = join($description_strings,  '; ');
