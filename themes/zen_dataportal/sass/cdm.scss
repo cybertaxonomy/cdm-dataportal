@@ -60,6 +60,9 @@ $page-part-margin: $base-line-height * 1;
     .content-caption {
       text-align: right;
     }
+    .label { // for CategoricalData and QuantitativeData but could be used for other situations, therefore style rule is not too specific
+      font-style: italic;
+    }
   }
 
   .block-cdm-dataportal-feature,  .media-caption, .specimens {
