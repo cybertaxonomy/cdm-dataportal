@@ -2143,7 +2143,7 @@ function render_cdm_description($description, $show_description_elements = False
   $out .= ' ' . icon_link($path_to_description);
 
   if($show_description_elements){
-    $out .= '<div class="content-caption">Bracketed numbers denote sample size.</div>';
+    $out .= '<div class="content-caption">'. t('Bracketed numbers denote sample size') . '</div>';
   }
 
   return $out;
@@ -2242,37 +2242,37 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
       }
       $title = 'Descriptive Data ' . $dataSet->titleCache .
         ($described_entity_title ? ' for ' . $described_entity_title : '');
-      }
-      $render_array['title'] = markup_to_render_array($title, null, '<h3 class="title">', '</h3>');
+    }
+    $render_array['title'] = markup_to_render_array($title, null, '<h3 class="title">', '</h3>');
     RenderHints::popFromRenderStack();
+    // END of --- generate description title
 
-      if (isset($description->types)) {
-        foreach ($description->types as $type) {
-          if ($type == 'CLONE_FOR_SOURCE') {
-            $render_array['source'] = markup_to_render_array("Aggregation source from " . $description->created . '<br><br>');
-            break;
-          }
+    if (isset($description->types)) {
+      foreach ($description->types as $type) {
+        if ($type == 'CLONE_FOR_SOURCE') {
+          $render_array['source'] = markup_to_render_array("Aggregation source from " . $description->created, null, '<div class="date-created">', '</div>');
+          break;
         }
       }
     }
-    // multiple datasets present see #8714 "Show multiple datasets per description as list of links"
-    else {
-      $items = [];
-      foreach ($description->descriptiveDataSets as $dataSet) {
-        $path = path_to_description($description->uuid, $dataSet->uuid);
-        $attributes['class'][] = html_class_attribute_ref($description);
-        $items[] = [
-          'data' => $dataSet->titleCache . icon_link($path),
-        ];
-      }
-      $render_array['description_elements'] = [
-        '#title' => 'Available data sets for description',
-        '#theme' => 'item_list',
-        '#type' => 'ul',
-        '#items' => $items,
+  }
+  // multiple datasets present see #8714 "Show multiple datasets per description as list of links"
+  else {
+    $items = [];
+    foreach ($description->descriptiveDataSets as $dataSet) {
+      $path = path_to_description($description->uuid, $dataSet->uuid);
+      $attributes['class'][] = html_class_attribute_ref($description);
+      $items[] = [
+        'data' => $dataSet->titleCache . icon_link($path),
       ];
     }
-
+    $render_array['description_elements'] = [
+      '#title' => 'Available data sets for description',
+      '#theme' => 'item_list',
+      '#type' => 'ul',
+      '#items' => $items,
+    ];
+  }
 
   $described_entities = [];
   if (isset($description->describedSpecimenOrObservation)) {
@@ -2302,11 +2302,12 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
     $render_array['table'] = markup_to_render_array(theme('table', [
       'header' => $header,
       'rows' => $rows,
-      'caption' => "Bracketed numbers denote sample size.",
+      'caption' => t("Bracketed numbers denote sample size"),
       'title' => "Table"
     ]));
   }
 
+  // --- sources
   if (isset($description->sources) and !empty($description->sources)) {
     $items = [];
     foreach ($description->sources as $source) {
