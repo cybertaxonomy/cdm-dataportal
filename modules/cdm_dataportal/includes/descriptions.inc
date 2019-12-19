@@ -2140,7 +2140,7 @@ function render_cdm_description($description, $show_description_elements = False
   if($show_description_elements){
     $out = render_description_string($description, get_root_nodes_for_dataset($description));
   }
-  $out .= icon_link($path_to_description);
+  $out .= ' ' . icon_link($path_to_description);
 
   if($show_description_elements){
     $out .= '<div class="content-caption">Bracketed numbers denote sample size.</div>';
@@ -2156,7 +2156,10 @@ function render_cdm_description($description, $show_description_elements = False
  * @return string
  */
 function render_description_string($description, $root_nodes) {
-  $descriptionString = '';
+
+  $out = '';
+
+  $description_strings= [];
   $item_cnt = 0;
   if (!empty($root_nodes)) {
     foreach ($root_nodes as $root_node) {
@@ -2170,21 +2173,26 @@ function render_description_string($description, $root_nodes) {
             case 'CategoricalData':
               $state_data = render_state_data($element);
               if (!empty($state_data)) {
-                $descriptionString .= '<i>' . $feature_label . '</i>: ' . $state_data . " ";
+                $description_strings[] = '<i>' . $feature_label . '</i>: ' . $state_data;
               }
               break;
             case 'QuantitativeData':
-              $descriptionString .= '<i>' . $feature_label . '</i>: ' . render_quantitative_statistics($element) . " ";
+              $description_strings[] = '<i>' . $feature_label . '</i>: ' . render_quantitative_statistics($element);
               break;
           }
         }
         $item_cnt++;
       }
+
       // recurse child nodes
-      $descriptionString .= render_description_string($description, $root_node->childNodes);
+      $child_markup = render_description_string($description, $root_node->childNodes);
+      if($child_markup){
+        $description_strings[] = render_description_string($description, $root_node->childNodes);
+      }
     }
+    $out  = join($description_strings,  '; ');
   }
-  return $descriptionString;
+  return $out;
 }
 
 /**
