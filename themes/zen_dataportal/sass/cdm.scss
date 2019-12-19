@@ -83,6 +83,13 @@ $page-part-margin: $base-line-height * 1;
     padding: 0 0 0 0;
   }
 
+  .description-table .described-entities {
+    .label {
+      font-weight: bold;
+    }
+
+  }
+
   /*
    * Search results
    */

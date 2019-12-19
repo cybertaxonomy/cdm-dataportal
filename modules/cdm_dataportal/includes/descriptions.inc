@@ -2142,7 +2142,9 @@ function render_cdm_description($description, $show_description_elements = False
   }
   $out .= icon_link($path_to_description);
 
-  $out .= '<div class="content-caption">Bracketed numbers denote sample size.</div>';
+  if($show_description_elements){
+    $out .= '<div class="content-caption">Bracketed numbers denote sample size.</div>';
+  }
 
   return $out;
 }
@@ -2265,14 +2267,22 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
     }
 
 
+  $described_entities = [];
   if (isset($description->describedSpecimenOrObservation)) {
-    $render_array['specimen'] = markup_to_render_array("<b>Specimen</b><br>");
-    $render_array['specimen_link'] = markup_to_render_array(render_cdm_specimen_link($description->describedSpecimenOrObservation));
+    $decr_entitiy = '<span class="label">Specimen:</span> ' . render_cdm_specimen_link($description->describedSpecimenOrObservation);
+    $described_entities['specimen'] = markup_to_render_array($decr_entitiy, null, '<div>', '</div>');
   }
   if (isset($description->taxon)) {
-    $render_array['taxon'] = markup_to_render_array("<b>Taxon</b><br>");
-    $render_array['taxon_link'] = markup_to_render_array(render_taxon_or_name($description->taxon, url(path_to_taxon($description->taxon->uuid))));
+    $decr_entitiy = '<span class="label">Taxon:</span> ' . render_taxon_or_name($description->taxon, url(path_to_taxon($description->taxon->uuid)));
+    $described_entities['taxon'] = markup_to_render_array($decr_entitiy, null, '<div>', '</div>');
   }
+
+  if(count($described_entities)){
+    $render_array['described_entities'] = $described_entities;
+    $render_array['described_entities']['#prefix'] = '<div class="described-entities">';
+    $render_array['described_entities']['#suffix'] = '</div>';
+  }
+
 
   $root_nodes = get_root_nodes_for_dataset($description);
 
@@ -2282,7 +2292,7 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
   $rows = compose_description_element_rows($root_nodes, $rows);
 
   if (!empty($rows)) {
-    $render_array[] = markup_to_render_array(theme('table', [
+    $render_array['table'] = markup_to_render_array(theme('table', [
       'header' => $header,
       'rows' => $rows,
       'caption' => "Bracketed numbers denote sample size.",
@@ -2300,8 +2310,8 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
             $source_link_markup = render_taxon_or_name($cdm_source_entity) . icon_link(path_to_taxon($cdm_source_entity->uuid, false), generalizeString(PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS));
             break;
           case 'TaxonDescription':
-          case 'SpecimenDescription':
           case 'NameDescription':
+          case 'SpecimenDescription':
             $source_link_markup = render_cdm_description($cdm_source_entity);
             break;
           default:
@@ -2312,12 +2322,15 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
         ];
       }
     }
-    $render_array[] = [
+    $render_array['sources'] = [
       '#title' => 'Sources',
       '#theme' => 'item_list',
       '#type' => 'ul',
       '#items' => $items,
+      '#attributes' => ['class' => 'sources']
     ];
+    $render_array['#prefix'] = '<div class="description-table">';
+    $render_array['#suffix'] = '</div>';
   }
 
   RenderHints::popFromRenderStack();
