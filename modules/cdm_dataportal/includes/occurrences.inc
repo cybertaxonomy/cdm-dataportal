@@ -417,7 +417,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             // TODO respect annotation type filter settings
                             $dd_elements[] = $annotation->text;
                         }
-                        @_description_list_group_add($groups, t('Notes'), $dd_elements);
+                        @_description_list_group_add($groups, t('Notes:'), $dd_elements);
                         break;
 
                     /* ---- SpecimenOrObservationBase --- */
@@ -729,7 +729,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             if ($field == 'RecordBase' && $value == 'DnaSample') {
                                 _description_list_group_add($groups, cdm_occurrence_field_name_label($field), 'DNA Sample');
                             } else {
-                                _description_list_group_add($groups, cdm_occurrence_field_name_label($field), cdm_occurrence_field_name_label($value));
+                                _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
                             }
                         }
 
