@@ -1353,6 +1353,10 @@ function render_quantitative_statistics($element) {
           $sample_size_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
             . '[' . $statistical_val->_value . ']</span>';
           break;
+//        case 'ExactValue':
+//          $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
+//            . $statistical_val->_value . '</span>';
+//          break;
         default:
         $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
           . $statistical_val->_value . '</span>';
@@ -1364,7 +1368,7 @@ function render_quantitative_statistics($element) {
     }
 
     $other_values_markup = trim(implode($other_values_markup, ', '));
-    $out .= $min_max_markup . ($other_values_markup ? '#' . $other_values_markup : '');
+    $out .= $min_max_markup . ($other_values_markup ? $other_values_markup : '');
     $out .= '</span>';
   }
 
@@ -2367,11 +2371,11 @@ function description_element_table_rows($root_nodes, $row_items, $level = 0) {
                 'data' => [
                   [
                     'data' => markup_to_render_array($level_indent . $element->feature->representation_L10n),
-                    'class' => 'level_' . $level
+                    'class' => ['level_' . $level]
                   ],
                   render_state_data($element),
                 ],
-                'class' => 'level_' . $level
+                'class' => ['level_' . $level]
               ];
             }
             break;
@@ -2380,11 +2384,11 @@ function description_element_table_rows($root_nodes, $row_items, $level = 0) {
               'data' => [
                 [
                   'data' => markup_to_render_array($level_indent . $element->feature->representation_L10n),
-                  'class' => 'level_' . $level
+                  'class' => ['level_' . $level]
                 ],
                 render_quantitative_statistics($element)
               ],
-              'class' => 'level_' . $level
+              'class' => ['level_' . $level]
             ];
             break;
         }
