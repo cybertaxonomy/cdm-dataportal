@@ -39,9 +39,10 @@ $page-part-margin: $base-line-height * 1;
     th {
       text-align: left;
     }
-    caption-side: bottom;
+    caption-side: top;
     caption {
       text-align: right;
+      font-size: smaller;
     }
   }
 }
