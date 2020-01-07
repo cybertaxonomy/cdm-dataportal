@@ -279,7 +279,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   $is_doubtful = false;
 
   if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
-    $taxonName = $taxon_name_or_taxon_base->name;
+    if(isset($taxon_name_or_taxon_base->name)){
+      $taxonName = $taxon_name_or_taxon_base->name;
+    } else {
+      $taxonName = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base->uuid));
+    }
     $is_doubtful = $taxon_name_or_taxon_base->doubtful;
     // use the TaxonBase.tagged_title so we have the secRef
     $tagged_title = $taxon_name_or_taxon_base->taggedTitle;
