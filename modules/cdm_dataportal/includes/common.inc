@@ -667,7 +667,7 @@ function render_cdm_entity_link($cdm_entity) {
 
   switch ($cdm_entity->class) {
     case 'TaxonDescription':
-      $link =  render_cdm_description($cdm_entity);
+      $link =  '<span class="' . html_class_attribute_ref($cdm_entity) . '">' . $cdm_entity->titleCache . '</span> ' . icon_link(path_to_description($cdm_entity->uuid));
       break;
     default:
       $link = '<span class="error">UNSUPPORTED CDM ENTITY TYPE</span>';

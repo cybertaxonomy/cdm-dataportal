@@ -2119,36 +2119,6 @@ function make_pseudo_feature($representation_L10n, $pseudo_feature_key = null){
 
 }
 
-
-/**
- * Renders the description and adds a link to the description detail page
- *
- * @param object $description
- *     the cdm description entity which will be linked to
- *
- * @param bool $show_description_elements
- *     if True the description elements will be rendered
- * @param $descriptive_dataset_uuid
- *     the data set which should be passed to the description detail page
- *
- * @return string the markup for the description
- */
-function render_cdm_description($description, $show_description_elements = False, $descriptive_dataset_uuid = NULL) {
-
-  $out = '<span class="' . html_class_attribute_ref($description) . '">' . $description->titleCache . '</span>';
-  $path_to_description = path_to_description($description->uuid, $descriptive_dataset_uuid);
-  if($show_description_elements){
-    $out = render_description_string($description, get_root_nodes_for_dataset($description));
-  }
-  $out .= ' ' . icon_link($path_to_description);
-
-  if($show_description_elements){
-    $out .= '<div class="content-caption">'. t('Bracketed numbers denote sample size') . '</div>';
-  }
-
-  return $out;
-}
-
 /**
  * @param $description
  * @param $root_nodes
@@ -2320,16 +2290,17 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
           case 'TaxonDescription':
           case 'NameDescription':
           case 'SpecimenDescription':
-            $source_link_markup = render_cdm_description($cdm_source_entity);
+            $source_link_markup = render_cdm_entity_link($cdm_source_entity);
             break;
           default:
             $source_link_markup = '<span class="error">unhandled CdmSource</span>';
         }
-        $items[] = [
+        $items[$cdm_source_entity->titleCache] = [
           'data' => $source_link_markup
         ];
       }
     }
+    ksort($items);
     $render_array['sources'] = [
       '#title' => 'Sources',
       '#theme' => 'item_list',

@@ -586,7 +586,11 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
       $feature_description = make_pseudo_feature('Descriptions (aggregated)', PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS);
       $description_item = '';
       foreach ($aggregatedDescriptions as $description) {
-        $description_item .= render_cdm_description($description, TRUE);
+        $description_item = '<div class="' . html_class_attribute_ref($description) . '">';
+        $description_item .= render_description_string($description, get_root_nodes_for_dataset($description));
+        $description_item .= ' ' . icon_link(path_to_description($description->uuid));
+        $description_item .= '<div class="content-caption">'. t('Bracketed numbers denote sample size') . '</div>';
+        $description_item .= '</div>';
       }
       $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
       $description_block->content = [];
