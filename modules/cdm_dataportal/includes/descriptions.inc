@@ -1353,10 +1353,10 @@ function render_quantitative_statistics($element) {
           $sample_size_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
             . '[' . $statistical_val->_value . ']</span>';
           break;
-//        case 'ExactValue':
-//          $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
-//            . $statistical_val->_value . '</span>';
-//          break;
+        case 'ExactValue':
+          $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
+            . $statistical_val->_value . '</span>';
+          break;
         default:
         $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
           . $statistical_val->_value . '</span>';
@@ -2297,7 +2297,7 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
             $source_link_markup = render_cdm_entity_link($cdm_source_entity);
             break;
           default:
-            $source_link_markup = '<span class="error">unhandled CdmSource</span>';
+            $source_link_markup = '<span class="error">Unhandled CdmSource</span>';
         }
         $items[$cdm_source_entity->titleCache] = [
           'data' => $source_link_markup

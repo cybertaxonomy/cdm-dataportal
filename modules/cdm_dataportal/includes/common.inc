@@ -667,6 +667,8 @@ function render_cdm_entity_link($cdm_entity) {
 
   switch ($cdm_entity->class) {
     case 'TaxonDescription':
+    case 'NameDescription':
+    case 'SpecimenDescription':
       $link =  '<span class="' . html_class_attribute_ref($cdm_entity) . '">' . $cdm_entity->titleCache . '</span> ' . icon_link(path_to_description($cdm_entity->uuid));
       break;
     default:
