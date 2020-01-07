@@ -36,6 +36,9 @@ $page-part-margin: $base-line-height * 1;
   }
 
   table {
+    th {
+      text-align: left;
+    }
     caption-side: bottom;
     caption {
       text-align: right;

@@ -95,64 +95,68 @@
 #content table {
   caption-side: bottom;
 }
-/* line 40, ../sass/cdm.scss */
+/* line 39, ../sass/cdm.scss */
+#content table th {
+  text-align: left;
+}
+/* line 43, ../sass/cdm.scss */
 #content table caption {
   text-align: right;
 }
 
-/* line 46, ../sass/cdm.scss */
+/* line 49, ../sass/cdm.scss */
 #page-toc {
   float: right;
   background-color: white;
 }
-/* line 49, ../sass/cdm.scss */
+/* line 52, ../sass/cdm.scss */
 #page-toc h3 {
   margin-top: 0;
   line-height: 18px;
 }
 
-/* line 55, ../sass/cdm.scss */
+/* line 58, ../sass/cdm.scss */
 #taxonProfileImage {
   float: left;
 }
 
-/* line 60, ../sass/cdm.scss */
+/* line 63, ../sass/cdm.scss */
 .block-cdm-dataportal-feature .content-caption {
   text-align: right;
 }
-/* line 63, ../sass/cdm.scss */
+/* line 66, ../sass/cdm.scss */
 .block-cdm-dataportal-feature .label {
   font-style: italic;
 }
 
-/* line 68, ../sass/cdm.scss */
+/* line 71, ../sass/cdm.scss */
 .block-cdm-dataportal-feature, .media-caption, .specimens {
   clear: both;
   margin-bottom: 18px;
 }
-/* line 71, ../sass/cdm.scss */
+/* line 74, ../sass/cdm.scss */
 .block-cdm-dataportal-feature dt, .media-caption dt, .specimens dt {
   float: left;
   font-weight: bold;
   margin-right: 0.3em;
 }
-/* line 76, ../sass/cdm.scss */
+/* line 79, ../sass/cdm.scss */
 .block-cdm-dataportal-feature dd, .media-caption dd, .specimens dd {
   margin: 0;
   margin-left: 20px;
 }
-/* line 80, ../sass/cdm.scss */
+/* line 83, ../sass/cdm.scss */
 .block-cdm-dataportal-feature dl dl, .media-caption dl dl, .specimens dl dl {
   margin: 0;
   /* reset default from cdm_dataportal.css */
 }
 
-/* line 85, ../sass/cdm.scss */
+/* line 88, ../sass/cdm.scss */
 .breadcrumbs li {
   padding: 0 0 0 0;
 }
 
-/* line 90, ../sass/cdm.scss */
+/* line 93, ../sass/cdm.scss */
 .description-table .described-entities .label {
   font-weight: bold;
 }
@@ -182,12 +186,12 @@
 #search_results .Taxon a:visited {
   color: #115e92;
 }
-/* line 104, ../sass/cdm.scss */
+/* line 107, ../sass/cdm.scss */
 #search_results table {
   margin: 1em 0;
 }
 
-/* line 109, ../sass/cdm.scss */
+/* line 112, ../sass/cdm.scss */
 div.cdm-item-list div.item {
   margin: 9px 0;
 }
@@ -195,7 +199,7 @@ div.cdm-item-list div.item {
 /*
  * Taxon page and parts
  */
-/* line 117, ../sass/cdm.scss */
+/* line 120, ../sass/cdm.scss */
 .page-part {
   margin-bottom: 18px;
   clear: none;
@@ -205,7 +209,7 @@ div.cdm-item-list div.item {
  * definition list container rendered by the
  * drupal theme function theme_description_list()
  */
-/* line 127, ../sass/cdm.scss */
+/* line 130, ../sass/cdm.scss */
 .description_list h3 {
   font-size: 12px;
   line-height: 18px;
@@ -215,12 +219,12 @@ div.cdm-item-list div.item {
 /*
  * Synonymy
  */
-/* line 141, ../sass/cdm.scss */
+/* line 144, ../sass/cdm.scss */
 #synonymy div.accepted-name {
   margin-bottom: -1em;
   margin-top: 1em;
 }
-/* line 146, ../sass/cdm.scss */
+/* line 149, ../sass/cdm.scss */
 #synonymy .homotypic-synonymy-group, #synonymy .heterotypic-synonymy-group, #synonymy .taxon-relationships {
   border-bottom: 1px solid #DEDEDE;
   /* replace padding by margin */
@@ -231,21 +235,21 @@ div.cdm-item-list div.item {
 /*
  * Media
  */
-/* line 157, ../sass/cdm.scss */
+/* line 160, ../sass/cdm.scss */
 dl.media-caption {
   margin: 0;
 }
 
-/* line 161, ../sass/cdm.scss */
+/* line 164, ../sass/cdm.scss */
 .media-caption dd {
   margin-left: 0;
 }
-/* line 163, ../sass/cdm.scss */
+/* line 166, ../sass/cdm.scss */
 .media-caption dd .title {
   font-size: 100%;
 }
 
-/* line 168, ../sass/cdm.scss */
+/* line 171, ../sass/cdm.scss */
 .image-gallerie td.caption {
   padding-bottom: 1em;
 }
@@ -253,53 +257,53 @@ dl.media-caption {
 /*
  * specimens and type designations
  */
-/* line 176, ../sass/cdm.scss */
+/* line 179, ../sass/cdm.scss */
 #specimens table.media_gallery {
   margin-top: 0.2em;
 }
-/* line 179, ../sass/cdm.scss */
+/* line 182, ../sass/cdm.scss */
 #specimens .description_list {
   clear: both;
 }
-/* line 181, ../sass/cdm.scss */
+/* line 184, ../sass/cdm.scss */
 #specimens .description_list h3 {
   margin-top: 0;
   background-color: #ddd;
 }
-/* line 185, ../sass/cdm.scss */
+/* line 188, ../sass/cdm.scss */
 #specimens .description_list h4 {
   clear: left;
   margin-bottom: 0;
   font-style: italic;
 }
-/* line 191, ../sass/cdm.scss */
+/* line 194, ../sass/cdm.scss */
 #specimens .dynabox_content {
   margin-left: 10px;
   margin-right: 10px;
 }
-/* line 195, ../sass/cdm.scss */
+/* line 198, ../sass/cdm.scss */
 #specimens .block-cdm-dataportal-feature {
   margin-left: 20px;
   margin-bottom: 0;
 }
-/* line 198, ../sass/cdm.scss */
+/* line 201, ../sass/cdm.scss */
 #specimens .block-cdm-dataportal-feature h2 {
   font-size: 12px;
   line-height: 18px;
   font-weight: bold;
 }
-/* line 205, ../sass/cdm.scss */
+/* line 208, ../sass/cdm.scss */
 #specimens ul.typeDesignations {
   clear: both;
 }
-/* line 208, ../sass/cdm.scss */
+/* line 211, ../sass/cdm.scss */
 #specimens .dna-sequence div {
   font-size: 12px;
   font-family: monospace;
   clear: left;
   padding-left: 20px;
 }
-/* line 214, ../sass/cdm.scss */
+/* line 217, ../sass/cdm.scss */
 #specimens .derived_from {
   clear: both;
 }
@@ -307,7 +311,7 @@ dl.media-caption {
 /*
  * Map
  */
-/* line 222, ../sass/cdm.scss */
+/* line 225, ../sass/cdm.scss */
 .openlayers-container {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -316,39 +320,39 @@ dl.media-caption {
 /*
  * Registration page & items
  */
-/* line 232, ../sass/cdm.scss */
+/* line 235, ../sass/cdm.scss */
 .registration .type-status {
   font-weight: bold;
 }
-/* line 236, ../sass/cdm.scss */
+/* line 239, ../sass/cdm.scss */
 .registration .registration-date-and-institute {
   color: #999;
 }
-/* line 242, ../sass/cdm.scss */
+/* line 245, ../sass/cdm.scss */
 .registration .published-name .TaxonName .name {
   font-weight: bold;
 }
-/* line 246, ../sass/cdm.scss */
+/* line 249, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName {
   color: #999;
 }
-/* line 248, ../sass/cdm.scss */
+/* line 251, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName a {
   color: #999;
 }
-/* line 251, ../sass/cdm.scss */
+/* line 254, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName .TaxonName .name {
   font-weight: bold;
 }
-/* line 257, ../sass/cdm.scss */
+/* line 260, ../sass/cdm.scss */
 .registration .registration-summary .registered_name .name {
   font-weight: bold;
 }
-/* line 260, ../sass/cdm.scss */
+/* line 263, ../sass/cdm.scss */
 .registration .registration-summary .referenced_typified_name {
   color: #999;
 }
-/* line 263, ../sass/cdm.scss */
+/* line 266, ../sass/cdm.scss */
 .registration .registration-summary .label {
   font-weight: bold;
 }
@@ -356,13 +360,13 @@ dl.media-caption {
 /*
  * Theme settings page
  */
-/* line 274, ../sass/cdm.scss */
+/* line 277, ../sass/cdm.scss */
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-/* line 278, ../sass/cdm.scss */
+/* line 281, ../sass/cdm.scss */
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */
@@ -373,14 +377,14 @@ dl.media-caption {
  *
  * using the same media queries here as in layout/_responsive.scss
  *****************************************************************************************/
-/* line 291, ../sass/cdm.scss */
+/* line 294, ../sass/cdm.scss */
 #classification-breadcrumbs {
   font-size: 1.5em;
   line-height: 1.5em;
 }
 
 @media all and (min-width: 960px) {
-  /* line 302, ../sass/cdm.scss */
+  /* line 305, ../sass/cdm.scss */
   #classification-breadcrumbs {
     font-size: 1em;
   }
