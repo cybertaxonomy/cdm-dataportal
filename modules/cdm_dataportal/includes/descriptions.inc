@@ -2266,7 +2266,7 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
   $header = ['Feature/Character', 'State'];
 
   $rows = [];
-  $rows = compose_description_element_rows($root_nodes, $rows);
+  $rows = description_element_table_rows($root_nodes, $rows);
 
   if (!empty($rows)) {
     $render_array['table'] = markup_to_render_array(theme('table', [
@@ -2342,37 +2342,58 @@ function get_root_nodes_for_dataset($description) {
 }
 
 /**
- * @param $root_nodes
- * @param $rows
+ * Recursively creates an array of row items to be used in theme_table
+ *
+ * @param array $root_nodes
+ * @param array $row_items
+ * @param int $level
+ *     the depth in the hierarchy
  *
  * @return array
+ *  An array of row items to be used in theme_table
+ *
+ *
  */
-function compose_description_element_rows($root_nodes, $rows) {
+function description_element_table_rows($root_nodes, $row_items, $level = 0) {
+  $indent_string = '&nbsp;&nbsp;&nbsp;';
   foreach ($root_nodes as $root_node) {
     if(isset($root_node->descriptionElements)) {
       foreach ($root_node->descriptionElements as $element) {
+        $level_indent = str_pad('', $level * strlen($indent_string), $indent_string);
         switch ($element->class) {
           case 'CategoricalData':
             if (!empty($element->stateData)) {
-              $rows[] = [
-                $element->feature->representation_L10n,
-                render_state_data($element),
+              $row_items[] = [
+                'data' => [
+                  [
+                    'data' => markup_to_render_array($level_indent . $element->feature->representation_L10n),
+                    'class' => 'level_' . $level
+                  ],
+                  render_state_data($element),
+                ],
+                'class' => 'level_' . $level
               ];
             }
             break;
           case 'QuantitativeData':
-            $rows[] = [
-              $element->feature->representation_L10n,
-              render_quantitative_statistics($element),
+            $row_items[] = [
+              'data' => [
+                [
+                  'data' => markup_to_render_array($level_indent . $element->feature->representation_L10n),
+                  'class' => 'level_' . $level
+                ],
+                render_quantitative_statistics($element)
+              ],
+              'class' => 'level_' . $level
             ];
             break;
         }
       }
     }
     // recurse child nodes
-    $rows = compose_description_element_rows($root_node->childNodes, $rows);
+    $row_items = description_element_table_rows($root_node->childNodes, $row_items, $level + 1);
   }
-  return $rows;
+  return $row_items;
 }
 
 
