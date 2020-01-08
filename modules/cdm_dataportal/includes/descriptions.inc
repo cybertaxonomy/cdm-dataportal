@@ -1307,7 +1307,7 @@ function render_quantitative_statistics($element) {
 
   $out = '';
   $type_representation = NULL;
-  $min_max = min_max_array();
+  $min_max = statistical_values_array();
   $other_values = [];
   $sample_size_markup = null;
 
@@ -1337,7 +1337,7 @@ function render_quantitative_statistics($element) {
 
     // create markup
 
-    $min_max_markup = min_max_markup($min_max);
+    $min_max_markup = statistical_values($min_max);
 
 
     foreach ($other_values as $statistical_val) {

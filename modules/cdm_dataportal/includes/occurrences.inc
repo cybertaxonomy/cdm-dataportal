@@ -679,15 +679,15 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n, '', 4);
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod,'',5);
                         if (isset($value->absoluteElevation)) {
-                            $min_max_markup = min_max_measure($value, 'absoluteElevation');
+                            $min_max_markup = statistical_values_from_gathering_event($value, 'absoluteElevation');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup, '',6);
                         }
                         if (isset($value->distanceToGround)) {
-                            $min_max_markup = min_max_measure($value, 'distanceToGround');
+                            $min_max_markup = statistical_values_from_gathering_event($value, 'distanceToGround');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup,'',7);
                         }
                         if (isset($value->distanceToWaterSurface)) {
-                            $min_max_markup = min_max_measure($value, 'distanceToWaterSurface');
+                            $min_max_markup = statistical_values_from_gathering_event($value, 'distanceToWaterSurface');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup, '',8);
                         }
                         if (isset($value->collectingAreas) && count($value->collectingAreas) > 0) {
@@ -1424,15 +1424,15 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country);
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod);
                         if (isset($value->absoluteElevation)) {
-                            $min_max_markup = min_max_measure($value, 'absoluteElevation');
+                            $min_max_markup = statistical_values_from_gathering_event($value, 'absoluteElevation');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup);
                         }
                         if (isset($value->distanceToGround) && $value->distanceToGround >0) {
-                            $min_max_markup = min_max_measure($value, 'distanceToGround');
+                            $min_max_markup = statistical_values_from_gathering_event($value, 'distanceToGround');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup);
                         }
                         if (isset($value->distanceToWaterSurface) && $value->distanceToWaterSurface > 0) {
-                            $min_max_markup = min_max_measure($value, 'distanceToWaterSurface');
+                            $min_max_markup = statistical_values_from_gathering_event($value, 'distanceToWaterSurface');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup);
                         }
 
