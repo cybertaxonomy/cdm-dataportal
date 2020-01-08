@@ -19,7 +19,7 @@ update PEAR:
 	sudo ./pear config-set auto_discover 1
 	sudo ./pear install phpunit/PHPUnit
 
- the above should be suficcient,
+ the above should be sufficient,
  but in case something is going wrong you also can try :
 
   	sudo ./pear upgrade pear
@@ -68,15 +68,15 @@ based on http://pkp.sfu.ca/wiki/index.php/Configure_Eclipse_for_PHPUnit#Configur
 
   /usr/bin/php52/php /usr/bin/php52/phpunit --verbose --bootstrap bootstrap.php
 
-therefore we provide the script phpunitRunner.php wich will execute phpUnit.
+therefore we provide the script phpunitRunner.php which will execute phpUnit.
 In order to configure it properly you need to supply some environment variables.
 
   DRUPAL_ROOT - path to the root of your Drupal installation, that is dataportal installation.
-  XDEBUG_CONFIG - mjust be set to 'idekey=ECLIPSE_DBGP'
+  XDEBUG_CONFIG - must be set to 'idekey=ECLIPSE_DBGP'
   SITE_BASE_PATH - set this variable to the base path of the dataportal website you want to use for testing, eg: /flora-malesiana
 
 
-Create a new php run configuration wich executes phpunitRunner.php and configure the above named
+Create a new php run configuration which executes phpunitRunner.php and configure the above named
 environment variables in the "Environment" tab.
 In the "PhpScriptArgument" tab set the following:
 
