@@ -215,7 +215,9 @@ function compare_text_data($a, $b) {
 /**
  * Creates an array suitable to be used in min_max_markup()
  * The min max structure is suitable for being used in the context
- * of GatheringEvents and StatisticalMeasures (see render_quantitative_statistics())
+ * of GatheringEvents and StatisticalMeasures (see render_quantitative_statistics()).
+ *
+ * The order of the items is important for the display and must not be changed.
  *
  * @return array
  */
@@ -224,9 +226,10 @@ function min_max_array() {
   $min_max = [
     'Min' => NULL,
     'TypicalLowerBoundary' => NULL,
-    'Average' => NULL,
     'TypicalUpperBoundary' => NULL,
     'Max' => NULL,
+    'SampleSize' => NULL,
+    'Average' => NULL,
     'Variance' => NULL,
     'StandardDeviation' => NULL,
   ];
@@ -251,7 +254,10 @@ function min_max_array() {
  */
 function min_max_markup($min_max, $unit = '') {
 
+  static $xbar_equals = 'x&#x304='; // x&#x304 is x-bar
+
   $min_max_markup = '';
+  $other_vals_array = [];
 
   // --- sanitize values
   if(min_max_equals($min_max, 'Min', 'TypicalLowerBoundary')){
@@ -272,10 +278,10 @@ function min_max_markup($min_max, $unit = '') {
     $min_max['Max'] = NULL;
   }
 
-  if (min_max_equals($min_max, 'Min', 'Max')) {
-    $min_max['Average'] = $min_max['Min'];
-    $min_max['Min'] = NULL;
-    $min_max['Max'] = NULL;
+  if (min_max_equals($min_max, 'TypicalUpperBoundary', 'TypicalLowerBoundary')) {
+    $min_max['Average'] = $min_max['TypicalUpperBoundary'];
+    $min_max['TypicalLowerBoundary'] = NULL;
+    $min_max['TypicalUpperBoundary'] = NULL;
   }
 
   // --- check for inconsistent cases, eg. only Max and average given
@@ -289,6 +295,7 @@ function min_max_markup($min_max, $unit = '') {
   }
 
   foreach ($min_max as $key => $statistical_val) {
+
     if ($statistical_val !== NULL) {
       if ($statistical_val == '?') {
         $val_markup = $statistical_val;
@@ -299,26 +306,49 @@ function min_max_markup($min_max, $unit = '') {
             . $statistical_val->_value . '</span>';
       }
 
-      if (strlen($min_max_markup)) {
-        $min_max_markup .= '–';
-      }
       switch ($key) {
+        // ---- min_max_element
         case 'Min':
+          $min_max_markup .= "($val_markup&ndash;)";
+          break;
         case 'Max':
-          $val_markup = "($val_markup)";
+          $min_max_markup .= "(&ndash;$val_markup)";
+          break;
+        case 'TypicalLowerBoundary':
+          $min_max_markup .= "$val_markup";
+          break;
+        case 'TypicalUpperBoundary':
+          $min_max_markup .= "&ndash;$val_markup";
+          break;
+          // ---- other values
+        case 'SampleSize':
+          $other_vals_array[$key] = $val_markup;
+          break;
+        case 'Average':
+          $other_vals_array[$key] = $xbar_equals . $val_markup;
           break;
         case 'Variance':
-          $val_markup = 'σ²=' . $val_markup;
+          $other_vals_array[$key] = 'σ²=' . $val_markup;
           break;
         case 'StandardDeviation':
-          $val_markup = 'σ=' . $val_markup;
+          $other_vals_array[$key] = 'σ=' . $val_markup;
           break;
       }
-      $min_max_markup .= $val_markup;
     }
   }
 
-
+  if(!$min_max_markup && $other_vals_array['Average']){
+    // this could be the case in which we only have one value for Average
+    // this trivial case needs to be displayed a simpler way
+    $min_max_markup = str_replace($xbar_equals, '' ,$other_vals_array['Average']);
+    if($other_vals_array['SampleSize']){
+      $min_max_markup .= '['. $other_vals_array['SampleSize'] .']';
+    }
+  } else {
+    if(count($other_vals_array)){
+      $min_max_markup .= '[' . join(';', $other_vals_array) . ']';
+    }
+  }
 
   return $min_max_markup . ($unit ? ' ' . $unit : '');
 }
