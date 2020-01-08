@@ -589,7 +589,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
         $description_item = '<div class="' . html_class_attribute_ref($description) . '">';
         $description_item .= render_description_string($description, get_root_nodes_for_dataset($description));
         $description_item .= ' ' . icon_link(path_to_description($description->uuid));
-        $description_item .= '<div class="content-caption">'. t('Bracketed numbers denote sample size') . '</div>';
+        $description_item .= '<div class="content-caption">'. statistical_values_explanation() . '</div>';
         $description_item .= '</div>';
       }
       $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);

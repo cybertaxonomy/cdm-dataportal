@@ -2276,7 +2276,7 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
     $render_array['table'] = markup_to_render_array(theme('table', [
       'header' => $header,
       'rows' => $rows,
-      'caption' => t("Bracketed numbers denote sample size"),
+      'caption' => statistical_values_explanation(),
       'title' => "Table"
     ]));
   }
