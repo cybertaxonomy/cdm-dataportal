@@ -30,6 +30,47 @@
  * @}
  */
 
+
+/**
+ * Composes an HTML element class attribute value composed of
+ * the short-name of the cdm class and the uuid of the entity.
+ * This class attribute should be used wherever an cdm-entity is rendered.
+ *
+ * In case of Taxon entities or TaxonNodeDTOs the secReference is also added
+ * to the class attributes as 'sec_uuid:<uuid>'. In case of TaxonNodeDTOs the
+ * Taxon uuid is added also as taxon_uuid:<uuid>
+ *
+ * These according class selectors in css must be escaped, eg:
+ *    .cdm\:TextData
+ *
+ * @param $cdm_entity
+ *    A CDM entity, TaxonNodeDTO or TypedEntityReference
+ */
+function html_class_attribute_ref($cdm_entity) {
+
+  $attributes = '';
+  if (is_cdm_entity($cdm_entity)) {
+    $attributes =  "cdm:" . $cdm_entity->class . " uuid:" . $cdm_entity->uuid;
+  } elseif (isset($cdm_entity->class)) {
+    switch ($cdm_entity->class){
+      case 'TypedEntityReference':
+        $attributes =  "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
+      break;
+      case 'TaxonNodeDto':
+        $attributes .= " taxon_uuid:"  . $cdm_entity->taxonUuid . " sec_uuid:"  . $cdm_entity->secUuid;;
+      break;
+      case 'Taxon':
+        if(isset($cdm_entity->sec->uuid)){
+        $attributes .= " sec_uuid:"  . $cdm_entity->sec->uuid;
+      }
+      break;
+    }
+  }
+
+  return $attributes;
+}
+
+
 /**
  * Compose an render array from a CDM Marker object.
  *
@@ -263,7 +304,7 @@ function statistical_values_array() {
  */
 function statistical_values($stat_vals_arr, $unit = '') {
 
-  static $xbar_equals = 'x&#x304='; // x&#x304 is x-bar
+  static $xbar_equals = 'x&#772;='; // x&#772; is x-bar (http://www.personal.psu.edu/ejp10/blogs/gotunicode/2010/03/dealing-with-x-bar-x-and-p-hat.html)
 
   $min_max_markup = '';
   $other_vals_array = [];
@@ -350,7 +391,7 @@ function statistical_values($stat_vals_arr, $unit = '') {
     }
   }
 
-  if(!$min_max_markup && $other_vals_array['Average']){
+  if(!$min_max_markup && !empty($other_vals_array['Average'])){
     // this could be the case in which we only have one value for Average
     // this trivial case needs to be displayed a simpler way
     $min_max_markup = str_replace($xbar_equals, '' ,$other_vals_array['Average']);
@@ -493,6 +534,8 @@ function statistical_values_from_gathering_event($object, $field_base_name)
  * @ingroup compose
  */
 function compose_cdm_taxon_expert($taxon_node_agent_relation) {
+
+  $agent_details = null;
 
   $label_suffix = ':';
 
@@ -730,6 +773,7 @@ function compose_extensions($extensions)
 }
 
 function formatParams($params) {
+    $paramString = null;
     if (is_array($params)){
         $keys =array_keys($params);
         $paramString = '';
@@ -743,6 +787,7 @@ function formatParams($params) {
 }
 
 function formatWSParams($params) {
+  $paramString = null;
     if (is_array($params)){
         $keys =array_keys($params);
         $paramString = '';

@@ -2544,39 +2544,6 @@ function rank_compare($thisRankUuid, $thatRankUuid) {
 }
 
 /**
- * Composes an HTML element class attribute value composed of
- * the short-name of the cdm class and the uuid of the entity.
- * This class attribute should be used wherever an cdm-entity is rendered.
- *
- * In case of Taxon entities or TaxonNodeDTOs the secReference is also added
- * to the class attributes as 'sec_uuid:<uuid>'. In case of TaxonNodeDTOs the
- * Taxon uuid is added also as taxon_uuid:<uuid>
- *
- * These according class selectors in css must be escaped, eg:
- *    .cdm\:TextData
- *
- * @param $cdm_entity
- *    A CDM entity, TaxonNodeDTO or TypedEntityReference
- */
-function html_class_attribute_ref($cdm_entity) {
-
-  $attributes = '';
-  if (is_cdm_entity($cdm_entity)) {
-    $attributes =  "cdm:" . $cdm_entity->class . " uuid:" . $cdm_entity->uuid;
-  } else if($cdm_entity->class == 'TypedEntityReference') {
-    $attributes =  "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
-  }
-  if($cdm_entity->class == 'TaxonNodeDto'){
-    $attributes .= " taxon_uuid:"  . $cdm_entity->taxonUuid . " sec_uuid:"  . $cdm_entity->secUuid;;
-  }
-  if($cdm_entity->class == 'Taxon' && isset($cdm_entity->sec->uuid)){
-    $attributes .= " sec_uuid:"  . $cdm_entity->sec->uuid;
-  }
-  return $attributes;
-}
-
-
-/**
  * Creates a short version of a taxonname.
  *
  * The short name is created by using the taggedTitle field of
