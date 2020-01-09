@@ -303,6 +303,13 @@ function statistical_values($stat_vals_arr, $unit = '') {
     $stat_vals_arr['TypicalUpperBoundary'] = '?';
   }
 
+  if($stat_vals_arr['Average'] && $stat_vals_arr['TypicalUpperBoundary'] !== null && $stat_vals_arr['TypicalLowerBoundary'] !== null) {
+//    $stat_vals_arr['TypicalUpperBoundary']->_value = 0.123457;
+//    $stat_vals_arr['TypicalLowerBoundary']->_value = 0.123456;
+//    $stat_vals_arr['Average']->_value = 0.1234565234234;
+    statistical_values_adjust_significant_figures($stat_vals_arr['Average'], $stat_vals_arr['TypicalLowerBoundary'], $stat_vals_arr['TypicalUpperBoundary']);
+  }
+
   foreach ($stat_vals_arr as $key => $statistical_val) {
 
     if ($statistical_val !== NULL) {
@@ -361,6 +368,59 @@ function statistical_values($stat_vals_arr, $unit = '') {
 
   return $min_max_markup . ($unit ? ' ' . $unit : '');
 }
+
+/**
+ * Calculates the required precision for the taget value to be significantly different from min and may and rounds it.
+ *
+ * @param $target
+ *    The statistical value to be rounded to the least significant precision
+ * @param $min
+ *    The lower bound to calculate the least significant precision
+ * @param $max
+ *    The upper bound to calculate the least significant precision
+ * @param int $threshold
+ *    Per default 1, but can be set to any other value > 0 and < 1 to define
+ *    another threshold for the transition to the next precision level.
+ *    E.g. A value of 0.5 will cause values > 50 and <= 500 to be shown with
+ *    a precision of 2, whereas with a threshold of 1 the values > 10 and <= 100
+ *    will be shown with a precision of 2 figures
+ */
+function statistical_values_adjust_significant_figures(&$target, $min,  $max, $threshold = 1){
+
+  $precision = 1;
+  if($min->_value !== $max->_value){
+    $precision = floor(log10(abs($max->_value - $min->_value) * (1 / $threshold)));
+    // increase precision by one
+    $precision += $precision < 0 ? - 1 : 1;
+  }
+
+  $target->_value = sigFig($target->_value, $precision);
+}
+
+/**
+ * based on an idea taken from https://stackoverflow.com/questions/37618679/format-number-to-n-significant-digits-in-php#answer-48283297
+ *
+ * @param $value
+ * @param $digits
+ *
+ * @return float|string
+ */
+function sigFig($value, $digits, $round_only = true)
+{
+  if ($value == 0) {
+    $decimalPlaces = $digits - 1;
+  } elseif ($value < 0) {
+    $decimalPlaces = $digits - floor(log10($value * -1)) - 1;
+  } else {
+    $decimalPlaces = $digits - floor(log10($value)) - 1;
+  }
+
+  $answer = ($decimalPlaces > 0) && !$round_only ?
+    number_format($value, $decimalPlaces) : round($value, abs($decimalPlaces));
+  return $answer;
+}
+
+
 
 /**
  * Used internally in statistical_values() do determine equality of stat_vals_arr values
