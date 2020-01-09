@@ -304,9 +304,6 @@ function statistical_values($stat_vals_arr, $unit = '') {
   }
 
   if($stat_vals_arr['Average'] && $stat_vals_arr['TypicalUpperBoundary'] !== null && $stat_vals_arr['TypicalLowerBoundary'] !== null) {
-//    $stat_vals_arr['TypicalUpperBoundary']->_value = 0.123457;
-//    $stat_vals_arr['TypicalLowerBoundary']->_value = 0.123456;
-//    $stat_vals_arr['Average']->_value = 0.1234565234234;
     statistical_values_adjust_significant_figures($stat_vals_arr['Average'], $stat_vals_arr['TypicalLowerBoundary'], $stat_vals_arr['TypicalUpperBoundary']);
   }
 
