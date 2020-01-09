@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	This phpUnit configuration will cause a full bootstrap of drupal to allow for full integration tests
+	FIXME: bootstrap.php currently causes the php interpreter to exit code 255
+-->
 <phpunit bootstrap="bootstrap.php">
 	
 	<php>
@@ -9,7 +14,7 @@
 	
   <testsuites>
 	  <testsuite name="benchmark">
-	    <file>src/cdm_dataportal.moduleTest.php</file>
+	    <file>src/integration/cdm_dataportal.moduleTest.php</file>
 	  </testsuite>
   </testsuites>
   

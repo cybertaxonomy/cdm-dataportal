@@ -1,0 +1,15 @@
+{
+  "name": "cybertaxonomy.org/cdm-dataportal",
+  "description": "The dataportal publishes CDM data hosted in a CommunityStore on the web.",
+  "minimum-stability": "stable",
+  "license": "GPL2",
+  "authors": [
+    {
+      "name": "Andreas Kohlbecker",
+      "email": "a.kohlbecker@bgbm.org"
+    }
+  ],
+  "require": {
+    "phpunit/phpunit": "^8"
+  }
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Configuration for simple unit tests which do not require bootstrapping of drupal
+    The test cases are located in ./src/unit-tests
+-->
+<phpunit defaultTestSuite="unit">
+    <php>
+        <!--
+            include_path: must point to the folder modules/cdm_dataportal
+        -->
+        <includePath>../..</includePath>
+
+        <ini name="error_reporting" value="E_ALL"/>
+        <!--
+        <ini name="display_errors" value="TRUE"/>
+        <ini name="display_startup_errors" value="TRUE"/>
+        -->
+    </php>
+
+
+    <testsuites>
+        <testsuite name="unit">
+            <directory>src/unit/</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>

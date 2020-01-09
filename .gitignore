@@ -6,10 +6,13 @@
 /.settings
 /target
 /screenshots
+/vendor
+
 
 .idea/
 .classpath
 .settings/
+composer.lock
 
 C:\\nppdf32Log\\debuglog.txt
 workbench.xmi

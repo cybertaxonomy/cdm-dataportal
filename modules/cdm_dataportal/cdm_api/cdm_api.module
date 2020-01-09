@@ -2620,40 +2620,6 @@ function cdm_api_secref_cache_clear() {
 
 
 /**
- * Validates if the given string is a uuid.
- *
- * @param string $str
- *   The string to validate.
- *
- * return bool
- *   TRUE if the string is a UUID.
- */
-function is_uuid($str) {
-  return is_string($str) && strlen($str) == 36 && strpos($str, '-');
-}
-
-/**
- * Checks if the given $object is a valid cdm entity.
- *
- * An object is considered a cdm entity if it has a string field $object->class
- * with at least 3 characters and if it has a valid uuid in $object->uuid.
- * The function is null save.
- *
- * @author a.kohlbecker <a.kohlbecker@bgbm.org>
- *
- * @param mixed $object
- *   The object to validate
- *
- * @return bool
- *   True if the object is a cdm entity.
- */
-function is_cdm_entity($object) {
-  return
-    isset($object->class) && is_string($object->class) && strlen($object->class) > 2 && $object->class != 'TypedEntityReference'
-    && is_string($object->uuid) && is_uuid($object->uuid);
-}
-
-/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */

@@ -6,10 +6,10 @@
 
 // TestUtils.php must be included at the very first step
 
-module_load_include('php', 'bootstrap', 'estUtils');
+module_load_include('php', 'bootstrap', 'TestUtils');
 
 if (empty($_ENV['DRUPAL_ROOT'])) {
-  print('environment variable "DRUPAL_ROOT" mnust point to the root of the Drupal installation.');
+  print('environment variable "DRUPAL_ROOT" must point to the root of the Drupal installation.');
   exit(-1);
 }
 chdir($_ENV['DRUPAL_ROOT']); // cd to {DRUPAL_ROOT}

@@ -1,6 +1,8 @@
 <?php
 
-class ModuleTests extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class ModuleTests extends TestCase {
 
   function test_load_polytomousKey() {
 

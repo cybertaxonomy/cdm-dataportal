@@ -1,11 +1,9 @@
 <?php
 
-/**
- * test to test if phpUnit is ok
- * @author a.kohlbecker
- *
- */
-class ShortnameTest extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+
+class ShortnameTest extends TestCase {
 
   /*
    --------'BACILLARIOPHYCEAE (FOSS.)'---------

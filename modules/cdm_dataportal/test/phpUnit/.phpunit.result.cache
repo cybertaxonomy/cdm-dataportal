@@ -1,0 +1,1 @@
+C:37:"PHPUnit\Runner\DefaultTestResultCache":331:{a:2:{s:7:"defects";a:2:{s:47:"ShortnameTest::test_cdm_dataportal_shortname_of";i:4;s:47:"StatisticalValuesTests::test_statistical_values";i:4;}s:5:"times";a:3:{s:27:"TestTests::test_fancymodule";d:0.002;s:47:"ShortnameTest::test_cdm_dataportal_shortname_of";d:0.003;s:47:"StatisticalValuesTests::test_statistical_values";d:0.003;}}}
