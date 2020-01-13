@@ -9,7 +9,7 @@
       "email": "a.kohlbecker@bgbm.org"
     }
   ],
-  "require": {
-    "phpunit/phpunit": "^8"
+  "require-dev": {
+    "phpunit/phpunit": "^5"
   }
 }
