@@ -1,4 +1,9 @@
 <?php
+
+// using namespace to allow for better sorting of test classes in the results
+namespace test\phpunit\unit;
+
+
 use PHPUnit\Framework\TestCase;
 
 // these includes require <includePath>../..</includePath> to be set in phpUnit.xml
@@ -13,7 +18,7 @@ include 'cdm_api/commons.php';
 class StatisticalValuesTest extends TestCase {
 
   function new_statistical_value($value = null){
-    $stat_val = new stdClass();
+    $stat_val = new \stdClass(); // need to use the root namespace
     $stat_val->_value = $value;
     return $stat_val;
   }
