@@ -2289,7 +2289,7 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
         $cdm_source_entity = $source->cdmSource;
         switch($cdm_source_entity->class){
           case 'Taxon':
-            $source_link_markup = render_taxon_or_name($cdm_source_entity) . icon_link(path_to_taxon($cdm_source_entity->uuid, false), generalizeString(PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS));
+            $source_link_markup = render_taxon_or_name($cdm_source_entity) . icon_link(path_to_taxon($cdm_source_entity->uuid, false));
             break;
           case 'TaxonDescription':
           case 'NameDescription':
