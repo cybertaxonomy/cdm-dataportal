@@ -11,7 +11,7 @@ include 'cdm_api/commons.php';
  * @author a.kohlbecker
  *
  */
-class StatisticalValuesTests extends TestCase {
+class StatisticalValuesTest extends TestCase {
 
   function new_statistical_value($value = null){
     $stat_val = new stdClass();

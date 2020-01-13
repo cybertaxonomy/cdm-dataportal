@@ -4,7 +4,7 @@
     Configuration for simple unit tests which do not require bootstrapping of drupal
     The test cases are located in ./src/unit-tests
 -->
-<phpunit defaultTestSuite="unit">
+<phpunit>
     <php>
         <!--
             include_path: must point to the folder modules/cdm_dataportal
@@ -20,6 +20,9 @@
 
 
     <testsuites>
+        <!--
+            will add all *Test classes that are found in *Test.php files when the tests directory is
+            recursively traversed -->
         <testsuite name="unit">
             <directory>src/unit/</directory>
         </testsuite>
@@ -32,7 +35,7 @@
              lowUpperBound="35" highLowerBound="70"/>
         <log type="coverage-clover" target="target/phpunit/clover.xml"/>
         -->
-        <log type="junit" target="../../../../target/phpunit/junit-cdm-dataportal.xml" logIncompleteSkipped="false"/>
+        <log type="junit" target="../../target/phpunit/junit-cdm-dataportal.xml" logIncompleteSkipped="false"/>
     </logging>
 
 </phpunit>
