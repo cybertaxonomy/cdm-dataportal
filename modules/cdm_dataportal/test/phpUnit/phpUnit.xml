@@ -35,7 +35,7 @@
              lowUpperBound="35" highLowerBound="70"/>
         <log type="coverage-clover" target="target/phpunit/clover.xml"/>
         -->
-        <log type="junit" target="../../target/phpunit/junit-cdm-dataportal.xml" logIncompleteSkipped="false"/>
+        <log type="junit" target="../../target/phpunit/junit.cdm-dataportal.unit.xml" logIncompleteSkipped="false"/>
     </logging>
 
 </phpunit>
