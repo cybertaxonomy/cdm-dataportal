@@ -310,11 +310,11 @@ function statistical_values($stat_vals_arr, $unit = '') {
   $other_vals_array = [];
 
   // --- sanitize values
-  if(statistical_values_equals($stat_vals_arr, 'Min', 'TypicalLowerBoundary')){
+  if(statistical_values_num_equals($stat_vals_arr, 'Min', 'TypicalLowerBoundary')){
     $stat_vals_arr['Min'] = NULL;
   }
 
-  if(statistical_values_equals($stat_vals_arr, 'Max', 'TypicalUpperBoundary')){
+  if(statistical_values_num_equals($stat_vals_arr, 'Max', 'TypicalUpperBoundary')){
     $stat_vals_arr['Max'] = NULL;
   }
 
@@ -328,7 +328,7 @@ function statistical_values($stat_vals_arr, $unit = '') {
     $stat_vals_arr['Max'] = NULL;
   }
 
-  if (statistical_values_equals($stat_vals_arr, 'TypicalUpperBoundary', 'TypicalLowerBoundary')) {
+  if (statistical_values_num_equals($stat_vals_arr, 'TypicalUpperBoundary', 'TypicalLowerBoundary')) {
     $stat_vals_arr['Average'] = $stat_vals_arr['TypicalUpperBoundary'];
     $stat_vals_arr['TypicalLowerBoundary'] = NULL;
     $stat_vals_arr['TypicalUpperBoundary'] = NULL;
@@ -344,7 +344,7 @@ function statistical_values($stat_vals_arr, $unit = '') {
     $stat_vals_arr['TypicalUpperBoundary'] = '?';
   }
 
-  if($stat_vals_arr['Average'] && $stat_vals_arr['TypicalUpperBoundary'] !== null && $stat_vals_arr['TypicalLowerBoundary'] !== null) {
+  if($stat_vals_arr['Average'] && $stat_vals_arr['TypicalUpperBoundary'] !== null && is_numeric($stat_vals_arr['TypicalUpperBoundary']) && $stat_vals_arr['TypicalLowerBoundary'] !== null && is_numeric($stat_vals_arr['TypicalLowerBoundary'] !== null)) {
     statistical_values_adjust_significant_figures($stat_vals_arr['Average'], $stat_vals_arr['TypicalLowerBoundary'], $stat_vals_arr['TypicalUpperBoundary']);
   }
 
@@ -353,40 +353,49 @@ function statistical_values($stat_vals_arr, $unit = '') {
     if ($statistical_val !== NULL) {
       if ($statistical_val == '?') {
         $val_markup = $statistical_val;
-      } else {
-        $val_markup = '<span class="'
+      }
+      else {
+        if (is_numeric($statistical_val->_value)) {
+          $val_markup = '<span class="'
             . html_class_attribute_ref($statistical_val) . ' '
-            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ' . $key .'" title="'. $key. '">'
+            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ' . $key . '" title="' . $key . '">'
             . $statistical_val->_value . '</span>';
+
+        }
+        else {
+          $val_markup = NULL;
+        }
       }
 
-      switch ($key) {
-        // ---- min_max_element
-        case 'Min':
-          $min_max_markup .= "($val_markup&ndash;)";
-          break;
-        case 'Max':
-          $min_max_markup .= "(&ndash;$val_markup)";
-          break;
-        case 'TypicalLowerBoundary':
-          $min_max_markup .= "$val_markup";
-          break;
-        case 'TypicalUpperBoundary':
-          $min_max_markup .= "&ndash;$val_markup";
-          break;
+      if ($val_markup) {
+        switch ($key) {
+          // ---- min_max_element
+          case 'Min':
+            $min_max_markup .= "($val_markup&ndash;)";
+            break;
+          case 'Max':
+            $min_max_markup .= "(&ndash;$val_markup)";
+            break;
+          case 'TypicalLowerBoundary':
+            $min_max_markup .= "$val_markup";
+            break;
+          case 'TypicalUpperBoundary':
+            $min_max_markup .= "&ndash;$val_markup";
+            break;
           // ---- other values
-        case 'SampleSize':
-          $other_vals_array[$key] = $val_markup;
-          break;
-        case 'Average':
-          $other_vals_array[$key] = $xbar_equals . $val_markup;
-          break;
-        case 'Variance':
-          $other_vals_array[$key] = 'σ²=' . $val_markup;
-          break;
-        case 'StandardDeviation':
-          $other_vals_array[$key] = 'σ=' . $val_markup;
-          break;
+          case 'SampleSize':
+            $other_vals_array[$key] = $val_markup;
+            break;
+          case 'Average':
+            $other_vals_array[$key] = $xbar_equals . $val_markup;
+            break;
+          case 'Variance':
+            $other_vals_array[$key] = 'σ²=' . $val_markup;
+            break;
+          case 'StandardDeviation':
+            $other_vals_array[$key] = 'σ=' . $val_markup;
+            break;
+        }
       }
     }
   }
@@ -394,10 +403,9 @@ function statistical_values($stat_vals_arr, $unit = '') {
   if(!$min_max_markup && !empty($other_vals_array['Average'])){
     // this could be the case in which we only have one value for Average
     // this trivial case needs to be displayed a simpler way
-    $min_max_markup = str_replace($xbar_equals, '' ,$other_vals_array['Average']);
-    if($other_vals_array['SampleSize']){
-      $min_max_markup .= '['. $other_vals_array['SampleSize'] .']';
-    }
+    $min_max_markup = str_replace($xbar_equals, '' , $other_vals_array['Average']);
+    unset($other_vals_array['Average']);
+    $min_max_markup .= '[' . join(';', $other_vals_array) . ']';
   } else {
     if(count($other_vals_array)){
       $min_max_markup .= '[' . join(';', $other_vals_array) . ']';
@@ -461,7 +469,7 @@ function sigFig($value, $digits, $round_only = true)
 
 
 /**
- * Used internally in statistical_values() do determine equality of stat_vals_arr values
+ * Used internally in statistical_values() do determine numerically equality of stat_vals_arr values
  *
  * @param $stat_vals_arr
  * @param $key1
@@ -469,9 +477,9 @@ function sigFig($value, $digits, $round_only = true)
  *
  * @return bool
  */
-function statistical_values_equals($stat_vals_arr, $key1, $key2){
+function statistical_values_num_equals($stat_vals_arr, $key1, $key2){
 
-  return $stat_vals_arr[$key1] !== NULL && $stat_vals_arr[$key2] !== NULL && $stat_vals_arr[$key1]->_value ==  $stat_vals_arr[$key2]->_value;
+  return $stat_vals_arr[$key1] !== NULL && $stat_vals_arr[$key2] !== NULL && $stat_vals_arr[$key1]->_value == $stat_vals_arr[$key2]->_value && is_numeric($stat_vals_arr[$key1]->_value);
 }
 
 /**
