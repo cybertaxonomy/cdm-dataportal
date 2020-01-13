@@ -1,5 +1,4 @@
 <?php
-
 use PHPUnit\Framework\TestCase;
 
 // these includes require <includePath>../..</includePath> to be set in phpUnit.xml

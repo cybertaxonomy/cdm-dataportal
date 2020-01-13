@@ -23,7 +23,7 @@
         <!--
             will add all *Test classes that are found in *Test.php files when the tests directory is
             recursively traversed -->
-        <testsuite name="unit">
+        <testsuite name="phpunit.unit">
             <directory>src/unit/</directory>
         </testsuite>
     </testsuites>
