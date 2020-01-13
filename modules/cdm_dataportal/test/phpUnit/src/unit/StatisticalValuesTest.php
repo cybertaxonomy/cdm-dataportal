@@ -39,8 +39,23 @@ class StatisticalValuesTest extends TestCase {
   function test_statistical_values() {
 
     $stat_vals = $this->create_statistical_values(0.123457,  0.123456, 0.123456523847, 5);
-
     $this->assertEquals('0.123457–0.123456[5;x̄=0.1234565]', $this->html2text(statistical_values($stat_vals)));
+
+    $stat_vals = $this->create_statistical_values(12.23,  14.2, 13.2231423, 15);
+    $this->assertEquals('12.23–14.2[15;x̄=13.2]', $this->html2text(statistical_values($stat_vals)));
+
+    $stat_vals = $this->create_statistical_values(4,  6, 5, 2);
+    $this->assertEquals('4–6[2;x̄=5]', $this->html2text(statistical_values($stat_vals)));
+
+    $stat_vals = $this->create_statistical_values(4,  6, 5.0000, 2);
+    $this->assertEquals('4–6[2;x̄=5]', $this->html2text(statistical_values($stat_vals)));
+
+    $stat_vals = $this->create_statistical_values(6.3467,  6.3482, 6.347034915, 20);
+    $this->assertEquals('6.3467–6.3482[20;x̄=6.34703]', $this->html2text(statistical_values($stat_vals)));
+
+    $stat_vals = $this->create_statistical_values(0.00000001,  1, (1 - 0.00000001) / 2, 20);
+    $this->assertEquals('1.0E-8–1[20;x̄=0.5]', $this->html2text(statistical_values($stat_vals)));
+
   }
 
 }
