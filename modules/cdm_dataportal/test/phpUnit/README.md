@@ -75,8 +75,23 @@ Running PHPUnit tests in PHPStorm
 
 Simply right click on a test file and choose *Run 'TestFile' (PHPUnit)* in the context menu.
 
+Running PHPUnit tests in from the commandline
+---------------------------------------------------------------
 
-Running PHPUnit tests via the phpunitRunner.php script (DEPRECATED)
+navigate into the project folder and ...
+
+To run the test suite:
+
+~~~
+php vendor/phpunit/phpunit/phpunit --configuration modules/cdm_dataportal/test/phpUnit/phpUnit.xml
+~~~
+
+To execute a single test class
+~~~
+php vendor/phpunit/phpunit/phpunit --configuration modules/cdm_dataportal/test/phpUnit/phpUnit.xml modules/cdm_dataportal/test/phpUnit/src/unit/StatisticalValuesTest.php 
+~~~
+
+Running PHPUnit integration tests via the phpunitRunner.php script (DEPRECATED)
 ---------------------------------------------------------------
 
 *This has only been preseved since it could be useful for running test suites from the commandline or in the CI server.*
