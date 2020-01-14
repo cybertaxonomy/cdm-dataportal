@@ -344,7 +344,7 @@ function statistical_values($stat_vals_arr, $unit = '') {
     $stat_vals_arr['TypicalUpperBoundary'] = '?';
   }
 
-  if($stat_vals_arr['Average'] && $stat_vals_arr['TypicalUpperBoundary'] !== null && is_numeric($stat_vals_arr['TypicalUpperBoundary']) && $stat_vals_arr['TypicalLowerBoundary'] !== null && is_numeric($stat_vals_arr['TypicalLowerBoundary'] !== null)) {
+  if(statistical_values_is_numeric($stat_vals_arr['Average']) && statistical_values_is_numeric($stat_vals_arr['TypicalUpperBoundary']) && statistical_values_is_numeric($stat_vals_arr['TypicalLowerBoundary'])) {
     statistical_values_adjust_significant_figures($stat_vals_arr['Average'], $stat_vals_arr['TypicalLowerBoundary'], $stat_vals_arr['TypicalUpperBoundary']);
   }
 
@@ -480,6 +480,10 @@ function sigFig($value, $digits, $round_only = true)
 function statistical_values_num_equals($stat_vals_arr, $key1, $key2){
 
   return $stat_vals_arr[$key1] !== NULL && $stat_vals_arr[$key2] !== NULL && $stat_vals_arr[$key1]->_value == $stat_vals_arr[$key2]->_value && is_numeric($stat_vals_arr[$key1]->_value);
+}
+
+function statistical_values_is_numeric($stat_val){
+  return $stat_val !== null && is_numeric($stat_val->_value);
 }
 
 /**

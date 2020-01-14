@@ -44,7 +44,7 @@ class StatisticalValuesTest extends TestCase {
 
   function test_statistical_values_significant_figures_avarage() {
 
-    $stat_vals = $this->create_statistical_values(0.123457,  0.123456, 0.1234565345, 5);
+    $stat_vals = $this->create_statistical_values(0.123457,  0.123456, 0.123456523847, 5);
     $this->assertEquals('0.123457–0.123456[5;x̄=0.1234565]', $this->html2text(statistical_values($stat_vals)));
 
     $stat_vals = $this->create_statistical_values(12.23,  14.2, 13.2231423, 15);
