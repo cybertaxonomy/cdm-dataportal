@@ -2146,11 +2146,15 @@ function render_description_string($description, $root_nodes, &$item_cnt = 0) {
             case 'CategoricalData':
               $state_data = render_state_data($element);
               if (!empty($state_data)) {
-                $description_strings[] = '<span class="'. html_class_attribute_ref($element) .'"><span class="label">' . $feature_label . '</span>: ' . $state_data . '</span>';
+                if(is_suppress_state_present_display($element, $root_node)){
+                  $description_strings[] = '<span class="'. html_class_attribute_ref($element) .'"><span class="label">' . $feature_label . '</span>: '  . '</span>';
+                } else {
+                  $description_strings[] = '<span class="'. html_class_attribute_ref($element) .'"><span class="label">' . $feature_label . '</span>: ' . $state_data . '</span>;' ;
+                }
               }
               break;
             case 'QuantitativeData':
-              $description_strings[] = '<span class="'. html_class_attribute_ref($element) .'"><span class="label">' . $feature_label . '</span>: ' . render_quantitative_statistics($element) . '</span>';
+              $description_strings[] = '<span class="'. html_class_attribute_ref($element) .'"><span class="label">' . $feature_label . '</span>: ' . render_quantitative_statistics($element) . '</span>;';
               break;
           }
         }
@@ -2163,7 +2167,11 @@ function render_description_string($description, $root_nodes, &$item_cnt = 0) {
         $description_strings[] = $child_markup;
       }
     }
-    $out  = join($description_strings,  '; ');
+    if(count($description_strings) > 0){
+      // remove last semicolon
+      $description_strings[count($description_strings) - 1] = preg_replace('/;$/', '', $description_strings[count($description_strings) - 1]);
+    }
+    $out  = join($description_strings,  ' ');
   }
   return $out;
 }
@@ -2406,7 +2414,7 @@ function description_element_table_rows($root_nodes, $row_items, $level = 0) {
           case 'CategoricalData':
             default:
             if (!empty($element->stateData)) {
-              $supress_state_display = count($element->stateData) == 1 & $element->stateData[0]->state->representation_L10n == 'present' && is_array($root_node->childNodes);
+              $supress_state_display = is_suppress_state_present_display($element, $root_node);
               if(!$supress_state_display){
                 $state_cell = render_state_data($element);
               } else {
@@ -2431,6 +2439,16 @@ function description_element_table_rows($root_nodes, $row_items, $level = 0) {
     $row_items = description_element_table_rows($root_node->childNodes, $row_items, $level + 1);
   }
   return $row_items;
+}
+
+/**
+ * @param $element
+ * @param $root_node
+ *
+ * @return bool
+ */
+function is_suppress_state_present_display($element, $root_node) {
+  return count($element->stateData) == 1 & $element->stateData[0]->state->representation_L10n == 'present' && is_array($root_node->childNodes);
 }
 
 
