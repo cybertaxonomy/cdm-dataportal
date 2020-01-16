@@ -2272,24 +2272,24 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
   $rows = description_element_table_rows($root_nodes, $rows);
 
   // --- create headers
-  $header = [1 => [], 2 => []];
+  $header = [0 => [], 1 => []];
 
   foreach($rows as $row) {
-    if(array_search('Character', $row['class']) && array_search('Character', $header[1]) === false){
-      $header[1][] = 'Character';
-    } elseif (array_search('Feature', $row['class']) && array_search('Feature', $header[1]) === false){
-      $header[1][] = 'Feature';
+    if(array_search('Character', $row['class']) && array_search('Character', $header[0]) === false){
+      $header[0][] = 'Character';
+    } elseif (array_search('Feature', $row['class']) && array_search('Feature', $header[0]) === false){
+      $header[0][] = 'Feature';
     }
-    if(array_search('has_state', $row['class']) && array_search('States', $header[2]) === false){
-      $header[2][] = 'States';
-    } elseif (array_search('has_values', $row['class']) && array_search('Values', $header[2]) === false){
-      $header[2][] = 'Values';
+    if(array_search('has_state', $row['class']) && array_search('States', $header[1]) === false){
+      $header[1][] = 'States';
+    } elseif (array_search('has_values', $row['class']) && array_search('Values', $header[1]) === false){
+      $header[1][] = 'Values';
     }
   }
+  asort($header[0]);
   asort($header[1]);
-  asort($header[2]);
+  $header[0] = join('/', $header[0]);
   $header[1] = join('/', $header[1]);
-  $header[2] = join('/', $header[2]);
 
   // ---
 
