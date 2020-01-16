@@ -2267,10 +2267,31 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
 
   $root_nodes = get_root_nodes_for_dataset($description);
 
-  $header = ['Feature/Character', 'State'];
 
   $rows = [];
   $rows = description_element_table_rows($root_nodes, $rows);
+
+  // --- create headers
+  $header = [1 => [], 2 => []];
+
+  foreach($rows as $row) {
+    if(array_search('Character', $row['class']) && array_search('Character', $header[1]) === false){
+      $header[1][] = 'Character';
+    } elseif (array_search('Feature', $row['class']) && array_search('Feature', $header[1]) === false){
+      $header[1][] = 'Feature';
+    }
+    if(array_search('has_state', $row['class']) && array_search('States', $header[2]) === false){
+      $header[2][] = 'States';
+    } elseif (array_search('has_values', $row['class']) && array_search('Values', $header[2]) === false){
+      $header[2][] = 'Values';
+    }
+  }
+  asort($header[1]);
+  asort($header[2]);
+  $header[1] = join('/', $header[1]);
+  $header[2] = join('/', $header[2]);
+
+  // ---
 
   if (!empty($rows)) {
     $render_array['table'] = markup_to_render_array(theme('table', [
@@ -2346,7 +2367,11 @@ function get_root_nodes_for_dataset($description) {
 }
 
 /**
- * Recursively creates an array of row items to be used in theme_table
+ * Recursively creates an array of row items to be used in theme_table.
+ *
+ * The array items will have am element 'class' with information on the
+ * nature of the DescriptionElement ('has_values' | 'has_state') and on the
+ * type of the FeatureNode ('Feature' | 'Character')
  *
  * @param array $root_nodes
  * @param array $row_items
@@ -2359,26 +2384,13 @@ function get_root_nodes_for_dataset($description) {
  *
  */
 function description_element_table_rows($root_nodes, $row_items, $level = 0) {
+
   $indent_string = '&nbsp;&nbsp;&nbsp;';
   foreach ($root_nodes as $root_node) {
     if(isset($root_node->descriptionElements)) {
       foreach ($root_node->descriptionElements as $element) {
         $level_indent = str_pad('', $level * strlen($indent_string), $indent_string);
         switch ($element->class) {
-          case 'CategoricalData':
-            if (!empty($element->stateData)) {
-              $row_items[] = [
-                'data' => [
-                  [
-                    'data' => markup_to_render_array($level_indent . $element->feature->representation_L10n),
-                    'class' => ['level_' . $level]
-                  ],
-                  render_state_data($element),
-                ],
-                'class' => ['level_' . $level]
-              ];
-            }
-            break;
           case 'QuantitativeData':
             $row_items[] = [
               'data' => [
@@ -2388,8 +2400,23 @@ function description_element_table_rows($root_nodes, $row_items, $level = 0) {
                 ],
                 render_quantitative_statistics($element)
               ],
-              'class' => ['level_' . $level]
+              'class' => ['level_' . $level, 'has_values', $element->feature->class]
             ];
+            break;
+          case 'CategoricalData':
+            default:
+            if (!empty($element->stateData)) {
+              $row_items[] = [
+                'data' => [
+                  [
+                    'data' => markup_to_render_array($level_indent . $element->feature->representation_L10n),
+                    'class' => ['level_' . $level]
+                  ],
+                  render_state_data($element),
+                ],
+                'class' => ['level_' . $level, 'has_state', $element->feature->class]
+              ];
+            }
             break;
         }
       }
