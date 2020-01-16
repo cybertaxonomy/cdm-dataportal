@@ -2406,13 +2406,19 @@ function description_element_table_rows($root_nodes, $row_items, $level = 0) {
           case 'CategoricalData':
             default:
             if (!empty($element->stateData)) {
+              $supress_state_display = count($element->stateData) == 1 & $element->stateData[0]->state->representation_L10n == 'present' && is_array($root_node->childNodes);
+              if(!$supress_state_display){
+                $state_cell = render_state_data($element);
+              } else {
+                $state_cell = "<span> </span>";
+              }
               $row_items[] = [
                 'data' => [
                   [
                     'data' => markup_to_render_array($level_indent . $element->feature->representation_L10n),
                     'class' => ['level_' . $level]
                   ],
-                  render_state_data($element),
+                  $state_cell,
                 ],
                 'class' => ['level_' . $level, 'has_state', $element->feature->class]
               ];
