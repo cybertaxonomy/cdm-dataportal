@@ -405,10 +405,10 @@ function statistical_values($stat_vals_arr, $unit = '') {
     // this trivial case needs to be displayed a simpler way
     $min_max_markup = str_replace($xbar_equals, '' , $other_vals_array['Average']);
     unset($other_vals_array['Average']);
-    $min_max_markup .= '[' . join(';', $other_vals_array) . ']';
+    $min_max_markup .= ' [' . join(';', $other_vals_array) . ']';
   } else {
     if(count($other_vals_array)){
-      $min_max_markup .= '[' . join(';', $other_vals_array) . ']';
+      $min_max_markup .= ' [' . join(';', $other_vals_array) . ']';
     }
   }
 
