@@ -87,4 +87,14 @@ class StatisticalValuesTest extends TestCase {
     $this->assertEquals('2.2–8.7 [5;x̄=5;σ²=0.3;σ=0.12] cm', $this->html2text(statistical_values($stat_vals, 'cm')));
   }
 
+
+  function test_statistical_values_no_brackets() {
+
+    $stat_vals = $this->create_statistical_values(2.2,  8.7);
+    $this->assertEquals('2.2–8.7 cm', $this->html2text(statistical_values($stat_vals, 'cm')));
+
+    $stat_vals = $this->create_statistical_values(null,  null, 5.3);
+    $this->assertEquals('5.3 m', $this->html2text(statistical_values($stat_vals, 'm')));
+  }
+
 }

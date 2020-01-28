@@ -1308,7 +1308,6 @@ function render_quantitative_statistics($element) {
   $out = '';
   $type_representation = NULL;
   $min_max = statistical_values_array();
-  $other_values = [];
   $sample_size_markup = null;
 
   if (isset($element->statisticalValues)) {
@@ -1331,52 +1330,20 @@ function render_quantitative_statistics($element) {
         $min_max[statistical_measure_term2min_max_key($statistical_val->type)] = $statistical_val;
       }
       else {
-        $other_values[] = $statistical_val;
+        drupal_set_message("Unsupported statistical value type: " . $statistical_val->type->uuid, "error");
       }
     } // end of loop over statisticalValues
 
     // create markup
-
-    $min_max_markup = statistical_values($min_max);
-
-
-    foreach ($other_values as $statistical_val) {
-      $statistical_val_type_representation = NULL;
-      if (isset($statistical_val->type)) {
-        $statistical_val_type_representation = cdm_term_representation($statistical_val->type);
-      }
-
-      $value_markup = '';
-      $type_markup = '';
-      switch (statistical_measure_term2min_max_key($statistical_val->type)){
-        case 'SampleSize':
-          $sample_size_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
-            . '[' . $statistical_val->_value . ']</span>';
-          break;
-        case 'ExactValue':
-          $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
-            . $statistical_val->_value . '</span>';
-          break;
-        default:
-        $value_markup = '<span class="' . html_class_attribute_ref($statistical_val) . ' ' . $statistical_val->type->termType . ' ">'
-          . $statistical_val->_value . '</span>';
-         $type_markup = ($statistical_val_type_representation ? ' <span class="type">' . $statistical_val_type_representation . '</span>' : '');
-      }
-      if($value_markup){
-        $other_values_markup[] = $value_markup . $type_markup;
-      }
+    $unit = null;
+    if (isset($element->unit)) {
+      $unit = ' <span class="unit" title="'
+        . cdm_term_representation($element->unit) . '">'
+        . cdm_term_representation_abbreviated($element->unit)
+        . '</span>';
     }
-
-    $other_values_markup = trim(implode($other_values_markup, ', '));
-    $out .= $min_max_markup . ($other_values_markup ? $other_values_markup : '');
-    $out .= '</span>';
-  }
-
-  if (isset($element->unit)) {
-    $out .= '<span class="unit" title="'
-      . cdm_term_representation($element->unit) . '">'
-      . cdm_term_representation_abbreviated($element->unit)
-      . '</span>';
+    $min_max_markup = statistical_values($min_max, $unit);
+    $out .= $min_max_markup . '</span>';
   }
 
   if($sample_size_markup){
