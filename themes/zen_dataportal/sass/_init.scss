@@ -90,8 +90,8 @@ $dejavu-sans:          "DejaVu Sans", sans-serif;
 $droid-sans-mono:         "droid_sans_monoregular", monospace, sans-serif;
 
 // @import "../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css";
-@import "../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css?v=20200203";
-@import "../fonts/dejavu-sans-master/css/dejavu-sans.css?v=20200203";
+@import "../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css";
+@import "../fonts/dejavu-sans-master/css/dejavu-sans.css";
 
 // Now create some variables for the font stacks we want to use on this site.
 $base-font-family: $dejavu-sans; // The font family set on the html element.
