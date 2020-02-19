@@ -244,7 +244,7 @@ function ext_links_admin($form, &$form_state) {
     'text_description' => 'The text of the link that is displayed..',
     'category' => 'Category',
   );
-  /*
+
   $ext_links[18] = array(
     'form' => 'fairchild',
     'form_title' => 'Fairchild Guide To Palms',
@@ -255,10 +255,11 @@ function ext_links_admin($form, &$form_state) {
     'text_title' => 'Fairchild Guide To Palms text',
     'text_description' => 'The text of the link that is displayed..',
     'category' => 'Category',
+    'disabled' => true // programatically disabled since this link does no longer exist.
   );
-  */
+
   $ext_links[19] = array(
-    'form' => 'ggbm',
+    'form' => 'ggbn',
     'form_title' => 'Global Genome Biodiversity Network',
     'check_title' => 'Display Global Genome Biodiversity Network Link?',
     'link_title' => 'Global Genome Biodiversity Network link',
@@ -270,7 +271,10 @@ function ext_links_admin($form, &$form_state) {
   );
 
 
-  for ($i = 0; $i < sizeof($ext_links); $i++) {
+  foreach (array_keys($ext_links) as $i) {
+    if(isset($ext_links[$i]['disabled'])){
+      continue;
+    }
     $form[$ext_links[$i]['form']] = array(
       '#type' => 'fieldset',
       '#title' => t('@title', array('@title' => $ext_links[$i]['form_title'])),

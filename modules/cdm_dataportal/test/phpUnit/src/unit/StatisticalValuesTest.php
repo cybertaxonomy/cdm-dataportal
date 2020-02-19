@@ -45,40 +45,56 @@ class StatisticalValuesTest extends TestCase {
   function test_statistical_values_significant_figures_avarage() {
 
     $stat_vals = $this->create_statistical_values(0.123457,  0.123456, 0.123456523847, 5);
-    $this->assertEquals('0.123457–0.123456[5;x̄=0.1234565]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('0.123457–0.123456 [5;x̄=0.1234565]', $this->html2text(statistical_values($stat_vals)));
 
     $stat_vals = $this->create_statistical_values(12.23,  14.2, 13.2231423, 15);
-    $this->assertEquals('12.23–14.2[15;x̄=13.2]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('12.23–14.2 [15;x̄=13.2]', $this->html2text(statistical_values($stat_vals)));
 
     $stat_vals = $this->create_statistical_values(4,  6, 5, 2);
-    $this->assertEquals('4–6[2;x̄=5]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('4–6 [2;x̄=5]', $this->html2text(statistical_values($stat_vals)));
 
     $stat_vals = $this->create_statistical_values(4,  6, 5.0000, 2);
-    $this->assertEquals('4–6[2;x̄=5]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('4–6 [2;x̄=5]', $this->html2text(statistical_values($stat_vals)));
 
     $stat_vals = $this->create_statistical_values(6.3467,  6.3482, 6.347034915, 20);
-    $this->assertEquals('6.3467–6.3482[20;x̄=6.34703]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('6.3467–6.3482 [20;x̄=6.34703]', $this->html2text(statistical_values($stat_vals)));
 
     $stat_vals = $this->create_statistical_values(0.00000001,  1, (1 - 0.00000001) / 2, 20);
-    $this->assertEquals('1.0E-8–1[20;x̄=0.5]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('1.0E-8–1 [20;x̄=0.5]', $this->html2text(statistical_values($stat_vals)));
 
     $stat_vals = $this->create_statistical_values(22,  23, 22.5, 4);
-    $this->assertEquals('22–23[4;x̄=22.5]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('22–23 [4;x̄=22.5]', $this->html2text(statistical_values($stat_vals)));
 
     // see https://dev.e-taxonomy.eu/redmine/issues/8771#note-17
     $stat_vals = $this->create_statistical_values(22,  23, 22.047619, 24);
-    $this->assertEquals('22–23[24;x̄=22]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('22–23 [24;x̄=22]', $this->html2text(statistical_values($stat_vals)));
   }
 
 
   function test_statistical_values_no_min_max() {
 
     $stat_vals = $this->create_statistical_values(null,  null, 0.1234, 5);
-    $this->assertEquals('0.1234[5]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('0.1234 [5]', $this->html2text(statistical_values($stat_vals)));
 
     // as discussed in https://dev.e-taxonomy.eu/redmine/issues/8771#note-16 variance etc should not be suppressed
     $stat_vals = $this->create_statistical_values(null,  null, 0.1234, 5, 0.3, 0.12);
-    $this->assertEquals('0.1234[5;σ²=0.3;σ=0.12]', $this->html2text(statistical_values($stat_vals)));
+    $this->assertEquals('0.1234 [5;σ²=0.3;σ=0.12]', $this->html2text(statistical_values($stat_vals)));
+  }
+
+  function test_statistical_values_with_unit() {
+
+    $stat_vals = $this->create_statistical_values(2.2,  8.7, 5.234, 5, 0.3, 0.12);
+    $this->assertEquals('2.2–8.7 [5;x̄=5;σ²=0.3;σ=0.12] cm', $this->html2text(statistical_values($stat_vals, 'cm')));
+  }
+
+
+  function test_statistical_values_no_brackets() {
+
+    $stat_vals = $this->create_statistical_values(2.2,  8.7);
+    $this->assertEquals('2.2–8.7 cm', $this->html2text(statistical_values($stat_vals, 'cm')));
+
+    $stat_vals = $this->create_statistical_values(null,  null, 5.3);
+    $this->assertEquals('5.3 m', $this->html2text(statistical_values($stat_vals, 'm')));
   }
 
 }
