@@ -405,18 +405,16 @@ function statistical_values($stat_vals_arr, $unit = '') {
     // this trivial case needs to be displayed a simpler way
     $min_max_markup = str_replace($xbar_equals, '' , $other_vals_array['Average']);
     unset($other_vals_array['Average']);
-    $min_max_markup .= '[' . join(';', $other_vals_array) . ']';
-  } else {
-    if(count($other_vals_array)){
-      $min_max_markup .= '[' . join(';', $other_vals_array) . ']';
-    }
+  }
+  if(count($other_vals_array)){
+    $min_max_markup .= ' [' . join(';', $other_vals_array) . ']';
   }
 
   return $min_max_markup . ($unit ? ' ' . $unit : '');
 }
 
 /**
- * Calculates the required precision for the taget value to be significantly different from min and may and rounds it.
+ * Calculates the required precision for the target value to be significantly different from min and may and rounds it.
  *
  * @param $target
  *    The statistical value to be rounded to the least significant precision
