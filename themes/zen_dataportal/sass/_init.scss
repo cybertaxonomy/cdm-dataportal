@@ -87,8 +87,8 @@ $courier:         "Courier New", "DejaVu Sans Mono", monospace, sans-serif;
 
 // for the cdm_dataportal base theme we serve the DejaVu Sans as webfont
 // --- droid-sans
-@import url("../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css");
-@import url("../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css");
+@import url("../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css?v=20202002");
+@import url("../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css?v=20202002");
 $droid-sans:          "droid_sansregular", sans-serif;
 // --- droid-sans-mono
 $droid-sans-mono:     "droid_sans_monoregular", monospace, sans-serif;
@@ -96,7 +96,7 @@ $droid-sans-mono:     "droid_sans_monoregular", monospace, sans-serif;
 //@import "../fonts/dejavu-sans-fontfacekit/web fonts/dejavusans_book/stylesheet.css";
 // $dejavu-sans:         "DejaVu Sans", sans-serif;
 // --- notosans
-@import url("../fonts/notosans-webfont-2017/stylesheet.css");
+@import url("../fonts/notosans-webfont-2017/stylesheet.css?v=20202002");
 $noto-sans:           "noto_sansregular", sans-serif;
 
 
