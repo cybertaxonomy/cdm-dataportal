@@ -70,6 +70,7 @@ $h6-font-size: 0.67 * $base-font-size;
 // monospace) hints at what type of font to use if the web browser doesn't
 // find any of the fonts in the list.
 
+
 // First, let's create some font stacks.
 $times-new-roman: "Times New Roman", Times, Georgia, "DejaVu Serif", serif;
 $times:           Times, "Times New Roman", Georgia, "DejaVu Serif", serif;
@@ -85,17 +86,22 @@ $arial:           Arial, Helvetica, "Nimbus Sans L", sans-serif;
 $courier:         "Courier New", "DejaVu Sans Mono", monospace, sans-serif;
 
 // for the cdm_dataportal base theme we serve the DejaVu Sans as webfont
+// --- droid-sans
+@import url("../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css");
+@import url("../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css");
 $droid-sans:          "droid_sansregular", sans-serif;
-$dejavu-sans:          "DejaVu Sans", sans-serif;
-$droid-sans-mono:         "droid_sans_monoregular", monospace, sans-serif;
+// --- droid-sans-mono
+$droid-sans-mono:     "droid_sans_monoregular", monospace, sans-serif;
+// alternative fonts :
+//@import "../fonts/dejavu-sans-fontfacekit/web fonts/dejavusans_book/stylesheet.css";
+// $dejavu-sans:         "DejaVu Sans", sans-serif;
+// --- notosans
+@import "../fonts/notosans-webfont-2017/stylesheet.css";
+$noto-sans:           "noto_sansregular", sans-serif;
 
-// @import "../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css";
-@import "../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css";
-@import "../fonts/dejavu-sans-fontfacekit/web fonts/dejavusans_book/stylesheet.css";
 
 // Now create some variables for the font stacks we want to use on this site.
-$base-font-family: $dejavu-sans; // $dejavu-sans; // The font family set on the html element.
-$font-body:        $dejavu-sans;
+$base-font-family: $droid-sans; // The font family set on the html element.
 $font-monospace:   $droid-sans-mono;
 
 
