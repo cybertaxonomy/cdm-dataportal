@@ -1,0 +1,1 @@
+Use https://transfonter.org/ ans apply the settings as show in ./transfonter.org-settings.png
