@@ -307,3 +307,10 @@ $page-part-margin: $base-line-height * 1;
       font-size: 1em;
     }
   }
+
+/***************************
+ * TESTING ONLY 2020-02-20
+ */
+.font-noto {
+  font-family: $noto-sans !important;
+}
