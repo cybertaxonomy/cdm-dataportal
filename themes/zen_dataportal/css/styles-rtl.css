@@ -3,7 +3,7 @@
  * RTL companion for the styles.scss file.
  */
 /* Import Sass mixins, variables, Compass modules, etc. */
-@import url("../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css");
+@import url("../fonts/droid-sans/stylesheet.css");
 @import url("../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css");
 @import url("../fonts/notosans-webfont-2017-2/stylesheet.css");
 /* line 30, ../sass/ie-legacy.scss */

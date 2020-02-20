@@ -6,10 +6,10 @@
  * of these @include files will be combined into a single file.
  */
 /* Import Sass mixins, variables, Compass modules, etc. */
-@import url("../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css");
+@import url("../fonts/droid-sans/stylesheet.css");
 @import url("../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css");
 @import url("../fonts/notosans-webfont-2017-2/stylesheet.css");
-@import url("../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css");
+@import url("../fonts/droid-sans/stylesheet.css");
 @import url("../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css");
 @import url("../fonts/notosans-webfont-2017-2/stylesheet.css");
 /* line 30, ../sass/ie-legacy.scss */
@@ -148,7 +148,7 @@ audio:not([controls]) {
  */
 /* line 106, ../sass/_normalize.scss */
 html {
-  font-family: "droid_sansregular", sans-serif;
+  font-family: "Droid Sans", sans-serif;
   /* 1 */
   font-size: 75%;
   /* 3 */
@@ -165,7 +165,7 @@ button,
 input,
 select,
 textarea {
-  font-family: "droid_sansregular", sans-serif;
+  font-family: "Droid Sans", sans-serif;
 }
 
 /* Remove default margin. */
@@ -1661,7 +1661,7 @@ h3.title {
   color: #d8d8d8;
   font-size: 75px;
   line-height: 1;
-  font-family: "droid_sansregular", sans-serif;
+  font-family: "Droid Sans", sans-serif;
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;

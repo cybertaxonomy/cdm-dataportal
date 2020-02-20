@@ -87,9 +87,9 @@ $courier:         "Courier New", "DejaVu Sans Mono", monospace, sans-serif;
 
 // for the cdm_dataportal base theme we serve the DejaVu Sans as webfont
 // --- droid-sans
-@import url("../fonts/droid-sans-fontfacekit/web fonts/droidsans_regular/stylesheet.css");
+@import url("../fonts/droid-sans/stylesheet.css");
 @import url("../fonts/droid-sans-mono-fontfacekit/web fonts/droidsansmono_regular/stylesheet.css");
-$droid-sans:          "droid_sansregular", sans-serif;
+$droid-sans:          "Droid Sans", sans-serif;
 // --- droid-sans-mono
 $droid-sans-mono:     "droid_sans_monoregular", monospace, sans-serif;
 // alternative fonts :
