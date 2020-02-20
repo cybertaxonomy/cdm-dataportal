@@ -509,7 +509,12 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
           foreach ($description->elements as $description_element) {
             $second_citation = '';
             if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
-              $second_citation = '[& ' . $description_element->multilanguageText_L10n->text . '].';
+              if(isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION){
+                $prefix =  '& ';
+              } else {
+                $prefix = '';
+              }
+              $second_citation = ' [' . $prefix . $description_element->multilanguageText_L10n->text . '].';
             }
             $descriptionHtml .= $second_citation;
             $descriptionHtml .= cdm_description_element_media(
