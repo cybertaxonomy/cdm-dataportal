@@ -24,6 +24,15 @@
       "options":{
         "downloadEnabled": true
       }
+    },
+    "contentLeftPanel": {
+      "options": {
+        "expandFullEnabled": true,
+        "panelAnimationDuration": 250,
+        "panelCollapsedWidth": 30,
+        "panelExpandedWidth": 140,
+        "panelOpen": true
+      }
     }
   }
 }

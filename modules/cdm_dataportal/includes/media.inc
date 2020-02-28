@@ -852,7 +852,7 @@ function taxon_media_gallery_fsi($taxon, $media) {
 function taxon_media_gallery_universalviewer($taxon, $media) {
 
   _add_js_universalviewer('#uv');
-  $out = '<div id="uv" class="uv" style="width: 900px; height: 600px;"></div>';
+  $out = '<div id="uv" class="uv" style="width: 680px; height: 680px;"></div>';
   return $out;
 }
 

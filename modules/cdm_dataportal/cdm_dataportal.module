@@ -360,6 +360,7 @@ function _add_js_universalviewer($jquery_selector){
   $universalviewer_path  = drupal_get_path('module',    'cdm_dataportal') . '/js/universalviewer';
 
   drupal_add_css($universalviewer_path . '/uv/uv.css');
+  drupal_add_css($universalviewer_path . '/uv-fix.css');
 
   // offline.js is all of these dependencies concatenated (jQuery, CoreJS, and JSViews)
   drupal_add_js($universalviewer_path . '/uv/lib/offline.js',
@@ -384,8 +385,8 @@ function _add_js_universalviewer($jquery_selector){
       jQuery(window).on(\'uvLoaded\', function() {
         jQuery( "' . $jquery_selector . '" ).jqUniversalviewer(
         {
-          universalviewer_path: \'' . $universalviewer_path . '\' //,
-          // manifestUri: \'http://edit.test/iiif-test/manifest2.json\'
+          universalviewer_path: \'' . $universalviewer_path . '\',
+          manifestUri: \'http://edit.test/iiif-test/manifest2.json\'
         }
         );
       });',

@@ -317,7 +317,6 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
       $images_html .= render_taxon_media_gallery($taxon, CDM_MEDIA_GALLERY_VIEWER_DEFAULT, $media);
       $images_html .= render_taxon_media_gallery($taxon, $configured_image_gallery_viewer, $media);
     }
-    $images_html .= $taxon_image_gallery_markup;
     $images_html .= '</div>'; // END of <div id="images">
     $render_array['images'] = markup_to_render_array($images_html, $weight++);
   }

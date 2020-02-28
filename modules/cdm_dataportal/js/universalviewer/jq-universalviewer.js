@@ -103,7 +103,8 @@
             canvasIndex: Number(urlDataProvider.get('cv', 0)),
             rotation: Number(urlDataProvider.get('r', 0)),
             rangeId: urlDataProvider.get('rid', ''),
-            xywh: urlDataProvider.get('xywh', '')
+            xywh: urlDataProvider.get('xywh', ''),
+
         };
 
         plugin.uv = createUV(element, uvdata, urlDataProvider);
