@@ -118,13 +118,10 @@ function _showcase_query_name($taxon) {
   return join("%5F", $nameArray);
 }
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Renders markup for the FSI media gallery
+ * @ingroup Render
  */
-function theme_fsi_gallery($variables) {
-
-  $taxon = $variables['taxon'];
-  $media = $variables['media'];
+function render_fsi_gallery($taxon, $media) {
 
   $query = variable_get('fsi_query', "{name}");
   $query = str_replace("{name}", _showcase_query_name($taxon), $query);
@@ -134,7 +131,6 @@ function theme_fsi_gallery($variables) {
 
   $out = '
 <script type="text/javascript">
-<!--
     var flashvars = {}; // can be used for the swf URI query parameters
 
     var params = {};
@@ -151,7 +147,7 @@ function theme_fsi_gallery($variables) {
         "http://media.bgbm.org/erez/fsi/fsi.swf?&cfg=showcase_presets/showcase_info.fsi&effects=%26quality%3D95&showcase_query='
         . $query . '&skin=silver&showcase_labeltextheight=50&textbox_textfrom=IPTC_WP6&textbox_height=50&'
         . 'param_backgroundcolor=454343&publishwmode=opaque&showcase_hscroll=true&showcase_basecolor=454343&plugins=textbox,fullscreen",
-        "default-gallery-viewer" , // id of alternative content
+        "'. MEDIA_GALLERY_ID_PREFIX. CDM_MEDIA_GALLERY_VIEWER_DEFAULT . '" , // id of alternative content
         "620", // width
         "400", // height
         "11", // swfVersionStr (required) specifies the Flash Player version for which your content is published
@@ -159,7 +155,6 @@ function theme_fsi_gallery($variables) {
         flashvars,
         params
       );
-// -->
 </script>
 <noscript>
   <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,65,0" width="470" height="400">
@@ -189,12 +184,4 @@ function theme_fsi_gallery($variables) {
   }
   return $out;
 }
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function fsi_gallery_theme() {
-  return array(
-    'fsi_gallery' => array('variables' => array('taxon' => NULL, 'media' => NULL)),
-  );
-}
+

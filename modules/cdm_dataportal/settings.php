@@ -15,6 +15,9 @@ const CDM_NAME_PAGE_AUTOREDIRECT = 'cdm_name_page_autoredirect';
 const CDM_NAME_PAGE_SECTION_TAXA = 'cdm_name_page_section_taxa';
 const CDM_NAME_PAGE_SECTION_TAXA_DEFAULT = 1;
 
+const CDM_MEDIA_GALLERY_VIEWER = 'image_gallery_viewer';
+const CDM_MEDIA_GALLERY_VIEWER_DEFAULT = 'universalviewer';
+
 define('TAXONTREE_RANKLIMIT', 'cdm_taxontree_ranklimit');
 define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
   define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
@@ -2921,18 +2924,19 @@ function cdm_settings_layout_media() {
       . 'Further media related settings may be found under the taxon layout settings and on the general settings.',
   );
 
-  $form['media_settings']['image_gallery_viewer'] = array(
+  $form['media_settings'][CDM_MEDIA_GALLERY_VIEWER] = array(
     '#type' => 'select',
     '#title' => t('Image viewer') . ':',
-    '#default_value' => variable_get('image_gallery_viewer', 'default'),
+    '#default_value' => variable_get(CDM_MEDIA_GALLERY_VIEWER, CDM_MEDIA_GALLERY_VIEWER_DEFAULT),
     '#options' => array(
-      'default' => t('Standard image viewer'),
+      CDM_MEDIA_GALLERY_VIEWER_DEFAULT => t('Universalviewer (new default)'),
       'fsi' => t('FSI viewer (requires FSI server!)'),
+      'default' => t('Standard image viewer (deprecated)'),
     ),
   );
 
   // --- STANDARD_IMAGE_VIEWER ---- //
-  if(variable_get('image_gallery_viewer', 'default') == 'default') {
+  if(variable_get(CDM_MEDIA_GALLERY_VIEWER, 'default') == 'default') {
     $form['media_settings'][CDM_STANDARD_IMAGE_VIEWER] = array(
       '#type' => 'fieldset',
       '#tree' => true,

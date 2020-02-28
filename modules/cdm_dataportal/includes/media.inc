@@ -15,6 +15,7 @@
  * @author
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
+const MEDIA_GALLERY_ID_PREFIX = 'media-gallery-';
 
 /**
  * Returns an array of render array entries for a HTML description list.
@@ -722,3 +723,136 @@ jQuery(document).ready(function(){
   $out = '<div id="openlayers_image" class="image_viewer" style="width: ' . $maxExtend . 'px; height:' . ($maxExtend) . 'px"></div>';
   return $out;
 }
+
+
+/**
+ * @param $taxon
+ * @param $gallery_viewer
+ * @param $media
+ *
+ * @return string
+ */
+function render_taxon_media_gallery($taxon, $gallery_viewer, $media) {
+  $media_gallery = '<div id="' . MEDIA_GALLERY_ID_PREFIX . $gallery_viewer . '">' .
+    call_user_func_array('taxon_media_gallery_' . $gallery_viewer, [
+      $taxon,
+      $media,
+    ])
+    . '</div>';
+  return $media_gallery;
+}
+
+/**
+ * Implementation of Hook taxon_image_gallery() using the static image gallery
+ * based on OpenLayers..
+ *
+ * @param object $taxon
+ * @param object $media
+ *
+ * @return string
+ *  Markup for the static viewer media gallery
+ *
+ * @throws Exception
+ */
+function taxon_media_gallery_default($taxon, $media) {
+  $hasImages = isset($media[0]);
+
+  if ($hasImages) {
+
+    $maxExtend = 150;
+    $cols = 3;
+    $maxRows = FALSE;
+    $alternativeMediaUri = NULL;
+    /* Comment @WA: was in D5:
+    $captionElements = array(
+      'title',
+      'rights',
+      '#uri' => t('Open Image'),
+    );
+    */
+    $captionElements = array(
+      'title',
+      'description',
+      'artist',
+      'location',
+      'rights',
+      '#uri' => t('Open image'),
+    );
+    $gallery_name = $taxon->uuid;
+    $mediaLinkType = 'LIGHTBOX';
+
+    // $gallery_settings = getGallerySettings(CDM_DATAPORTAL_MEDIA_GALLERY_NAME);
+
+    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB);
+
+    $out = '<div class="image-gallerie">';
+    $out .= compose_cdm_media_gallerie(array(
+      'mediaList' => $media,
+      'galleryName' => $gallery_name,
+      'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+      'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+      'maxRows' => 0, // Ignore maxrows settings.
+      'captionElements' => $captionElements,
+      'mediaLinkType' => $mediaLinkType,
+      'alternativeMediaUri' => NULL,
+      'galleryLinkUri' => NULL,
+      'showCaption' => $gallery_settings['cdm_dataportal_show_thumbnail_captions'],
+    ));
+    $out .= '</div>';
+  }
+  else {
+    $out = 'No images available.';
+  }
+  return $out;
+}
+
+/**
+ * Implementation of Hook taxon_image_gallery() which uses the proprietary FSI viewer.
+ *
+ * @param object $taxon
+ * @param object $media
+ *
+ * @return string
+ *  Markup for the FSI viewer media gallery
+ *
+ * @throws Exception
+ */
+function taxon_media_gallery_fsi($taxon, $media) {
+  $flashLink = isset($media[0]);
+
+  if ($flashLink) {
+
+    if (module_exists("fsi_gallery")) {
+      $out = render_fsi_gallery($taxon, $media);
+    }
+    else {
+      $message = t('In order to use the FSI gallery you must enable the according ') . l(t("module"), "admin/modules");
+      drupal_set_message($message, "error");
+      $out = '<h3>' . $message . '</h3>';
+    }
+  }
+  else {
+    $out = 'No images available.';
+  }
+  return $out;
+}
+
+
+/**
+ * Implementation of Hook taxon_image_gallery() which uses the Universalviewer
+ *
+ * @param object $taxon
+ * @param object $media
+ *
+ * @return string
+ *  Markup for the Universalviewer media gallery
+ *
+ * @throws Exception
+ */
+function taxon_media_gallery_universalviewer($taxon, $media) {
+
+  _add_js_universalviewer('#uv');
+  $out = '<div id="uv" class="uv" style="width: 900px; height: 600px;"></div>';
+  return $out;
+}
+

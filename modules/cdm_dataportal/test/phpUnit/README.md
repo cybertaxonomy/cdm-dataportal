@@ -23,7 +23,7 @@ In Debian based Linux distros PHPUnit usually can be installed by
 
     apt-get install phpunit
 
-the recommended way for whowever is the installation via [Composer](https://getcomposer.org/) 
+the recommended way for installing phpUnit is the installation via [Composer](https://getcomposer.org/) 
 the state of the art dependency manager for PHP.
 
     apt-get install composer

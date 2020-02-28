@@ -308,29 +308,17 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
       $images_html .= '<h2>' . t(cdm_taxonpage_tab_label('Images')) . '</h2>';
     }
     // Get the image gallery as configured by the admin.
-    $default_image_gallery = 'default';
-    $configured_image_gallery_viewer = variable_get('image_gallery_viewer', 'default');
-    $taxon_image_gallery = '<div class="error">No image gallery viewer configured</div>';
-    if($configured_image_gallery_viewer == $default_image_gallery || $configured_image_gallery_viewer == 'fsi'){
+    $configured_image_gallery_viewer = variable_get(CDM_MEDIA_GALLERY_VIEWER, CDM_MEDIA_GALLERY_VIEWER_DEFAULT);
+    if($configured_image_gallery_viewer != 'fsi'){
+      $images_html .= render_taxon_media_gallery($taxon, $configured_image_gallery_viewer, $media);
+    } else {
       // the fsi_gallery requires a flash plugin, in case the client browser is not supporting
       // flash we also need to provide an the default gallery as alternative
-      $taxon_image_gallery = '<div id="default-gallery-viewer">' .
-        call_user_func_array('taxon_image_gallery_' . $default_image_gallery, array(
-          $taxon,
-          $media,
-        ))
-        . '</div>';
+      $images_html .= render_taxon_media_gallery($taxon, CDM_MEDIA_GALLERY_VIEWER_DEFAULT, $media);
+      $images_html .= render_taxon_media_gallery($taxon, $configured_image_gallery_viewer, $media);
     }
-    if($configured_image_gallery_viewer == 'fsi'){
-      $taxon_image_gallery .= '<div id="'. $configured_image_gallery_viewer .'-gallery-viewer">' .
-        call_user_func_array('taxon_image_gallery_' . $configured_image_gallery_viewer, array(
-          $taxon,
-          $media,
-        ))
-       . '</div>';
-    }
-    $images_html .= $taxon_image_gallery;
-    $images_html .= '</div>';
+    $images_html .= $taxon_image_gallery_markup;
+    $images_html .= '</div>'; // END of <div id="images">
     $render_array['images'] = markup_to_render_array($images_html, $weight++);
   }
 

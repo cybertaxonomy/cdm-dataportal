@@ -53,7 +53,7 @@
 }
 
 .dataTables_filter {
-	background-color: #
+	background-color: #fff;
 }
 
 .dataTables_info {
@@ -262,6 +262,8 @@ table.display tr.even.gradeU {
 	-webkit-overflow-scrolling: touch;
 }
 
+/* AK (2020-02-27) style commented since it conflicts with universalviewer.
+   these styles seem not to be used at all by the debug table.
 .top, .bottom {
 	padding: 15px;
 	background-color: #F5F5F5;
@@ -271,6 +273,7 @@ table.display tr.even.gradeU {
 .top .dataTables_info {
 	float: none;
 }
+*/
 
 .clear {
 	clear: both;

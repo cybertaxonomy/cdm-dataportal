@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />-->
+    <title>Universal Viewer Examples</title>
+    <link rel="icon" href="uv/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="uv/uv.css">
+    <!--<script type="text/javascript" src="https://unpkg.com/@edsilv/utils@0.2.6/dist/Utils.js"></script>-->
+    <script type="text/javascript" src="uv/lib/offline.js"></script>
+    <script type="text/javascript" src="uv/helpers.js"></script>
+    <style>
+        body {
+            margin: 0px;
+            padding: 20px;
+        }
+
+        #uv {
+            width: 924px;
+            height: 668px;
+            /* width: 1024px;
+            height: 576px; */
+        }
+
+        #options {
+            padding: 20px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!--<div>
+        <h1>UV v3.0 alpha testing</h1>
+        <p>Please report any issues you find on the <a href="https://github.com/UniversalViewer/universalviewer/milestone/8" target="_blank">UV 3.0 milestone</a></p>
+    </div>-->
+
+    <div id="uv" class="uv"></div>
+
+    <div>
+        <button id="prev">&lt;</button>
+        <button id="next">&gt;</button>
+    </div>
+
+    <div>
+        <!--<textarea id="annotations" rows="10" cols="50" placeholder="annotations"></textarea>
+        <button id="updateAnnotations">Update</button>-->
+        <!--<button id="addAnnotation" disabled>Add Annotation</button>-->
+    </div>
+
+    <script>
+      console.log('jQuery inline: ' + jQuery.fn.jquery);
+      jQuery(window).on('uvLoaded', function() {
+        console.log("UV loaded");
+        jQuery( "#uv" ).universalviewer();
+      });
+      </script>
+
+    <!-- Put at the bottom of the page to ensure that the uvLoaded event isn't fired before a listener is registered -->
+    <script src="jq-universalviewer.js"></script>
+    <script type="text/javascript" src="uv/uv.js"></script>
+
+</body>
+</html>

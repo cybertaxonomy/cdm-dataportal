@@ -355,6 +355,69 @@ function _add_js_utis_client($jquery_selector){
   );
 }
 
+function _add_js_universalviewer($jquery_selector){
+
+  $universalviewer_path  = drupal_get_path('module',    'cdm_dataportal') . '/js/universalviewer';
+
+  drupal_add_css($universalviewer_path . '/uv/uv.css');
+
+  // offline.js is all of these dependencies concatenated (jQuery, CoreJS, and JSViews)
+  drupal_add_js($universalviewer_path . '/uv/lib/offline.js',
+      array(
+      'type' => 'file',
+      'group' => JS_LIBRARY,
+      'cache' => TRUE,
+      'preprocess' => FALSE
+    )
+  );
+  drupal_add_js($universalviewer_path . '/uv/helpers.js',
+    array(
+      'type' => 'file',
+      'group' => JS_LIBRARY,
+      'cache' => TRUE,
+      'preprocess' => FALSE
+    )
+  );
+
+  drupal_add_js('
+      console.log(\'jQuery inline: \' + jQuery.fn.jquery);
+      jQuery(window).on(\'uvLoaded\', function() {
+        jQuery( "' . $jquery_selector . '" ).jqUniversalviewer(
+        {
+          universalviewer_path: \'' . $universalviewer_path . '\' //,
+          // manifestUri: \'http://edit.test/iiif-test/manifest2.json\'
+        }
+        );
+      });',
+    array(
+      'type' => 'inline',
+      'scope' => 'footer',
+      'group' => JS_DEFAULT,
+      'weight' => 0,
+    )
+  );
+  drupal_add_js($universalviewer_path . '/jq-universalviewer.js',
+    array(
+      'type' => 'file',
+      'scope' => 'footer',
+      'group' => JS_DEFAULT,
+      'weight' => 10,
+      'cache' => TRUE,
+      'preprocess' => FALSE
+    )
+  );
+  // ui.js must be last
+  drupal_add_js($universalviewer_path . '/uv/uv.js',
+    array(
+      'type' => 'file',
+      'scope' => 'footer',
+      'group' => 300, // IMPORTANT!
+      'cache' => TRUE,
+      'preprocess' => FALSE
+    )
+  );
+}
+
   /**
    * Provides the markup for an font awesome icon.
    *
