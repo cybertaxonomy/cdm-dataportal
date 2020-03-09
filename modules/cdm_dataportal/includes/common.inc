@@ -406,11 +406,14 @@ function statistical_values($stat_vals_arr, $unit = '') {
     $min_max_markup = str_replace($xbar_equals, '' , $other_vals_array['Average']);
     unset($other_vals_array['Average']);
   }
+  if($unit){
+    $min_max_markup .= ' ' . $unit;
+  }
   if(count($other_vals_array)){
     $min_max_markup .= ' [' . join(';', $other_vals_array) . ']';
   }
 
-  return $min_max_markup . ($unit ? ' ' . $unit : '');
+  return $min_max_markup;
 }
 
 /**

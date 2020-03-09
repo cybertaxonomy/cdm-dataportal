@@ -84,7 +84,7 @@ class StatisticalValuesTest extends TestCase {
   function test_statistical_values_with_unit() {
 
     $stat_vals = $this->create_statistical_values(2.2,  8.7, 5.234, 5, 0.3, 0.12);
-    $this->assertEquals('2.2–8.7 [5;x̄=5;σ²=0.3;σ=0.12] cm', $this->html2text(statistical_values($stat_vals, 'cm')));
+    $this->assertEquals('2.2–8.7 cm [5;x̄=5;σ²=0.3;σ=0.12]', $this->html2text(statistical_values($stat_vals, 'cm')));
   }
 
 
