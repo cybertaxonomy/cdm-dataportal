@@ -852,7 +852,6 @@ function taxon_media_gallery_fsi($taxon, $media) {
 function taxon_media_gallery_universalviewer($taxon, $media) {
 
   $media_query_parameters = taxon_media_query_parameters();
-  unset($media_query_parameters['includeTaxonomicChildren']);
   $manifest_uri = cdm_compose_url(
     CDM_WS_IIIF_TAXON_MANIFEST,
     array($taxon->uuid),
