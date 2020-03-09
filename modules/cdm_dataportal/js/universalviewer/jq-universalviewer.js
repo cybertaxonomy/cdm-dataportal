@@ -22,7 +22,8 @@
 
     // Default options for the plugin
     var defaults = {
-        universalviewer_path: undefined,
+        root: undefined,
+        configUri: undefined,
         manifestUri: 'http://wellcomelibrary.org/iiif/b18035723/manifest'
     };
 
@@ -88,15 +89,11 @@
         var collectionIndex = urlDataProvider.get('c');
 
         console.log("setupUV() with " + plugin.options.manifestUri);
-        console.log("    collectionIndex: " + collectionIndex);
-
-        var root = plugin.options.universalviewer_path + '/uv';
-        var configUri = plugin.options.universalviewer_path + '/uv-config.json';
 
         var uvdata = {
-            root: root,
+            root: plugin.options.root,
+            configUri: plugin.options.configUri,
             iiifResourceUri: plugin.options.manifestUri,
-            configUri: configUri,
             collectionIndex: (collectionIndex !== undefined) ? Number(collectionIndex) : undefined,
             manifestIndex: Number(urlDataProvider.get('m', 0)),
             sequenceIndex: Number(urlDataProvider.get('s', 0)),

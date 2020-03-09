@@ -379,12 +379,23 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
       'preprocess' => FALSE
     )
   );
+  // from UV 3.x documentation:
+  // "root:
+  // The path to the uv directory. Use a relative path e.g. root: '../../uv'
+  // Don't start your path with a / otherwise requirejs will not append .js to
+  // dependencies and they won't load."
+  //
+  // universalviewerPath will be used to build the root config variable.
+  $folders_up = preg_replace('/[^\/]+/', '..', $_GET['q']);
+  $folders_up = preg_replace('/\.\.$/', '', $folders_up);
+  $config_file = 'uv-config.json';
   drupal_add_js('
       console.log(\'jQuery inline: \' + jQuery.fn.jquery);
       jQuery(window).on(\'uvLoaded\', function() {
         jQuery( "' . $jquery_selector . '" ).jqUniversalviewer(
         {
-          universalviewer_path: \'' . $universalviewer_path . '\',
+          root: \'' . $folders_up . $universalviewer_path . '/uv\',
+          configUri: \'' . base_path() . $universalviewer_path . '/'. $config_file . '\',
           manifestUri: \'' . $manifest_uri . '\'
         }
         );
