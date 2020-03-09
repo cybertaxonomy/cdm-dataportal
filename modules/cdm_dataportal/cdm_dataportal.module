@@ -355,7 +355,7 @@ function _add_js_utis_client($jquery_selector){
   );
 }
 
-function _add_js_universalviewer($jquery_selector){
+function _add_js_universalviewer($jquery_selector, $manifest_uri){
 
   $universalviewer_path  = drupal_get_path('module',    'cdm_dataportal') . '/js/universalviewer';
 
@@ -379,14 +379,13 @@ function _add_js_universalviewer($jquery_selector){
       'preprocess' => FALSE
     )
   );
-
   drupal_add_js('
       console.log(\'jQuery inline: \' + jQuery.fn.jquery);
       jQuery(window).on(\'uvLoaded\', function() {
         jQuery( "' . $jquery_selector . '" ).jqUniversalviewer(
         {
           universalviewer_path: \'' . $universalviewer_path . '\',
-          manifestUri: \'http://edit.test/iiif-test/manifest2.json\'
+          manifestUri: \'' . $manifest_uri . '\'
         }
         );
       });',
@@ -1334,13 +1333,13 @@ function _load_taxonBase(&$taxonBase) {
  * The media lists are cached in a static variable.
  *
  * @param Taxon $taxon
- *   A CDM Taxon entitiy
+ *   A CDM Taxon entity
  *
  * @return array
  *   An array of CDM Media entities
  *
  */
-function _load_media_for_taxon($taxon) {
+  function _load_media_for_taxon($taxon) {
 
   static $media = NULL;
 
@@ -1349,26 +1348,18 @@ function _load_media_for_taxon($taxon) {
   }
   if (!isset($media[$taxon->uuid])) {
 
-    // --- GET Images --- //
-    $mediaQueryParameters = array(
-        "type" => "ImageFile",
-    );
 
-    $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
-    $mediaQueryParameters['relationships'] = implode(',', get_selection($relationship_choice['direct']));
-    $mediaQueryParameters['relationshipsInvers'] = implode(',', get_selection($relationship_choice['invers']));
-
-    $taxon_media_filter_choice = variable_get(CDM_TAXON_MEDIA_FILTER, unserialize(CDM_TAXON_MEDIA_FILTER_DEFAULT));
-    $mediaQueryParameters['includeTaxonDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonDescriptions'] != 0;
-    $mediaQueryParameters['includeOccurrences'] = (boolean) $taxon_media_filter_choice['includeOccurrences'] != 0;
-    $mediaQueryParameters['includeTaxonNameDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonNameDescriptions'] != 0;
+    $mediaQueryParameters = taxon_media_query_parameters();
 
     $ws_endpoint = NULL;
-    if ( variable_get('cdm_images_include_children', 0) == 0) {
-      $ws_endpoint = CDM_WS_PORTAL_TAXON_MEDIA;
-    } else {
+    if ( $mediaQueryParameters['includeTaxonomicChildren']) {
       $ws_endpoint = CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA;
+    } else {
+      $ws_endpoint = CDM_WS_PORTAL_TAXON_MEDIA;
     }
+    // this parameter is not yet used by the CDM_WS_PORTAL_TAXON_*MEDIA
+    // services
+    unset($mediaQueryParameters['includeTaxonomicChildren']);
 
     $media[$taxon->uuid] = cdm_ws_get($ws_endpoint,
         array(

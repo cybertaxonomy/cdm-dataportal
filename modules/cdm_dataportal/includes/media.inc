@@ -851,8 +851,41 @@ function taxon_media_gallery_fsi($taxon, $media) {
  */
 function taxon_media_gallery_universalviewer($taxon, $media) {
 
-  _add_js_universalviewer('#uv');
+  $media_query_parameters = taxon_media_query_parameters();
+  unset($media_query_parameters['includeTaxonomicChildren']);
+  $manifest_uri = cdm_compose_url(
+    CDM_WS_IIIF_TAXON_MANIFEST,
+    array($taxon->uuid),
+    queryString($media_query_parameters)
+    );
+  _add_js_universalviewer('#uv', $manifest_uri);
   $out = '<div id="uv" class="uv" style="width: 680px; height: 680px;"></div>';
   return $out;
 }
+
+/**
+ * Prepares from the settings an array of query parameters for the taxon media webservices:
+ *
+ * - CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA
+ * - CDM_WS_PORTAL_TAXON_MEDIA
+ * - CDM_WS_IIIF_TAXON_MANIFEST
+ *
+ * @return array
+ */
+function taxon_media_query_parameters() {
+  $mediaQueryParameters = [
+    "type" => "ImageFile",
+  ];
+  $relationship_choice = variable_get(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS, unserialize(CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT));
+  $mediaQueryParameters['relationships'] = implode(',', get_selection($relationship_choice['direct']));
+  $mediaQueryParameters['relationshipsInvers'] = implode(',', get_selection($relationship_choice['invers']));
+
+  $taxon_media_filter_choice = variable_get(CDM_TAXON_MEDIA_FILTER, unserialize(CDM_TAXON_MEDIA_FILTER_DEFAULT));
+  $mediaQueryParameters['includeTaxonDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonDescriptions'] != 0;
+  $mediaQueryParameters['includeOccurrences'] = (boolean) $taxon_media_filter_choice['includeOccurrences'] != 0;
+  $mediaQueryParameters['includeTaxonNameDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonNameDescriptions'] != 0;
+  $mediaQueryParameters['includeTaxonomicChildren'] = variable_get('cdm_images_include_children', 0) != 0;
+  return $mediaQueryParameters;
+}
+
 

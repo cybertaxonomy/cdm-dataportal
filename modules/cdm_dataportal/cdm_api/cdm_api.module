@@ -310,6 +310,8 @@ function get_last_taxon_page_tab() {
 }
 
 /**
+ * NOTE: The cdm-library provides a very similar server side function. See
+ * eu.etaxonomy.cdm.model.media.MediaUtils.filterAndOrderMediaRepresentations()
  *
  * @param object $media
  * @param array $mimeTypes
