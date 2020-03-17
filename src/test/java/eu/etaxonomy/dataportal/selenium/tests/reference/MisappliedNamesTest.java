@@ -59,11 +59,14 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
      * https://dev.e-taxonomy.eu/redmine/issues/7658
      * https://dev.e-taxonomy.eu/redmine/issues/7766
      *
-     * The expected sort order is: pro parte/partial synonyms,
-     * then invalid designations,
-     * then MANs
-     * followed (or including?) pro parte/partial MAN
-     * and finally concept relationships.
+     * The expected sort order is:
+     * <ol>
+     *   <li>pro parte/partial synonyms</li>
+     *   <li>then invalid designations</li>
+     *   <li>then MANs</li>
+     *   <li>followed (or including?) pro parte/partial MAN</li>
+     *   <li>and finally concept relationships.</li>
+     *</ol>
      * (see https://dev.e-taxonomy.eu/redmine/issues/7766)
      *
      * NOTE: Species solaris has no authorship!!
@@ -73,21 +76,23 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
+        assertEquals(UTF8.EM_DASH_DOUBLE + "(p.p.)\nOssaea glomerata sec. A&S1; sec. Species solaris", p.getMisappliedName(1).getText());
+
+        assertEquals(UTF8.EM_DASH_DOUBLE + "(part.)\nOssaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(2).getText());
+
+        // Test also invalid designation which is rendered with the misapplied names
+        assertEquals(UTF8.EN_DASH + "\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(3).getText());
+
         // no sensu but with Combination Authors:
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(1).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(4).getText());
         //
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(2).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(5).getText());
 
         // TODO the order of the MANs is not always defined please see #7766
         // with doubtful flag
-        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(3).getText());
+        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(6).getText());
 
-        assertEquals(UTF8.EM_DASH_DOUBLE + "(p.p.)\nOssaea glomerata sec. A&S1; sec. Species solaris", p.getMisappliedName(4).getText());
 
-        assertEquals(UTF8.EM_DASH_DOUBLE + "(part.)\nOssaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(5).getText());
-
-        // Test also invalid designation which is rendered with the misapplied names
-        assertEquals(UTF8.EN_DASH + "\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());

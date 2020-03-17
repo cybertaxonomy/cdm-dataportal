@@ -50,6 +50,19 @@ define('TAXON_TYPE_MISAPPLIEDNAME', 'misapplied-name');
  */
 function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
+  static $relationship_type_order_weights = [
+    //
+    UUID_PROPARTE_MISAPPLIEDNAME_FOR => 0,
+    UUID_PARTIAL_MISAPPLIEDNAME_FOR => 0,
+    //
+    UUID_INVALID_DESIGNATION_FOR  => 1,
+    //
+    UUID_MISAPPLIED_NAME_FOR  => 2,
+    //
+    UUID_PROPARTE_SYNONYM_FOR  => 3,
+    UUID_PARTIAL_SYNONYM_FOR  => 3
+  ];
+
   if (!$taxonRelationshipsDTO || $taxonRelationshipsDTO->size < 1) {
     return null;
   }
@@ -96,7 +109,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
           $symbol_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('symbol')));
           $full_name_key = $name_text . ' ' . str_replace($name_text, '', $full_name_key) . ' ' . $symbol_text;
 
-          cdm_taxonRelationships_process_relationship_dto($taxon_relation, $misapplied, $joined_refs, $full_name_key);
+          cdm_taxonRelationships_process_relationship_dto($taxon_relation, $misapplied, $joined_refs, $relationship_type_order_weights , $full_name_key);
 
           RenderHints::popFromRenderStack();
         } else {
@@ -212,17 +225,27 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
 /**
  * @param $taxon_relation
- * @param $name_dedup_key
  * @param $misapplied
  * @param $joined_refs
-
+ * @param $relationship_type_weights
+ * @param $name_dedup_key
  */
-function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misapplied, &$joined_refs, $name_dedup_key = null) {
+function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misapplied, &$joined_refs, $relationship_type_weights, $name_dedup_key) {
+
   $appended_phrase_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedText, array('appendedPhrase')));
   // remove/extract appendedPhrase, secReference, relSecReference and add placeholders if needed
   tagged_text_extract($taxon_relation->taggedText, 'appendedPhrase', true);
   $sensu_tagged_text = tagged_text_extract_reference_and_detail($taxon_relation->taggedText, "secReference", true);
   $relsec_tagged_text = tagged_text_extract_reference_and_detail($taxon_relation->taggedText, "relSecReference", true);
+
+  // prepend the weight value for the relationship type to the $name_dedup_key so that the key can be used for ordering the
+  // entries in the $misapplied array
+  if(isset($relationship_type_weights[$taxon_relation->type->uuid])){
+    $reltype_weight = $relationship_type_weights[$taxon_relation->type->uuid];
+  } else {
+    $reltype_weight = 99;
+  }
+  $name_dedup_key = str_pad( $reltype_weight, 2, '0', STR_PAD_LEFT) . '-' . $name_dedup_key;
 
   if (isset($sensu_tagged_text[1])) {
     // for de-duplication everything else needs to be equal except for appendedPhrase + MAN.sec + MAN.secDetail. see #7658#note-21
@@ -264,12 +287,14 @@ function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misa
   }
 
   if (!isset($misapplied[$name_dedup_key]['out'])) {
+    // helpful for debugging: // cdm_tagged_text_add_options($taxon_relation->taggedText, array(array('filter-type' => 'symbol', 'attributes' => array('title' =>  array($taxon_relation->type->representations[0]->label)))));
     $misapplied[$name_dedup_key]['out'] = cdm_tagged_text_to_markup($taxon_relation->taggedText);
   } else {
     // We need to add the anchors for all of the other misapplied names not
     // being rendered explicitly.
     $misapplied[$name_dedup_key]['out'] = uuid_anchor($taxon_relation->taxonUuid, $misapplied[$name_dedup_key]['out']);
   }
+
 }
 
 /**

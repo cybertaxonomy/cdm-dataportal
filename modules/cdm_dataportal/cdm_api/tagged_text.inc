@@ -143,7 +143,7 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
  *   Array of tag names to skip
  * @param $tag
  * @param $options
- *     - 'html' (default FALSE): Whether $text is HTML or just plain-text. NOTE! in this case the text will not being
+ *     - 'html' (default FALSE): Whether $text is HTML or just plain-text. NOTE! in this case the text is not
  *              translated by t()
  *
  * @return string
