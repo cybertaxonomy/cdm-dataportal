@@ -2091,6 +2091,13 @@ function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "G
     // Parse data and create object.
     $obj = cdm_load_obj($response_body);
 
+    if(isset($obj->servlet) && isset($obj->status) && is_numeric($obj->status)){
+      // this is json error message returned by jetty #8914
+      // wee need to replace it by null to avoid breaking existing assumptions in the code here
+      // this is also related to #2711
+      $obj = null;
+    }
+
     $duration_parse = microtime(TRUE) - $duration_parse_start;
 
     if (cdm_debug_block_visible()) {
