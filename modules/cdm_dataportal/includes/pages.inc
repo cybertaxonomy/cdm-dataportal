@@ -1108,12 +1108,13 @@ function compose_cdm_specimen_page($specimen_uuid)
 
   );
   $specimen = compose_cdm_specimen_or_observation($specimen_uuid, true);
+  /*
   $render_array = array(
           '#theme' => 'item_list',
           '#items' => array($specimen),
           '#type' => 'ul');
   $output = drupal_render($render_array);
-
+ */
   $specimen_table['#rows'][] = array(
           // An array of table rows. Every row is an array of cells, or an associative array
           'data' => $specimen,
