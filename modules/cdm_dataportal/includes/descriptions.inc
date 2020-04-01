@@ -2091,12 +2091,12 @@ function make_pseudo_feature($representation_L10n, $pseudo_feature_key = null){
 }
 
 /**
- * @param $description
- * @param $root_nodes
+ * @param $root_nodes, for obtaining the  root nodes from a description you can
+ * use the function get_root_nodes_for_dataset($description);
  *
  * @return string
  */
-function render_description_string($description, $root_nodes, &$item_cnt = 0) {
+function render_description_string($root_nodes, &$item_cnt = 0) {
 
   $out = '';
 
@@ -2129,7 +2129,7 @@ function render_description_string($description, $root_nodes, &$item_cnt = 0) {
       }
 
       // recurse child nodes
-      $child_markup = render_description_string($description, $root_node->childNodes, $item_cnt);
+      $child_markup = render_description_string($root_node->childNodes, $item_cnt);
       if($child_markup){
         $description_strings[] = $child_markup;
       }

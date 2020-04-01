@@ -574,7 +574,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
       $description_item = '';
       foreach ($aggregatedDescriptions as $description) {
         $description_item = '<div class="' . html_class_attribute_ref($description) . '">';
-        $description_item .= render_description_string($description, get_root_nodes_for_dataset($description));
+        $description_item .= render_description_string(get_root_nodes_for_dataset($description));
         $description_item .= ' ' . icon_link(path_to_description($description->uuid));
         $description_item .= '<div class="content-caption">'. statistical_values_explanation() . '</div>';
         $description_item .= '</div>';
@@ -1097,7 +1097,7 @@ function compose_cdm_specimen_page($specimen_uuid)
   $specimen_table = array(
       '#theme' => 'table',
       '#weight' => 2,
-      // prefix attributes and rows with '#' to let it pass toF the theme function,
+      // prefix attributes and rows with '#' to let it pass to the theme function,
       // otherwise it is handled as child render array
 
     '#attributes' => array('class' => 'specimens'),
@@ -1130,7 +1130,7 @@ function compose_cdm_specimen_page($specimen_uuid)
 //        'content' => $specimen_table,
 //        '#suffix' => '</div>',
 //    );
-    $render_array['specimen_table'] =  $specimen_table;
+  $render_array['specimen_table'] =  $specimen_table;
 
   RenderHints::popFromRenderStack();
   return $specimen; // $render_array;

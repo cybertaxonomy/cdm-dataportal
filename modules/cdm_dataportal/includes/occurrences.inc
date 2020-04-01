@@ -497,20 +497,16 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         break;
 
                     case 'descriptions':
-                        $occurrence_featureTree = cdm_get_occurrence_featureTree();
                         $dd_elements = array();
-
                         foreach ($value as $description) {
                             $description = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION, $description->uuid);
 
                             if ($description->imageGallery == TRUE) {
                                 continue;
                             }
-                            $elements_by_feature = _mergeFeatureTreeDescriptions($occurrence_featureTree->root->childNodes, $description->elements);
-                            $description_render_elements = _block_get_renderable_array(make_feature_block_list($elements_by_feature, null));
-                            $dd_elements[] = $description_render_elements;
+                            $description_string = render_description_string(get_root_nodes_for_dataset($description));
+                            $dd_elements[] = markup_to_render_array($description_string);
                         }
-
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
                         break;
                     case '_derivedUnitMedia':
