@@ -274,6 +274,7 @@ function compare_text_data($a, $b) {
 function statistical_values_array() {
 
   $min_max = [
+    'ExactValue' => NULL,
     'Min' => NULL,
     'TypicalLowerBoundary' => NULL,
     'TypicalUpperBoundary' => NULL,
@@ -281,8 +282,7 @@ function statistical_values_array() {
     'SampleSize' => NULL,
     'Average' => NULL,
     'Variance' => NULL,
-    'StandardDeviation' => NULL,
-    'ExactValue' => NULL
+    'StandardDeviation' => NULL
   ];
   return $min_max;
 }
@@ -307,16 +307,9 @@ function statistical_values($stat_vals_arr, $unit = '') {
 
   static $xbar_equals = 'x&#772;='; // x&#772; is x-bar (http://www.personal.psu.edu/ejp10/blogs/gotunicode/2010/03/dealing-with-x-bar-x-and-p-hat.html)
 
+  $exact_markup = '';
   $min_max_markup = '';
   $other_vals_array = [];
-
-  if(statistical_values_is_numeric($stat_vals_arr['ExactValue'])){
-    // ExactValue has just been introduces as new statistical measure
-    //  --> translating ExactValue to TypicalLowerBoundary
-    // TODO this is only a quick temporary solution which should be sofisticated
-    $stat_vals_arr['TypicalLowerBoundary'] = $stat_vals_arr['ExactValue'];
-    unset($stat_vals_arr['ExactValue']);
-  }
 
   // --- sanitize values
   if(statistical_values_num_equals($stat_vals_arr, 'Min', 'TypicalLowerBoundary')){
@@ -378,6 +371,9 @@ function statistical_values($stat_vals_arr, $unit = '') {
 
       if ($val_markup) {
         switch ($key) {
+          case 'ExactValue':
+            $exact_markup = $val_markup;
+            break;
           // ---- min_max_element
           case 'Min':
             $min_max_markup .= "($val_markup&ndash;)";
@@ -409,20 +405,22 @@ function statistical_values($stat_vals_arr, $unit = '') {
     }
   }
 
-  if(!$min_max_markup && !empty($other_vals_array['Average'])){
+  $full_markup = $exact_markup . ($exact_markup ? ' ' : '') . $min_max_markup;
+
+  if(!$full_markup && !empty($other_vals_array['Average'])){
     // this could be the case in which we only have one value for Average
     // this trivial case needs to be displayed a simpler way
-    $min_max_markup = str_replace($xbar_equals, '' , $other_vals_array['Average']);
+    $full_markup = str_replace($xbar_equals, '' , $other_vals_array['Average']);
     unset($other_vals_array['Average']);
   }
   if($unit){
-    $min_max_markup .= ' ' . $unit;
+    $full_markup .= ' ' . $unit;
   }
   if(count($other_vals_array)){
-    $min_max_markup .= ' [' . join(';', $other_vals_array) . ']';
+    $full_markup .= ' [' . join(';', $other_vals_array) . ']';
   }
 
-  return $min_max_markup;
+  return $full_markup;
 }
 
 /**
