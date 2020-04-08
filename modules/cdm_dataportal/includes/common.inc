@@ -282,6 +282,7 @@ function statistical_values_array() {
     'Average' => NULL,
     'Variance' => NULL,
     'StandardDeviation' => NULL,
+    'ExactValue' => NULL
   ];
   return $min_max;
 }
@@ -308,6 +309,14 @@ function statistical_values($stat_vals_arr, $unit = '') {
 
   $min_max_markup = '';
   $other_vals_array = [];
+
+  if(statistical_values_is_numeric($stat_vals_arr['ExactValue'])){
+    // ExactValue has just been introduces as new statistical measure
+    //  --> translating ExactValue to TypicalLowerBoundary
+    // TODO this is only a quick temporary solution which should be sofisticated
+    $stat_vals_arr['TypicalLowerBoundary'] = $stat_vals_arr['ExactValue'];
+    unset($stat_vals_arr['ExactValue']);
+  }
 
   // --- sanitize values
   if(statistical_values_num_equals($stat_vals_arr, 'Min', 'TypicalLowerBoundary')){
