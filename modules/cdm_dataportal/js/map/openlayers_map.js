@@ -73,7 +73,9 @@
      * to the map container. This feature requires that the jQueryUI is loaded
      */
     resizable: false,
-    wfsRootUrl: 'http://edit.africamuseum.be/geoserver/topp/ows'
+    wfsRootUrl: 'http://edit.africamuseum.be/geoserver/topp/ows',
+    specimenPageBaseUrl: '/cdm_dataportal/occurrence/',
+      specimenLinkText: 'Open unit'
   };
 })(jQuery);
 
@@ -160,6 +162,12 @@
        * @type {null}
        */
       var wmsOverlay = null;
+
+        /**
+         * The Control element to handle clicks on features in KML layers
+         * @type {null}
+         */
+      var kmlSelectControl = null;
 
       /**
        * Default bounding box for map viewport in the projection of the base layer.
@@ -278,7 +286,7 @@
 
           // -- Distribution Layer --
           var mapServiceRequest;
-          var distributionQuery = mapElement.attr('distributionQuery');
+          var distributionQuery = mapElement.attr('data-distributionQuery');
 
           if(distributionQuery !== undefined){
             distributionQuery = mergeQueryStrings(distributionQuery, '&recalculate=false');
@@ -290,7 +298,7 @@
             }
 
             distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
-            var legendFormatQuery = mapElement.attr('legendFormatQuery');
+            var legendFormatQuery = mapElement.attr('data-legendFormatQuery');
             if(legendFormatQuery !== undefined){
               legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
             }
@@ -310,7 +318,7 @@
           }
 
           // -- Occurrence Layer --
-          var occurrenceQuery = mapElement.attr('occurrenceQuery');
+          var occurrenceQuery = mapElement.attr('data-occurrenceQuery');
           if(occurrenceQuery !== undefined){
             occurrenceQuery = mergeQueryStrings(occurrenceQuery, '&recalculate=false');
 //              if(typeof legendPosition == 'number'){
@@ -340,6 +348,35 @@
               }
             });
           }
+
+            // -- KML Layer --
+            var kmlRequestUrl = mapElement.attr('data-kml-request-url');
+            if(kmlRequestUrl !== undefined){
+
+                LAYER_DATA_CNT++;
+                var kmlLayer = new OpenLayers.Layer.Vector("KML", {
+                    strategies: [new OpenLayers.Strategy.Fixed()],
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: kmlRequestUrl,
+                        format: new OpenLayers.Format.KML({
+                            extractStyles: true,
+                            extractAttributes: true
+                            // maxDepth: 2
+                        })
+                    })
+                });
+                map.addLayer(kmlLayer);
+                // create select control
+                kmlSelectControl = new OpenLayers.Control.SelectFeature(kmlLayer);
+                kmlLayer.events.on({
+                    "featureselected": onKmlFeatureSelect,
+                    "featureunselected": onKmlFeatureUnselect
+                });
+                map.addControl(kmlSelectControl);
+                kmlSelectControl.activate();
+
+                initPostDataLoaded();
+            }
 
           if(LAYER_DATA_CNT === 0) {
             // a map only with base layer
@@ -1124,83 +1161,127 @@
           return  wmsLayer;
         };
 
-        var layerLoadingControl = function() {
-
-          var control = new OpenLayers.Control();
-
-          OpenLayers.Util.extend(control, {
-
-            LAYERS_LOADING: 0,
-
-            updateState: function () {
-              if(this.div != null){
-                if (this.LAYERS_LOADING > 0) {
-                  this.div.style.display = "block";
-                } else {
-                  this.div.style.display = "none";
-                }
-              }
-            },
-
-            updateSize: function () {
-              this.div.style.width = this.map.size.w + "px";
-              this.div.style.height = this.map.size.h  + "px";
-              this.div.style.textAlign = "center";
-              this.div.style.lineHeight = this.map.size.h  + "px";
-            },
-
-            counterIncrease: function (layer) {
-              this.control.LAYERS_LOADING++;
-              log(' > loading start : ' + this.layer.name + ' ' + this.control.LAYERS_LOADING, true);
-              this.control.updateState();
-            },
-
-            counterDecrease: function (layer) {
-              this.control.LAYERS_LOADING--;
-              log(' > loading end : ' + this.layer.name + ' ' + this.control.LAYERS_LOADING, true);
-              this.control.updateState();
-            },
-
-            draw: function () {
-
-              // call the default draw function to initialize this.div
-              OpenLayers.Control.prototype.draw.apply(this, arguments);
-
-              this.map.events.register('updatesize', this, function(e){
-                  this.updateSize();
-                }
-              );
-
-              var loadingIcon = document.createElement("i");
-              var fa_class = document.createAttribute("class");
-              // fa-circle-o-notch fa-spin
-              // fa-spinner fa-pulse
-              // fa-refresh
-              fa_class.value = "fa fa-refresh fa-spin fa-5x";
-              loadingIcon.attributes.setNamedItem(fa_class);
-
-              this.updateSize();
-
-              this.div.appendChild(loadingIcon);
-
-              this.registerEvents();
-
-              return this.div;
-            },
-
-            registerEvents: function() {
-
-              this.map.events.register('preaddlayer', this, function(e){
-                console.log(" > preaddlayer " + e.layer.name);
-                e.layer.events.register('loadstart', {control: this, layer: e.layer}, this.counterIncrease);
-                e.layer.events.register('loadend', {control: this, layer: e.layer}, this.counterDecrease);
-              });
-            }
-
-          });
-
-          return control;
+      var onKmlFeatureSelect = function(event) {
+        var feature = event.feature;
+        // Since KML is user-generated, do naive protection against
+        // Javascript.
+        var content = "";
+        if(feature.attributes.name){
+            content += "<h3>" + feature.attributes.name + "</h3>";
         }
+        if(feature.attributes.description) {
+            // ${specimen-base-url}
+            var description = feature.attributes.description;
+            description = description.replace('${specimen-link-base-url}', opts.specimenPageBaseUrl);
+            description = description.replace('${specimen-link-text}', opts.specimenLinkText);
+            content += "<p>" + description + "</p>";
+        }
+        if (content.search("<script") != -1) {
+            content = "Content contained Javascript! Escaped content below.<br>" + content.replace(/</g, "&lt;");
+        }
+        if(content.length > 0){
+            popup = new OpenLayers.Popup.FramedCloud("balloon",
+                feature.geometry.getBounds().getCenterLonLat(),
+                new OpenLayers.Size(250, 150),
+                content,
+                null, true, onKmlPopupClose);
+                popup.autoSize = false;
+                // popup.imageSize = new OpenLayers.Size(1276, 736);
+                // popup.fixedRelativePosition = true;
+                // popup.maxSize = new OpenLayers.Size(50, 50);
+            feature.popup = popup;
+            map.addPopup(popup);
+        }
+      };
+      var onKmlFeatureUnselect =   function(event) {
+            var feature = event.feature;
+            if(feature.popup) {
+                map.removePopup(feature.popup);
+                feature.popup.destroy();
+                delete feature.popup;
+            }
+        };
+      var onKmlPopupClose = function(evt) {
+          kmlSelectControl.unselectAll();
+        };
+
+    var layerLoadingControl = function() {
+
+      var control = new OpenLayers.Control();
+
+      OpenLayers.Util.extend(control, {
+
+        LAYERS_LOADING: 0,
+
+        updateState: function () {
+          if(this.div != null){
+            if (this.LAYERS_LOADING > 0) {
+              this.div.style.display = "block";
+            } else {
+              this.div.style.display = "none";
+            }
+          }
+        },
+
+        updateSize: function () {
+          this.div.style.width = this.map.size.w + "px";
+          this.div.style.height = this.map.size.h  + "px";
+          this.div.style.textAlign = "center";
+          this.div.style.lineHeight = this.map.size.h  + "px";
+        },
+
+        counterIncrease: function (layer) {
+          this.control.LAYERS_LOADING++;
+          log(' > loading start : ' + this.layer.name + ' ' + this.control.LAYERS_LOADING, true);
+          this.control.updateState();
+        },
+
+        counterDecrease: function (layer) {
+          this.control.LAYERS_LOADING--;
+          log(' > loading end : ' + this.layer.name + ' ' + this.control.LAYERS_LOADING, true);
+          this.control.updateState();
+        },
+
+        draw: function () {
+
+          // call the default draw function to initialize this.div
+          OpenLayers.Control.prototype.draw.apply(this, arguments);
+
+          this.map.events.register('updatesize', this, function(e){
+              this.updateSize();
+            }
+          );
+
+          var loadingIcon = document.createElement("i");
+          var fa_class = document.createAttribute("class");
+          // fa-circle-o-notch fa-spin
+          // fa-spinner fa-pulse
+          // fa-refresh
+          fa_class.value = "fa fa-refresh fa-spin fa-5x";
+          loadingIcon.attributes.setNamedItem(fa_class);
+
+          this.updateSize();
+
+          this.div.appendChild(loadingIcon);
+
+          this.registerEvents();
+
+          return this.div;
+        },
+
+        registerEvents: function() {
+
+          this.map.events.register('preaddlayer', this, function(e){
+            console.log(" > preaddlayer " + e.layer.name);
+            e.layer.events.register('loadstart', {control: this, layer: e.layer}, this.counterIncrease);
+            e.layer.events.register('loadend', {control: this, layer: e.layer}, this.counterDecrease);
+          });
+        }
+
+      });
+
+      return control;
+    }
 
     }; // end of CdmOpenLayers.Map
 })();

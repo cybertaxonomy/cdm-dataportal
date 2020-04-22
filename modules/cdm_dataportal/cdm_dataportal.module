@@ -149,6 +149,7 @@
   function _add_js_openlayers() {
 
     $openlayers = '/js/map/OpenLayers-2.13.1/OpenLayers.js';
+    $openlayers_popup_extension = '/js/map/popups.js';
     $proj4js = '/js/map/proj4js-1.1.0/proj4js-compressed.js';
 
     if(variable_get('cdm_js_devel_mode', FALSE)){
@@ -159,6 +160,16 @@
     }
 
     drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers,
+      array(
+        'type' => 'file',
+        'group' => JS_LIBRARY,
+        'weight' => 0,
+        'cache' => TRUE,
+        'preprocess' => FALSE
+      )
+    );
+
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers_popup_extension,
       array(
         'type' => 'file',
         'group' => JS_LIBRARY,

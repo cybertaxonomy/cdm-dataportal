@@ -542,6 +542,16 @@ a.label:visited {
 }
 
 /*
+.olPopup { margin:0px; font-size: .7em;}
+.olPopup h2 { font-size:1em; }
+*/
+.olPopup img { max-width: none;} /* reset the img max-width=100% which is applied in some themes like zen */
+
+.balloon_contentDiv {
+    overflow: auto;
+}
+
+/*
  * ======= Media =======
  */
 .media .viewer {

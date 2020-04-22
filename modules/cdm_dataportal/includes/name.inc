@@ -921,7 +921,7 @@ function compose_type_designations_map($type_designations)
     // $occurrence_query = 'os=1:c/ff0000/10/noLabel&od=1:52.52079,13.57781|-43.46333333333333,172.60355&legend=0';
     $legend_format_query = null;
     $distribution_query = NULL;
-    $map_render_array = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
+    $map_render_array = compose_map('specimens', $occurrence_query, NULL, $distribution_query, $legend_format_query, []);
   }
   return $map_render_array;
 }

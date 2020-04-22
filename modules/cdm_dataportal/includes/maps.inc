@@ -27,6 +27,7 @@
  *
  * @param $map_id
  * @param string $occurrence_query
+ * @param $kml_request_url
  * @param string $distribution_query
  * @param string $legend_format_query
  * @param array $event_listeners
@@ -47,13 +48,14 @@
  *   Can be used to override the map_type setting stored in the settings variable CDM_MAP_DISTRIBUTION
  *   - 1: openlayers_map
  *   - 0: image_map
+ *
  * @return array A drupal render array
  * A drupal render array
  * @ingroup compose
  */
-function compose_map($map_id, $occurrence_query = NULL, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = array(), $resizable = false, $force_map_type = NULL) {
+function compose_map($map_id, $occurrence_query = NULL, $kml_request_url, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = [], $resizable = FALSE, $force_map_type = NULL) {
 
-    $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
+  $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
     if($force_map_type === NULL){
       $force_map_type = $map_settings['map_type'];
@@ -64,6 +66,7 @@ function compose_map($map_id, $occurrence_query = NULL, $distribution_query = NU
       $map_html = cdm_map_openlayers(
         $map_id,
         $occurrence_query,
+        $kml_request_url,
         $distribution_query,
         $legend_format_query,
         $map_settings['caption'],
@@ -141,7 +144,9 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
       'legendOpacity' => $map_settings['legend']['opacity'],
       'showLayerSwitcher' => $map_settings['openlayers']['show_layer_switcher']  ==  1,
       'displayOutsideMaxExtent' => $map_settings['openlayers']['display_outside_max_extent'] == 1,
-      'resizable' => $resizable
+      'resizable' => $resizable,
+      'specimenPageBaseUrl' => url('cdm_dataportal/occurrence'),
+      'specimenLinkText' => custom_icon_font_markup('icon-interal-link-alt-solid')
 //       'imgPath' => drupal_get_path('module', 'cdm_dataportal') . '/js/map/OpenLayers-2.13.1/img/' // path to the control icons
       // if no baseLayerNames or defaultBaseLayerName are not defined
       // the defaults in cdm_openlayers.js will be used
@@ -235,6 +240,7 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
  *
  * @param string $bounding_box
  * @param string $occurrenceQuery
+ * @param string $kml_request_url
  * @param string $distributionQuery
  * @param string $legendFormatQuery
  * @param string $map_caption
@@ -254,7 +260,7 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
  * @return String
  *    The markup for the map
  */
-function cdm_map_openlayers($map_id, $occurrenceQuery = FALSE, $distributionQuery = FALSE,
+function cdm_map_openlayers($map_id, $occurrenceQuery = FALSE, $kml_request_url = FALSE, $distributionQuery = FALSE,
                             $legendFormatQuery = FALSE, $map_caption = FALSE, array $event_listeners = array(),
                             $resizable = false) {
 
@@ -287,17 +293,22 @@ function cdm_map_openlayers($map_id, $occurrenceQuery = FALSE, $distributionQuer
     // TODO add to cdm service?
     $occurrenceQuery .= '&legend=0';
 
-    $out .= ' occurrenceQuery="' . $occurrenceQuery . '&' . $openlayers_map_query_string . '"';
+    $out .= ' data-occurrenceQuery="' . $occurrenceQuery . '&' . $openlayers_map_query_string . '"';
   }
 
   if ($distributionQuery) {
     //HACK for testing (this must be done in js)
 //     $distributionQuery .= "&layer=em_tiny_jan2003&dest_projection_epsg=7777777";
-    $out .= ' distributionQuery="' . $distributionQuery . '&' . $openlayers_map_query_string . '"';
+    $out .= ' data-distributionQuery="' . $distributionQuery . '&' . $openlayers_map_query_string . '"';
   }
 
+  if ($kml_request_url) {
+    $out .= 'data-kml-request-url="' . $kml_request_url . '"';
+  }
+
+
   if ($legendFormatQuery) {
-    $out .= ' legendFormatQuery="' . $legendFormatQuery . '"';
+    $out .= ' data-legendFormatQuery="' . $legendFormatQuery . '"';
   }
 
   $out .= '></div></div>';
@@ -384,7 +395,7 @@ function compose_distribution_map($query_string) {
         );
     */
   }
-  $out = compose_map('distribution', NULL, $query_string, $legendFormatQueryStr);
+  $out = compose_map('distribution', NULL, NULL, $query_string, $legendFormatQueryStr);
 
   return $out;
 }
@@ -546,6 +557,7 @@ function occurrence_map_query_parameters($taxon)
 {
   $map_render_array = array();
   $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid, http_build_query(relationship_filter_query_parameters()));
+  $kml_request_url = cdm_compose_url(CDM_WS_KML_TAXON_OCCURRENCE, array($taxon->uuid), http_build_query(relationship_filter_query_parameters()));
 
   $map_visibility = variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT);
   if ($map_visibility == 'always' ||
@@ -554,7 +566,7 @@ function occurrence_map_query_parameters($taxon)
     $occurrence_query = $occurrence_queryDto->occurrenceQuery;
     $legend_format_query = null;
     $distribution_query = NULL;
-    $map_render_array = compose_map('specimens', $occurrence_query, $distribution_query, $legend_format_query, array());
+    $map_render_array = compose_map('specimens', NULL, $kml_request_url, $distribution_query, $legend_format_query, []);
   }
   return $map_render_array;
 }
