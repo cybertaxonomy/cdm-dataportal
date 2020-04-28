@@ -1172,8 +1172,8 @@
         if(feature.attributes.description) {
             // ${specimen-base-url}
             var description = feature.attributes.description;
-            description = description.replace('${specimen-link-base-url}', opts.specimenPageBaseUrl);
-            description = description.replace('${specimen-link-text}', opts.specimenLinkText);
+            description = description.replace('${occurrence-link-base-url}', opts.specimenPageBaseUrl);
+            //description = description.replace('${specimen-link-text}', opts.specimenLinkText); // no longer used
             content += "<p>" + description + "</p>";
         }
         if (content.search("<script") != -1) {
