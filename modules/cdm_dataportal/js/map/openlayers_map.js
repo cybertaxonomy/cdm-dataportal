@@ -370,7 +370,8 @@
                 kmlSelectControl = new OpenLayers.Control.SelectFeature(kmlLayer);
                 kmlLayer.events.on({
                     "featureselected": onKmlFeatureSelect,
-                    "featureunselected": onKmlFeatureUnselect
+                    "featureunselected": onKmlFeatureUnselect,
+                    'loadend': applyLayerZoomBounds
                 });
                 map.addControl(kmlSelectControl);
                 kmlSelectControl.activate();
@@ -1128,6 +1129,13 @@
         }
 
         return wmsOptions;
+      };
+
+      var applyLayerZoomBounds = function(event){
+            var layer = event.object;
+            zoomToBounds = layer.getDataExtent();
+            log("data bounds of layer as zoom bounds: " + zoomToBounds.toString());
+            layerDataLoaded();
       };
 
       /**
