@@ -136,6 +136,8 @@ define('CDM_WS_TERMTREES', 'portal/termTree');
 define('CDM_WS_GEOSERVICE_DISTRIBUTIONMAP', 'ext/edit/mapServiceParameters/taxonDistributionFor/$0');
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP_FOR_FIELDUNITS', 'ext/edit/mapServiceParameters/taxonOccurrencesForX');
 define('CDM_WS_GEOSERVICE_OCCURRENCEMAP', 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0');
+define('CDM_WS_KML_SPECIMENSOROCCURENCES', 'kml/specimensOrOccurences/$0');
+define('CDM_WS_KML_TYPEDESIGNATIONS', 'kml/typeDesignations/$0');
 define('CDM_WS_KML_TAXON_OCCURRENCE', 'kml/taxonOccurrencesFor/$0');
 
 define('CDM_WS_OCCURRENCE', 'occurrence');

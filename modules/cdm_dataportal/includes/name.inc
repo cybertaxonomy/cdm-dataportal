@@ -904,25 +904,9 @@ function compose_type_designations($taxon_name_uuid, $show_specimen_details = fa
  */
 function compose_type_designations_map($type_designations)
 {
-  $points = array();
-  $map_render_array = array();
-  foreach ($type_designations as $td) {
-    if ($td->class == "SpecimenTypeDesignation") {
-      $derived_unit_facade = cdm_ws_get(CDM_WS_PORTAL_DERIVEDUNIT_FACADE, array($td->typeSpecimen->uuid));
-      if (isset($derived_unit_facade->exactLocation)) {
-        $points[] = $derived_unit_facade->exactLocation->latitude . ',' . $derived_unit_facade->exactLocation->longitude;
-      }
-    }
-  }
-
-  if (count($points) > 0) {
-    // os=1:c/ff0000/10/noLabel&od=1:52.52079,13.57781|-43.46333333333333,172.60355&legend=0
-    $occurrence_query = 'os=1:c/ff0000/10/noLabel&od=1:' . join('|', $points) . '&legend=0';
-    // $occurrence_query = 'os=1:c/ff0000/10/noLabel&od=1:52.52079,13.57781|-43.46333333333333,172.60355&legend=0';
-    $legend_format_query = null;
-    $distribution_query = NULL;
-    $map_render_array = compose_map('specimens', $occurrence_query, NULL, $distribution_query, $legend_format_query, []);
-  }
+  $typedesignations_uuid_param = cdm_uuid_list_parameter_value($type_designations);
+  $kml_request_uri = cdm_compose_url(CDM_WS_KML_TYPEDESIGNATIONS, array($typedesignations_uuid_param));
+  $map_render_array = compose_map('specimens', null, $kml_request_uri, null, null, []);
   return $map_render_array;
 }
 

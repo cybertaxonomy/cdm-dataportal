@@ -2773,6 +2773,25 @@ function array_deep_copy(&$array, &$copy, $maxdepth = 50, $depth = 0) {
 }
 
 /**
+ * Concatenated the uuids of the passed cdm entity with `,` as glue.
+ * The returned string is suitable for cdm webservices consuming UUIDList as
+ * parameter
+ *
+ * @param array $cdm_entities
+ *
+ * @return string
+ */
+function cdm_uuid_list_parameter_value(array $cdm_entities){
+  $uuids = [];
+  foreach ($cdm_entities as $entity){
+    if(isset($entity) && is_uuid($entity->uuid) ){
+      $uuids[] = $entity->uuid;
+    }
+  }
+  return  join(',', $uuids);
+}
+
+/**
  * Adds java script to create and enable a toggler for the cdm webservice debug block content.
  *
  */
