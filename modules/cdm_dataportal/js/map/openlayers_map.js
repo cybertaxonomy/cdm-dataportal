@@ -211,7 +211,14 @@
        */
       var zoomToBounds = null;
 
-      var zoomToClosestLevel = true;
+        /**
+         * This as been introduced for #5683 with value TRUE,
+         * but can cause feature to tbe hidden in KML layers.
+         * Therefore this is now set to false.
+         *
+         * @type {boolean}
+         */
+      var zoomToClosestLevel = false;
 
       var LAYER_DATA_CNT = 0;
 
