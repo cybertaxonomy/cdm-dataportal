@@ -583,7 +583,7 @@
               defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
           }
 
-          // defaultControls.unshift(layerLoadingControl()); // as first control, needs to be below all others!
+          defaultControls.unshift(layerLoadingControl()); // as first control, needs to be below all others!
 
 //          var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, getWidth/getHeight);
           var maxResolution = null;
@@ -1269,10 +1269,7 @@
 
           var loadingIcon = document.createElement("i");
           var fa_class = document.createAttribute("class");
-          // fa-circle-o-notch fa-spin
-          // fa-spinner fa-pulse
-          // fa-refresh
-          fa_class.value = "fa fa-refresh fa-spin fa-5x";
+          fa_class.value = "fa fa-refresh fa-spin fa-sync-alt fa-5x";
           loadingIcon.attributes.setNamedItem(fa_class);
 
           this.updateSize();
