@@ -396,8 +396,14 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
   // dependencies and they won't load."
   //
   // universalviewerPath will be used to build the root config variable.
-  $folders_up = preg_replace('/[^\/]+/', '..', $_GET['q']);
-  $folders_up = preg_replace('/\.\.$/', '', $folders_up);
+  $iCleanUrlRequest = strpos($_SERVER['REQUEST_URI'], 'q=cdm_dataportal/') === false;
+  if($iCleanUrlRequest){
+    $folders_up = preg_replace('/[^\/]+/', '..', $_GET['q']);
+    $folders_up = preg_replace('/\.\.$/', '', $folders_up);
+  } else {
+    $folders_up = '';
+  }
+  $basePath = base_path();
   $config_file = 'uv-config.json';
   drupal_add_js('
       console.log(\'jQuery inline: \' + jQuery.fn.jquery);
@@ -405,7 +411,7 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
         jQuery( "' . $jquery_selector . '" ).jqUniversalviewer(
         {
           root: \'' . $folders_up . $universalviewer_path . '/uv\',
-          configUri: \'' . base_path() . $universalviewer_path . '/'. $config_file . '\',
+          configUri: \'' . $basePath . $universalviewer_path . '/'. $config_file . '\',
           manifestUri: \'' . $manifest_uri . '\'
         }
         );
