@@ -90,6 +90,10 @@
 
         console.log("setupUV() with " + plugin.options.manifestUri);
 
+        var parentDivWidth = $(element).parent('div').width();
+        console.log("  -> adjusting size from parent div: " + parentDivWidth);
+        $(element).css('width', parentDivWidth);
+
         var uvdata = {
             root: plugin.options.root,
             configUri: plugin.options.configUri,
@@ -101,7 +105,6 @@
             rotation: Number(urlDataProvider.get('r', 0)),
             rangeId: urlDataProvider.get('rid', ''),
             xywh: urlDataProvider.get('xywh', ''),
-
         };
 
         plugin.uv = createUV(element, uvdata, urlDataProvider);
