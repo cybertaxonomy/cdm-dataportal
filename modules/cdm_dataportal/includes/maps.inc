@@ -400,7 +400,23 @@ function compose_distribution_map($query_string) {
   return $out;
 }
 
-
+/**
+ * Composes a map with the location points of the passed $type_designations.
+ *
+ * @param $type_designations
+ *
+ * @return array
+ *     A drupal render array or an empty array in case there are no point to show.
+ *
+ * @ingroup compose
+ */
+function compose_type_designations_map($type_designations)
+{
+  $typedesignations_uuid_param = cdm_uuid_list_parameter_value($type_designations);
+  $kml_request_uri = cdm_compose_url(CDM_WS_KML_TYPEDESIGNATIONS, array($typedesignations_uuid_param));
+  $map_render_array = compose_map('specimens', null, $kml_request_uri, null, null, []);
+  return $map_render_array;
+}
 
 
 /**
@@ -560,8 +576,7 @@ function occurrence_map_query_parameters($taxon)
   $kml_request_url = cdm_compose_url(CDM_WS_KML_TAXON_OCCURRENCE, array($taxon->uuid), http_build_query(relationship_filter_query_parameters()));
 
   $map_visibility = variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT);
-  if ($map_visibility == 'always' ||
-    variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT) == 'automatic' &&
+  if ($map_visibility == 'always' || $map_visibility == 'automatic' &&
     (isset($occurrence_queryDto->fieldUnitPoints[0]) || isset($occurrence_queryDto->derivedUnitPoints[0]))) {
     $occurrence_query = $occurrence_queryDto->occurrenceQuery;
     $legend_format_query = null;

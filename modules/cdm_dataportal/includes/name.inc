@@ -892,23 +892,6 @@ function compose_type_designations($taxon_name_uuid, $show_specimen_details = fa
   return $render_array;
 }
 
-/**
- * Composes a map with the location points of the passed $type_designations.
- *
- * @param $type_designations
- *
- * @return array
- *     A drupal render array or an empty array in case there are no point to show.
- *
- * @ingroup compose
- */
-function compose_type_designations_map($type_designations)
-{
-  $typedesignations_uuid_param = cdm_uuid_list_parameter_value($type_designations);
-  $kml_request_uri = cdm_compose_url(CDM_WS_KML_TYPEDESIGNATIONS, array($typedesignations_uuid_param));
-  $map_render_array = compose_map('specimens', null, $kml_request_uri, null, null, []);
-  return $map_render_array;
-}
 
 /**
  * Composes the TypedEntityReference to name type designations passed as associatve array.
