@@ -167,7 +167,7 @@
         'preprocess' => FALSE
       )
     );
-    
+
 
     // see https://github.com/proj4js/proj4js
     // http://openlayers.org/dev/examples/using-proj4js.html

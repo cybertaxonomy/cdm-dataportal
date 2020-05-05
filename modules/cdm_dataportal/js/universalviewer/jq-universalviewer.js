@@ -89,10 +89,12 @@
         var collectionIndex = urlDataProvider.get('c');
 
         console.log("setupUV() with " + plugin.options.manifestUri);
-
-        var parentDivWidth = $(element).parent('div').width();
-        console.log("  -> adjusting size from parent div: " + parentDivWidth);
-        $(element).css('width', parentDivWidth);
+        var uvElement = $(element);
+        var parentDiv = $(element).parent('div');
+        adaptSizeTo(uvElement, parentDiv);
+        $(window).resize(function (event) {
+            adaptSizeTo(uvElement, parentDiv);
+        });
 
         var uvdata = {
             root: plugin.options.root,
@@ -120,6 +122,13 @@
         //     console.log('osd opened');
         // });
     };
+
+
+    var adaptSizeTo = function(uvElement, jqElement) {
+        var parentWidth = jqElement.width();
+        console.log("adjusting size from parent div :" + parentWidth);
+        uvElement.css('width', parentWidth);
+    }
 
 
 })(jQuery, document, window);
