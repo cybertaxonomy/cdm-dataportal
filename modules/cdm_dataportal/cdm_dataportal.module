@@ -167,16 +167,7 @@
         'preprocess' => FALSE
       )
     );
-
-    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . $openlayers_popup_extension,
-      array(
-        'type' => 'file',
-        'group' => JS_LIBRARY,
-        'weight' => 0,
-        'cache' => TRUE,
-        'preprocess' => FALSE
-      )
-    );
+    
 
     // see https://github.com/proj4js/proj4js
     // http://openlayers.org/dev/examples/using-proj4js.html
