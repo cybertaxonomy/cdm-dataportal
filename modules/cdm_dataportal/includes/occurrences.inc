@@ -359,11 +359,13 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
         // request again for deeper initialization
         $specimen_or_observation = cdm_ws_get("portal/" . CDM_WS_OCCURRENCE, $specimen_or_observation->uuid);
         if ($specimen_or_observation->class == 'FieldUnit'){
+            // WARNING: adding a List<MediaDTO> as $specimen_or_observation->_derivedUnitMedia
             $specimen_or_observation->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
                 $specimen_or_observation->uuid,
                 'fieldObjectMediaDTO',
             ));
         }else{
+            // WARNING: adding a List<Media> as $specimen_or_observation->_derivedUnitMedia
             $specimen_or_observation->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
                 $specimen_or_observation->uuid,
                 'derivedUnitMedia',
@@ -516,7 +518,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 '#uri' => t('open media'),
                             );
                             $gallery_html = compose_cdm_media_gallerie(array(
-                                'mediaList' => $value,
+                                'mediaList' => $value, // WARNING: this is either a List<Media> or List<MediaDTO>, see above ~line 361
                                 'galleryName' => $specimen_or_observation->titleCache,
                                 'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
                                 'cols' => $gallery_settings['cdm_dataportal_media_cols'],
