@@ -34,45 +34,23 @@ import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
  * @since Jul 1, 2011
  *
  */
-public class TaxonSynonymyPage extends PortalPage {
+public class TaxonSynonymyPage extends TaxonPage {
 
     public static final Logger logger = Logger.getLogger(TaxonSynonymyPage.class);
 
-    private UUID taxonUuid;
-
     protected static String drupalPagePathBase = "cdm_dataportal/taxon";
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.dataportal.pages.PortalPage#getDrupalPageBase()
-     */
-    @Override
-    protected String getDrupalPageBase() {
-        return drupalPagePathBase;
-    }
 
     @FindBy(id = "synonymy")
     @CacheLookup
     private WebElement synonymy;
 
 
-
-    /**
-     * @param driver
-     * @param context
-     * @param taxonUuid
-     */
     public TaxonSynonymyPage(WebDriver driver, DataPortalContext context, UUID taxonUuid) throws MalformedURLException {
 
-        super(driver, context, taxonUuid.toString() + "/synonymy");
-
-        this.taxonUuid = taxonUuid;
+        super(driver, context, taxonUuid, "synonymy");
     }
 
-
-    /**
-     * @param driver
-     * @param context
-     */
     public TaxonSynonymyPage(WebDriver driver, DataPortalContext context) throws Exception {
         super(driver, context);
     }

@@ -33,27 +33,18 @@ import eu.etaxonomy.dataportal.elements.ImgElement;
 import eu.etaxonomy.dataportal.elements.LinkElement;
 
 /**
- * TODO: subpages like /cdm_dataportal/taxon/{uuid}/images are not jet suported, implement means to handle page parts
+ * TODO: subpages like /cdm_dataportal/taxon/{uuid}/images are not yet supported, implement means to handle page parts
  *
  * @author andreas
  * @since Jul 1, 2011
  *
  */
-public class TaxonProfilePage extends PortalPage {
+public class TaxonProfilePage extends TaxonPage {
 
     public static final Logger logger = Logger.getLogger(TaxonProfilePage.class);
 
-    private UUID taxonUuid;
-
     protected static String drupalPagePathBase = "cdm_dataportal/taxon";
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.dataportal.pages.PortalPage#getDrupalPageBase()
-     */
-    @Override
-    protected String getDrupalPageBase() {
-        return drupalPagePathBase;
-    }
 
     @FindBy(id = "taxonProfileImage")
     @CacheLookup
@@ -66,7 +57,6 @@ public class TaxonProfilePage extends PortalPage {
     private List<LinkElement> tableOfContentLinks = null;
 
 
-
     /**
      * @param driver
      * @param context
@@ -75,9 +65,7 @@ public class TaxonProfilePage extends PortalPage {
      */
     public TaxonProfilePage(WebDriver driver, DataPortalContext context, UUID taxonUuid) throws MalformedURLException {
 
-        super(driver, context, taxonUuid.toString());
-
-        this.taxonUuid = taxonUuid;
+        super(driver, context, taxonUuid);
     }
 
 

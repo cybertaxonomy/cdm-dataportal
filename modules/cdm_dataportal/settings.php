@@ -18,6 +18,7 @@ const CDM_NAME_PAGE_SECTION_TAXA_DEFAULT = 1;
 const CDM_MEDIA_GALLERY_VIEWER = 'image_gallery_viewer';
 const CDM_MEDIA_GALLERY_VIEWER_DEFAULT = 'universalviewer';
 
+const CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES = 'cdm_taxonpage_taxon_node_show_status';
 define('TAXONTREE_RANKLIMIT', 'cdm_taxontree_ranklimit');
 define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
   define('CDM_TAXONOMICTREE_UUID', 'cdm_taxonomictree_uuid');
@@ -1282,7 +1283,7 @@ function cdm_settings_general() {
     '#default_value' => variable_get(CDM_TAXONOMICTREE_UUID, FALSE),
     '#options' => cdm_get_taxontrees_as_options(),
     '#description' => t('The default taxa classification to be used in the whole portal. 
-      This affects most obviously the classification browser and the search in case is is restricted 
+      This affects most obviously the classification browser and the search in case it is restricted 
       to a specific classification. See also <i>Included Classifications</i> below.'),
   );
 
@@ -1950,6 +1951,21 @@ function cdm_settings_layout_taxon() {
   $form = array();
 
   $form['#submit'][] = 'cdm_settings_layout_taxon_submit';
+
+  // --------- TABBED TAXON ------- //
+  $form['taxon_node'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Taxon node'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#description' => 'Taxa are organized in a classification tree by taxon nodes. Display of taxon node related information like states can be manged here.'
+  );
+  $form['taxon_node'][CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show taxon node states'),
+    '#default_value' => variable_get(CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES, 1),
+    '#description' => t('Show the taxon node states excluded, unplaced and placement doubtful.'),
+  );
 
   // --------- TABBED TAXON ------- //
   $form['taxon_tabs'] = array(
