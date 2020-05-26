@@ -21,6 +21,7 @@ import eu.etaxonomy.dataportal.elements.TaxonNodeStatusElement.TaxonNodeStatusDa
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonPage;
+import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
  * Issues to be covered by this TestClass:
@@ -48,28 +49,39 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
     public void test_casus_dubius() throws MalformedURLException {
 
         TaxonPage p = new TaxonPage(driver, getContext(), casus_dubius_uuid);
+        casus_dubius_assertions(p);
+    }
 
+    @Test
+    public void test_casus_dubius_synonymy() throws MalformedURLException {
+
+        TaxonPage p = new TaxonSynonymyPage(driver, getContext(), casus_dubius_uuid);
+        casus_dubius_assertions(p);
+    }
+
+    private void casus_dubius_assertions(TaxonPage p) {
+    
         assertTrue("Expecting plural",p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Classificatorical states: "));
-
+    
         List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
         assertEquals(1, statusElements.size());
         TaxonNodeStatusElement statusElement = statusElements.get(0);
         assertEquals(2, statusElement.getTaxonNodeStatus().size());
-
+    
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
         assertEquals("TaxonNode", tnsData_0.getTaxonNodeRef().getCdmType());
         assertEquals("402ea023-07be-4335-9274-1c3e30a7df3f", tnsData_0.getTaxonNodeRef().getUuid().toString());
         assertEquals("doubtful", tnsData_0.getStatusText().trim());
-
+    
         assertEquals("Classification", tnsData_0.getClassificationRef().getCdmType());
         assertEquals("2ab81d37-125d-47e6-8450-6aafd5f4b043", tnsData_0.getClassificationRef().getUuid().toString());
         assertEquals("[My Classification]", tnsData_0.getClassficationText());
-
+    
         TaxonNodeStatusData tnsData_1 = statusElement.getTaxonNodeStatus().get(1);
         assertEquals("excluded, unplaced", tnsData_1.getStatusText().trim());
         assertEquals("5b217667-d4f4-4ae7-8ab9-b2ceb599d7d0", tnsData_1.getTaxonNodeRef().getUuid().toString());
         assertEquals("TaxonNode", tnsData_1.getTaxonNodeRef().getCdmType());
-
+    
         assertEquals("Classification", tnsData_1.getClassificationRef().getCdmType());
         assertEquals("41414d01-34f8-48de-9c2a-7c635167a23e", tnsData_1.getClassificationRef().getUuid().toString());
         assertEquals("[Alternative Classification]", tnsData_1.getClassficationText());
