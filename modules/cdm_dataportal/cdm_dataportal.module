@@ -649,6 +649,15 @@ function cdm_dataportal_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  // Optional callback arguments: page.
+  $items['cdm_dataportal/registration'] = array(
+    'page callback' => 'cdm_dataportal_registration_page_view',
+    'access arguments' => array('access cdm content'),
+    'type' => MENU_CALLBACK,
+    // Expected callback arguments: uuid.
+  );
+
+  // ------------ SEARCH -----------
   $items['cdm_dataportal/search/advanced'] = array(
     'title' => 'Advanced', // will be passed through t()
     'page callback' => 'cdm_dataportal_view_search_advanced',
@@ -673,7 +682,6 @@ function cdm_dataportal_menu() {
     'access arguments' => array('access cdm content'),
     'type' => MENU_CALLBACK,
   );
-
 
   $items['cdm_dataportal/search/results/specimen'] = array(
       'page callback' => 'cdm_dataportal_view_search_results_specimen',
@@ -715,21 +723,7 @@ function cdm_dataportal_menu() {
     'type' => MENU_LOCAL_TASK,
   );
 
-  // Optional callback arguments: page.
-  $items['cdm_dataportal/registration'] = array(
-    'page callback' => 'cdm_dataportal_registration_page_view',
-    'access arguments' => array('access cdm content'),
-    'type' => MENU_CALLBACK,
-    // Expected callback arguments: uuid.
-  );
-
-  /*
-   $items['cdm/xml2json'] = array(
-   'page callback' => 'cdm_view_xml2json',
-   'access arguments' => array('access cdm content'),
-   'type' => MENU_CALLBACK,
-   );
-   */
+  // ------------ menu items with variable path elements -----------
 
   // 'May not cache' in D5.
   $items['cdm_dataportal/name/%'] = array(
