@@ -822,6 +822,7 @@ function compose_extensions($extensions)
 function compose_identifiers($identifiers){
 
   $render_array = [];
+  //     // urn:lsid:ipni.org:authors:20009164-1 UUID_IDENTIFIER_TYPE_LSID
   foreach($identifiers as $identifier){
     if($identifier->identifier){
       $render_array[] = markup_to_render_array('<span class="label">' . $identifier->type->representation_L10n . ':</span> ' . $identifier->identifier, null, '<span class="'. html_class_attribute_ref($identifier) . '">', '</span>');
