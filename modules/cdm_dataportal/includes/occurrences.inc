@@ -737,6 +737,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
         } // END of loop over $derivedUnitFacade fields
 
         // Extensions
+        // TODO: filter by using visible_extensions_sorted()
         $extensions = cdm_ws_fetch_all(CDM_WS_PORTAL_OCCURRENCE . '/'  . $specimen_or_observation->uuid . '/extensions', array($specimen_or_observation->uuid));
         if ($extensions && count($extensions)) {
 

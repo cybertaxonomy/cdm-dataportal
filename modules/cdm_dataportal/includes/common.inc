@@ -756,6 +756,23 @@ function compose_cdm_contact($contact, $title, $weight = 0)
 
 }
 
+function visible_extensions_sorted($cdm_entity) {
+
+  $visible_extensions_sorted = [];
+  $extension_types_visible = variable_get(EXTENSION_TYPES_VISIBLE, unserialize(EXTENSION_TYPES_VISIBLE_DEFAULT));
+  if (isset($cdm_entity->extensions)) {
+    foreach ($cdm_entity->extensions as $ext) {
+      if (array_search($ext->type->uuid, $extension_types_visible)) {
+        if (!array_key_exists($ext->type->uuid, $visible_extensions_sorted)) {
+          $visible_extensions_sorted[$ext->type->uuid] = [];
+        }
+        $visible_extensions_sorted[$ext->type->uuid][] = $ext;
+      }
+    }
+  }
+  return $visible_extensions_sorted;
+}
+
 /**
  * Compose an render array from a CDM Extension objects.
  *
