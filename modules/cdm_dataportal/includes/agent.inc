@@ -12,6 +12,10 @@
  */
 function compose_agent($agent, $enclosing_tag) {
 
+  $render_array = [];
+  $name_caches = $agent->titleCache;
+
+
   $name_details = [];
   if($agent->familyName){
     $name_details[] = '<span class="label">' . t('Family name') . ': </span>'. $agent->familyName;
@@ -19,10 +23,12 @@ function compose_agent($agent, $enclosing_tag) {
   if($agent->givenName){
     $name_details[] = '<span class="label">' . t('Given name') . ': </span>'. $agent->givenName;
   }
-  $details[] = join(', ', $name_details);
-  if($details[0]) {
-    $details[0] = ' (' . $details[0] . ')';
+  $name_details_markup = ' (' .  join(', ', $name_details) .')';
+  if($agent->nomenclaturalTitle != $agent->titleCache){
+    $name_details_markup .=  ' ' . $agent->nomenclaturalTitle;
   }
+
+  $details[] = $name_details_markup;
   if($agent->lifespan){
     // as first element after the titleCache
     $lifespan_text = timePeriodToString($agent->lifespan);
@@ -30,6 +36,7 @@ function compose_agent($agent, $enclosing_tag) {
       array_unshift($details, ", " . $lifespan_text);
     }
   }
+  $visible_extensions_sorted = visible_extensions_sorted($agent);
   // FIXME:-------------------------------
   // 7d1a269b-9bdd-44eb-beba-2f8acee941af is the phycobank specific ext type for "Life span" which will become obsolte!!!!
   if(isset($visible_extensions_sorted['7d1a269b-9bdd-44eb-beba-2f8acee941af'])){
@@ -39,7 +46,6 @@ function compose_agent($agent, $enclosing_tag) {
   }
   // ------------------------------------
   // extensions
-  $visible_extensions_sorted = visible_extensions_sorted($agent);
   $extensions = [];
   foreach ($visible_extensions_sorted as $type_uuid => $exts){
     foreach ($exts as $ext){
@@ -65,7 +71,7 @@ function compose_agent($agent, $enclosing_tag) {
 
   $details_markup = join(' ', $details);
 
-  $render_array = markup_to_render_array($agent->titleCache . $details_markup, null, '<' . $enclosing_tag . ' class="' . html_class_attribute_ref($agent) . '">', '</' . $enclosing_tag . '>');
+  $render_array = markup_to_render_array($name_caches . $details_markup, null, '<' . $enclosing_tag . ' class="' . html_class_attribute_ref($agent) . '">', '</' . $enclosing_tag . '>');
 
   return $render_array;
 }
