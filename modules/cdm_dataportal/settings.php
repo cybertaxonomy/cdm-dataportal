@@ -63,8 +63,17 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
     $annotationTypeKeys[] = 'NULL_VALUE';
   }
 
-  define('ANNOTATION_TYPES_VISIBLE', 'annotations_types_as_footnotes');
-  define('ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT', serialize($annotationTypeKeys));
+  const ANNOTATION_TYPES_VISIBLE = 'annotations_types_as_footnotes';
+  define('ANNOTATION_TYPES_VISIBLE_DEFAULT', serialize($annotationTypeKeys));
+
+/* extensionTypeKeys */
+$extensionTypeKeys = array_keys(cdm_vocabulary_as_option(UUID_EXTENSION_TYPE));
+if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $extensionTypeKeys)) {
+  // Additional value for the NULL case.
+  $extensionTypeKeys[] = 'NULL_VALUE';
+}
+const EXTENSION_TYPES_VISIBLE = 'annotations_types_as_footnotes';
+define('EXTENSION_TYPES_VISIBLE_DEFAULT', serialize($annotationTypeKeys));
 
   define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE', 'bibliography_for_original_source');
   define('BIBLIOGRAPHY_FOR_ORIGINAL_SOURCE_DEFAULT', serialize(array(
@@ -1571,13 +1580,31 @@ function cdm_settings_layout() {
   $annotationTypeOptions = cdm_terms_by_type_as_option('AnnotationType');
   // Additional option for the NULL case.
   $annotationTypeOptions['NULL_VALUE'] = t('untyped');
-  $annotationsTypesAsFootnotes = variable_get(ANNOTATION_TYPES_VISIBLE, unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT));
+  $annotationsTypesVisible = variable_get(ANNOTATION_TYPES_VISIBLE, unserialize(EXTENSION_TYPES_VISIBLE_DEFAULT));
   $form['annotations'][ANNOTATION_TYPES_VISIBLE] = array(
     '#type' => 'checkboxes',
     '#title' => t('Visbility of annotation types'),
     '#description' => t("Only annotations of the selected type will be displayed. You may want to turn 'technical annotations' off."),
     '#options' => $annotationTypeOptions,
-    '#default_value' => $annotationsTypesAsFootnotes
+    '#default_value' => $annotationsTypesVisible
+  );
+
+  $form['extensions'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Extensions'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#description' => t('This sections allows configuring global settings regarding the data type extensions.'),
+  );
+
+  $extensionTypeOptions = cdm_terms_by_type_as_option('ExtensionType');
+  $extensionTypesVisible = variable_get(EXTENSION_TYPES_VISIBLE, unserialize(EXTENSION_TYPES_VISIBLE_DEFAULT));
+  $form['extensions'][EXTENSION_TYPES_VISIBLE] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Visbility of extension types'),
+    '#description' => t("Only extensions of the selected type will be displayed."),
+    '#options' => $extensionTypeOptions,
+    '#default_value' => $extensionTypesVisible
   );
 
 
