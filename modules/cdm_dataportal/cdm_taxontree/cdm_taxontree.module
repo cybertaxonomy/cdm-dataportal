@@ -110,10 +110,13 @@ function cdm_taxontree_block_view($delta) {
       return $block;
 
   }
+  return null;
 }
 
 /**
  * Implements hook_block_configure().
+ *
+ * @param $delta
  */
 function cdm_taxontree_block_configure($delta) {
 
@@ -128,7 +131,7 @@ function cdm_taxontree_block_configure($delta) {
           '#options' => array('taxon_page' => 'Taxon pages', 'search_registrations' =>'Registration search page' ),
         );
 
-        /* TODO The option to use the cdm_taxontree for drupal vocabulaties also has been removed, the below code should be
+        /* TODO The option to use the cdm_taxontree for drupal vocabularies also has been removed, the below code should be
            removed, see #7565
         $vocs = taxonomy_get_vocabularies();
         $options = array();
@@ -148,6 +151,9 @@ function cdm_taxontree_block_configure($delta) {
 
 /**
  * Implements hook_block_save().
+ *
+ * @param $delta
+ * @param $edit
  */
 function cdm_taxontree_block_save($delta, $edit) {
 
@@ -157,24 +163,28 @@ function cdm_taxontree_block_save($delta, $edit) {
         /* TODO The option to use the cdm_taxontree for drupal vocabulaties also has been removed, the below code should be
            removed, see #7565
         variable_set('cdm_taxontree_block_1_vid', $edit['vid']);
-        return;
-        */
+        */;
     }
-
 }
 
 /**
  * Implements hook_help().
+ *
+ * @param $path
+ * @param $arg
  */
 function cdm_taxontree_help($path, $arg) {
   switch ($path) {
     case 'admin/modules#description':
       return t('Defines a selection widget for massive taxonomy structures.');
   }
+  return null;
 }
 
 /**
  * Implements hook_field_info().
+ *
+ * @return array
  */
 function cdm_taxontree_field_info() {
   return array(
