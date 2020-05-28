@@ -785,7 +785,7 @@ function visible_extensions_sorted($cdm_entity) {
  */
 function compose_extensions($extensions)
 {
-  $extensions_render_array= null;
+  $render_array= null;
   $extensions_by_type = array();
   foreach ($extensions as $extension) {
     if (@is_string($extension->value)) {
@@ -801,12 +801,35 @@ function compose_extensions($extensions)
     foreach ($extensions_by_type as $type_label => $text_list) {
       @_description_list_group_add($sub_dl_groups, $type_label . ':', $text_list);
     }
-    $extensions_render_array = array(
+    $render_array = array(
       array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
     );
-    return $extensions_render_array;
+    return $render_array;
   }
-  return $extensions_render_array;
+  return $render_array;
+}
+
+/**
+ * Compose an render array from a CDM Identifier objects.
+ *
+ * @param $extensions
+ *    An array of CDM Identifier objects
+ * @return array
+ *   A render array containing the fields of the supplied $sequence
+ *
+ * @ingroup compose
+ */
+function compose_identifiers($identifiers){
+
+  $render_array = [];
+  foreach($identifiers as $identifier){
+    if($identifier->identifier){
+      $render_array[] = markup_to_render_array('<span class="label">' . $identifier->type->representation_L10n . ':</span> ' . $identifier->identifier, null, '<span class="'. html_class_attribute_ref($identifier) . '">', '</span>');
+    }
+  }
+
+  return $render_array;
+
 }
 
 function formatParams($params) {

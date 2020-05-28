@@ -23,6 +23,7 @@
   module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
 
   module_load_include('inc', 'cdm_dataportal', 'includes/common');
+  module_load_include('inc', 'cdm_dataportal', 'includes/agent');
   module_load_include('inc', 'cdm_dataportal', 'includes/name');
   module_load_include('inc', 'cdm_dataportal', 'includes/taxon');
   module_load_include('inc', 'cdm_dataportal', 'includes/taxon-node');
@@ -721,6 +722,14 @@ function cdm_dataportal_menu() {
     'page arguments' => array("taxongraph"),
     'access arguments' => array('access cdm content'),
     'type' => MENU_LOCAL_TASK,
+  );
+
+  // Optional callback arguments: page.
+  $items['cdm_dataportal/search/agent'] = array(
+    'page callback' => 'cdm_dataportal_view_search_agent',
+    'access arguments' => array('access cdm content'),
+    'type' => MENU_CALLBACK,
+    // Expected callback arguments: uuid.
   );
 
   // ------------ menu items with variable path elements -----------
@@ -2048,7 +2057,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     "name.nomenclaturalReference.inReference.inReference.authorship",
     "name.nomenclaturalReference.inReference.inReference.inReference.authorship"
   );
-  $taxa = cdm_ws_fetch_all_by_restriction("Taxon", $restrictions, $init_strategy);
+  $taxa = cdm_ws_fetch_all_by_restriction("Taxon", NULL, $restrictions, $init_strategy);
 
   // Removing the name where we came from.
   foreach ($taxa as $k => &$taxon) {
@@ -2304,9 +2313,26 @@ function cdm_dataportal_view_search_registrations_results($mode = 'filter') {
   drupal_set_title(t('Search registrations'), PASS_THROUGH);
 
   $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
-  $registrations_pager_array = compose_registrations_search_results($registration_pager);
+  $registrations_pager_array = compose_search_results($registration_pager, new RegistrationDTOComposeHandler());
   $render_array = array_merge($render_array, $registrations_pager_array);
 
+  return $render_array;
+}
+
+/**
+ * Executes the search for registrations and generates the result list..
+ */
+function cdm_dataportal_view_search_agent() {
+
+  $render_array = [];
+  $title = isset($_REQUEST['class']) && $_REQUEST['class'] ? $_REQUEST['class'] : 'Persons & Teams';
+  drupal_set_title(t($title), PASS_THROUGH);
+  // TODO $block = block_load('cdm_dataportal', 'search_agent_filter');
+  // $block->title = null;
+  // $render_array = _block_get_renderable_array(_block_render_blocks(array($block)));
+  $pager = cdm_dataportal_search_agent_execute();
+  $pager_render_array = compose_search_results($pager, new AgentComposeHandler());
+  $render_array = array_merge($render_array, $pager_render_array);
   return $render_array;
 }
 

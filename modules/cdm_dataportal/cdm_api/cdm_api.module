@@ -971,6 +971,12 @@ function cdm_ws_base_uri($cdm_type_simple)
       $ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
       break;
 
+    case 'Person':
+    case 'Team':
+    case 'AgentBase':
+      $ws_base_uri = CDM_WS_AGENT;
+      break;
+
     case 'PolytomousKey':
     case 'MediaKey':
     case 'MultiAccessKey':
@@ -1029,6 +1035,8 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber, array $query = array(
  * Sends a http GET request to the generic page method which allows for filtering entities by Restrictions.
  *
  * @param $cdm_entity_type
+ * @param $class_restriction
+ *   Optional param to narrow down polymorph types to a specific type.
  * @param array $restrictions
  *   An array of Restriction objects
  * @param array $init_strategy
@@ -1045,23 +1053,27 @@ function cdm_ws_page($resourceURI, $pageSize, $pageNumber, array $query = array(
  *
  * @return object
  *   A CDM Pager object
- *
  */
-function cdm_ws_page_by_restriction($cdm_entity_type, array $restrictions, array $init_strategy, $page_size, $page_index) {
+function cdm_ws_page_by_restriction($cdm_entity_type, $class_restriction, array $restrictions, array $init_strategy, $page_size, $page_index) {
 
   $restrictions_json = array(); // json_encode($restrictions);
   foreach ($restrictions as $restr){
     $restrictions_json[] = json_encode($restr);
   }
+  $filter_parameters = [
+    'restriction' => $restrictions_json,
+    'initStrategy' => $init_strategy
+  ];
+  if($class_restriction){
+    $filter_parameters['class'] = $class_restriction;
+  }
+
   return cdm_ws_page(
       'portal/' . cdm_ws_base_uri($cdm_entity_type),
       $page_size,
       $page_index,
-      array(
-        'restriction' => $restrictions_json,
-        'initStrategy' => $init_strategy
-      ),
-      "GET"
+    $filter_parameters,
+    "GET"
     );
 }
 
@@ -1069,32 +1081,25 @@ function cdm_ws_page_by_restriction($cdm_entity_type, array $restrictions, array
  * Fetches all entities returned by the the generic page method for the Restrictions applied as filter.
  *
  * @param $cdm_entity_type
+ * @param $class_restriction
+ *   Optional param to narrow down polymorph types to a specific type.
  * @param array $restrictions
  *   An array of Restriction objects
  * @param array $init_strategy
  *   The init strategy to initialize the entity beans while being loaded from the
  *   persistent storage by the cdm
- * @param int $page_size
- *   The maximum number of entities returned per page.
- *   The default page size as configured in the cdm server
- *   will be used if set to NULL
- *   to return all entities in a single page).
- * @param int $page_index
- *   The number of the page to be returned, the first page has the
- *   pageNumber = 0
  *
  * @return array
  *   A array of CDM entities
- *
  */
-function cdm_ws_fetch_all_by_restriction($cdm_entity_type, array $restrictions, array $init_strategy){
+function cdm_ws_fetch_all_by_restriction($cdm_entity_type, $class_restriction, array $restrictions, array $init_strategy){
   $page_index = 0;
   // using a bigger page size to avoid to many multiple requests
   $page_size = 500;
   $entities = array();
 
   while ($page_index !== FALSE && $page_index < 1){
-    $pager =  cdm_ws_page_by_restriction($cdm_entity_type, $restrictions, $init_strategy, $page_size, $page_index);
+    $pager =  cdm_ws_page_by_restriction($cdm_entity_type, $class_restriction, $restrictions, $init_strategy, $page_size, $page_index);
     if(isset($pager->records) && is_array($pager->records)) {
       $entities = array_merge($entities, $pager->records);
       if(!empty($pager->nextIndex)){
@@ -1795,7 +1800,7 @@ function cdm_fetch_visible_annotations($cdmBase){
 
   static $annotations_types_filter = null;
   if(!$annotations_types_filter) {
-    $annotations_types_filter = unserialize(ANNOTATIONS_TYPES_AS_FOOTNOTES_DEFAULT);
+    $annotations_types_filter = unserialize(EXTENSION_TYPES_VISIBLE_DEFAULT);
   }
   return cdm_ws_getAnnotationsFor($cdmBase, variable_get(ANNOTATION_TYPES_VISIBLE, $annotations_types_filter));
 }

@@ -4,8 +4,9 @@
  * Search related functions.
  */
 
-define("SESSION_KEY_SEARCH_REGISTRATION_FILTER", "SESSION_KEY_SEARCH_REGISTRATION_FILTER");
-define('SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER', 'SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER');
+const SESSION_KEY_SEARCH_REGISTRATION_FILTER = "SESSION_KEY_SEARCH_REGISTRATION_FILTER";
+const SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER = 'SESSION_KEY_SEARCH_TAXONGRAPH_FOR_REGISTRATION_FILTER';
+const SESSION_KEY_SEARCH_AGENT_FILTER = 'SEARCH_AGENT_FILTER';
 
 /**
  * Returns a Drupal path to a search form for a CDM webservice.
@@ -1001,7 +1002,11 @@ function cdm_dataportal_search_registrations_taxongraph_execute()
 
 /**
  * @param $session_key
+ *   The key to be used for storing the search params in $_SESSION['cdm'][]
  * @param $query_param_map
+ *    An array which maps the filter_key to the web service query parameter.
+ *    The filter key may be used as form element name or as drupal url
+ *    query parameter.
  * @return array
  */
 function cdm_dataportal_search_request_params($session_key, $query_param_map)
@@ -1191,7 +1196,7 @@ function cdm_dataportal_search_registration_taxongraph_form($form, &$form_state)
 /**
  * Compose the result set of a registration search from a pager object
  *
- * @param $registration_pager
+ * @param $cdm_item_pager
  *    The pager containing registration objects
  *
  * @return
@@ -1201,18 +1206,18 @@ function cdm_dataportal_search_registration_taxongraph_form($form, &$form_state)
  *
  * TODO compose function into search.inc ?
  */
-function compose_registrations_search_results($registration_pager){
+function compose_search_results($cdm_item_pager, ItemComposeHandler $item_compose_handler){
 
   $render_array = array();
   $render_array['pre'] = markup_to_render_array("<div class=\"cdm-item-list\">");
 
-  if($registration_pager != null && count($registration_pager->records) > 0){
+  if($cdm_item_pager != null && count($cdm_item_pager->records) > 0){
     $items_render_array = array();
-    foreach($registration_pager->records as $registration_dto) {
+    foreach($cdm_item_pager->records as $registration_dto) {
 
       $items_render_array[]  = array(
-        '#prefix' => "<div class=\"item\"><div class=\"" . html_class_attribute_ref(new TypedEntityReference("Registration", $registration_dto->uuid)) . "\">",
-         'item_data' => compose_registration_dto_compact($registration_dto, 'item-style', 'div'),
+        '#prefix' => "<div class=\"item\"><div class=\"" . $item_compose_handler->getClassAttributes($registration_dto) . "\">",
+         'item_data' => $item_compose_handler->composeItem($registration_dto),
         '#suffix' => "</div></div>"
         );
       ;
@@ -1220,13 +1225,13 @@ function compose_registrations_search_results($registration_pager){
 
     $render_array['items'] = $items_render_array;
     $render_array['pager'] =  markup_to_render_array(theme('cdm_pager', array(
-          'pager' => $registration_pager,
+          'pager' => $cdm_item_pager,
           'path' => $_REQUEST['q'], // stay on same page
           'parameters' => $_REQUEST,
         )));
 
   } else {
-    if($registration_pager != null && $registration_pager->count > 0 && count($registration_pager->records) == 0){
+    if($cdm_item_pager != null && $cdm_item_pager->count > 0 && count($cdm_item_pager->records) == 0){
       $render_array['items'] = markup_to_render_array("<div id=\"no_results\">Result page out of range.</div>");
     } else {
       $render_array['items'] = markup_to_render_array("<div id=\"no_results\">No results found.</div>");
@@ -1237,3 +1242,44 @@ function compose_registrations_search_results($registration_pager){
   return $render_array;
 
 }
+
+
+/**
+ * Sends a search request for agents to the cdm server.
+ */
+function cdm_dataportal_search_agent_execute()
+{
+
+  static $query_param_map = array(
+    'markerType' => 'markerType',
+    'cdmType' => 'class'
+  );
+
+  $session_key = SESSION_KEY_SEARCH_AGENT_FILTER;
+  $request_params = cdm_dataportal_search_request_params($session_key, $query_param_map);
+
+  // cleanup
+  if(isset($request_params['taxonNameFilter'])){
+    // trim and remove empty taxon name query strings
+    $request_params['taxonNameFilter'] = trim($request_params['taxonNameFilter']);
+    if(!$request_params['taxonNameFilter']){
+      unset($request_params['taxonNameFilter']);
+    }
+  }
+  $restrictions = array(new Restriction("markers.markerType.uuid","EXACT", array($request_params['markerType']), 'AND'));
+  $init_strategy = array(
+    "$",
+    "titleCache",
+    "extensions.$",
+    "identifiers.type"
+  );
+
+  $type_restriction = null;
+  if(isset($query_param_map['class']) && ($query_param_map['class'] == 'Team' || $query_param_map['class'] == 'Person')){
+    $type_restriction = $query_param_map['class'];
+  }
+  $pager = cdm_ws_page_by_restriction('AgentBase', $type_restriction, $restrictions, $init_strategy, 50, 0);
+
+  return $pager;
+}
+

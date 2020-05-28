@@ -10,6 +10,8 @@ files[] = classes/footnotekey.php
 files[] = classes/footnotemanager.php
 files[] = classes/renderhints.php
 files[] = classes/TypedEntityReference.php
-
+files[] = classes/ItemComposeHandler.php
+files[] = classes/RegistrationDtoComposeHandler.php
+files[] = classes/AgentComposeHandler.php
 
 configure = admin/config/cdm_dataportal/settings
