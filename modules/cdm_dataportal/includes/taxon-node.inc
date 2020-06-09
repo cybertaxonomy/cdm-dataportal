@@ -45,7 +45,7 @@ function compose_taxon_node_status(array $taxon_nodes){
     if(count($state_markup_tokens) > 0){
       $state_markup = [];
       $label_plural |= count($state_markup_tokens) > 1;
-      $label = $label_plural ? t('Classificatorical states') : t('Classificatorical state');
+      $label = $label_plural ? t('Placement status') : t('Placement status');
       if(count($state_markup_tokens) > 1){
         foreach ($state_markup_tokens as $tokes){
           $state_markup[] = sprintf($tokes['states'], $tokes['classification']);
