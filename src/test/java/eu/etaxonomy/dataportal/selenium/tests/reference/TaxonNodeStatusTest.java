@@ -61,7 +61,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
     private void casus_dubius_assertions(TaxonPage p) {
 
-        assertTrue("Expecting plural",p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Classificatorical states: "));
+        assertTrue(p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
         List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
         assertEquals(1, statusElements.size());
@@ -92,7 +92,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
         TaxonPage p = new TaxonPage(driver, getContext(), casus_noninsolor_uuid);
 
-        assertTrue("Expecting sigular", p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Classificatorical state: "));
+        assertTrue("Expecting sigular", p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
         List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
         assertEquals(1, statusElements.size());
@@ -113,7 +113,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
         TaxonPage p = new TaxonPage(driver, getContext(), casus_admirabilis_uuid);
 
-        assertTrue("Expecting plural",p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Classificatorical state: "));
+        assertTrue(p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
         List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
         assertEquals(1, statusElements.size());
@@ -132,7 +132,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
         TaxonPage p = new TaxonPage(driver, getContext(), casus_exosrs_uuid);
 
-        assertTrue("Expecting sigular", p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Classificatorical state: "));
+        assertTrue("Expecting sigular", p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
         List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
         assertEquals(1, statusElements.size());
