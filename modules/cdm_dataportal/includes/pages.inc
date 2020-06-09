@@ -285,7 +285,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   // -------------------------------------------- //
 
-  if(variable_get(CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES, 1)){
+  if(variable_get(CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES, 1) && ( $page_part == 'description' || $page_part == 'synonymy' || $page_part == 'all')){
     $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, array($taxon->uuid));
     $render_array['taxon_node_status'] = compose_taxon_node_status($taxon_nodes);
     $render_array['taxon_node_status']['#weight'] = -100;
