@@ -867,6 +867,17 @@ table.cdm\:Reference {
 }
 
 /*
+ * ======= Persons ======
+ */
+.cdm\:Person .names-and-lifespan, .cdm\:Person .name-details {
+    display: inline-block;
+}
+
+.cdm\:Person .names-and-lifespan {
+    font-weight: bold;
+}
+
+/*
  * Overriding default style from drupal?
  * This prohibits select elements from overflowing the parent container
  */
