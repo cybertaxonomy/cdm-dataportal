@@ -33,8 +33,8 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
 
   define('SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT', 1);
   define('SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX', 'search_results_show_thumbnail_checkbox');
-
-  define('CDM_DATAPORTAL_NOMREF_IN_TITLE', 1);
+ const CDM_DATAPORTAL_NOMREF_IN_TITLE = 'cdm_dataportal_nomref_in_title';
+ const CDM_DATAPORTAL_NOMREF_IN_TITLE_DEFAULT =  1;
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE', 50);
   define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 0);
@@ -2597,7 +2597,7 @@ ie	introduced: formerly introduced
   $form['taxon_synonymy']['cdm_dataportal_nomref_in_title'] = array(
     '#type' => 'checkbox',
     '#title' => t('Accepted taxon on top of the synonymy'),
-    '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE),
+    '#default_value' => variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE_DEFAULT),
     '#description' => t('If checked, the first homotypic taxon is a repetition
       of the accepted taxon most likely with the full nomenclatural reference, 
       depending on the ' . l('Name render templates', 'admin/config/cdm_dataportal/settings/layout') . '.'),
@@ -2610,7 +2610,7 @@ ie	introduced: formerly introduced
     '#description' => t('You may want to remove the <code>"secReferencePart": true,</code> entry from <code>"accepted_taxon.taxon_page_synonymy"{</code> the in the '
       . l('Name render templates', 'admin/config/cdm_dataportal/settings/layout')
       . ' (Only applicable when the "Show accepted taxon on top of the synonymy" option above is enabled.)'),
-    '#disabled' =>  !variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE)
+    '#disabled' =>  !variable_get(CDM_DATAPORTAL_NOMREF_IN_TITLE, CDM_DATAPORTAL_NOMREF_IN_TITLE_DEFAULT)
   );
 
   $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL] = array(

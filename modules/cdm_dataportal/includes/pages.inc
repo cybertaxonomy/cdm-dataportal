@@ -333,7 +333,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
     if ($page_part == 'all') {
       $synonymy_html .= '<h2>' . t(cdm_taxonpage_tab_label('Synonymy')) . '</h2>';
     }
-    $addAcceptedTaxon = variable_get('cdm_dataportal_nomref_in_title', CDM_DATAPORTAL_NOMREF_IN_TITLE);
+    $addAcceptedTaxon = variable_get(CDM_DATAPORTAL_NOMREF_IN_TITLE, CDM_DATAPORTAL_NOMREF_IN_TITLE_DEFAULT);
 
     $synonym_a = compose_cdm_taxon_page_synonymy($taxon, $addAcceptedTaxon);
     $synonymy_html .= drupal_render($synonym_a);
@@ -391,7 +391,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   // set up the TOC for the pages which contain all pageparts
   if($page_part == 'all') {
-
+    $toc_elements = [];
     asort($taxontabs_weights);
     foreach(array_keys($taxontabs_weights) as $tab_key){
       if(isset($render_array[$tab_key])){
@@ -434,6 +434,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
         '#suffix' => '</div>',
         '#prefix'=> '<div id="page-toc">'
     );
+
   }
 
 
@@ -543,6 +544,8 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   if($add_synonymy){
     $synonymy_a = compose_cdm_taxon_page_synonymy($taxon, true);
     $synonymy_a['#weight'] = -102;
+    $synonymy_a['#prefix'] = '<div id="synonymy">';
+    $synonymy_a['#suffix'] = '</div>';
     $render_array['synonymy'] = $synonymy_a;
   }
 
