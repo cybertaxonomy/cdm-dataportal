@@ -21,6 +21,7 @@ function compose_agent($agent, $enclosing_tag) {
 
   $visible_extensions_sorted = visible_extensions_sorted($agent);
   // FIXME:-------------- "Life span" as Extension -------------
+  $lifespan_extension = null;
   // 7d1a269b-9bdd-44eb-beba-2f8acee941af is the phycobank specific ext type for "Life span" which will become obsolete!!!!
   if(isset($visible_extensions_sorted['7d1a269b-9bdd-44eb-beba-2f8acee941af'])){
     // as first element after the titleCache
@@ -28,7 +29,7 @@ function compose_agent($agent, $enclosing_tag) {
     unset($visible_extensions_sorted['7d1a269b-9bdd-44eb-beba-2f8acee941af']);
   }
   // ------------------------------------
-  if(!$names_and_lifespan && $agent->lifespan){
+  if(!$lifespan_extension && $agent->lifespan){
     $names_and_lifespan .= ', ' . timePeriodToString($agent->lifespan);
   } else {
     $names_and_lifespan .= ", " . $lifespan_extension;
