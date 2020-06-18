@@ -70,7 +70,6 @@ dd.sublist-container div dl , dd.sublist-container div h3 {
   margin-left: -1em; /* Same as ul.typeDesignations. */
   margin-right: 0.3em;
   float: left;
-  font-family: Arial, sans-serif;
 }
 
 .highlite {
