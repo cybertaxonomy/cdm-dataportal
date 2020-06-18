@@ -15,7 +15,7 @@ function compose_agent($agent, $enclosing_tag) {
 
   $names_and_lifespan = $agent->titleCache;
 
-  if($agent->nomenclaturalTitle != $agent->titleCache){
+  if(isset($agent->nomenclaturalTitle) && $agent->nomenclaturalTitle != $agent->titleCache){
     $names_and_lifespan .=  ' [' . $agent->nomenclaturalTitle . ']';
   }
 
@@ -29,7 +29,7 @@ function compose_agent($agent, $enclosing_tag) {
     unset($visible_extensions_sorted['7d1a269b-9bdd-44eb-beba-2f8acee941af']);
   }
   // ------------------------------------
-  if(!$lifespan_extension && $agent->lifespan){
+  if(!$lifespan_extension && isset($agent->lifespan)){
     $names_and_lifespan .= ', ' . timePeriodToString($agent->lifespan);
   } else {
     $names_and_lifespan .= ", " . $lifespan_extension;
@@ -38,13 +38,16 @@ function compose_agent($agent, $enclosing_tag) {
   $names_and_lifespan_markup = '<div class="names-and-lifespan">' . $names_and_lifespan . '</div> ';
 
   $name_details = [];
-  if($agent->familyName){
-    $name_details[] = '<span class="label">' . t('Family name') . ': </span>'. $agent->familyName;
+  $name_details_markup = '';
+  if(isset($agent->familyName) || isset($agent->givenName)){
+    if(isset($agent->familyName)){
+      $name_details[] = '<span class="label">' . t('Family name') . ': </span>'. $agent->familyName;
+    }
+    if(isset($agent->givenName)){
+      $name_details[] = '<span class="label">' . t('Given name') . ': </span>'. $agent->givenName;
+    }
+    $name_details_markup = ' <div class="name-details">(' .  join(', ', $name_details) .')</div> ';
   }
-  if($agent->givenName){
-    $name_details[] = '<span class="label">' . t('Given name') . ': </span>'. $agent->givenName;
-  }
-  $name_details_markup = ' <div class="name-details">(' .  join(', ', $name_details) .')</div> ';
 
   // extensions
   $extensions = [];
@@ -55,6 +58,7 @@ function compose_agent($agent, $enclosing_tag) {
       }
     }
   }
+  $extensions_markup = '';
   if(count($extensions) > 0 ){
     $extensions_markup = '<div class="extensions">' . join(', ', $extensions) . '</div>';
   }
@@ -66,7 +70,7 @@ function compose_agent($agent, $enclosing_tag) {
     $orcid_id = number_format($agent->orcid->digitsOnly, 0, '.', '-');
     $identifiers_render_array[] = markup_to_render_array(l('https://orcid.org/' . $orcid_id, 'https://orcid.org/' . $orcid_id) . ' ');
   }
-  if($agent->identifiers){
+  if(isset($agent->identifiers)){
     $identifiers_render_array = array_merge($identifiers_render_array, compose_identifiers($agent->identifiers));
   }
   if(count($identifiers_render_array) > 0){

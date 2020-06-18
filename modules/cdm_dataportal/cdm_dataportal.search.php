@@ -1266,7 +1266,10 @@ function cdm_dataportal_search_agent_execute()
       unset($request_params['taxonNameFilter']);
     }
   }
-  $restrictions = array(new Restriction("markers.markerType.uuid","EXACT", array($request_params['markerType']), 'AND'));
+  $restrictions = [];
+  if( isset($request_params['markerType'])){
+    $restrictions = array(new Restriction("markers.markerType.uuid","EXACT", array($request_params['markerType']), 'AND'));
+  }
   $init_strategy = array(
     "$",
     "titleCache",
@@ -1278,7 +1281,11 @@ function cdm_dataportal_search_agent_execute()
   if(isset($query_param_map['class']) && ($query_param_map['class'] == 'Team' || $query_param_map['class'] == 'Person')){
     $type_restriction = $query_param_map['class'];
   }
-  $pager = cdm_ws_page_by_restriction('AgentBase', $type_restriction, $restrictions, $init_strategy, 50, 0);
+  $page_index = 0;
+  if(isset($_REQUEST['pager']['pageNumber'])){
+    $page_index = $_REQUEST['pager']['pageNumber'];
+  }
+  $pager = cdm_ws_page_by_restriction('AgentBase', $type_restriction, $restrictions, $init_strategy, 50, $page_index);
 
   return $pager;
 }
