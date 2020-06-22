@@ -884,7 +884,7 @@ function compose_type_designations($taxon_name_uuid, $show_specimen_details = fa
   if ($type_designations) {
     usort($type_designations, 'compare_specimen_type_designation');
     $render_array['type_designations'] = markup_to_render_array(
-      theme('cdm_typedesignations', array('typeDesignations' => $type_designations, 'enclosing_tag' => 'div', 'element_tag' => 'div'))
+      render_type_designations($type_designations, 'div', 'div')
     );
 
     $render_array['map'] = compose_type_designations_map($type_designations);

@@ -88,13 +88,6 @@ function cdm_dataportal_theme() {
         'sources_as_content' => FALSE
     )),
     // Themes in cdm_dataportal.name.theme.
-    'cdm_typedesignations' => array('variables' => array(
-      'typeDesignations' => array(),
-      'enclosing_tag' => 'ul',
-      'element_tag' => 'li',
-      'link_to_specimen_page' => true
-       )
-    ),
     'cdm_nameRelationships' => array('variables' => array('nameRelationships' => NULL, 'skipTypes' => FALSE)),
     'cdm_homotypicSynonymLine' => array('variables' => array('taxon' => NULL)),
     'cdm_heterotypicSynonymyGroup' => array('variables' => array('homotypicalGroup' => NULL)),

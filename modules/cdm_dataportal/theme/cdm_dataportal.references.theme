@@ -18,7 +18,7 @@
  * Creates a HTML representations for a CDM Reference instance..
  *
  * Used by:
- * - theme_cdm_typedesignations
+ * - render_type_designations
  * - cdm_reference_pager
  * - cdm_taxonRelationships
  *

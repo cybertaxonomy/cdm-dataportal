@@ -445,7 +445,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             $groups,
                             cdm_occurrence_field_name_label($field),
                             array(
-                                '#markup' => theme('cdm_typedesignations', array('typeDesignations' => $value)),
+                                '#markup' => render_type_designations($value),
                             )
                         );
                         break;
@@ -1342,7 +1342,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                             $groups,
                             cdm_occurrence_field_name_label($field),
                             array(
-                                '#markup' => theme('cdm_typedesignations', array('typeDesignations' => $value)),
+                                '#markup' => render_type_designations($value),
                             )
                         );
                         break;

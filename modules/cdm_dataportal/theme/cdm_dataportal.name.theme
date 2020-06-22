@@ -63,14 +63,20 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
 /**
  * Renders and array of CDM TypeDesignations
  *
- * @param array $variables
- *   - typeDesignations: an array of cdm TypeDesignation entities to render
+ * @param object $type_designations an array of cdm TypeDesignation entities
+ *  to render
+ * @param string $enclosing_tag the tag element type to enclose the whole list
+ *  of type designation with. By default this DOM element is <ul>
+ * @param string $element_tag the tag element type to be used for each
+ *  type designation item.
+ * @param bool $link_to_specimen_page whether a specimen in type designation element
+ *  should be a link or not.
+ *
+ * @return string The markup.
+ *
+ * @InGroup Render
  */
-function theme_cdm_typedesignations($variables) {
-  $type_designations = $variables['typeDesignations'];
-  $enclosing_tag = $variables['enclosing_tag'];
-  $element_tag = $variables['element_tag'];
-  $link_to_specimen_page = $variables['link_to_specimen_page'];
+function render_type_designations($type_designations, $enclosing_tag = 'ul', $element_tag =  'li', $link_to_specimen_page = true) {
 
   // need to add element to render path since type designations
   // need other name render template
@@ -295,7 +301,7 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
   }
 
   if (count($type_designations) > 0) {
-    $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
+    $out .= render_type_designations($type_designations);
   }
   $out .= '</ul>';
 
