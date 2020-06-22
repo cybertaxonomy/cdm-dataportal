@@ -2810,15 +2810,15 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
  */
 function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_suggestion = NULL) {
 
-  $footNoteKeys = array();
+  $foot_note_keys = array();
 
   // Is argument cdmBase an array?
   if (!is_array($cdm_entities)) {
-    $cdmBase_array = array();
-    $cdmBase_array[] = $cdm_entities;
+    $enties = array();
+    $enties[] = $cdm_entities;
   }
   else {
-    $cdmBase_array = $cdm_entities;
+    $enties = $cdm_entities;
   }
 
   // Getting the key for the footnotemanager.
@@ -2830,16 +2830,16 @@ function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_sugge
   }
 
   // Adding the footnotes keys.
-  foreach ($cdmBase_array as $cdmBase_element) {
-    $annotations = cdm_fetch_visible_annotations($cdmBase_element);
+  foreach ($enties as $cdm_entity) {
+    $annotations = cdm_fetch_visible_annotations($cdm_entity);
     if (is_array($annotations)) {
       foreach ($annotations as $annotation) {
-        $footNoteKeys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation->text);
+        $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation->text);
       }
     }
   }
 
-  return $footNoteKeys;
+  return $foot_note_keys;
 }
 
 

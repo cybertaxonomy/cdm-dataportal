@@ -363,11 +363,12 @@ function cdm_create_footnotes(
     $is_bibliography_aware = FALSE
   ){
 
+  $sources = cdm_entity_sources_sorted($description_element);
+
   // Annotations as footnotes.
   $footNoteKeys = cdm_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
 
   // Source references as footnotes.
-
   if($is_bibliography_aware){
     $bibliography_settings = get_bibliography_settings();
     $sources_footnote_list_key = original_source_footnote_list_key($footnote_list_key_suggestion);
@@ -377,8 +378,7 @@ function cdm_create_footnotes(
     $original_source_footnote_tag = NULL;
   }
 
-  usort($description_element->sources, 'compare_original_sources');
-  foreach ($description_element->sources as $source) {
+  foreach ($sources as $source) {
     if (_is_original_source_type($source)) {
       $fn_key = FootnoteManager::addNewFootnote(
         $sources_footnote_list_key,
@@ -559,14 +559,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
     );
 
     // some entity types only have single sources:
-    if(isset($entity->source) && is_object($entity->source)){
-      $sources = [$entity->source];
-    } else if(isset($entity->sources)) {
-      $sources = $entity->sources;
-    } else {
-      $sources = [];
-    }
-    usort($sources, 'compare_original_sources');
+    $sources = cdm_entity_sources_sorted($entity);
 
     if ($config['sources_as_content'] == 1) {
       foreach ($sources as $source) {
@@ -622,8 +615,29 @@ function handle_annotations_and_sources_config($feature_block_settings){
     return $annotations_and_sources;
   }
 
+/**
+ * Get the source or the sources from a cdm entity and return them ordered by see compare_original_sources()
+ * (Some entity types only have single sources)
+ * @param $entity
+ *
+ * @return array
+ */
+function cdm_entity_sources_sorted($entity) {
+  if (isset($entity->source) && is_object($entity->source)) {
+    $sources = [$entity->source];
+  }
+  else if (isset($entity->sources)) {
+    $sources = $entity->sources;
+  }
+  else {
+    $sources = [];
+  }
+  usort($sources, 'compare_original_sources');
+  return $sources;
+}
 
-  /**
+
+/**
    * This method determines the footnote key for original sources to be shown in the bibliography block
    *
    * The footnote key depends on the value of the 'enabled' value of the bibliography_settings

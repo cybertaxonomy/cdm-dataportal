@@ -1002,32 +1002,42 @@ function cdm_ws_base_uri($cdm_type_simple)
 /**
  * Enter description here...
  *
- * @param string $resourceURI
- * @param int $pageSize
+ * @param string $resource_uri
+ * @param int $page_size
  *   The maximum number of entities returned per page.
  *   The default page size as configured in the cdm server
  *   will be used if set to NULL
  *   to return all entities in a single page).
- * @param int $pageNumber
+ * @param int $page_index
  *   The number of the page to be returned, the first page has the
- *   pageNumber = 0
+ *   page_index = 0
  * @param array $query
  *   A array holding the HTTP request query parameters for the request
  * @param string $method
  *   The HTTP method to use, valid values are "GET" or "POST"
- * @param bool $absoluteURI
+ * @param bool $absolute_uri
  *   TRUE when the URL should be treated as absolute URL.
  *
  * @return object
  *   A CDM Pager object
  *
  */
-function cdm_ws_page($resourceURI, $pageSize, $pageNumber, array $query = array(), $method = 'GET', $absoluteURI = FALSE) {
+function cdm_ws_page($resource_uri, $page_size, $page_index, array $query = array(), $method = 'GET', $absolute_uri = FALSE) {
 
-  $query['pageNumber'] = $pageNumber;
-  $query['pageSize'] = $pageSize;
+  $query['page_index'] = $page_index;
+  $query['page_size'] = $page_size;
 
-  return cdm_ws_get($resourceURI, NULL, queryString($query), $method, $absoluteURI);
+  $pager = cdm_ws_get($resource_uri, NULL, queryString($query), $method, $absolute_uri);
+  if(is_array($pager)){
+    drupal_set_message("Expecting web service to return pager objects but received an array:<br/>" . $resource_uri . '?' . queryString($query) . '<br/>Wrapping response in pager to recover from error.' , 'warning');
+    $records = $pager;
+    $pager = new stdClass();
+    $pager->records = $records;
+    $pager->count = count($records);
+    $pager->pageSize = $pager->count;
+    $pager->nextIndex = null;
+  }
+  return $pager;
 }
 
 
@@ -1750,32 +1760,32 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude
 }
 
 /**
- * Returns a filtered a list of annotations for the cdm entity given as parameter $cdmBase.
+ * Returns a filtered a list of annotations for the cdm entity given as parameter $cdm_entity.
  * If the annotations are not yet already loded with the cdm entity the cdm REST service will
  * be requested for the annotations.
  *
- * @param string $cdmBase
+ * @param string $cdm_entity
  *   An annotatable cdm entity.
- * @param array $includeTypes
+ * @param array $include_types
  *   If an array of annotation type uuids is supplied by this parameter the
  *   list of annotations is resticted to those which belong to this type.
  *
  * @return array
  *   An array of Annotation objects or an empty array.
  */
-function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
+function cdm_ws_getAnnotationsFor(&$cdm_entity, $include_types = FALSE) {
 
-  if(!isset($cdmBase->annotations)){
-    $annotationUrl = cdm_compose_annotations_uri($cdmBase);
-    $cdmBase->annotations = cdm_ws_fetch_all($annotationUrl, array(), 'GET', TRUE);
+  if(!isset($cdm_entity->annotations)){
+    $annotation_url = cdm_compose_annotations_uri($cdm_entity);
+    $cdm_entity->annotations = cdm_ws_fetch_all($annotation_url, array(), 'GET', TRUE);
   }
 
   $annotations = array();
-  foreach ($cdmBase->annotations as $annotation) {
-    if ($includeTypes) {
+  foreach ($cdm_entity->annotations as $annotation) {
+    if ($include_types) {
       if (
-        ( isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $includeTypes, TRUE) )
-        || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $includeTypes, TRUE))
+        ( isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $include_types, TRUE) )
+        || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $include_types, TRUE))
       ) {
         $annotations[] = $annotation;
       }
@@ -1789,20 +1799,20 @@ function cdm_ws_getAnnotationsFor(&$cdmBase, $includeTypes = FALSE) {
 }
 
 /**
- * Provides the list of visible annotations for the $cdmBase.
+ * Provides the list of visible annotations for the $cdm_entity.
  *
- * @param $cdmBase
+ * @param $cdm_entity
  *     The annotatable CDM entity
  *
  * @return array of the annotations which are visible according to the settings as stored in ANNOTATION_TYPES_VISIBLE
  */
-function cdm_fetch_visible_annotations($cdmBase){
+function cdm_fetch_visible_annotations($cdm_entity){
 
   static $annotations_types_filter = null;
   if(!$annotations_types_filter) {
     $annotations_types_filter = unserialize(EXTENSION_TYPES_VISIBLE_DEFAULT);
   }
-  return cdm_ws_getAnnotationsFor($cdmBase, variable_get(ANNOTATION_TYPES_VISIBLE, $annotations_types_filter));
+  return cdm_ws_getAnnotationsFor($cdm_entity, variable_get(ANNOTATION_TYPES_VISIBLE, $annotations_types_filter));
 }
 
 /**

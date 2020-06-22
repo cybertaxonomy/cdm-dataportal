@@ -33,7 +33,7 @@ import eu.etaxonomy.dataportal.pages.NamePage;
 @DataPortalContexts( { DataPortalSite.reference })
 public class TextualTypeDesignationTest extends CdmDataPortalTestBase{
 
-    static final UUID equisetum_arvense_n_uuid = UUID.fromString("ceebdc3f-f0ed-41df-bae1-6455316ca52a");
+    static final UUID equisetum_arvense_n_uuid = UUID.fromString("96ad7144-a898-4694-94a9-335d0cab9c24");
 
 
     @Before

@@ -1010,24 +1010,25 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
   // TextualTypeDesignation .........................
   if(!empty($textual_type_designations)) {
     foreach ($textual_type_designations as $textual_type_designation) {
-      $encasement =  $textual_type_designation->verbatim ? '"' : '';
-      $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
-        . ': ' .  $encasement . trim($textual_type_designation->text_L10n->text) . $encasement . '</' . $element_tag . '>';
       $annotations_and_sources = handle_annotations_and_sources(
         $textual_type_designation,
         array(
           'sources_as_content' => false, // as footnotes
           'link_to_name_used_in_source' => false,
           'link_to_reference' => true,
-          'add_footnote_keys' => false,
-          'bibliography_aware' => false),
+          'add_footnote_keys' => true,
+          'bibliography_aware' => false
+        ),
         '',
         RenderHints::getFootnoteListKey() // passing a defined key to avoid separate annotation footnote key see https://dev.e-taxonomy.eu/redmine/issues/8543
       );
-      $out .= $annotations_and_sources['foot_note_keys'];
-      if(is_array( $annotations_and_sources['source_references'])){
-        $citation_markup = join(', ', $annotations_and_sources['source_references']);
-      }
+      $encasement =  $textual_type_designation->verbatim ? '"' : '';
+      $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
+        . ': ' .  $encasement . trim($textual_type_designation->text_L10n->text) . $encasement .  $annotations_and_sources['foot_note_keys'] .'</' . $element_tag . '>';
+//      if(is_array( $annotations_and_sources['source_references'])){
+//        $citation_markup = join(', ', $annotations_and_sources['source_references']);
+//      }
+//      $out .= $citation_markup;
     }
   }
 
