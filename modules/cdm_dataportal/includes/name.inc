@@ -1012,7 +1012,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
     foreach ($textual_type_designations as $textual_type_designation) {
       $encasement =  $textual_type_designation->verbatim ? '"' : '';
       $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
-        . ': ' .  $encasement . $textual_type_designation->text_L10n->text . $encasement . '</' . $element_tag . '>';
+        . ': ' .  $encasement . trim($textual_type_designation->text_L10n->text) . $encasement . '</' . $element_tag . '>';
       $annotations_and_sources = handle_annotations_and_sources(
         $textual_type_designation,
         array(
