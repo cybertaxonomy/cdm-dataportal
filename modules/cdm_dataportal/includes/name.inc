@@ -884,8 +884,6 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
   RenderHints::pushToRenderStack('typedesignations');
 
   $out = '<' . $enclosing_tag .' class="typeDesignations">';
-  $typeDesignation_footnotes = FALSE;
-  $is_lectotype = FALSE;
   $specimen_type_designations = array();
   $name_type_designations = array();
   $textual_type_designations = array();
