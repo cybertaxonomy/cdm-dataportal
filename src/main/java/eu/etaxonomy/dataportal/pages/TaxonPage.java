@@ -80,7 +80,7 @@ public class TaxonPage extends PortalPage {
         return taxonNodeStatus;
     }
 
-    public List<TaxonNodeStatusElement> getTaxonNodeStatus() {
+    public List<TaxonNodeStatusElement> getTaxonNodeStates() {
         List<TaxonNodeStatusElement> statusEls = new ArrayList<>();
         List<WebElement> taxonNodeStatus = portalContent.findElements(By.className("taxon-node-status"));
         for(WebElement el : taxonNodeStatus) {

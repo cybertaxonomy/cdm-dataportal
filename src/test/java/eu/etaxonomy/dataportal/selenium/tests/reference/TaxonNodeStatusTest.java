@@ -63,7 +63,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
         assertTrue(p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
-        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
+        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStates();
         assertEquals(1, statusElements.size());
         TaxonNodeStatusElement statusElement = statusElements.get(0);
         assertEquals(2, statusElement.getTaxonNodeStatus().size());
@@ -71,7 +71,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
         assertEquals("TaxonNode", tnsData_0.getTaxonNodeRef().getCdmType());
         assertEquals("402ea023-07be-4335-9274-1c3e30a7df3f", tnsData_0.getTaxonNodeRef().getUuid().toString());
-        assertEquals("doubtful", tnsData_0.getStatusText().trim());
+        assertEquals("doubtful (The placement has been made for software testing purposes only)", tnsData_0.getStatusText().trim());
 
         assertEquals("Classification", tnsData_0.getClassificationRef().getCdmType());
         assertEquals("2ab81d37-125d-47e6-8450-6aafd5f4b043", tnsData_0.getClassificationRef().getUuid().toString());
@@ -94,7 +94,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
         assertTrue("Expecting sigular", p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
-        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
+        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStates();
         assertEquals(1, statusElements.size());
         TaxonNodeStatusElement statusElement = statusElements.get(0);
         assertEquals(1, statusElement.getTaxonNodeStatus().size());
@@ -115,7 +115,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
         assertTrue(p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
-        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
+        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStates();
         assertEquals(1, statusElements.size());
         TaxonNodeStatusElement statusElement = statusElements.get(0);
         assertEquals(1, statusElement.getTaxonNodeStatus().size());
@@ -134,7 +134,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
         assertTrue("Expecting sigular", p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
-        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStatus();
+        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStates();
         assertEquals(1, statusElements.size());
         TaxonNodeStatusElement statusElement = statusElements.get(0);
         assertEquals(1, statusElement.getTaxonNodeStatus().size());

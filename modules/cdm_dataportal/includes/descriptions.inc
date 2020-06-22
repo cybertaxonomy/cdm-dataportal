@@ -558,10 +558,18 @@ function handle_annotations_and_sources_config($feature_block_settings){
       'names_used_in_source' => array()
     );
 
-    usort($entity->sources, 'compare_original_sources');
+    // some entity types only have single sources:
+    if(isset($entity->source) && is_object($entity->source)){
+      $sources = [$entity->source];
+    } else if(isset($entity->sources)) {
+      $sources = $entity->sources;
+    } else {
+      $sources = [];
+    }
+    usort($sources, 'compare_original_sources');
 
     if ($config['sources_as_content'] == 1) {
-      foreach ($entity->sources as $source) {
+      foreach ($sources as $source) {
         if (_is_original_source_type($source)) {
           $reference_citation = render_original_source(
             $source,
