@@ -862,6 +862,194 @@ function registration_intitute_class_attribute($registration_dto)
 
 
 /**
+ * Renders and array of CDM TypeDesignations
+ *
+ * @param object $type_designations an array of cdm TypeDesignation entities
+ *  to render
+ * @param string $enclosing_tag the tag element type to enclose the whole list
+ *  of type designation with. By default this DOM element is <ul>
+ * @param string $element_tag the tag element type to be used for each
+ *  type designation item.
+ * @param bool $link_to_specimen_page whether a specimen in type designation element
+ *  should be a link or not.
+ *
+ * @return string The markup.
+ *
+ * @InGroup Render
+ */
+function render_type_designations($type_designations, $enclosing_tag = 'ul', $element_tag =  'li', $link_to_specimen_page = true) {
+
+  // need to add element to render path since type designations
+  // need other name render template
+  RenderHints::pushToRenderStack('typedesignations');
+
+  $out = '<' . $enclosing_tag .' class="typeDesignations">';
+  $typeDesignation_footnotes = FALSE;
+  $is_lectotype = FALSE;
+  $specimen_type_designations = array();
+  $name_type_designations = array();
+  $textual_type_designations = array();
+  $separator = ',';
+
+  foreach ($type_designations as $type_designation) {
+    switch ($type_designation->class) {
+      case 'SpecimenTypeDesignation':
+        $specimen_type_designations[] = $type_designation;
+        break;
+      case 'NameTypeDesignation':
+        $name_type_designations[] = $type_designation;
+        break;
+      case 'TextualTypeDesignation':
+        $textual_type_designations[] = $type_designation;
+        break;
+      default:  throw new Exception('Unknown type designation class: ' . $type_designation->class);
+    }
+  }
+
+  // NameTypeDesignation ..................................
+  if(!empty($name_type_designations)){
+    uksort($name_type_designations, "compare_type_designation_status");
+    foreach($name_type_designations as $name_type_designation){
+      if ($name_type_designation->notDesignated) {
+        $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($name_type_designation) . '">' .  type_designation_status_label_markup($name_type_designation)  . ': '
+          . t('not designated') . '</'. $element_tag .'>';
+      }
+      elseif (isset($name_type_designation->typeName)) {
+        $link_to_name_page = url(path_to_name($name_type_designation->typeName->uuid));
+        $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($name_type_designation) . '">' .  type_designation_status_label_markup($name_type_designation) ;
+
+        if (!empty($name_type_designation->citation)) {
+          $out .= type_designation_citation_layout($name_type_designation, $separator); // TODO type_designation_citation_layout() needs most probably to be replaced
+
+        }
+        $referenceUri = '';
+        if (isset($name_type_designation->typeName->nomenclaturalReference)) {
+          $referenceUri = url(path_to_reference($name_type_designation->typeName->nomenclaturalReference->uuid));
+        }
+        $out .= ': ' . render_taxon_or_name($name_type_designation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
+      }
+    }
+  } // END NameTypeDesignation
+
+  // SpecimenTypeDesignation ...................................
+  if (!empty($specimen_type_designations)) {
+    usort($specimen_type_designations, "compare_specimen_type_designation");
+    foreach ($specimen_type_designations as $specimen_type_designation) {
+      $type_citation_markup = '';
+
+      if (!empty($specimen_type_designation->citation)) {
+
+        $citation_footnote_str = theme('cdm_reference', array('reference' => $specimen_type_designation->citation, 'doIconLink' => true));
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $specimen_type_designation->citation->uuid);
+
+        if (!empty($author_team->titleCache)) {
+          $year = @timePeriodToString($specimen_type_designation->citation->datePublished, true, 'YYYY');
+          $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
+          if ($authorteam_str == $specimen_type_designation->citation->titleCache) {
+            $citation_footnote_str = '';
+          }
+        } else {
+          $authorteam_str = $citation_footnote_str;
+          // no need for a footnote in case in case it is used as replacement for missing author teams
+          $citation_footnote_str = '';
+        }
+
+        // for being registered a typedesignation MUST HAVE a citation, so it is save to handle the
+        // Registration output in if condition checking if the citation is present
+        $registration_markup = render_registrations($specimen_type_designation->registrations);
+        $citation_footnote_str .= ($citation_footnote_str ? ' ' : '') . $registration_markup;
+
+        $footnote_key_markup = '';
+        if ($citation_footnote_str) {
+          // footnotes should be rendered in the parent element so we
+          // are relying on the FootnoteListKey set there
+          $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $citation_footnote_str);
+          $footnote_key_markup = theme('cdm_footnote_key', array(
+            'footnoteKey' => $_fkey2,
+            'separator' => $separator,
+            'highlightable' => TRUE,
+            'separator_off' => TRUE,
+          ));
+
+        }
+
+        $type_citation_markup .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">' . $authorteam_str . '</span>';
+        if (!empty($specimen_type_designation->citationMicroReference)) {
+          $type_citation_markup .= ': ' . trim($specimen_type_designation->citationMicroReference);
+        }
+        $type_citation_markup .= $footnote_key_markup . ')';
+
+      }
+
+      $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($specimen_type_designation) . '">';
+      $out .= type_designation_status_label_markup($specimen_type_designation) . $type_citation_markup;
+
+
+      $derivedUnitFacadeInstance = null;
+      if (isset($specimen_type_designation->typeSpecimen)) {
+        $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $specimen_type_designation->typeSpecimen->uuid);
+      }
+
+      if (!empty($derivedUnitFacadeInstance->titleCache)) {
+        $specimen_markup = $derivedUnitFacadeInstance->titleCache;
+        if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
+          $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($specimen_type_designation->typeSpecimen->uuid)), $specimen_markup);
+        }
+        $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
+          . $specimen_markup
+          . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
+        if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
+          $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
+        }
+      }
+
+
+      $out .= '</'. $element_tag .'>';
+
+    }
+  } // END Specimen type designations
+
+  // TextualTypeDesignation .........................
+  if(!empty($textual_type_designations)) {
+    foreach ($textual_type_designations as $textual_type_designation) {
+      $encasement =  $textual_type_designation->verbatim ? '"' : '';
+      $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
+        . ': ' .  $encasement . $textual_type_designation->text_L10n->text . $encasement . '</' . $element_tag . '>';
+      $annotations_and_sources = handle_annotations_and_sources(
+        $textual_type_designation,
+        array(
+          'sources_as_content' => false, // as footnotes
+          'link_to_name_used_in_source' => false,
+          'link_to_reference' => true,
+          'add_footnote_keys' => false,
+          'bibliography_aware' => false),
+        '',
+        RenderHints::getFootnoteListKey() // passing a defined key to avoid separate annotation footnote key see https://dev.e-taxonomy.eu/redmine/issues/8543
+      );
+      $out .= $annotations_and_sources['foot_note_keys'];
+      if(is_array( $annotations_and_sources['source_references'])){
+        $citation_markup = join(', ', $annotations_and_sources['source_references']);
+      }
+    }
+  }
+
+  // Footnotes for citations, collection acronym?s.
+  // footnotes should be rendered in the parent element so we
+  // are relying on the FootnoteListKey set there
+  $_fkey = FootnoteManager::addNewFootnote(
+    RenderHints::getFootnoteListKey(),
+    (isset($derivedUnitFacadeInstance->collection->titleCache) ? $derivedUnitFacadeInstance->collection->titleCache : FALSE)
+  );
+  $out .= theme('cdm_footnote_key', array('footnoteKey' => $_fkey, 'separator' => $separator));
+  $out .= '</' . $enclosing_tag .'>';
+
+  RenderHints::popFromRenderStack();
+
+  return $out;
+}
+
+
+/**
  * Composes the textual representation for the type designation of taxon name identified by the uuid in with a map for the location data.
  *
  * @param $taxon_name_uuid
