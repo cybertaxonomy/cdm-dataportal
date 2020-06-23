@@ -59,7 +59,7 @@ public class TextualTypeDesignationTest extends CdmDataPortalTestBase{
     public void testNamePage() throws MalformedURLException {
         NamePage p = new NamePage(driver, getContext(), equisetum_arvense_n_uuid);
         List<TypeDesignationElement> typeDesignations = p.getTypeDesignations(0, "div");
-        assertEquals("Type: Type specimen which may have beed assigned already: Jonsell & Jarvis, Nord. J. Bot. 14: 148 (1994)", typeDesignations.get(0).getText());
+        assertEquals("Type: Type specimen which may have beed assigned already: Jonsell & Jarvis, Nord. J. Bot. 14: 148 (1994)1,2", typeDesignations.get(0).getText());
         assertEquals("Type: \"LT: Clayton 341; (BM) LT designated by Jonsell & Jarvis, Nord. J. Bot. 14: 148 (1994)\"", typeDesignations.get(1).getText());
     }
 
