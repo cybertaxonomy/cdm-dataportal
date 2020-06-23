@@ -11,6 +11,7 @@ package eu.etaxonomy.dataportal.elements;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 
 /**
  * @author andreas
@@ -19,7 +20,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
  */
 public enum TypeDesignationType {
 
-    nameTypeDesignation, specimenTypeDesignation;
+    nameTypeDesignation, specimenTypeDesignation, textualTypeDesignation;
 
     public static TypeDesignationType valueOfCdmClass(Class<? extends CdmBase> type){
         if(type.equals(SpecimenTypeDesignation.class)){
@@ -27,6 +28,9 @@ public enum TypeDesignationType {
         }
         if(type.equals(NameTypeDesignation.class)){
             return TypeDesignationType.nameTypeDesignation;
+        }
+        if(type.equals(TextualTypeDesignation.class)){
+            return TypeDesignationType.textualTypeDesignation;
         }
         throw new IllegalArgumentException("no enum constant matching " + type.toString());
     }

@@ -906,7 +906,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
 
   // NameTypeDesignation ..................................
   if(!empty($name_type_designations)){
-    uksort($name_type_designations, "compare_type_designation_status");
+    usort($name_type_designations, "compare_type_designations_by_status");
     foreach($name_type_designations as $name_type_designation){
       if ($name_type_designation->notDesignated) {
         $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($name_type_designation) . '">' .  type_designation_status_label_markup($name_type_designation)  . ': '
@@ -1008,6 +1008,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
   } // END Specimen type designations
 
   // TextualTypeDesignation .........................
+  usort($textual_type_designations, 'compare_textual_type_designation');
   if(!empty($textual_type_designations)) {
     foreach ($textual_type_designations as $textual_type_designation) {
       $annotations_and_sources = handle_annotations_and_sources(
@@ -1759,7 +1760,7 @@ function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_n
 
 
 /**
- * Compares the status of two SpecimenTypeDesignations
+ * Compares two SpecimenTypeDesignations
  *
  * @param object $a
  *   A SpecimenTypeDesignation.
@@ -1768,26 +1769,36 @@ function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_n
  */
 function compare_specimen_type_designation($a, $b) {
 
-  $type_status_order = type_status_order();
-
+  $cmp_by_status = compare_type_designations_by_status($a,$b);
+  if($cmp_by_status !== 0){
+    return $cmp_by_status;
+  }
 
   $aQuantifier = FALSE;
   $bQuantifier = FALSE;
-  if (isset($a->typeStatus->titleCache) && isset($b->typeStatus->titleCache)) {
-    $aQuantifier = array_search($a->typeStatus->titleCache, $type_status_order);
-    $bQuantifier = array_search($b->typeStatus->titleCache, $type_status_order);
-  }
   if ($aQuantifier == $bQuantifier) {
     // Sort alphabetically.
     $a_text =  isset($a->typeSpecimen->titleCache) ? preg_replace('/[\[\]\"]/', '', $a->typeSpecimen->titleCache) : '';
     $b_text =  isset($b->typeSpecimen->titleCache) ? preg_replace('/[\[\]\"]/', '', $b->typeSpecimen->titleCache) : '';
     return strcasecmp($a_text, $b_text);
   }
-  return ($aQuantifier < $bQuantifier) ? -1 : 1;
+  return ($aQuantifier < $bQuantifier) ? -1 : (($aQuantifier > $bQuantifier) ? 1 : 0);
 }
 
 /**
- * Compares the status of two SpecimenTypeDesignations
+ * Compares the status of two TypeDesignations
+ *
+ * @param object $a
+ *   A TypeDesignation
+ * @param object $b
+ *   TypeDesignation
+ */
+function compare_type_designations_by_status($a, $b) {
+  return compare_type_designation_status($a->typeStatus, $b->typeStatus);
+}
+
+/**
+ * Compares two TypeDesignationStatusBase
  *
  * @param object $a
  *   A TypeDesignationStatusBase.
@@ -1795,17 +1806,40 @@ function compare_specimen_type_designation($a, $b) {
  *   TypeDesignationStatusBase.
  */
 function compare_type_designation_status($a, $b) {
-
   $type_status_order = type_status_order();
-
-
   $aQuantifier = FALSE;
   $bQuantifier = FALSE;
   if (isset($a->label) && isset($b->label)) {
     $aQuantifier = array_search($a->label, $type_status_order);
     $bQuantifier = array_search($b->label, $type_status_order);
   }
-  return ($aQuantifier < $bQuantifier) ? -1 : 1;
+  return ($aQuantifier < $bQuantifier) ? -1 : (($aQuantifier > $bQuantifier) ? 1 : 0);
+}
+
+/**
+ * Compares the two TextualTypeDesignations
+ *
+ * @param object $a
+ *   A TextualTypeDesignations.
+ * @param object $b
+ *   TextualTypeDesignations.
+ */
+function compare_textual_type_designation($a, $b) {
+
+  $cmp_by_status = compare_type_designations_by_status($a,$b);
+  if($cmp_by_status !== 0){
+    return $cmp_by_status;
+  }
+
+  $aQuantifier = FALSE;
+  $bQuantifier = FALSE;
+  if ($aQuantifier == $bQuantifier) {
+    // Sort alphabetically.
+    $a_text =  isset($a->text_L10n->text) ? $a->text_L10n->text : '';
+    $b_text =  isset($b->text_L10n->text) ? $b->text_L10n->text : '';
+    return strcasecmp($a_text, $b_text);
+  }
+  return ($aQuantifier < $bQuantifier) ? -1 : (($aQuantifier > $bQuantifier) ? 1 : 0);
 }
 
 
@@ -1820,7 +1854,6 @@ function compare_type_designation_status($a, $b) {
 function compare_type_designation_status_labels($a, $b) {
 
   $type_status_order = type_status_order();
-
 
   $aQuantifier = FALSE;
   $bQuantifier = FALSE;
