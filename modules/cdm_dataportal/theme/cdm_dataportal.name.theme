@@ -99,22 +99,21 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
 
   if (count($type_designations) > 0 || is_array($prependedSynonyms) || is_array($synonymList)) {
     $out .= '<ul class="homotypicSynonyms">';
-  if (!empty($prependedSynonyms)) {
-    foreach ($prependedSynonyms as $taxon) {
-      $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+    if (!empty($prependedSynonyms)) {
+      foreach ($prependedSynonyms as $taxon) {
+        $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+      }
     }
-  }
 
-
-  if (isset($synonymList[0])) {
-    foreach ($synonymList as $synonym) {
-      $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+    if (isset($synonymList[0])) {
+      foreach ($synonymList as $synonym) {
+        $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+      }
     }
-  }
 
-  if (count($type_designations) > 0) {
-    $out .= theme('cdm_typedesignations', array('typeDesignations' => $type_designations));
-  }
+    if (count($type_designations) > 0) {
+      $out .= render_type_designations($type_designations);
+    }
 
   }
 
