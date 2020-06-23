@@ -1514,7 +1514,7 @@ function name_relationship_footnote_markup($name_rel)
     $footnote_markup .= '<span class="reference">' . $name_rel->citation->titleCache . '</span>';
   }
   if (isset($name_rel->citationMicroReference) && $name_rel->citationMicroReference) {
-    $footnote_markup .= (isset($name_rel->citation) ? ':' : '') . '<span class="reference_detail">' . $name_rel->citationMicroReference . '</span>';
+    $footnote_markup .= (isset($name_rel->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->citationMicroReference . '</span>';
   }
   if ($footnote_markup) {
     $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
