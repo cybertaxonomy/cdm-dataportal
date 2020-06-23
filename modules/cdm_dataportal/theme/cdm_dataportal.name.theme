@@ -14,66 +14,6 @@
  */
 
 /**
- * Return HTML for the lectotype citation with the correct layout.
- *
- * This function prints the lectotype citation with the correct layout.
- * Lectotypes are renderized in the synonymy tab of a taxon if they exist.
- *
- * @param mixed $typeDesignation
- *   Object containing the lectotype citation to print.
- *
- * @return string
- *   Valid html string.
- */
-function type_designation_citation_layout($typeDesignation, $footnote_separator = ',') {
-  $res = '';
-  $citation = $typeDesignation->citation;
-  $pages = $typeDesignation->citationMicroReference;
-  if(isset($typeDesignation->typeStatus->uuid) && isset($typeDesignation->typeStatus->representation_L10n)) {
-    if ( $typeDesignation->typeStatus->uuid == UUID_NTD_ORIGINAL_DESIGNATION || $typeDesignation->typeStatus->uuid == UUID_NTD_MONOTYPY) {
-      $res = ' (' . $typeDesignation->typeStatus->representation_L10n . ')';
-      return $res;
-    }
-  }
-
-  if ($citation) {
-    // $type = $typeDesignation_citation->type;
-    $year = isset($citation->datePublished->start) ? substr($citation->datePublished->start, 0, 4) : '';
-    $author = isset($citation->authorship->titleCache) ? $citation->authorship->titleCache : '';
-    $res .= ' (designated by ';
-    $res .= $author;
-    $res .= ($year ? ' ' . $year : '');
-    $res .= ($pages ? ': ' . $pages : '');
-    // $res .= ')';
-
-    // footnotes should be rendered in the parent element so we
-    // are relying on the FootnoteListKey set there
-    $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $typeDesignation->citation->titleCache);
-    $res .= theme('cdm_footnote_key', array(
-      'footnoteKey' => $fkey_typeDesignation,
-      'separator' => $footnote_separator,
-      'highlightable' => TRUE,
-      'separator_off' => TRUE,
-    )) . ')';
-  }
-  return $res;
-}
-
-/**
- * Creates markup for the status of a type designation. In case the status or its representation is missing the label will be set to "Type"
- *
- * @param $type_designation
- * @return string
- */
-function type_designation_status_label_markup($type_designation)
-{
-  return '<span class="type-status">'
-    . ((isset($type_designation->typeStatus->representation_L10n)) ? ucfirst($type_designation->typeStatus->representation_L10n) : t('Type')) . '</span>'
-    ;
-}
-
-
-/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
