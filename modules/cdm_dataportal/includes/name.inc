@@ -1794,7 +1794,9 @@ function compare_specimen_type_designation($a, $b) {
  *   TypeDesignation
  */
 function compare_type_designations_by_status($a, $b) {
-  return compare_type_designation_status($a->typeStatus, $b->typeStatus);
+  $status_a = isset($a->typeStatus) ? $a->typeStatus : null;
+  $status_b = isset($b->typeStatus) ? $b->typeStatus : null;
+  return compare_type_designation_status($status_a, $status_b);
 }
 
 /**
