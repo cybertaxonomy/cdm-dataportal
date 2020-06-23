@@ -78,13 +78,13 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         List<BaseElement> footnotes = regItem.getRegistrationFootnotes();
         assertEquals(4, footnotes.size());
         assertEquals(
-                "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:11",
+                "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes .get(0).getText());
         assertEquals(
-                "2. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:22",
+                "2. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
                 footnotes .get(1).getText());
         assertEquals(
-                "3. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33",
+                "3. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
                 footnotes .get(2).getText());
         assertEquals(
                 "4. Lem, Nonsens species of the developers Vol1. 2001",
@@ -102,10 +102,10 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
         assertEquals(3, footnotes.size());
         assertEquals(
-                "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:11",
+                "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes .get(0).getText());
         assertEquals(
-                "2. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017:33",
+                "2. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
                 footnotes.get(1).getText());
         assertEquals(
                 "3. Lem, Nonsens species of the developers Vol1. 2001",
