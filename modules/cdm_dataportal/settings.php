@@ -2972,10 +2972,14 @@ function cdm_settings_layout_media() {
     '#title' => t('Image viewer') . ':',
     '#default_value' => variable_get(CDM_MEDIA_GALLERY_VIEWER, CDM_MEDIA_GALLERY_VIEWER_DEFAULT),
     '#options' => array(
-      CDM_MEDIA_GALLERY_VIEWER_DEFAULT => t('Universalviewer (new default)'),
+      CDM_MEDIA_GALLERY_VIEWER_DEFAULT => t('Universalviewer'),
       'fsi' => t('FSI viewer (requires FSI server!)'),
-      'default' => t('Standard image viewer (deprecated)'),
+      'default' => t('Simple viewer'),
     ),
+    '#description' => 'The <b>Universalviewer</b> is a feature rich image allery and viwer which provides support
+            for mobile devices and thus is highly recommended over the other options.<br/>
+            <b>Simple viewer</b> combines a HTML Gallery with a simple image viewer and only provides basic functionality 
+            and does not work well on mobile desvices.'
   );
 
   // --- STANDARD_IMAGE_VIEWER ---- //
