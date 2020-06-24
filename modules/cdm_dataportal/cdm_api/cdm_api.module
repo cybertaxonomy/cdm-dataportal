@@ -1032,7 +1032,7 @@ function cdm_ws_page($resource_uri, $page_size, $page_index, array $query = arra
 
   $pager = cdm_ws_get($resource_uri, NULL, queryString($query), $method, $absolute_uri);
   if(is_array($pager)){
-    drupal_set_message("Expecting web service to return pager objects but received an array:<br/>" . $resource_uri . '?' . queryString($query) . '<br/>Wrapping response in pager to recover from error.' , 'warning');
+    trigger_error("Expecting web service to return pager objects but received an array:<br/>" . $resource_uri . '?' . queryString($query) . '<br/>Wrapping response in pager to recover from error.', E_USER_WARNING);
     $records = $pager;
     $pager = new stdClass();
     $pager->records = $records;
