@@ -366,15 +366,14 @@ function cdm_create_footnotes(
   $sources = cdm_entity_sources_sorted($description_element);
 
   // Annotations as footnotes.
-  $footNoteKeys = cdm_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
+  $footNoteKeys = cdm_entity_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
 
   // Source references as footnotes.
+  $sources_footnote_list_key = original_source_footnote_list_key($footnote_list_key_suggestion);
   if($is_bibliography_aware){
     $bibliography_settings = get_bibliography_settings();
-    $sources_footnote_list_key = original_source_footnote_list_key($footnote_list_key_suggestion);
     $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause original_source_footnote_list_key to use the default
   } else {
-    $sources_footnote_list_key = $footnote_list_key_suggestion;
     $original_source_footnote_tag = NULL;
   }
 

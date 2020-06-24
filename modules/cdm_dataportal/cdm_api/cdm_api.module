@@ -923,6 +923,9 @@ function cdm_ws_base_uri($cdm_type_simple)
 {
   $ws_base_uri = NULL;
   switch ($cdm_type_simple) {
+
+    case 'TaxonNode':
+      $ws_base_uri = CDM_WS_TAXONNODE;
     case 'TaxonBase':
     case 'Taxon':
     case 'Synonym':

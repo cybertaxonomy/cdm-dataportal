@@ -39,7 +39,7 @@ function compose_taxon_node_status(array $taxon_nodes){
         'sources_as_content' => false,
         'link_to_name_used_in_source' => false,
         'link_to_reference' => true,
-        'add_footnote_keys' => false,
+        'add_footnote_keys' => true,
         'bibliography_aware' => false),
         '',
         null);
@@ -74,7 +74,7 @@ function compose_taxon_node_status(array $taxon_nodes){
       $render_array['taxon-node-status']['#suffix'] = '</div>';
     }
   }
-  RenderHints::getFootnoteListKey();
+  RenderHints::setFootnoteListKey(null);
   RenderHints::popFromRenderStack();
   return $render_array;
 }

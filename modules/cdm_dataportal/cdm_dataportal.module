@@ -2808,7 +2808,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
  *
  * @return array of footnote keys
  */
-function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_suggestion = NULL) {
+function cdm_annotations_as_footnotekeys(array $cdm_entities, $footnote_list_key_suggestion = NULL) {
 
   $foot_note_keys = array();
 
@@ -2836,6 +2836,43 @@ function cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key_sugge
       foreach ($annotations as $annotation) {
         $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation->text);
       }
+    }
+  }
+
+  return $foot_note_keys;
+}
+
+/**
+ * Fetches the list of visible annotations for each of the cdm entities and returns the footnote keys for them.
+ *
+ * The footnotes are passed to the FootnoteManager in order to store the annotations and to create the footnote keys.
+ *
+ * @see cdm_fetch_visible_annotations()
+ *
+ * @param array $cdm_entities
+ *   An array of CdmBase instances or a single instance.
+ * @param $footnote_list_key_suggestion string
+ *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined be set to
+ *    RenderHints::getFootnoteListKey().'-annotations' otherwise the supplied key will be used.
+ *
+ * @return array of footnote keys
+ */
+function cdm_entity_annotations_as_footnotekeys($cdm_entity, $footnote_list_key_suggestion = NULL) {
+
+  $foot_note_keys = array();
+
+  // Getting the key for the footnotemanager.
+  if (isset($footnote_list_key_suggestion)) {
+    $footnote_list_key = $footnote_list_key_suggestion;
+  } else {
+    $footnote_list_key = RenderHints::getFootnoteListKey() . '-annotations';
+  }
+
+  // Adding the footnotes keys.
+  $annotations = cdm_fetch_visible_annotations($cdm_entity);
+  if (is_array($annotations)) {
+    foreach ($annotations as $annotation) {
+      $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation->text);
     }
   }
 

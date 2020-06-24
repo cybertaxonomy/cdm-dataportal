@@ -161,7 +161,13 @@ function theme_cdm_annotations_as_footnotekeys($variables) {
     return '';
   }
   $out = '';
-  $footNoteKeys = cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);
+  if(is_array($cdm_entities)){
+    // array of entities
+    $footNoteKeys = cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);
+  } else {
+    // single entity
+    $footNoteKeys = cdm_entity_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);
+  }
   foreach ($footNoteKeys as $a) {
     // $out .= theme('cdm_footnote_key', $a, $a->footnoteListKey, (isset($out)?
     // ',' : ''));
