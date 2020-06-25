@@ -2976,10 +2976,11 @@ function cdm_settings_layout_media() {
       'fsi' => t('FSI viewer (requires FSI server!)'),
       'default' => t('Simple viewer'),
     ),
-    '#description' => 'The <b>Universalviewer</b> is a feature rich image allery and viwer which provides support
+    '#description' => 'The <b>Universalviewer</b> is a feature rich image gallery and viewer which provides support
             for mobile devices and thus is highly recommended over the other options.<br/>
-            <b>Simple viewer</b> combines a HTML Gallery with a simple image viewer and only provides basic functionality 
-            and does not work well on mobile desvices.'
+            <b>Simple viewer</b> combines a HTML gallery with a simple image viewer and only provides basic functionality 
+            and does not work well on mobile devices.<br />
+            <b>FSI Viewer</b> can only be used in conjunction with images served by an FSI server.'
   );
 
   // --- STANDARD_IMAGE_VIEWER ---- //
