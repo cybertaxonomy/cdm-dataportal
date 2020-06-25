@@ -85,11 +85,7 @@ function cdm_reference_pager($referencePager, $path, $parameters) {
       // FIXME remove hack.
       $reference->fullCitation = $reference->titleCache;
       // For matching cdm entity to STO.
-      $out .= '<li>' . theme('cdm_reference', array(
-          'reference' => $reference,
-          'microReference' => NULL,
-          'doTextLink' => TRUE,
-        )) . '</li>';
+      $out .= '<li>' . cdm_reference_markup($reference,NULL, TRUE) . '</li>';
     }
     $out .= '</ul>';
     $out .= theme('cdm_pager', array(

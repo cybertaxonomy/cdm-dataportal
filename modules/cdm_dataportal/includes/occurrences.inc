@@ -905,7 +905,7 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
                 case 'citation':
                     @_description_list_group_add($groups,
                         cdm_occurrence_field_name_label($field),
-                        theme('cdm_reference', array('reference' => $value, 'microReference' => $sequence->microReference)),
+                        cdm_reference_markup($value, $sequence->microReference),
                         NULL,
                         8
                     );

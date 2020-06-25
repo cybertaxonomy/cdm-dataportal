@@ -109,15 +109,6 @@ function cdm_dataportal_theme() {
     )),
     'cdm_polytomousKey_page' => array('variables' => array('polytomousKey' => NULL)),
 
-    // Themes in cdm_dataportal.references.theme.
-    'cdm_reference' => array('variables' => array(
-        'reference' => NULL,
-        'microReference' => NULL,
-        'doTextLink' => FALSE,
-        'doIconLink' => FALSE,
-        'referenceStyle' => NULL,
-    )),
-
     // Themes in cdm_dataportal.taxon.theme.
     'cdm_search_taxa_results' => array('variables' => array(
         'pager' => NULL,

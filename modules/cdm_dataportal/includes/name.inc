@@ -937,7 +937,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
 
       if (!empty($specimen_type_designation->citation)) {
 
-        $citation_footnote_str = theme('cdm_reference', array('reference' => $specimen_type_designation->citation, 'doIconLink' => true));
+        $citation_footnote_str = cdm_reference_markup($specimen_type_designation->citation, null, false, true);
         $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $specimen_type_designation->citation->uuid);
 
         if (!empty($author_team->titleCache)) {

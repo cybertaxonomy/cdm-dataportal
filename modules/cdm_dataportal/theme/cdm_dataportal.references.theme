@@ -32,39 +32,15 @@
  *   - doIconLink:
  *      Append an icon to the citation string which links to the reference page, links to the reference URI or DOI are always
  *      created when this data is available
- *   - referenceStyle: the value "zoology" will cause a specific rendeting of the
- *      reference suitable for zoological publications.
  *
  * @return string
  *    the markup for the reference
  *
  * @ingroup themeable
  */
-function theme_cdm_reference($variables) {
-  $reference = $variables['reference'];
-  $microReference = $variables['microReference'];
-  $doTextLink = $variables['doTextLink'];
-  $doIconLink = $variables['doIconLink'];
-  $referenceStyle = $variables['referenceStyle'];
+function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = FALSE, $doIconLink = FALSE) {
 
-  if (!isset($reference->authorship)) {
-    $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $reference->uuid);
-  }
-  else {
-    $author_team = $reference->authorship;
-  }
-  if ($referenceStyle == "zoology") {
-    $year = '';
-    if (isset($reference->datePublished)) {
-      $year = timePeriodToString($reference->datePublished, true, 'YYYY');
-    }
-    $citation = $author_team->titleCache . (!empty($year) ? '. ' . $year : '');
-  }
-  else {
-    $citation = $reference->titleCache;
-  }
-
-  $citation = trim($citation);
+  $citation = trim($reference->titleCache);
   $iconlink = "";
   if((isset($doIconLink) && $doIconLink === TRUE)) {
     $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), path_to_reference($reference->uuid), array('html' => true));
@@ -174,11 +150,7 @@ function render_original_source($source, $do_link_to_reference = TRUE, $do_link_
   $out = '';
 
   if (isset($source->citation)) {
-    $out .= theme('cdm_reference', [
-      'reference' => $source->citation,
-      'microReference' => $source->citationMicroReference,
-      'doIconLink' => $do_link_to_reference,
-    ]);
+    $out .= cdm_reference_markup($source->citation, $source->citationMicroReference, false, $do_link_to_reference);
   }
   if(isset($source->cdmSource)){
     $out .= render_cdm_entity_link($source->cdmSource);
