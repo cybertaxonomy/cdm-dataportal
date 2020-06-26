@@ -44,14 +44,15 @@ function compose_taxon_node_status(array $taxon_nodes){
         '',
         null);
 
-      if(isset($taxon_node->status)){
-        $state_label = strtolower($taxon_node->status);
+      if(isset($taxon_node->nodeStatus)){
+        $state_label = strtolower($taxon_node->nodeStatus->message_L10n);
         if(isset($taxon_node->statusNote_L10n->text)){
           $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote_L10n->text . ')</span>';
         }
+        $classification = cdm_ws_get(CDM_WS_CLASSIFICATION, array($taxon_node->classificationUUID));
         $status_markup_tokens[]  = [
           'status' => '<span class="' . html_class_attribute_ref($taxon_node) .'">' . $state_label . $annotations_and_sources['foot_note_keys']  .  '%s</span>', // %s will be replaced by the $classification_markup or by '',
-          'classification' => ' <span class="' . html_class_attribute_ref($taxon_node->classification) .'">[' . $taxon_node->classification->titleCache . ']</span>'
+          'classification' => ' <span class="' . html_class_attribute_ref($classification) .'">[' . $classification->titleCache . ']</span>'
         ];
       }
 

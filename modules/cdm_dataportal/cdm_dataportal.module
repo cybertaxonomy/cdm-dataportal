@@ -2664,8 +2664,8 @@ function cdm_dataportal_shortname_of($taxonNodeDTO) {
   $nameStr = trim($nameStr);
 
   if ($nameStr) {
-    if(isset($taxonNodeDTO->status_symbol)){
-      $nameStr = $taxonNodeDTO->status_symbol . ' ' . $nameStr;
+    if(isset($taxonNodeDTO->nodeStatus->symbol)){
+      $nameStr = $taxonNodeDTO->nodeStatus->symbol . ' ' . $nameStr;
     }
     // Do not return short names for these.
     if ($taxonNodeDTO->unplaced || $taxonNodeDTO->excluded) {
@@ -2714,16 +2714,14 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
 
   if ($taxon->class == "Taxon" && isset($taxonNodes)) {
     foreach ($taxonNodes as $node) {
-      if (isset($node->classification)){
-        if(is_object($node->classification)) {
-          if ($node->classification->uuid == $defaultTreeUuid) {
-            return TRUE;
-          }
+      if (isset($node->classificationUUID)){
+        if ($node->classificationUUID == $defaultTreeUuid) {
+          return TRUE;
         }
-        else {
-          if ($node->classification == $defaultTreeUuid) {
-            return TRUE;
-          }
+      }
+      else {
+        if ($node->classification == $defaultTreeUuid) {
+          return TRUE;
         }
       }
     }

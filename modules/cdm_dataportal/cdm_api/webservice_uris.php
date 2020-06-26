@@ -6,6 +6,8 @@
 
 define('CDM_WS_PORTAL_GENERIC', 'portal/$0');
 
+const CDM_WS_CLASSIFICATION = 'classification';
+
 define('CDM_WS_AGENT', 'agent');
 define('CDM_WS_PORTAL_AGENT', 'portal/agent');
 define('CDM_WS_REFERENCE', 'reference');

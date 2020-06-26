@@ -60,7 +60,7 @@ function taxon_in_current_classification($taxon_uuid) {
   $taxon_in_current_tree = FALSE;
   if (is_array($taxon_nodes)) {
     foreach ($taxon_nodes as $node) {
-      if (get_current_classification_uuid() == $node->classification->uuid) {
+      if (get_current_classification_uuid() == $node->classificationUUID) {
         $taxon_in_current_tree = TRUE;
         break;
       }
