@@ -112,7 +112,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
 
         assertEquals(
                 "Status message\nA registration with the identifier http://testbank.org/100003 is in preparation",
-                p.getMessages(MessageType.status));
+                p.getMessageItems(MessageType.status).get(0));
     }
 
 

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -143,7 +144,9 @@ public abstract class PortalPage {
         logger.info("loading " + pageUrl);
 
         try {
-            assertTrue("The page must not show an error box", getErrors() == null);
+            String ignore_error = "Expecting web service to return pager objects but received an array";
+            List<String> errors = getErrors().stream().filter(str -> str.startsWith(ignore_error)).collect(Collectors.toList());
+            assertTrue("The page must not show an error box", errors.size() == 0);
         } catch (NoSuchElementException e) {
             //IGNORE since this is expected!
         }
@@ -281,29 +284,30 @@ public abstract class PortalPage {
         return driver.getTitle();
     }
 
-    public String getMessages(MessageType messageType){
+    public List<String> getMessageItems(MessageType messageType){
         if(messages != null){
             for(WebElement m : messages){
                 if(m.getAttribute("class").contains(messageType.name())){
-                    return m.getText();
+                    List<WebElement> messageItems = m.findElements(By.cssSelector("ul.messages__list li"));
+                    return messageItems.stream().map(mi -> mi.getText()).collect(Collectors.toList());
                 }
             }
         }
-        return null;
+        return new ArrayList<>();
     }
 
     /**
      * @return the warning messages from the Drupal message box
      */
-    public String getWarnings() {
-        return getMessages(MessageType.warning);
+    public List<String> getWarnings() {
+        return getMessageItems(MessageType.warning);
     }
 
     /**
      * @return the error messages from the Drupal message box
      */
-    public String getErrors() {
-        return getMessages(MessageType.error);
+    public List<String> getErrors() {
+        return getMessageItems(MessageType.error);
     }
 
     public String getAuthorInformationText() {

@@ -69,7 +69,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         assertEquals(2, statusElement.getTaxonNodeStatus().size());
 
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
-        assertEquals("TaxonNode", tnsData_0.getTaxonNodeRef().getCdmType());
+        assertEquals("TaxonNodeDto", tnsData_0.getTaxonNodeRef().getCdmType());
         assertEquals("402ea023-07be-4335-9274-1c3e30a7df3f", tnsData_0.getTaxonNodeRef().getUuid().toString());
         assertEquals("doubtful (The placement has been made for software testing purposes only)", tnsData_0.getStatusText().trim());
 
@@ -100,7 +100,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         assertEquals(1, statusElement.getTaxonNodeStatus().size());
 
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
-        assertEquals("TaxonNode", tnsData_0.getTaxonNodeRef().getCdmType());
+        assertEquals("TaxonNodeDto", tnsData_0.getTaxonNodeRef().getCdmType());
         assertEquals("1d7ce8ab-9335-492b-a079-9f7d84a50cd0", tnsData_0.getTaxonNodeRef().getUuid().toString());
         assertEquals("unplaced", tnsData_0.getStatusText().trim());
 
@@ -140,7 +140,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         assertEquals(1, statusElement.getTaxonNodeStatus().size());
 
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
-        assertEquals("TaxonNode", tnsData_0.getTaxonNodeRef().getCdmType());
+        assertEquals("TaxonNodeDto", tnsData_0.getTaxonNodeRef().getCdmType());
         assertEquals("excluded", tnsData_0.getStatusText().trim());
 
         assertNull(tnsData_0.getClassificationRef());

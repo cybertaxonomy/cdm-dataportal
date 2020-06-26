@@ -26,7 +26,7 @@ public class TaxonNodeStatusElement extends BaseElement {
     public TaxonNodeStatusElement(WebElement element) {
         super(element);
 
-        List<WebElement> taxonNodeElements = element.findElements(By.className("cdm\\:TaxonNode"));
+        List<WebElement> taxonNodeElements = element.findElements(By.className("cdm\\:TaxonNodeDto"));
         for(WebElement el : taxonNodeElements) {
             TaxonNodeStatusData data = new TaxonNodeStatusData();
             data.setTaxonNodeRef(EntityReference.from(el));
