@@ -194,7 +194,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertNotNull(regItem);
 
         assertEquals(
-                "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24 Jul 1838–Aug 1838",
+                "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24 Jul–Aug 1838",
                 regItem.getTypifiedNameElement().getText());
         assertEquals(
                 "published in: Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H., Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany) in Systematics and Biodiversity. 2017",
@@ -206,7 +206,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         // type designations in defined order
         // 1. Epitype
         assertEquals(
-                "Epitype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047 (CEDiT 2017E68).",
+                "Epitype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (CEDiT 2017E68).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
 
         // 2. Lectotype
