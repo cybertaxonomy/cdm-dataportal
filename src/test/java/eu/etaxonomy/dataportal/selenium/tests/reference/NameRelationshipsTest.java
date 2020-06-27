@@ -69,7 +69,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals(5,  nameRelationshipElements.size());
         assertEquals("is new combination for Nepenthes alata Blanco, Fl. Filip., ed. 1: 805. 1837", nameRelationshipElements.get(0).getText());
         assertEquals("is new name for Nepenthes blancoi Blume in Mus. Bot. Lugd.-Bat. 2: 10. 1852", nameRelationshipElements.get(1).getText());
-        assertEquals("is validating2 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1.11.2018, nom. illeg.", nameRelationshipElements.get(2).getText());
+        assertEquals("is validating2 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.", nameRelationshipElements.get(2).getText());
         assertEquals("non Nodosilinea blockensis, New Species in the solar system nec Nodosilinea sensensia, Plantas vasculares de Oz nec Nodosilinea sensensia, Species solaris", nameRelationshipElements.get(3).getText());
         BaseElement orthVarElement = nameRelationshipElements.get(4);
         assertEquals("orth. var.3 Nodosilinea sensensi4", orthVarElement.getText());

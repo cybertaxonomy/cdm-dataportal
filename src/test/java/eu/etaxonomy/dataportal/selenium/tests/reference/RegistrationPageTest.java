@@ -125,7 +125,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1.11.2018, nom. illeg.",
+                "Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.",
                 regItem.getNameElement().getText());
         assertEquals(
                 "Holotype: Iran, Islamic Republic of, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–83–1).",
@@ -147,7 +147,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1.11.2018",
+                "Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1 Nov 2018",
                 regItem.getNameElement().getText());
         assertEquals(
                 "Orig. des.: Ramsaria avicennae Heidari & Hauer Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018:146",
@@ -169,7 +169,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Ramsaria avicennae Heidari & Hauer in Fottea 18(2): 146, fig. 3F, G. 1.11.2018",
+                "Ramsaria avicennae Heidari & Hauer in Fottea 18(2): 146, fig. 3F, G. 1 Nov 2018",
                 regItem.getNameElement().getText());
         assertEquals(
                 "Holotype: Iran, Islamic Republic of, Ramsar, alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–087–1).",
@@ -194,7 +194,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertNotNull(regItem);
 
         assertEquals(
-                "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24.7.1838-8.1838",
+                "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24 Jul 1838–Aug 1838",
                 regItem.getTypifiedNameElement().getText());
         assertEquals(
                 "published in: Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H., Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany) in Systematics and Biodiversity. 2017",

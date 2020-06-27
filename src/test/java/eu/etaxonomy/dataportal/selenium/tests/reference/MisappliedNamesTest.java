@@ -110,7 +110,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
-        assertEquals("≜⊃\nTrichocentrum undulatum (Sw.) Ackerman & M. W. Chase sec. Kohlbecker 2016-2018", p.getTaxonRelationships(1).getText());
+        assertEquals("≜⊃\nTrichocentrum undulatum (Sw.) Ackerman & M. W. Chase sec. Kohlbecker 2016–2018", p.getTaxonRelationships(1).getText());
         assertEquals("∅\nAchilllea santolina Lag. sec. Testor 2018+, rel. sec. A&S: 35", p.getTaxonRelationships(2).getText());
 
 
