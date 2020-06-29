@@ -549,8 +549,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
     $render_array['synonymy'] = $synonymy_a;
   }
 
-//  $pseudo_feature_block_toc_items = array();
-
+  //  $pseudo_feature_block_toc_items = array();
 
   // Render the sections for each real feature
   $feature_block_list = make_feature_block_list($merged_tree->root->childNodes, $taxon);
