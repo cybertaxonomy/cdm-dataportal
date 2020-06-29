@@ -484,7 +484,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
 
   // .. Well, for sure not as performant as before, but better than nothing.
   $synonym_uuids = array();
-  $misappied_uuids = array();
+  $misapplied_uuids = array();
   foreach ($taxon_list as $taxon) {
     if ($taxon->class == "Synonym") {
       if (!array_key_exists($taxon->uuid, $synonym_uuids)) {
@@ -492,8 +492,8 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       }
     }
     elseif (!_cdm_dataportal_acceptedByCurrentView($taxon)) {
-      // Assuming that it is a misappied name, will be further examined below.
-      $misappied_uuids[$taxon->uuid] = $taxon->uuid;
+      // Assuming that it is a misapplied name, will be further examined below.
+      $misapplied_uuids[$taxon->uuid] = $taxon->uuid;
     }
   }
 
@@ -515,7 +515,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
     );
   }
 
-  foreach ($misappied_uuids as $relatedUuid) {
+  foreach ($misapplied_uuids as $relatedUuid) {
     $taxonRelations = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, array(
       $relatedUuid,
     ));

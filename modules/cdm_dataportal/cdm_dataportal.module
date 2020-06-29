@@ -2703,30 +2703,25 @@ function cdm_dataportal_shortname_of($taxonNodeDTO) {
  */
 function _cdm_dataportal_acceptedByCurrentView($taxon) {
 
-  $defaultTreeUuid = get_current_classification_uuid();
+  $default_classification_uuid = get_current_classification_uuid();
 
   if (isset($taxon->taxonNodes)) {
-    $taxonNodes = $taxon->taxonNodes;
+    $taxon_nodes = $taxon->taxonNodes;
   }
   else {
-    $taxonNodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->uuid);
+    $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->uuid);
   }
 
-  if ($taxon->class == "Taxon" && isset($taxonNodes)) {
-    foreach ($taxonNodes as $node) {
-      if (isset($node->classificationUUID)){
-        if ($node->classificationUUID == $defaultTreeUuid) {
-          return TRUE;
-        }
-      }
-      else {
-        if ($node->classification == $defaultTreeUuid) {
-          return TRUE;
-        }
+  if ($taxon->class == "Taxon" && isset($taxon_nodes)) {
+    foreach ($taxon_nodes as $node) {
+      if($node->class == 'TaxonNodeDto' && isset($node->classificationUUID)){
+        // case of TaxonNodeDto
+        return $node->classificationUUID == $default_classification_uuid;
+      } else if($node->class == 'TaxonNode' && isset($node->classification->uuid)) {
+         return $node->classification->uuid == $default_classification_uuid;
       }
     }
   }
-
   return FALSE;
 }
 
