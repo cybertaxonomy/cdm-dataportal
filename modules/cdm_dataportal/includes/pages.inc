@@ -389,12 +389,12 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
 
-  // set up the TOC and pseudo feature blocks for the pages which contain all pageparts
-  if($page_part == 'all') {
+  // set up the TOC and pseudo feature blocks for the pages which contain all page parts
+  if($page_part == 'all' && (!isset( $render_array['general']) || count($render_array['general']) == 0 )) {
 
     $bibliography_block = make_bibliography_feature_block();
     if($bibliography_block){
-      $render_array['bibliography_block'] = $bibliography_block;
+      $render_array['bibliography_block'] = _block_get_renderable_array([$bibliography_block]);
       $render_array['bibliography_block']['#weight'] = 100;
       cdm_toc_list_add_item('Bibliography', 'bibliography', null, false, $render_array['bibliography_block']['#weight']);
     }
