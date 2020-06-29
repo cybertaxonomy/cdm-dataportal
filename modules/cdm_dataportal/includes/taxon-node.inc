@@ -45,10 +45,10 @@ function compose_taxon_node_status(array $taxon_nodes){
         '',
         null);
 
-      if(isset($taxon_node->nodeStatus)){
-        $state_label = strtolower($taxon_node->nodeStatus->message_L10n);
-        if(isset($taxon_node->statusNote_L10n->text)){
-          $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote_L10n->text . ')</span>';
+      if(isset($taxon_node->status)){
+        $state_label = strtolower($taxon_node->status->message_L10n);
+        if(isset($taxon_node->statusNote_L10n)){
+          $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote_L10n . ')</span>';
         }
         $classification = cdm_ws_get(CDM_WS_CLASSIFICATION, array($taxon_node->classificationUUID));
         $status_markup_tokens[$state_label . '-' . $taxon_node->uuid]  = [

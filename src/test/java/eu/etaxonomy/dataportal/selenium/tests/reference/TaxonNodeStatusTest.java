@@ -80,7 +80,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         TaxonNodeStatusData tnsData_1 = statusElement.getTaxonNodeStatus().get(1);
         assertEquals("excluded", tnsData_1.getStatusText().trim());
         assertEquals("5b217667-d4f4-4ae7-8ab9-b2ceb599d7d0", tnsData_1.getTaxonNodeRef().getUuid().toString());
-        assertEquals("TaxonNode", tnsData_1.getTaxonNodeRef().getCdmType());
+        assertEquals("TaxonNodeDto", tnsData_1.getTaxonNodeRef().getCdmType());
 
         assertEquals("Classification", tnsData_1.getClassificationRef().getCdmType());
         assertEquals("41414d01-34f8-48de-9c2a-7c635167a23e", tnsData_1.getClassificationRef().getUuid().toString());

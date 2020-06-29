@@ -2664,8 +2664,8 @@ function cdm_dataportal_shortname_of($taxonNodeDTO) {
   $nameStr = trim($nameStr);
 
   if ($nameStr) {
-    if(isset($taxonNodeDTO->nodeStatus->symbol)){
-      $nameStr = $taxonNodeDTO->nodeStatus->symbol . ' ' . $nameStr;
+    if(isset($taxonNodeDTO->status->symbol)){
+      $nameStr = $taxonNodeDTO->status->symbol . ' ' . $nameStr;
     }
     // Do not return short names for these.
     if ($taxonNodeDTO->unplaced || $taxonNodeDTO->excluded) {
