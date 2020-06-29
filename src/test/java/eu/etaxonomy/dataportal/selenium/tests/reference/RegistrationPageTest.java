@@ -110,9 +110,10 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         } catch(NoSuchElementException e) {/* IGNORE */}
         assertNull(regItem);
 
+        List<String> statusMessageItems = p.getMessageItems(MessageType.status);
         assertEquals(
                 "Status message\nA registration with the identifier http://testbank.org/100003 is in preparation",
-                p.getMessageItems(MessageType.status).get(0));
+                statusMessageItems.get(0));
     }
 
 
@@ -211,7 +212,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
 
         // 2. Lectotype
         assertTrue(
-                regItem.getSpecimenTypeDesignations().get(1).getText().startsWith("Lectotype: Germany, Berlin, 2.4.1835 (BHUPM 671). Naturkundemuseum Berlin (MFN) - Ehrenberg Collection"));
+                regItem.getSpecimenTypeDesignations().get(1).getText().startsWith("Lectotype: Germany, Berlin, 2 Apr 1835 (BHUPM 671). Naturkundemuseum Berlin (MFN) - Ehrenberg Collection"));
         assertEquals(
                 "BHUPM 671",
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getText());
@@ -226,7 +227,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
 
         // 3. Isolectotype
         assertEquals(
-                "Isolectotype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
+                "Isolectotype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 regItem.getSpecimenTypeDesignations().get(2).getText());
         assertEquals(
                 "M M-0289351",

@@ -289,6 +289,11 @@ public abstract class PortalPage {
             for(WebElement m : messages){
                 if(m.getAttribute("class").contains(messageType.name())){
                     List<WebElement> messageItems = m.findElements(By.cssSelector("ul.messages__list li"));
+                    if(messageItems.size() == 0 && !m.getText().isEmpty()) {
+                        // we have only one item which is not shown as list.
+                        messageItems.add(m);
+
+                    }
                     return messageItems.stream().map(mi -> mi.getText()).collect(Collectors.toList());
                 }
             }
