@@ -32,6 +32,7 @@ function compose_taxon_node_status(array $taxon_nodes){
   if($taxon_nodes && count($taxon_nodes) > 0){
     $label_plural = false;
     $status_markup_tokens = [];
+    $bibliography_settings = get_bibliography_settings();
     foreach ($taxon_nodes as $taxon_node){
 
       $annotations_and_sources = handle_annotations_and_sources($taxon_node,
@@ -40,7 +41,7 @@ function compose_taxon_node_status(array $taxon_nodes){
         'link_to_name_used_in_source' => false,
         'link_to_reference' => true,
         'add_footnote_keys' => true,
-        'bibliography_aware' => false),
+        'bibliography_aware' => $bibliography_settings['enabled'] == 1),
         '',
         null);
 

@@ -389,8 +389,16 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
   }
 
 
-  // set up the TOC for the pages which contain all pageparts
+  // set up the TOC and pseudo feature blocks for the pages which contain all pageparts
   if($page_part == 'all') {
+
+    $bibliography_block = make_bibliography_feature_block();
+    if($bibliography_block){
+      $render_array['bibliography_block'] = $bibliography_block;
+      $render_array['bibliography_block']['#weight'] = 100;
+      cdm_toc_list_add_item('Bibliography', 'bibliography', null, false, $render_array['bibliography_block']['#weight']);
+    }
+
     $toc_elements = [];
     asort($taxontabs_weights);
     foreach(array_keys($taxontabs_weights) as $tab_key){
@@ -556,20 +564,12 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
 
   // >>>>>>>>>>>>>>>>>>> PSEUDO FEATURES >>>>>>>>>>>>>>>>>>>
   $pseudo_feature_weights = get_array_variable_merged(CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS, CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS_DEFAULT);
-  // Bibliography
-  $bibliography_settings = get_bibliography_settings();
-  if($bibliography_settings['enabled'] == 1){
-    $bibliography_markup = FootnoteManager::renderFootnoteList(PSEUDO_FEATURE_BIBLIOGRAPHY, '');
-    if($bibliography_markup) {
-      $feature_bibliography = make_pseudo_feature('Bibliography', PSEUDO_FEATURE_BIBLIOGRAPHY);
-      $bibliography_item = markup_to_render_array($bibliography_markup);
-      $bibliography_block = feature_block(t('Bibliography'), $feature_bibliography);
-      $bibliography_block->content = array();
-      $bibliography_block->content[] = compose_feature_block_wrap_elements(array($bibliography_item), $feature_bibliography);
 
-      $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]] = $bibliography_block;
-      cdm_toc_list_add_item('Bibliography', 'bibliography', null, false, $pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]);
-    }
+  // Bibliography
+  $bibliography_block = make_bibliography_feature_block();
+  if($bibliography_block){
+    $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]] = $bibliography_block;
+    cdm_toc_list_add_item('Bibliography', 'bibliography', null, false, $pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]);
   }
 
   // Descriptions (aggregated)
@@ -622,6 +622,25 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   $render_array['taxon_description_feature_toc'] = $toc;
 
   return $render_array;
+}
+
+/**
+ * @return object|\stdclass
+ */
+function make_bibliography_feature_block() {
+  $bibliography_block = null;
+  $bibliography_settings = get_bibliography_settings();
+  if ($bibliography_settings['enabled'] == 1) {
+    $bibliography_markup = FootnoteManager::renderFootnoteList(PSEUDO_FEATURE_BIBLIOGRAPHY, '');
+    if ($bibliography_markup) {
+      $feature_bibliography = make_pseudo_feature('Bibliography', PSEUDO_FEATURE_BIBLIOGRAPHY);
+      $bibliography_item = markup_to_render_array($bibliography_markup);
+      $bibliography_block = feature_block(t('Bibliography'), $feature_bibliography);
+      $bibliography_block->content = [];
+      $bibliography_block->content[] = compose_feature_block_wrap_elements([$bibliography_item], $feature_bibliography);
+    }
+  }
+  return $bibliography_block;
 }
 
 

@@ -346,10 +346,10 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
  *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
  *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnote key for annotations will be set to
  *    RenderHints::getFootnoteListKey().'-annotations'. @see cdm_annotations_as_footnotekeys()
- *    For original sources the $footnote_list_key_suggestion will be overwritten by original_source_footnote_list_key() when
+ *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
  * @$original_source_footnote_tag
- *    null will cause original_source_footnote_list_key to use the default
+ *    null will cause bibliography_footnote_list_key to use the default
  *
  * @return String
  *   The foot note keys
@@ -369,11 +369,15 @@ function cdm_create_footnotes(
   $footNoteKeys = cdm_entity_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
 
   // Source references as footnotes.
-  $sources_footnote_list_key = original_source_footnote_list_key($footnote_list_key_suggestion);
   if($is_bibliography_aware){
     $bibliography_settings = get_bibliography_settings();
-    $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause original_source_footnote_list_key to use the default
+    $sources_footnote_list_key = bibliography_footnote_list_key($footnote_list_key_suggestion);
+    $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause bibliography_footnote_list_key to use the default
   } else {
+    $sources_footnote_list_key = $footnote_list_key_suggestion;
+    if(!$sources_footnote_list_key) {
+      RenderHints::getFootnoteListKey();
+    }
     $original_source_footnote_tag = NULL;
   }
 
@@ -653,7 +657,7 @@ function cdm_entity_sources_sorted($entity) {
    * @return string
    *  the footnote_list_key
    */
-  function original_source_footnote_list_key($key_suggestion = null) {
+  function bibliography_footnote_list_key($key_suggestion = null) {
     if(!$key_suggestion){
       $key_suggestion = RenderHints::getFootnoteListKey();
     }
