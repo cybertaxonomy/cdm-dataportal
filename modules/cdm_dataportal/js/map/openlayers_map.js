@@ -378,7 +378,10 @@
                 kmlLayer.events.on({
                     "featureselected": onKmlFeatureSelect,
                     "featureunselected": onKmlFeatureUnselect,
-                    'loadend': applyLayerZoomBounds
+                    'loadend': function(event) {
+                        applyLayerZoomBounds(event);
+                        disablePolygonFeatureClick(event);
+                    }
                 });
                 map.addControl(kmlSelectControl);
                 kmlSelectControl.activate();
@@ -1144,6 +1147,13 @@
             log("data bounds of layer as zoom bounds: " + zoomToBounds.toString());
             layerDataLoaded();
       };
+
+      var disablePolygonFeatureClick = function(event){
+          var layer = event.object;
+          var kmlLayerElement = jQuery('#' + layer.id);
+          //log("KML Layer DOM element: " + kmlLayerElement);
+          kmlLayerElement.find('path').css('pointer-events', 'none');
+      }
 
       /**
        * Creates a WMS Base layer
