@@ -17,6 +17,9 @@ const CDM_NAME_PAGE_SECTION_TAXA_DEFAULT = 1;
 
 const CDM_MEDIA_GALLERY_VIEWER = 'image_gallery_viewer';
 const CDM_MEDIA_GALLERY_VIEWER_DEFAULT = 'universalviewer';
+const CDM_MEDIA_GALLERY_VIEWER_SIMPLE = 'default';
+
+const CDM_ADDITIONAL_MEDIA_COPYRIGHT = 'cdm_additional_media_copyright';
 
 const CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES = 'cdm_taxonpage_taxon_node_show_status';
 define('TAXONTREE_RANKLIMIT', 'cdm_taxontree_ranklimit');
@@ -2984,7 +2987,7 @@ function cdm_settings_layout_media() {
   );
 
   // --- STANDARD_IMAGE_VIEWER ---- //
-  if(variable_get(CDM_MEDIA_GALLERY_VIEWER, 'default') == 'default') {
+  if(variable_get(CDM_MEDIA_GALLERY_VIEWER, CDM_MEDIA_GALLERY_VIEWER_DEFAULT) == CDM_MEDIA_GALLERY_VIEWER_SIMPLE) {
     $form['media_settings'][CDM_STANDARD_IMAGE_VIEWER] = array(
       '#type' => 'fieldset',
       '#tree' => true,
@@ -2998,10 +3001,17 @@ function cdm_settings_layout_media() {
       '#type' => 'checkbox',
       '#title' => 'Show media representations',
       '#default_value' => $cdm_standard_image_viewer_settings['media_representation_details_enabled']
-
     );
-  }
 
+  }
+  if(variable_get(CDM_MEDIA_GALLERY_VIEWER, 'default') == CDM_MEDIA_GALLERY_VIEWER_DEFAULT) {
+    $form['media_settings'][CDM_ADDITIONAL_MEDIA_COPYRIGHT] = [
+      '#type' => 'textarea',
+      '#title' => 'Additional media copyright statement',
+      '#default_value' => variable_get(CDM_ADDITIONAL_MEDIA_COPYRIGHT, NULL),
+      '#description' => 'This statement will be shown below the <b>Universal imgage viewer only</b>'
+    ];
+  }
 
   // @WA: D7 form api does not support reset buttons,
   // so to mimic the D5 reset button we add one like this.
