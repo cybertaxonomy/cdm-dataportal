@@ -859,6 +859,10 @@ function taxon_media_gallery_universalviewer($taxon, $media) {
     );
   _add_js_universalviewer('#uv', $manifest_uri);
   $out = '<div id="uv" class="uv" style="width: 680px; height: 680px;"></div>';
+
+  if(variable_get(CDM_ADDITIONAL_MEDIA_COPYRIGHT, NULL)){
+    $out .= '<div class="additional_media_copyright">' . variable_get(CDM_ADDITIONAL_MEDIA_COPYRIGHT, NULL) . '</div>';
+  }
   return $out;
 }
 
