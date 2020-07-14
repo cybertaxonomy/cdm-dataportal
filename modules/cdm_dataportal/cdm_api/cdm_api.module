@@ -1146,9 +1146,9 @@ function cdm_ws_fetch_all_by_restriction($cdm_entity_type, $class_restriction, a
  */
 function cdm_ws_fetch_all($resourceURI, array $query = array(), $method = 'GET', $absoluteURI = FALSE) {
   $page_index = 0;
-  // using a bigger page size to avoid to many multiple requests
+  // using a bigger page size to avoid too many multiple requests
   $page_size = 500;
-  $entities = array();
+  $entities = [];
 
   while ($page_index !== FALSE){
     $pager =  cdm_ws_page($resourceURI, $page_size, $page_index, $query,  $method, $absoluteURI);
