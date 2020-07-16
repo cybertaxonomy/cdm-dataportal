@@ -113,7 +113,7 @@
 /* line 53, ../sass/cdm.scss */
 #page-toc h3 {
   margin-top: 0;
-  line-height: 18px;
+  line-height: 22.4px;
 }
 
 /* line 59, ../sass/cdm.scss */
@@ -133,7 +133,7 @@
 /* line 72, ../sass/cdm.scss */
 .block-cdm-dataportal-feature, .media-caption, .specimens {
   clear: both;
-  margin-bottom: 18px;
+  margin-bottom: 22.4px;
 }
 /* line 75, ../sass/cdm.scss */
 .block-cdm-dataportal-feature dt, .media-caption dt, .specimens dt {
@@ -194,7 +194,7 @@
 
 /* line 117, ../sass/cdm.scss */
 div.cdm-item-list div.item {
-  margin: 9px 0;
+  margin: 11.2px 0;
 }
 
 /*
@@ -202,7 +202,7 @@ div.cdm-item-list div.item {
  */
 /* line 126, ../sass/cdm.scss */
 .page-part {
-  margin-bottom: 18px;
+  margin-bottom: 22.4px;
   clear: none;
 }
 
@@ -213,7 +213,7 @@ div.cdm-item-list div.item {
 /* line 136, ../sass/cdm.scss */
 .description_list h3 {
   font-size: 14px;
-  line-height: 18px;
+  line-height: 22.4px;
   font-weight: bold;
 }
 
@@ -290,7 +290,7 @@ dl.media-caption {
 /* line 207, ../sass/cdm.scss */
 #specimens .block-cdm-dataportal-feature h2 {
   font-size: 14px;
-  line-height: 18px;
+  line-height: 22.4px;
   font-weight: bold;
 }
 /* line 214, ../sass/cdm.scss */

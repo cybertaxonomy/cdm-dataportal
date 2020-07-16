@@ -154,7 +154,7 @@ html {
   /* 2 */
   -webkit-text-size-adjust: 100%;
   /* 2 */
-  line-height: 1.28571em;
+  line-height: 1.6em;
 }
 
 /* Address `font-family` inconsistency between `textarea` and other form elements. */
@@ -205,13 +205,13 @@ a:hover {
 /* line 170, ../sass/_normalize.scss */
 p,
 pre {
-  margin: 1.28571em 0;
+  margin: 1.6em 0;
 }
 
 /* line 173, ../sass/_normalize.scss */
 blockquote {
   /* Also indent the quote on both sides. */
-  margin: 1.28571em 30px;
+  margin: 1.6em 30px;
 }
 
 /**
@@ -222,50 +222,50 @@ blockquote {
 h1 {
   /* Set the font-size and line-height while keeping a proper vertical rhythm. */
   font-size: 2em;
-  line-height: 1.28571em;
+  line-height: 1.6em;
   /* Set 1 unit of vertical rhythm on the top and bottom margins. */
-  margin-top: 0.64286em;
-  margin-bottom: 0.64286em;
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
 }
 
 /* line 190, ../sass/_normalize.scss */
 h2 {
   font-size: 1.6em;
-  line-height: 1.60714em;
-  margin-top: 0.80357em;
-  margin-bottom: 0.80357em;
+  line-height: 2em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 /* line 195, ../sass/_normalize.scss */
 h3 {
   font-size: 1.5em;
-  line-height: 1.71429em;
-  margin-top: 0.85714em;
-  margin-bottom: 0.85714em;
+  line-height: 2.13333em;
+  margin-top: 1.06667em;
+  margin-bottom: 1.06667em;
 }
 
 /* line 200, ../sass/_normalize.scss */
 h4 {
   font-size: 1em;
-  line-height: 1.28571em;
-  margin-top: 1.28571em;
-  margin-bottom: 1.28571em;
+  line-height: 1.6em;
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
 }
 
 /* line 205, ../sass/_normalize.scss */
 h5 {
   font-size: 0.83em;
-  line-height: 1.54905em;
-  margin-top: 1.54905em;
-  margin-bottom: 1.54905em;
+  line-height: 1.92771em;
+  margin-top: 1.92771em;
+  margin-bottom: 1.92771em;
 }
 
 /* line 210, ../sass/_normalize.scss */
 h6 {
   font-size: 0.67em;
-  line-height: 1.91898em;
-  margin-top: 1.91898em;
-  margin-bottom: 1.91898em;
+  line-height: 2.38806em;
+  margin-top: 2.38806em;
+  margin-bottom: 2.38806em;
 }
 
 /* Address styling not present in IE 8/9, Safari 5, and Chrome. */
@@ -296,7 +296,7 @@ hr {
   height: 0;
   border: 1px solid #666;
   padding-bottom: -1px;
-  margin: 1.28571em 0;
+  margin: 1.6em 0;
 }
 
 /* Address styling not present in IE 8/9. */
@@ -317,7 +317,7 @@ var {
   font-family: "Noto Mono", sans-serif;
   _font-family: 'courier new', monospace;
   font-size: 1em;
-  line-height: 1.28571em;
+  line-height: 1.6em;
 }
 
 /* Improve readability of pre-formatted text in all browsers. */
@@ -457,16 +457,16 @@ fieldset {
   border-color: #c0c0c0;
   border-top-style: solid;
   border-top-width: 0.07143em;
-  padding-top: 0.37857em;
+  padding-top: 0.48857em;
   border-bottom-style: solid;
   border-bottom-width: 0.07143em;
-  padding-bottom: 0.76429em;
+  padding-bottom: 0.96857em;
   border-left-style: solid;
   border-left-width: 0.07143em;
-  padding-left: 0.76429em;
+  padding-left: 0.96857em;
   border-right-style: solid;
   border-right-width: 0.07143em;
-  padding-right: 0.76429em;
+  padding-right: 0.96857em;
 }
 
 /**
@@ -652,8 +652,8 @@ table {
   /* Prevent cramped-looking tables */
   /* width: 100%; */
   /* Add vertical rhythm margins. */
-  margin-top: 1.28571em;
-  margin-bottom: 1.28571em;
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
 }
 
 /* line 551, ../sass/_normalize.scss */
@@ -1067,7 +1067,7 @@ td {
 .header__site-name {
   margin: 0;
   font-size: 2em;
-  line-height: 1.28571em;
+  line-height: 1.6em;
 }
 
 /* The link around the name of the website. */
@@ -1187,7 +1187,7 @@ td {
 /* fixes oversized icons */
 /* line 211, ../sass/components/_misc.scss */
 #admin-menu .dropdown .admin-menu-icon img {
-  height: 18px;
+  height: 22.4px;
 }
 
 /* line 215, ../sass/components/_misc.scss */
@@ -1278,7 +1278,7 @@ td {
  */
 /* line 296, ../sass/components/_misc.scss */
 .messages, .messages--status, .messages--warning, .messages--error {
-  margin: 1.28571em 0;
+  margin: 1.6em 0;
   padding: 10px 10px 10px 50px;
   /* LTR */
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAD6UlEQVR42s2WX0xbVRzH3YwmC4k+GF/0ZS/S267/bmnX9nL7bwstZlnbjTDYyoC5GCbB0ZW5pdJCe6swbLFA6bpWIGuRMWVjKGP+21QW3SZBSAjGh4XEaTZTH82Cm/3ztS2xs7mw4KLRk3xyzj33/H6fe5Pz7zEA/yr/vUDukj9FH6drqTaqT8EoPs/UV+nX6TD1BlUh9AqLHlmgPKLcRHmoCOWmElK/FOKTYpS8UwLJkASiUyLI3pKhlClN0g46qj+qL/pbArlbrlO1q25JeiSgR2iYJ8ywXLSg/qP6LNl2ro8+Q4MMkKCd9K2t3q3KdQnkXXIF5aISkgEJzONm1F2qW52pDJN1MI2bUBIuAdVOJWSMTPNQgX6/vkjVpvpREpag6oMqWCYta1IzbsHh9ga0RJtzY8URMdRO9U/KSuWmNQUqh2pY3CtG+fvlqJyofMAFNrZAE+7e/RWR4X4cD9tgOGsA2U2CdtMDqwqyMyIzQ5KKqAKmcyaYxkzYd3YvjGNGFtXRPRj58DT+LOemRrFnrBLyITmUDmUyO/NYgu2d26ukHVJo3tXAMGpAs+cQmh0NeClan30uwN7TgnQ6nRd4r3thOGOAJqYB2UVC79AfZAnKHGUxQa8A2tNaNLW/jKvXv8Dyb8s4yryKA4O10A3roIvpUB+swTdz1/LJZ27PQBvT5lBH1RD4BChzlQ2wBNtc22aE/ULQgzRCl4P5BPcT93GMOYz9wb2QhCRgAq35d8u/L2PXe7tADVGgBlcQ+AXQtmlvsP/gzbJZvp8PMkJCFBYh8m0knyiVSsHe0YIGZz1+/uVOvt8z7QGvnwf+ST5EIRHIUyR4fh50rbp5lsDcYR4ReAXgBrng9q/Qfa0bfy035r7Ot2dvz4IX4IEIEAXwvDzscOw4zxJUd1YfEXlE4Aa4BQHMlwzSSBeI7iXvoTxWDqKPYCFsFaKmr+YVliB0JfS89DVpiuhlB9k/tSOZTuYFvq98yI7L0/MAsVWcGp0bfW61hbahwltxSeARsIKyWKesSKQSWIwvYkvvllwfx88pgOvhwthu/AzAxlVX8vz385tLbaVxwpcLZtEw0QDjsBGctzksiE4CimZFfHp++oWHbnbuUfdB0komMgHsRN1r0MWBsEmYODF5onY92/UTwcvBxuzXcN1ccHycVSn2FaPYWwzCQUDWKIt7z3utAJ5c74Hz+OLSomynY+cVfiM/xW3JiDyZpB3FuZrj4oCwE+Ad4qWMjPHjpTtL0mzMoxyZz9yM39Q7Y85Ok930icqm+k59TL2wm9l90dZv8y/8sPAigGf/iUN/Q4anM2zOsdLe+L+4VfwBVVjDs2rTYx0AAAAASUVORK5CYII=');
@@ -1358,7 +1358,7 @@ td {
   /* IE 9 and earlier don't understand gradients. */
   list-style: none;
   border-bottom: 1px solid #bbbbbb \0/ie;
-  margin: 1.28571em 0;
+  margin: 1.6em 0;
   padding: 0 2px;
   white-space: nowrap;
 }
@@ -1377,7 +1377,7 @@ a.tabs-primary__tab-link, a.tabs-primary__tab-link.is-active, a.tabs-secondary__
   border-right: 0;
   border-bottom: 0;
   display: block;
-  line-height: 1.28571em;
+  line-height: 1.6em;
   text-decoration: none;
 }
 
@@ -1446,13 +1446,13 @@ a.tabs-primary__tab-link:active, a.tabs-primary__tab-link.is-active {
 .tabs-secondary {
   font-size: .9em;
   /* Collapse bottom margin of ul.primary. */
-  margin-top: -1.28571em;
+  margin-top: -1.6em;
 }
 
 /* line 451, ../sass/components/_misc.scss */
 .tabs-secondary__tab,
 .tabs-secondary__tab.is-active {
-  margin: 0.64286em 3px;
+  margin: 0.8em 3px;
 }
 
 /* line 457, ../sass/components/_misc.scss */
@@ -1599,7 +1599,7 @@ h3.title {
 /* Block wrapper. */
 /* line 584, ../sass/components/_misc.scss */
 .block {
-  margin-bottom: 1.28571em;
+  margin-bottom: 1.6em;
 }
 
 /**
@@ -1680,7 +1680,7 @@ h3.title {
 /* Wrapper for the list of comments and its title. */
 /* line 663, ../sass/components/_misc.scss */
 .comments {
-  margin: 1.28571em 0;
+  margin: 1.6em 0;
 }
 
 /* Preview of the comment before submitting new or updated comment. */
@@ -1715,7 +1715,7 @@ h3.title {
 /* Wrapper for a form element (or group of form elements) and its label. */
 /* line 694, ../sass/components/_misc.scss */
 .form-item {
-  margin: 1.28571em 0;
+  margin: 1.6em 0;
   /* Pack groups of checkboxes and radio buttons closer together. */
   /* Form items in a table. */
   /* Highlight the form elements that caused a form submission error. */
@@ -1799,7 +1799,7 @@ a.button {
 /* line 772, ../sass/components/_misc.scss */
 .openid-link,
 .user-link {
-  margin-top: 1.28571em;
+  margin-top: 1.6em;
 }
 
 /* line 776, ../sass/components/_misc.scss */
@@ -1812,7 +1812,7 @@ html.js #user-login-form li.openid-link,
 
 /* line 780, ../sass/components/_misc.scss */
 #user-login ul {
-  margin: 1.28571em 0;
+  margin: 1.6em 0;
 }
 
 /**
@@ -2174,7 +2174,7 @@ tr.selected td {
 /* line 53, ../sass/cdm.scss */
 #page-toc h3 {
   margin-top: 0;
-  line-height: 18px;
+  line-height: 22.4px;
 }
 
 /* line 59, ../sass/cdm.scss */
@@ -2194,7 +2194,7 @@ tr.selected td {
 /* line 72, ../sass/cdm.scss */
 .block-cdm-dataportal-feature, .media-caption, .specimens {
   clear: both;
-  margin-bottom: 18px;
+  margin-bottom: 22.4px;
 }
 /* line 75, ../sass/cdm.scss */
 .block-cdm-dataportal-feature dt, .media-caption dt, .specimens dt {
@@ -2255,7 +2255,7 @@ tr.selected td {
 
 /* line 117, ../sass/cdm.scss */
 div.cdm-item-list div.item {
-  margin: 9px 0;
+  margin: 11.2px 0;
 }
 
 /*
@@ -2263,7 +2263,7 @@ div.cdm-item-list div.item {
  */
 /* line 126, ../sass/cdm.scss */
 .page-part {
-  margin-bottom: 18px;
+  margin-bottom: 22.4px;
   clear: none;
 }
 
@@ -2274,7 +2274,7 @@ div.cdm-item-list div.item {
 /* line 136, ../sass/cdm.scss */
 .description_list h3 {
   font-size: 14px;
-  line-height: 18px;
+  line-height: 22.4px;
   font-weight: bold;
 }
 
@@ -2351,7 +2351,7 @@ dl.media-caption {
 /* line 207, ../sass/cdm.scss */
 #specimens .block-cdm-dataportal-feature h2 {
   font-size: 14px;
-  line-height: 18px;
+  line-height: 22.4px;
   font-weight: bold;
 }
 /* line 214, ../sass/cdm.scss */
