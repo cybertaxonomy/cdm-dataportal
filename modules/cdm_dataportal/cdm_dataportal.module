@@ -2805,7 +2805,7 @@ function cdm_entities_annotations_as_footnotekeys(array $cdm_entities, $footnote
 
   $foot_note_keys = [];
   foreach ($cdm_entities as $cdm_entity) {
-        $foot_note_keys[] = array_merge($foot_note_keys, cdm_entity_annotations_as_footnotekeys($cdm_entity,$footnote_list_key_suggestion));
+        $foot_note_keys = array_merge($foot_note_keys, cdm_entity_annotations_as_footnotekeys($cdm_entity,$footnote_list_key_suggestion));
   }
 
   return $foot_note_keys;
@@ -2829,7 +2829,7 @@ function cdm_entities_annotations_as_footnotekeys(array $cdm_entities, $footnote
  */
 function cdm_entity_annotations_as_footnotekeys(stdClass $cdm_entity, $footnote_list_key_suggestion = NULL) {
 
-  $foot_note_keys = array();
+  $foot_note_keys = [];
 
   // Getting the key for the footnotemanager.
   if (isset($footnote_list_key_suggestion)) {
