@@ -694,6 +694,11 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
       $render_array['nomenclatural_act']['#weight'] + 10 );
   }
 
+  $render_array['footnotes'] = markup_to_render_array(
+    theme('cdm_annotation_footnotes', ['footnoteListKey' => RenderHints::getFootnoteListKey() ]),
+    12
+  );
+
   // registration date and office
   $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto);
   if($registration_date_insitute_markup){
@@ -701,6 +706,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
       $registration_date_insitute_markup . '</p>',
       100);
   }
+
 
   return $render_array;
 }
@@ -863,6 +869,10 @@ function registration_intitute_class_attribute($registration_dto)
 
 /**
  * Renders and array of CDM TypeDesignations
+ *
+ *  - NameTypeDesignation
+ *  - SpecimenTypeDesignation
+ *  - TextualTypeDesignation
  *
  * @param object $type_designations an array of cdm TypeDesignation entities
  *  to render
@@ -1084,7 +1094,7 @@ function compose_type_designations($taxon_name_uuid, $show_specimen_details = fa
 /**
  * Composes the TypedEntityReference to name type designations passed as associatve array.
  *
- * @param $$type_entity_refs array
+ * @param $type_entity_refs array
  *   an associative array of name type type => TypedEntityReference for name type designations as
  *   produced by the eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager
  *
@@ -1128,15 +1138,23 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
 
   $render_array = array();
 
+  static $annotations_and_sources_config = [
+    'sources_as_content' => TRUE,
+    'link_to_name_used_in_source' => FALSE,
+    'link_to_reference' => TRUE,
+    'add_footnote_keys' => FALSE,
+    'bibliography_aware' => FALSE
+  ];
+
   $type_designation_list = array();
   uksort($type_entity_refs, "compare_type_designation_status_labels");
-  foreach($type_entity_refs as $type_status => $specimen_types){
-    foreach($specimen_types as $specimen_type){
+  foreach($type_entity_refs as $type_status => $type_designation_entity_refs){
+    foreach($type_designation_entity_refs as $type_designation_entity_ref){
 
-      $type_designation = cdm_ws_get(CDM_WS_PORTAL_TYPEDESIGNATION, array($specimen_type->uuid));
+      $type_designation = cdm_ws_get(CDM_WS_PORTAL_TYPEDESIGNATION, array($type_designation_entity_ref->uuid));
       $type_designation_list[] = $type_designation; // collect for the map
 
-      $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_PORTAL_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);
+      $derived_unit_facade_dto = cdm_ws_get(CDM_WS_PORTAL_DERIVEDUNIT_FACADE, $type_designation->typeSpecimen->uuid);
       // the media specimen is not contained in the $type_designation returned by CDM_PORTAL_TYPEDESIGNATION, so we need to fetch it separately
       $mediaSpecimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($type_designation->typeSpecimen->uuid, 'mediaSpecimen'));
 
@@ -1144,6 +1162,16 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
       $preferredStableUri = '';
       $citation_markup = '';
       $media = '';
+
+      // annotations and sources for the $derived_unit_facade_dto
+      $annotations_and_sources = handle_annotations_and_sources(
+        $derived_unit_facade_dto,
+        $annotations_and_sources_config,
+        '',
+        null
+      );
+      $source_citations = $annotations_and_sources['source_references'];
+      $foot_note_keys = $annotations_and_sources['foot_note_keys'];
 
       // preferredStableUri
       if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
@@ -1162,37 +1190,40 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
           );
           $media = compose_cdm_media_gallerie(array(
             'mediaList' => array($mediaSpecimen),
-            'galleryName' => CDM_DATAPORTAL_TYPE_SPECIMEN_GALLERY_NAME . '_' . $specimen_type->uuid,
+            'galleryName' => CDM_DATAPORTAL_TYPE_SPECIMEN_GALLERY_NAME . '_' . $type_designation_entity_ref->uuid,
             'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
             'cols' => $gallery_settings['cdm_dataportal_media_cols'],
             'captionElements' => $captionElements,
           ));
         }
-        // citation and detail
+        // citation and detail for the media specimen
         $annotations_and_sources = handle_annotations_and_sources(
-            $mediaSpecimen,
-            array(
-                'sources_as_content' => true,
-                'link_to_name_used_in_source' => false,
-                'link_to_reference' => true,
-                'add_footnote_keys' => false,
-                'bibliography_aware' => false),
-            '',
-            null
+          $mediaSpecimen,
+          $annotations_and_sources_config,
+          '',
+          null
         );
         if(is_array( $annotations_and_sources['source_references'])){
-          $citation_markup = join(', ', $annotations_and_sources['source_references']);
+          $source_citations = array_merge($source_citations, $annotations_and_sources['source_references']);
+        }
+        if($annotations_and_sources['foot_note_keys']){
+          $foot_note_keys .= ', ' . $annotations_and_sources['foot_note_keys'];
         }
       }
 
-      $specimen_markup = $derivedUnitFacadeInstance->titleCache;
-      if(isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
-        $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($type_designation->typeSpecimen->uuid)), $specimen_markup);
+      $citation_markup = join(', ', $source_citations);
+
+      $specimen_markup = $derived_unit_facade_dto->titleCache;
+      if(isset($derived_unit_facade_dto->specimenLabel) && $derived_unit_facade_dto->specimenLabel){
+        $specimen_markup = str_replace(
+          $derived_unit_facade_dto->specimenLabel,
+          l($derived_unit_facade_dto->specimenLabel, path_to_specimen($type_designation->typeSpecimen->uuid)), $specimen_markup);
       }
 
-      $type_designation_render_array = markup_to_render_array('<div class="specimen_type_designation ' . html_class_attribute_ref($specimen_type)  . '">
+      $type_designation_render_array = markup_to_render_array(
+        '<div class="type_designation_entity_ref ' . html_class_attribute_ref($type_designation_entity_ref)  . '">
           <span class="type-status">' . ucfirst($type_status) . "</span>: "
-        . $specimen_markup
+        . $specimen_markup . $foot_note_keys
         . ($citation_markup ? ' '. $citation_markup : '')
         . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
         . $media

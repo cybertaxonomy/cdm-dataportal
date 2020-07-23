@@ -891,22 +891,35 @@ function uri_uriByProxy($uri, $theme = FALSE) {
  *
  * NOTE: Not all CDM Base types are yet supported.
  *
- * @param $cdmBase
+ * @param $cdm_entity
  *   The CDM entity to construct the annotations pager uri for
  */
-function cdm_compose_annotations_uri($cdmBase) {
+function cdm_compose_annotations_uri($cdm_entity) {
 
-  if (!$cdmBase->uuid) {
+  $cdm_entity_type = $cdm_entity->class;
+
+  if($cdm_entity_type == 'DerivedUnitFacade'){
+    // TODO we may want to implement a derivedUnitFacade/{uuid}/annotations service and use that instead
+    $cdm_entity_type = $cdm_entity->fieldUnitEntityReference->type;
+    $cdm_entity_uuid = $cdm_entity->fieldUnitEntityReference->uuid;
+  } else {
+    if (isset($cdm_entity->uuid)) {
+      $cdm_entity_uuid = $cdm_entity->uuid;
+    }
+  }
+
+  if(!$cdm_entity_uuid){
+    // silently give up
     return;
   }
 
-  $ws_base_uri = cdm_ws_base_uri($cdmBase->class);
+  $ws_base_uri = cdm_ws_base_uri($cdm_entity_type);
 
   if($ws_base_uri === null){
-      trigger_error(check_plain('Unsupported CDM Class - no annotations available for ' . $cdmBase->class), E_USER_ERROR);
+      trigger_error(check_plain('Unsupported CDM Class - no annotations available for ' . $cdm_entity_type), E_USER_ERROR);
   }
   return cdm_compose_url($ws_base_uri, array(
-    $cdmBase->uuid,
+    $cdm_entity_uuid,
     'annotations',
   ));
 }
@@ -1777,7 +1790,7 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude
  * @return array
  *   An array of Annotation objects or an empty array.
  */
-function cdm_ws_getAnnotationsFor(&$cdm_entity, $include_types = FALSE) {
+function cdm_ws_fetch_annotations(&$cdm_entity, $include_types = FALSE) {
 
   if(!isset($cdm_entity->annotations)){
     $annotation_url = cdm_compose_annotations_uri($cdm_entity);
@@ -1816,7 +1829,7 @@ function cdm_fetch_visible_annotations($cdm_entity){
   if(!$annotations_types_filter) {
     $annotations_types_filter = unserialize(EXTENSION_TYPES_VISIBLE_DEFAULT);
   }
-  return cdm_ws_getAnnotationsFor($cdm_entity, variable_get(ANNOTATION_TYPES_VISIBLE, $annotations_types_filter));
+  return cdm_ws_fetch_annotations($cdm_entity, variable_get(ANNOTATION_TYPES_VISIBLE, $annotations_types_filter));
 }
 
 /**
@@ -1830,7 +1843,7 @@ function cdm_fetch_visible_annotations($cdm_entity){
  */
 function cdm_load_annotations(&$annotatable_entity) {
   if (isset($annotatable_entity) && !isset($annotatable_entity->annotations)) {
-    $annotations = cdm_ws_getAnnotationsFor($annotatable_entity);
+    $annotations = cdm_ws_fetch_annotations($annotatable_entity);
     if (is_array($annotations)) {
       $annotatable_entity->annotations = $annotations;
     }
@@ -2697,18 +2710,6 @@ function queryString($elements) {
     }
   }
   return $query;
-}
-
-/**
- * Implementation of the magic method __clone to allow deep cloning of objects
- * and arrays.
- */
-function __clone() {
-  foreach ($this as $name => $value) {
-    if (gettype($value) == 'object' || gettype($value) == 'array') {
-      $this->$name = clone($this->$name);
-    }
-  }
 }
 
 /**

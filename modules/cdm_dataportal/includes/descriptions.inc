@@ -345,7 +345,9 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
  * @param $footnote_list_key_suggestion string
  *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
  *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnote key for annotations will be set to
- *    RenderHints::getFootnoteListKey().'-annotations'. @return String
+ *    RenderHints::getFootnoteListKey().'-annotations'.
+ *
+ * @return String
  *   The foot note keys
  *
  * @see cdm_entities_annotations_as_footnotekeys()
@@ -367,7 +369,7 @@ function cdm_create_footnotes(
   $sources = cdm_entity_sources_sorted($description_element);
 
   // Annotations as footnotes.
-  $footNoteKeys = cdm_entity_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
+  $footnote_keys = cdm_entity_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
 
   // Source references as footnotes.
   if($is_bibliography_aware){
@@ -394,23 +396,38 @@ function cdm_create_footnotes(
         $original_source_footnote_tag
       );
       // Ensure uniqueness of the footnote keys.
-      cdm_add_footnote_to_array($footNoteKeys, $fn_key);
+      cdm_add_footnote_to_array($footnote_keys, $fn_key);
     }
   }
   // Sort and render footnote keys.
-  $footnoteKeyListStr = '';
-  asort($footNoteKeys);
-  foreach ($footNoteKeys as $footNoteKey) {
-    try{
-      $footnoteKeyListStr .= theme('cdm_footnote_key',
+  asort($footnote_keys);
+  $footnotes_markup = footnote_keys_to_markup($footnote_keys, $separator);
+  return $footnotes_markup;
+}
+
+/**
+ * Creates markup for an array of foot note keys
+ *
+ * @param array $footnote_keys
+ * @param string $separator
+ *
+ * @return string
+ */
+function footnote_keys_to_markup(array $footnote_keys, string $separator): string {
+
+  $footnotes_markup = '';
+  foreach ($footnote_keys as $foot_note_key) {
+    try {
+      $footnotes_markup .= theme('cdm_footnote_key',
         array(
-          'footnoteKey' => $footNoteKey,
-          'separator' => ($footnoteKeyListStr ? $separator : '')));
+          'footnoteKey' => $foot_note_key,
+          'separator' => ($footnotes_markup ? $separator : '')
+        ));
     } catch (Exception $e) {
-      drupal_set_message("Exception: " . $e->getMessage(),  'error');
+      drupal_set_message("Exception: " . $e->getMessage(), 'error');
     }
   }
-  return $footnoteKeyListStr;
+  return $footnotes_markup;
 }
 
 
@@ -559,8 +576,8 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
     $annotations_and_sources = array(
       'foot_note_keys' => NULL,
-      'source_references' => array(),
-      'names_used_in_source' => array()
+      'source_references' => [],
+      'names_used_in_source' => []
     );
 
     // some entity types only have single sources:
@@ -596,12 +613,9 @@ function handle_annotations_and_sources_config($feature_block_settings){
         }
       } // END of loop over sources
 
-      // annotations footnotes separate.
-      $annotations_and_sources['foot_note_keys'] = theme('cdm_entities_annotations_as_footnotekeys',
-        array(
-          'cdmBase_list' => $entity,
-          'footnote_list_key' => $footnote_list_key_suggestion,
-        )
+      // annotations footnotes separate from sources
+      $annotations_and_sources['foot_note_keys'] = footnote_keys_to_markup(
+        cdm_entity_annotations_as_footnotekeys($entity, $footnote_list_key_suggestion), ', '
       );
 
     } // END of references inline
