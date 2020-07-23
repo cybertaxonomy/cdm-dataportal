@@ -393,7 +393,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
     $referenceUri = FALSE;
   }
   $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_tags, $is_invalid);
-  $taxon_footnotes = theme('cdm_annotations_as_footnotekeys',
+  $taxon_footnotes = theme('cdm_entities_annotations_as_footnotekeys',
     array('cdmBase_list' => array(
       $taxon->name,
       $taxon,
@@ -443,7 +443,7 @@ function cdm_accepted_for($accepted_for_uuid) {
       $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
     }
     $out .= render_taxon_or_name($synonym->name, NULL, $referenceUri);
-    $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $synonym));
+    $out .= theme('cdm_entities_annotations_as_footnotekeys', array('cdmBase_list' => $synonym));
     $out .= '</span>';
   }
   RenderHints::popFromRenderStack();
@@ -574,7 +574,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
             }
             $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
           }
-          $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
+          $out .= theme('cdm_entities_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
           if ($showMedia_synonyms) {
             $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
           }
@@ -602,7 +602,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
         }
         $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
       }
-      $out .= theme('cdm_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
+      $out .= theme('cdm_entities_annotations_as_footnotekeys', array('cdmBase_list' => $taxon));
 
       if ($showMedia_taxa) {
         $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));

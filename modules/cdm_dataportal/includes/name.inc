@@ -580,7 +580,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
   $out .= '</span>';
   if ($show_annotations) {
-    // $out .= theme('cdm_annotations_as_footnotekeys', $taxonName);
+    // $out .= theme('cdm_entities_annotations_as_footnotekeys', $taxonName);
   }
   return $out;
 }

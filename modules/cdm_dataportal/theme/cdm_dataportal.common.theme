@@ -163,7 +163,7 @@ function theme_cdm_annotations_as_footnotekeys($variables) {
   $out = '';
   if(is_array($cdm_entities)){
     // array of entities
-    $footNoteKeys = cdm_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);
+    $footNoteKeys = cdm_entities_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);
   } else {
     // single entity
     $footNoteKeys = cdm_entity_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);

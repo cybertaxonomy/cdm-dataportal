@@ -37,7 +37,7 @@ function cdm_dataportal_theme() {
     'radio_options_suffix' => array('render element' => 'element'),
 
     // Themes in cdm_dataportal.common.theme.
-    'cdm_annotations_as_footnotekeys' => array('variables' => array('cdmBase_list' => NULL, 'footnote_list_key' => NULL)),
+    'cdm_entities_annotations_as_footnotekeys' => array('variables' => array('cdmBase_list' => NULL, 'footnote_list_key' => NULL)),
     'cdm_annotation_footnotes' => array('variables' => array('footnoteListKey' => NULL, 'enclosingTag' => 'span')),
     'cdm_annotation_content' => array('variables' => array('AnnotationTO' => NULL)),
     'cdm_list_of_annotations' => array('variables' => array('annotationElements' => NULL)),

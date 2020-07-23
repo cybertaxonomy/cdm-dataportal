@@ -345,14 +345,15 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
  * @param $footnote_list_key_suggestion string
  *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
  *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnote key for annotations will be set to
- *    RenderHints::getFootnoteListKey().'-annotations'. @see cdm_annotations_as_footnotekeys()
+ *    RenderHints::getFootnoteListKey().'-annotations'. @return String
+ *   The foot note keys
+ *
+ * @see cdm_entities_annotations_as_footnotekeys()
  *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
  * @$original_source_footnote_tag
  *    null will cause bibliography_footnote_list_key to use the default
  *
- * @return String
- *   The foot note keys
  */
 function cdm_create_footnotes(
     $description_element,
@@ -543,15 +544,16 @@ function handle_annotations_and_sources_config($feature_block_settings){
    * @param $footnote_list_key_suggestion string
    *    optional parameter. If this paramter is left empty (null, 0, "") the footnote key will be determined by the nested
    *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations will be set to
-   *    RenderHints::getFootnoteListKey().'-annotations'. @see cdm_annotations_as_footnotekeys()
-   *
-   * @return array
+   *    RenderHints::getFootnoteListKey().'-annotations'. @return array
    *   an associative array with the following elements:
    *   - foot_note_keys: all footnote keys as markup
    *   - source_references: an array of the source references citations
    *   - names used in source: an associative array of the names in source,
    *        the name in source strings are de-duplicated
    *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
+   *
+   *@see cdm_entities_annotations_as_footnotekeys()
+   *
    */
   function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $footnote_list_key_suggestion) {
 
@@ -595,7 +597,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
       } // END of loop over sources
 
     // annotations footnotes separate.
-    $annotations_and_sources['foot_note_keys'] = theme('cdm_annotations_as_footnotekeys',
+    $annotations_and_sources['foot_note_keys'] = theme('cdm_entities_annotations_as_footnotekeys',
       array(
         'cdmBase_list' => $entity,
         'footnote_list_key' => $footnote_list_key_suggestion,
@@ -1799,7 +1801,7 @@ function compose_description_elements_distribution($description_elements){
     );
 
 
-    list($status_label, $status_markup) = distribution_status_label_and_markup($description_element);
+    [$status_label, $status_markup] = distribution_status_label_and_markup($description_element);
 
     $out = '';
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
@@ -2029,7 +2031,7 @@ function compose_description_elements_distribution($description_elements){
           UUID_DISTRIBUTION
         );
 
-        list($status_label, $status_markup) = distribution_status_label_and_markup($distribution, $level_style['status_glue']);
+        [$status_label, $status_markup] = distribution_status_label_and_markup($distribution, $level_style['status_glue']);
       }
 
       $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'

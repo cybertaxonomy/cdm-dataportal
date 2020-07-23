@@ -722,7 +722,7 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     $special_annotations_array = array();
     $special_annotations_array[] = $taxon->name;
     $special_annotations_array[] = $taxon;
-    $accepted_name .= theme('cdm_annotations_as_footnotekeys', array(
+    $accepted_name .= theme('cdm_entities_annotations_as_footnotekeys', array(
         'cdmBase_list' => $special_annotations_array,
         'footnote_list_key' => $synonymy_render_path . '-annotations')
     );
