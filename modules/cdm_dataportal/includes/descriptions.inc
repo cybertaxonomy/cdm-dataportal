@@ -596,13 +596,13 @@ function handle_annotations_and_sources_config($feature_block_settings){
         }
       } // END of loop over sources
 
-    // annotations footnotes separate.
-    $annotations_and_sources['foot_note_keys'] = theme('cdm_entities_annotations_as_footnotekeys',
-      array(
-        'cdmBase_list' => $entity,
-        'footnote_list_key' => $footnote_list_key_suggestion,
-      )
-    );
+      // annotations footnotes separate.
+      $annotations_and_sources['foot_note_keys'] = theme('cdm_entities_annotations_as_footnotekeys',
+        array(
+          'cdmBase_list' => $entity,
+          'footnote_list_key' => $footnote_list_key_suggestion,
+        )
+      );
 
     } // END of references inline
 
@@ -1801,13 +1801,13 @@ function compose_description_elements_distribution($description_elements){
     );
 
 
-    [$status_label, $status_markup] = distribution_status_label_and_markup($description_element);
+    $status = distribution_status_label_and_markup($description_element);
 
     $out = '';
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
-      . ' " title="' . $status_label. '">'
+      . ' " title="' . $status['label']. '">'
       . $description_element->area->representation_L10n
-      . $status_markup;
+      . $status['markup'];
     if(!empty($annotations_and_sources['source_references'])){
       $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
     }
@@ -1820,23 +1820,25 @@ function compose_description_elements_distribution($description_elements){
 }
 
   /**
-   * @param $descriptionElement
-   * @return array
+   * @param $description_element
+   * @return array an array with following keys
+   *   - 'label': the plain text status label
+   *   - 'markup': markup for the status
    */
-  function distribution_status_label_and_markup($descriptionElement, $status_glue = '&#8210; ') {
+  function distribution_status_label_and_markup($description_element, $status_glue = '&#8210; ') {
     $status_markup = '';
     $status_label = '';
 
-    if (isset($descriptionElement->status)) {
-      $status_label = $descriptionElement->status->representation_L10n;
+    if (isset($description_element->status)) {
+      $status_label = $description_element->status->representation_L10n;
       $status_markup =  '<span class="distributionStatus"> '
         . $status_glue
-        . '<span class="distributionStatus-' . $descriptionElement->status->idInVocabulary . '">'
+        . '<span class="distributionStatus-' . $description_element->status->idInVocabulary . '">'
         . $status_label
         . '</span></span>';
 
     };
-    return array($status_label, $status_markup);
+    return ['label' => $status_label, 'markup' => $status_markup];
   }
 
 
@@ -2031,16 +2033,16 @@ function compose_description_elements_distribution($description_elements){
           UUID_DISTRIBUTION
         );
 
-        [$status_label, $status_markup] = distribution_status_label_and_markup($distribution, $level_style['status_glue']);
+        $status = distribution_status_label_and_markup($distribution, $level_style['status_glue']);
       }
 
       $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'
         . join(' descriptionElement-', $distribution_uuids)
         . ' level_index_' . $level_index
-        . ' " title="' . $status_label . '">'
+        . ' " title="' . $status['label'] . '">'
         . '<span class="area_label">' . $label
         . $level_style['label_suffix'] . '</span>'
-        . $status_markup
+        . $status['markup']
       ;
 
       if(isset($annotations_and_sources)){
