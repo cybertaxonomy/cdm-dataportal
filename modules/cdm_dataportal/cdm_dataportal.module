@@ -2818,7 +2818,7 @@ function cdm_entities_annotations_as_footnotekeys(array $cdm_entities, $footnote
  * The footnotes are passed to the FootnoteManager in order to store the
  * annotations and to create the footnote keys.
 
- * @param object $cdm_entity
+ * @param stdClass $cdm_entity
  *   A single CdmBase instance ore comparable object.
  * @param $footnote_list_key_suggestion string
  *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined be set to
@@ -2827,7 +2827,7 @@ function cdm_entities_annotations_as_footnotekeys(array $cdm_entities, $footnote
  *
  * @see cdm_fetch_visible_annotations()
  */
-function cdm_entity_annotations_as_footnotekeys(object $cdm_entity, $footnote_list_key_suggestion = NULL) {
+function cdm_entity_annotations_as_footnotekeys(stdClass $cdm_entity, $footnote_list_key_suggestion = NULL) {
 
   $foot_note_keys = array();
 
