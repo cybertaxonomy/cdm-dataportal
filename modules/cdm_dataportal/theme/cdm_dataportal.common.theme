@@ -154,9 +154,10 @@ function tagNameParts($name, $numOfNameTokens) {
  *
  * @ingroup themeable
  */
-function theme_cdm_annotations_as_footnotekeys($variables) {
+function theme_cdm_entities_annotations_as_footnotekeys($variables) {
   $cdm_entities = $variables['cdmBase_list'];
   $footnote_list_key = $variables['footnote_list_key'];
+  // check if footnotes for annotations are disabled completely
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
   }
