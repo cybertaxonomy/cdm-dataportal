@@ -902,6 +902,9 @@ function cdm_compose_annotations_uri($cdm_entity) {
     // TODO we may want to implement a derivedUnitFacade/{uuid}/annotations service and use that instead
     $cdm_entity_type = $cdm_entity->fieldUnitEntityReference->type;
     $cdm_entity_uuid = $cdm_entity->fieldUnitEntityReference->uuid;
+  } elseif ($cdm_entity_type == 'TypedEntityReference'){
+    $cdm_entity_type = $cdm_entity->type;
+    $cdm_entity_uuid = $cdm_entity->uuid;
   } else {
     if (isset($cdm_entity->uuid)) {
       $cdm_entity_uuid = $cdm_entity->uuid;

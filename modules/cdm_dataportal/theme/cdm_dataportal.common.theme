@@ -304,6 +304,35 @@ function theme_cdm_footnotes($variables) {
 }
 
 /**
+ * Renders the footnotes for annotations and sources, etc.
+ *
+ * @param string $footnote_list_key
+ *    RenderHints::getFootnoteListKey() will be used if this parameter is undefined.
+ * @param string $enclosingTag
+ *    Default tag is 'span'
+ *
+ * @return string
+ *    The markup string
+ *
+ */
+function render_cdm_footnotes(string $footnote_list_key = NULL, string $enclosingTag = 'span'){
+
+  if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
+    return '';
+  }
+  if(!$footnote_list_key){
+    $footnote_list_key = RenderHints::getFootnoteListKey();
+  }
+
+  $out = '<' . $enclosingTag . ' class="footnotes footnotes-' . $footnote_list_key . ' ">'
+    . FootnoteManager::renderFootnoteList($footnote_list_key . '-annotations') . ' ' . FootnoteManager::renderFootnoteList($footnote_list_key)
+    . '</' . $enclosingTag . '>';
+  FootnoteManager::removeFootnoteList($footnote_list_key . '-annotations');
+  FootnoteManager::removeFootnoteList($footnote_list_key);
+  return $out;
+}
+
+/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */

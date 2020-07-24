@@ -2131,7 +2131,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
       }
     }
 
-    $content['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
+    $content['footnotes'] = markup_to_render_array(render_cdm_footnotes());
 
     $taxon_name_page->content = $content;
     RenderHints::popFromRenderStack();

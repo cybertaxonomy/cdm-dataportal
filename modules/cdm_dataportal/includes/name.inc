@@ -626,18 +626,19 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   );
 
   // name
+  $name_relations = null;
   if($registration_dto->nameRef){
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
     cdm_load_tagged_full_title($name);
     $render_array['nomenclatural_act']['published_name'] = markup_to_render_array('<div class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</div>', 0);
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
-    $render_array['nomenclatural_act']['name_relations'] = compose_name_relationships_list($name_relations, $registration_dto->nameRef->uuid, null);
-    $render_array['nomenclatural_act']['name_relations']['#weight'] = 10;
+    // need to create the name relationships later, so that the foot notes are in correct order, see section // name relations
   } else {
     // in this case the registration must have a
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->typifiedNameRef->uuid);
     $render_array['typified_name'] = markup_to_render_array('<p class="typified-name">for ' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</p>', 40);
   }
+
   // typedesignation in detail
   if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
     $field_unit_uuids = array();
@@ -668,7 +669,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
         drupal_set_message("Unimplemented type: " . $tokens[0], 'error');
       }
     }
-    // type designations wich are in this nomenclatural act.
+    // type designations which are in this nomenclatural act.
     if (count($name_type_designation_refs) > 0) {
       $render_array['nomenclatural_act']['name_type_designations'] = compose_name_type_designations($name_type_designation_refs);
       $render_array['nomenclatural_act']['name_type_designations']['#prefix'] = '<p class="name_type_designations">';
@@ -683,6 +684,12 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     }
   }
 
+  // name relations
+  if($name_relations){
+    $render_array['nomenclatural_act']['name_relations'] = compose_name_relationships_list($name_relations, $registration_dto->nameRef->uuid, null);
+    $render_array['nomenclatural_act']['name_relations']['#weight'] = 10;
+  }
+
   // citation
   if ($with_citation) {
     $render_array['citation'] = markup_to_render_array(
@@ -694,9 +701,8 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
       $render_array['nomenclatural_act']['#weight'] + 10 );
   }
 
-  $render_array['footnotes'] = markup_to_render_array(
-    theme('cdm_annotation_footnotes', ['footnoteListKey' => RenderHints::getFootnoteListKey() ]),
-    12
+  $render_array['nomenclatural_act']['footnotes'] = markup_to_render_array(render_cdm_footnotes(),
+    100
   );
 
   // registration date and office
@@ -936,6 +942,12 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         }
         $out .= ': ' . render_taxon_or_name($name_type_designation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
       }
+      $annotations_and_sources = handle_annotations_and_sources(
+        $name_type_designation,
+        typedesignations_annotations_and_sources_config(),
+        '',
+        RenderHints::getFootnoteListKey());
+      $out .= $annotations_and_sources['foot_note_keys'];
     }
   } // END NameTypeDesignation
 
@@ -989,6 +1001,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
 
       }
 
+
       $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($specimen_type_designation) . '">';
       $out .= type_designation_status_label_markup($specimen_type_designation) . $type_citation_markup;
 
@@ -1003,12 +1016,19 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
           $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($specimen_type_designation->typeSpecimen->uuid)), $specimen_markup);
         }
+        $annotations_and_sources = handle_annotations_and_sources(
+          $derivedUnitFacadeInstance,
+          typedesignations_annotations_and_sources_config(),
+          '',
+          RenderHints::getFootnoteListKey()
+        );
         $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
           . $specimen_markup
           . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
         if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
           $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
         }
+        $out .= $annotations_and_sources['foot_note_keys'];
       }
 
 
@@ -1031,7 +1051,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           'bibliography_aware' => false
         ),
         '',
-        RenderHints::getFootnoteListKey() // passing a defined key to avoid separate annotation footnote key see https://dev.e-taxonomy.eu/redmine/issues/8543
+        RenderHints::getFootnoteListKey() // passing a defined key to avoid a separate annotation footnote key see https://dev.e-taxonomy.eu/redmine/issues/8543
       );
       $encasement =  $textual_type_designation->verbatim ? '"' : '';
       $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
@@ -1043,7 +1063,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
     }
   }
 
-  // Footnotes for citations, collection acronym?s.
+  // Footnotes for citations, collection acronyms.
   // footnotes should be rendered in the parent element so we
   // are relying on the FootnoteListKey set there
   $_fkey = FootnoteManager::addNewFootnote(
@@ -1094,24 +1114,35 @@ function compose_type_designations($taxon_name_uuid, $show_specimen_details = fa
 /**
  * Composes the TypedEntityReference to name type designations passed as associatve array.
  *
- * @param $type_entity_refs array
+ * @param $type_entity_refs_by_status array
  *   an associative array of name type type => TypedEntityReference for name type designations as
  *   produced by the eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager
  *
  * @ingroup compose
  */
-function compose_name_type_designations($type_entity_refs){
+function compose_name_type_designations($type_entity_refs_by_status){
   $render_array = array();
   $preferredStableUri = '';
-  foreach($type_entity_refs as $type_status => $name_types){
-    foreach ($name_types as $name_type){
-      $type_designation = cdm_ws_get(CDM_WS_TYPEDESIGNATION, array($name_type->uuid, 'preferredUri'));
+  foreach($type_entity_refs_by_status as $type_status => $name_type_entityRefs){
+    foreach ($name_type_entityRefs as $name_type_entity_ref){
+      $type_designation = cdm_ws_get(CDM_WS_TYPEDESIGNATION, array($name_type_entity_ref->uuid, 'preferredUri'));
+      $footnote_keys = '';
+
       if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
         $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
       }
-      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type)  . '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
-        . $name_type->label
+      // annotations and sources for the $derived_unit_facade_dto
+      $annotations_and_sources = handle_annotations_and_sources(
+        $name_type_entity_ref,
+        typedesignations_annotations_and_sources_config(),
+        '',
+        RenderHints::getFootnoteListKey()
+      );
+
+      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  . '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
+        . $name_type_entity_ref->label
         . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
+        . $annotations_and_sources['foot_note_keys']
         . '</div>');
       }
   }
@@ -1138,14 +1169,6 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
 
   $render_array = array();
 
-  static $annotations_and_sources_config = [
-    'sources_as_content' => TRUE,
-    'link_to_name_used_in_source' => FALSE,
-    'link_to_reference' => TRUE,
-    'add_footnote_keys' => FALSE,
-    'bibliography_aware' => FALSE
-  ];
-
   $type_designation_list = array();
   uksort($type_entity_refs, "compare_type_designation_status_labels");
   foreach($type_entity_refs as $type_status => $type_designation_entity_refs){
@@ -1166,9 +1189,9 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
       // annotations and sources for the $derived_unit_facade_dto
       $annotations_and_sources = handle_annotations_and_sources(
         $derived_unit_facade_dto,
-        $annotations_and_sources_config,
+        typedesignations_annotations_and_sources_config(),
         '',
-        null
+        RenderHints::getFootnoteListKey()
       );
       $source_citations = $annotations_and_sources['source_references'];
       $foot_note_keys = $annotations_and_sources['foot_note_keys'];
@@ -1238,6 +1261,29 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
     $render_array['map'] = array();
   }
   return $render_array;
+}
+
+/**
+ * Provides the default configuration for typedesignations which
+ * are passed to the handle_annotations_and_sources()
+ * function:
+ * - 'sources_as_content' => TRUE,
+ * - 'link_to_name_used_in_source' => FALSE,
+ * - 'link_to_reference' => TRUE,
+ * - 'add_footnote_keys' => FALSE,
+ * - 'bibliography_aware' => FALSE
+ *
+ * @return array
+ */
+function typedesignations_annotations_and_sources_config() {
+  static $annotations_and_sources_config = [
+    'sources_as_content' => TRUE,
+    'link_to_name_used_in_source' => FALSE,
+    'link_to_reference' => TRUE,
+    'add_footnote_keys' => FALSE,
+    'bibliography_aware' => FALSE
+  ];
+  return $annotations_and_sources_config;
 }
 
 /**
@@ -1393,8 +1439,8 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
   $render_array = compose_name_relationships($name_relations, $name_rel_type_filter, $current_name_uuid, $current_taxon_uuid, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
 
   RenderHints::popFromRenderStack();
-  $render_array['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
   if(RenderHints::getFootnoteListKey() == $key) {
+    $render_array['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
     RenderHints::clearFootnoteListKey();
   }
   return $render_array;
