@@ -607,7 +607,7 @@
               controls: defaultControls,
 
               // maxResolution determines the lowest zoom level and thus places the map
-              // in its maximum extent into the available view port so that no additinal
+              // in its maximum extent into the available view port so that no additional
               // gutter is visible and no parts of the map are hidden
               // see http://trac.osgeo.org/openlayers/wiki/SettingZoomLevels
               // IMPORTANT!!!
