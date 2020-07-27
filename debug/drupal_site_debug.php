@@ -62,7 +62,7 @@ for ($i = count($uri) - 1; $i > 0; $i--) {
     print "\t" . $site_folder . (file_exists($site_folder) ? ': OK' : ' : is missing!') . $NL; // DEBUG customization
     print "\t" . $site_folder . '/settings.php' . (file_exists($site_folder . '/settings.php') ? ': OK' : ' : is missing!') . $NL; // DEBUG customization
 
-    if (file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir . '/settings.php') || (!$require_settings && file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir))) {
+    if (file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir . '/settings.php') || (file_exists(DRUPAL_ROOT . '/' . $confdir . '/' . $dir))) {
       $conf = "$confdir/$dir";
       print $NL . "\t site folder found: " . $conf; // DEBUG customization
       break;                                        // DEBUG customization
