@@ -23,6 +23,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import eu.etaxonomy.dataportal.ElementUtils;
+
 /**
  * @author Andreas Kohlbecker
  * @since Jul 1, 2011
@@ -95,6 +97,18 @@ public class BaseElement {
             }
         }
         return linksInElement;
+    }
+
+    public List<LinkElement> getFootNoteKeys(){
+        return ElementUtils.linkElementsFromFootNoteKeyListElements(
+                getElement().findElements(By.xpath("//*[contains(@class, 'footnote-key')]/a"))
+                );
+    }
+
+    public List<BaseElement> getFootNotes(){
+        return ElementUtils.baseElementsFromFootNoteListElements(
+                getElement().findElements(By.xpath("//*[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]"))
+                );
     }
 
     /**

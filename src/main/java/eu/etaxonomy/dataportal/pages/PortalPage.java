@@ -346,6 +346,14 @@ public abstract class PortalPage {
         return tabs;
     }
 
+    /**
+     * Provides access to the the CDM specific content which is put into the <code>div</code> DOM element which has the class attribute <code>class="... node ..."</code>
+     * @return
+     */
+    public BaseElement getDataPortalContent() {
+        return new BaseElement(portalContent);
+    }
+
     public ClassificationTreeBlock getClassificationTree() {
         return new ClassificationTreeBlock(classificationBrowserBlock);
     }
