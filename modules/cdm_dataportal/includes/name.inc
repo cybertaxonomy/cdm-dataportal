@@ -1441,7 +1441,7 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
 
   RenderHints::popFromRenderStack();
   if(RenderHints::getFootnoteListKey() == $key) {
-    $render_array['footnotes'] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => RenderHints::getFootnoteListKey())));
+    $render_array['footnotes'] = markup_to_render_array(cdm_footnotes(RenderHints::getFootnoteListKey()));
     RenderHints::clearFootnoteListKey();
   }
   return $render_array;

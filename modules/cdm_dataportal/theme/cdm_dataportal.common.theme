@@ -178,14 +178,21 @@ function theme_cdm_entities_annotations_as_footnotekeys($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Create markup for the footnotes mapped to the $footnoteListKey.
+ *
+ * @param null $footnote_list_key
+ *  The footnote list key, see RenderHints::getFootnoteListKey()
+ * @param $element_tag
+ *  The tag for the footnote element
+ *
+ * @return string
+ * @throws \Exception
  */
-function cdm_annotation_footnotes($footnoteListKey = null, $enclosingTag = span) {
+function cdm_annotation_footnotes($footnote_list_key = null, $element_tag = 'span') {
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
   }
-  return theme('cdm_footnotes', array('footnoteListKey' => $footnoteListKey . '-annotations', 'enclosingTag' => $enclosingTag));
+  return cdm_footnotes($footnote_list_key . '-annotations', $element_tag);
 }
 
 /**
@@ -283,21 +290,26 @@ function theme_cdm_footnote($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Create markup for the footnotes mapped to the $footnoteListKey.
+ *
+ * @param null $footnote_list_key
+ *  The footnote list key, see RenderHints::getFootnoteListKey()
+ * @param $element_tag
+ *  The tag for the footnote element
+ *
+ * @return string
  */
-function theme_cdm_footnotes($variables) {
-  $footnoteListKey = $variables['footnoteListKey'];
-  $enclosingTag = $variables['enclosingTag'];
+function cdm_footnotes($footnote_list_key = null, $element_tag = 'span') {
+
   if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
   }
 
-  $out = '<' . $enclosingTag . ' class="footnotes footnotes-' . $footnoteListKey . ' ">'
-    . FootnoteManager::renderFootnoteList($footnoteListKey)
-    . '</' . $enclosingTag . '>';
+  $out = '<' . $element_tag . ' class="footnotes footnotes-' . $footnote_list_key . ' ">'
+    . FootnoteManager::renderFootnoteList($footnote_list_key)
+    . '</' . $element_tag . '>';
 
-  FootnoteManager::removeFootnoteList($footnoteListKey);
+  FootnoteManager::removeFootnoteList($footnote_list_key);
   return $out;
 }
 

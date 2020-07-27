@@ -209,7 +209,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
     $out .= '</ul>';
   }
 
-  $footnotes = theme('cdm_footnotes', array('footnoteListKey' => $footnote_list_key, 'enclosingTag' => 'li'));
+  $footnotes = cdm_footnotes($footnote_list_key, 'li');
   $footnotes .= cdm_annotation_footnotes($footnote_list_key,'li');
 
   $out .= '<ul class="footnotes">' . $footnotes . '</ul>';
