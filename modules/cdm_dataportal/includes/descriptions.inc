@@ -1285,6 +1285,8 @@ function render_state_data($element) {
 
   $state_data_items = [];
 
+  $out = '';
+
   if (isset($element->stateData)) {
     foreach ($element->stateData as $state_data) {
 
@@ -2077,8 +2079,7 @@ function compose_description_elements_distribution($description_elements){
           UUID_DISTRIBUTION
         );
 
-        $status = distribution_status_label_and_markup($distribution, $level_style['status_glue']);
-      }
+        $status = distribution_status_label_and_markup($distribution_aggregate, $level_style['status_glue']);
 
       $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'
         . join(' descriptionElement-', $distribution_uuids)
@@ -2109,6 +2110,7 @@ function compose_description_elements_distribution($description_elements){
       }
 
       $per_node_markup[$node_index] .= '</' . $enclosingTag . '>';
+      }
     }
     $markup .= $level_style['item_group_prefix']  . join( $level_style['item_glue'], $per_node_markup) . $level_style['item_group_postfix'];
   }
