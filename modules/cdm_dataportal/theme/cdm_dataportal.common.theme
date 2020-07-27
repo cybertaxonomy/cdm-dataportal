@@ -315,7 +315,7 @@ function theme_cdm_footnotes($variables) {
  *    The markup string
  *
  */
-function render_cdm_footnotes(string $footnote_list_key = NULL, string $enclosingTag = 'span'){
+function render_cdm_footnotes($footnote_list_key = NULL, $enclosingTag = 'span'){
 
   if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
