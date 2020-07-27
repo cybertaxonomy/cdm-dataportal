@@ -181,9 +181,7 @@ function theme_cdm_entities_annotations_as_footnotekeys($variables) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function theme_cdm_annotation_footnotes($variables) {
-  $footnoteListKey = $variables['footnoteListKey'];
-  $enclosingTag = $variables['enclosingTag'];
+function theme_cdm_annotation_footnotes($footnoteListKey = null, $enclosingTag = span) {
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
   }

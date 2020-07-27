@@ -851,7 +851,7 @@ function cdm_entity_sources_sorted($entity) {
              */
             $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => PSEUDO_FEATURE_BIBLIOGRAPHY . '-' . $feature_node->term->uuid)));
             $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => $feature_node->term->uuid)));
-            $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => $feature_node->term->uuid)));
+            $block->content[] = markup_to_render_array(cdm_annotation_footnotes($feature_node->term->uuid));
           }
         } // END all other features
 
@@ -1150,7 +1150,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
 
     $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . UUID_DISTRIBUTION)));
     $block->content[] = markup_to_render_array(theme('cdm_footnotes', array('footnoteListKey' => UUID_DISTRIBUTION)));
-    $block->content[] = markup_to_render_array(theme('cdm_annotation_footnotes', array('footnoteListKey' => UUID_DISTRIBUTION)));
+    $block->content[] = markup_to_render_array(cdm_annotation_footnotes(UUID_DISTRIBUTION));
 
     return $block;
   }
@@ -1774,7 +1774,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
 
   $footnotes = theme('cdm_footnotes', array('footnoteListKey' => 'BIBLIOGRAPHY-' . $footnote_key_suggestion));
   $footnotes .= theme('cdm_footnotes', array('footnoteListKey' => $footnote_key_suggestion)); // FIXME is this needed at all?
-  $footnotes .= theme('cdm_annotation_footnotes', array('footnoteListKey' => $footnote_key_suggestion));
+  $footnotes .= cdm_annotation_footnotes($footnote_key_suggestion);
 
   return  markup_to_render_array(  // FIXME markup_to_render_array should no longer be needed
     '<div class="common-taxon-name">' . $common_name_out . '</div>'
