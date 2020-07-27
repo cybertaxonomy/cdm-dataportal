@@ -1222,7 +1222,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
         // citation and detail for the media specimen
         $annotations_and_sources = handle_annotations_and_sources(
           $mediaSpecimen,
-          $annotations_and_sources_config,
+          typedesignations_annotations_and_sources_config(),
           '',
           null
         );
@@ -1294,6 +1294,7 @@ function typedesignations_annotations_and_sources_config() {
  * @param $show_name_cache_only
  *    The nameCache will be shown instead of the titleCache if this parameter is true.
  * @return null|string
+ *    The markup or null
  */
 function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $show_name_cache_only = false){
 
@@ -1565,7 +1566,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
         $relationship_markup = $symbol_markup . $relationship_markup . $nomref_footnote_key_markup;
       }
-      if ($relationship_markup) {
+      if (isset($relationship_markup) && $relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
           null,
           $item_prefix,
