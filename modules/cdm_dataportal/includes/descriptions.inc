@@ -7,7 +7,7 @@ const BIBLIOGRAPHY_FOOTNOTE_KEY = PSEUDO_FEATURE_BIBLIOGRAPHY;
  * Returns the localized representations of the modifiers hold by the
  * supplied cdm instance concatenated into one string.
  *
- * @param object $iModifieable
+ * @param object $is_modifieable
  *   cdm instance of an class implementing the interface IModifieable:
  *   DescriptionElementBase, StateDate, State
  *
@@ -15,10 +15,10 @@ const BIBLIOGRAPHY_FOOTNOTE_KEY = PSEUDO_FEATURE_BIBLIOGRAPHY;
  *   localized representations of the modifiers hold by the
  *   supplied cdm instance concatenated into one string
  */
-function cdm_modifers_representations($iModifieable, $glue = ', ') {
+function cdm_modifiers_representations($is_modifieable, $glue = ', ') {
   $modifiers_strings = array();
-  if (isset($iModifieable->modifiers)) {
-    foreach ($iModifieable->modifiers as $modifier) {
+  if (isset($is_modifieable->modifiers)) {
+    foreach ($is_modifieable->modifiers as $modifier) {
       $modifiers_strings[] = cdm_term_representation($modifier);
     }
   }
@@ -111,7 +111,7 @@ function cdm_distribution_filter_query() {
  * @param object $source
  *   The target CDM DescriptionElement
  */
-function cdm_merge_description_elements(&$target, &$source) {
+function cdm_merge_description_elements($target, $source) {
   static $fields_to_merge = array('annotations', 'markers', 'sources', 'media');
 
   foreach ($fields_to_merge as $field) {
@@ -136,15 +136,19 @@ function cdm_merge_description_elements(&$target, &$source) {
  * @param string $label
  *   The label of toc entry
  * @param $class_attribute_suffix
- *   The suffix to be appended to the class attribute prefix: "feature-toc-item-"
+ *   The suffix to be appended to the class attribute prefix:
+ *   "feature-toc-item-"
  * @param string $fragment
  *   Optional parameter to define a url fragment different from the $label,
  *   if the $fragment is not defined the $label will be used
  * @param boolean $as_first_element
- *   Place the new item as fist one. This parameter is ignored when $weight is being set
+ *   Place the new item as fist one. This parameter is ignored when $weight is
+ *   being set
  * @param integer $weight
  *   Defines the weight for the ordering the item in the toc list.
  *   The item will be placed at the end if weigth is NULL.
+ *
+ * @throws \Exception re-throws exception from theme()
  */
 function cdm_toc_list_add_item($label, $class_attribute_suffix, $fragment = NULL, $as_first_element = FALSE, $weight = null) {
 
@@ -189,24 +193,31 @@ function cdm_toc_list_add_item($label, $class_attribute_suffix, $fragment = NULL
  *   a render array of table of content items suitable for theme_item_list()
  */
 function &cdm_toc_list(){
+
   $toc_list_items = &drupal_static('toc_list_items', array());
 
   return $toc_list_items;
 }
 
 /**
- * Prepares an empty Drupal block for displaying description elements of a specific CDM Feature.
+ * Prepares an empty Drupal block for displaying description elements of a
+ * specific CDM Feature.
  *
- * The block can also be used for pseudo Features like a bibliography. Pseudo features are
- * derived from other data on the fly and so not exist as such in the cdm data. For pseudo
- * features the $feature can be created using make_pseudo_feature().
+ * The block can also be used for pseudo Features like a bibliography. Pseudo
+ * features are derived from other data on the fly and so not exist as such in
+ * the cdm data. For pseudo features the $feature can be created using
+ * make_pseudo_feature().
  *
  * @param $feature_name
- *   A label describing the feature, usually the localized feature representation.
+ *   A label describing the feature, usually the localized feature
+ *   representation.
  * @param object $feature
  *   The CDM Feature for which the block is created.
+ *
  * @return object
  *   A Drupal block object
+ *
+ * @throws \Exception re-throws exception from theme()
  */
 function feature_block($feature_name, $feature) {
   $block = new stdclass();
@@ -245,23 +256,23 @@ function _list_IdentificationKeys($type, $taxonUuid = NULL, $pageSize = NULL, $p
     drupal_set_message(t('Type parameter is missing'), 'error');
     return;
   }
-  $cdm_ws_pasepath = NULL;
+  $cdm_ws_base_path = NULL;
   switch ($type) {
     case "PolytomousKey":
-      $cdm_ws_pasepath = CDM_WS_POLYTOMOUSKEY;
+      $cdm_ws_base_path = CDM_WS_POLYTOMOUSKEY;
       break;
 
     case "MediaKey":
-      $cdm_ws_pasepath = CDM_WS_MEDIAKEY;
+      $cdm_ws_base_path = CDM_WS_MEDIAKEY;
       break;
 
     case "MultiAccessKey":
-      $cdm_ws_pasepath = CDM_WS_MULTIACCESSKEY;
+      $cdm_ws_base_path = CDM_WS_MULTIACCESSKEY;
       break;
 
   }
 
-  if (!$cdm_ws_pasepath) {
+  if (!$cdm_ws_base_path) {
     drupal_set_message(t('Type parameter is not valid: ') . $type, 'error');
   }
 
@@ -283,7 +294,7 @@ function _list_IdentificationKeys($type, $taxonUuid = NULL, $pageSize = NULL, $p
   if ($taxonUuid) {
     $queryParameters = "findByTaxonomicScope=$taxonUuid";
   }
-  $pager = cdm_ws_get($cdm_ws_pasepath, NULL, $queryParameters);
+  $pager = cdm_ws_get($cdm_ws_base_path, NULL, $queryParameters);
 
   if (!$pager || $pager->count == 0) {
     return array();
@@ -338,24 +349,30 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
  *       - "BIBLIOGRAPHY-$footnote_list_key_suggestion" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 0 )
  *       - $footnote_list_key_suggestion (when $is_bibliography_aware)
  *
- * @param $descriptionElement
+ * @param $description_element
  *   A CDM DescriptionElement instance
- * @param $separator
+ * @param string $separator
  *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
  * @param $footnote_list_key_suggestion string
  *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
  *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnote key for annotations will be set to
  *    RenderHints::getFootnoteListKey().'-annotations'.
+ * @param bool $do_link_to_reference
+ *    Create a link to the reference pages for sources when TRUE.
+ * @param bool $do_link_to_name_used_in_source
+ *    Create a link to the name pages for name in source when TRUE.
+ * @param bool $is_bibliography_aware
+ *    Put source references into the bibliography when this param is TRUE.
  *
  * @return String
  *   The foot note keys
  *
+ * @throws \Exception re-throw exception from theme()
  * @see cdm_entities_annotations_as_footnotekeys()
  *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
  * @$original_source_footnote_tag
  *    null will cause bibliography_footnote_list_key to use the default
- *
  */
 function cdm_create_footnotes(
     $description_element,
@@ -401,8 +418,7 @@ function cdm_create_footnotes(
   }
   // Sort and render footnote keys.
   asort($footnote_keys);
-  $footnotes_markup = footnote_keys_to_markup($footnote_keys, $separator);
-  return $footnotes_markup;
+  return footnote_keys_to_markup($footnote_keys, $separator);
 }
 
 /**
@@ -413,7 +429,7 @@ function cdm_create_footnotes(
  *
  * @return string
  */
-function footnote_keys_to_markup(array $footnote_keys, string $separator): string {
+function footnote_keys_to_markup(array $footnote_keys, $separator) {
 
   $footnotes_markup = '';
   foreach ($footnote_keys as $foot_note_key) {
@@ -432,10 +448,15 @@ function footnote_keys_to_markup(array $footnote_keys, string $separator): strin
 
 
 /**
- * Compare callback to be used in usort() to sort render arrays produced by compose_description_element().
+ * Compare callback to be used in usort() to sort render arrays produced by
+ * compose_description_element().
  *
  * @param $a
  * @param $b
+ *
+ * @return int Returns < 0 if $a['#value'].$a['#value-suffix'] from is less than
+ * $b['#value'].$b['#value-suffix'], > 0 if it is greater than $b['#value'].$b['#value-suffix'],
+ * and 0 if they are equal.
  */
 function compare_description_element_render_arrays($a, $b){
   if ($a['#value'].$a['#value-suffix'] == $b['#value'].$b['#value-suffix']) {
@@ -447,11 +468,13 @@ function compare_description_element_render_arrays($a, $b){
 
 
 /**
- * @param $render_array
  * @param $element
  * @param $feature_block_settings
  * @param $element_markup
  * @param $footnote_list_key_suggestion
+ * @param bool $prepend_feature_label
+ *
+ * @return array|null
  */
 function compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion, $prepend_feature_label = FALSE)
 {
@@ -544,34 +567,37 @@ function handle_annotations_and_sources_config($feature_block_settings){
   return $config;
 }
 
-  /**
-   * @param $entity
-   * @param $config array
-   *   An associative array to configure the display of the annotations and sources.
-   *   The array has the following keys
-   *   - sources_as_content
-   *   - link_to_name_used_in_source
-   *   - link_to_reference
-   *   - add_footnote_keys
-   *   - bibliography_aware
-   *   Valid values are 1 or 0.
-   * @param $inline_text_prefix
-   *   Only used to decide if the source references should be enclosed in brackets or not when displayed inline.
-   *   This text will not be included into the response.
-   * @param $footnote_list_key_suggestion string
-   *    optional parameter. If this paramter is left empty (null, 0, "") the footnote key will be determined by the nested
-   *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations will be set to
-   *    RenderHints::getFootnoteListKey().'-annotations'. @return array
-   *   an associative array with the following elements:
-   *   - foot_note_keys: all footnote keys as markup
-   *   - source_references: an array of the source references citations
-   *   - names used in source: an associative array of the names in source,
-   *        the name in source strings are de-duplicated
-   *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
-   *
-   *@see cdm_entities_annotations_as_footnotekeys()
-   *
-   */
+/**
+ * @param $entity
+ * @param $config array
+ *   An associative array to configure the display of the annotations and
+ *   sources. The array has the following keys
+ *   - sources_as_content
+ *   - link_to_name_used_in_source
+ *   - link_to_reference
+ *   - add_footnote_keys
+ *   - bibliography_aware
+ *   Valid values are 1 or 0.
+ * @param $inline_text_prefix
+ *   Only used to decide if the source references should be enclosed in
+ *   brackets or not when displayed inline. This text will not be included into
+ *   the response.
+ * @param $footnote_list_key_suggestion string
+ *    optional parameter. If this paramter is left empty (null, 0, "") the
+ *   footnote key will be determined by the nested method calls by calling
+ *   RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations
+ *   will be set to RenderHints::getFootnoteListKey().'-annotations'. @return
+ *   array an associative array with the following elements:
+ *   - foot_note_keys: all footnote keys as markup
+ *   - source_references: an array of the source references citations
+ *   - names used in source: an associative array of the names in source,
+ *        the name in source strings are de-duplicated
+ *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
+ *
+ * @throws \Exception
+ *
+ * @see cdm_entities_annotations_as_footnotekeys()
+ */
   function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $footnote_list_key_suggestion) {
 
     $annotations_and_sources = array(
@@ -682,12 +708,16 @@ function cdm_entity_sources_sorted($entity) {
     return $footnote_list_key;
   }
 
-  /**
-   * Provides the according tag name for the description element markup which fits the  $feature_block_settings['as_list'] value
-   *
-   * @param $feature_block_settings
-   *   A feature_block_settings array, for details, please see get_feature_block_settings($feature_uuid = 'DEFAULT')
-   */
+/**
+ * Provides the according tag name for the description element markup which
+ * fits the  $feature_block_settings['as_list'] value
+ *
+ * @param $feature_block_settings
+ *   A feature_block_settings array, for details, please see
+ *   get_feature_block_settings($feature_uuid = 'DEFAULT')
+ *
+ * @return mixed|string
+ */
   function cdm_feature_block_element_tag_name($feature_block_settings){
     switch ($feature_block_settings['as_list']){
       case 'ul':
@@ -1273,7 +1303,7 @@ function render_state_data($element) {
             $state .= ' ' . $state_data->modifyingText_L10n;
           }
     
-          $modifiers_strings = cdm_modifers_representations($state_data);
+          $modifiers_strings = cdm_modifiers_representations($state_data);
           $state_data_markup = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
           // we could use strip_tags() to reduce the markup to text for the key but this is expensive
           $sort_key = str_pad($sample_count, 6, '0', STR_PAD_LEFT) . '_' . $state_data_markup;
@@ -1360,7 +1390,7 @@ function render_quantitative_statistics($element) {
       if (isset($statistical_val->value)) {
         $statistical_val->_value = $statistical_val->value;
       }
-      $val_modifiers_strings = cdm_modifers_representations($statistical_val);
+      $val_modifiers_strings = cdm_modifiers_representations($statistical_val);
       if ($val_modifiers_strings) {
         $statistical_val->_value = ' ' . $val_modifiers_strings . ' ' . $statistical_val->_value;
       }
@@ -1393,7 +1423,7 @@ function render_quantitative_statistics($element) {
   }
 
   // modifiers of the description element itself
-  $modifier_string = cdm_modifers_representations($element);
+  $modifier_string = cdm_modifiers_representations($element);
   $out .= ($modifier_string ? ' ' . $modifier_string : '');
   if (isset($element->modifyingText_L10n)) {
     $out = $element->modifyingText_L10n . ' ' . $out;

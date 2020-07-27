@@ -94,8 +94,8 @@ php vendor/phpunit/phpunit/phpunit --configuration modules/cdm_dataportal/test/p
 Running PHPUnit integration tests via the phpunitRunner.php script (DEPRECATED)
 ---------------------------------------------------------------
 
-*This has only been preseved since it could be useful for running test suites from the commandline or in the CI server.*
-
+*This has only been preserved since it could be useful for running test suites from the commandline or in the CI server.*
+ 
  what we are now trying to achieve with the eclipse launcher configuration is in principle
  to run the following command:
 
