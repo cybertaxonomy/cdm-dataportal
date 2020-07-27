@@ -119,7 +119,7 @@ function theme_cdm_IdentificationKey($variables) {
     $out .= '</div>';
   }
   // Display annotations.
-  $out .= theme('cdm_annotations', array('annotations' => cdm_fetch_visible_annotations($identificationKey), 'enclosingTag' => 'div'));
+  $out .= cdm_annotations(cdm_fetch_visible_annotations($identificationKey),'div');
   RenderHints::popFromRenderStack();
   return $out;
 }
