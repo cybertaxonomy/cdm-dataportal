@@ -84,7 +84,7 @@ abstract public class RegistrationItem extends BaseElement {
                 }
             } catch (Exception e) { /* IGNORE */}
             try{
-                List<WebElement> std = containerElement.findElements(By.cssSelector(".specimen_type_designation"));
+                List<WebElement> std = containerElement.findElements(By.cssSelector(".cdm\\:SpecimenTypeDesignation"));
                 specimenTypeDesignations = new ArrayList<BaseElement>(std.size());
                 for(WebElement we : std){
                     specimenTypeDesignations.add(new BaseElement(we));

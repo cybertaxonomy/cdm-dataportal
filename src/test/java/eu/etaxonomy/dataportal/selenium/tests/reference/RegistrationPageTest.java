@@ -18,7 +18,9 @@ import org.openqa.selenium.NoSuchElementException;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.ElementUtils;
+import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.GalleryImage;
+import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.elements.RegistrationItemFull;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
@@ -85,7 +87,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B 40 0040871).",
+                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B 40 0040871).1",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
                 "for Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012",
@@ -129,7 +131,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.",
                 regItem.getNameElement().getText());
         assertEquals(
-                "Holotype: Iran, Islamic Republic of, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–83–1).",
+                "Holotype: Iran, Islamic Republic of, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–83–1).1",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
                 "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
@@ -151,7 +153,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1 Nov 2018",
                 regItem.getNameElement().getText());
         assertEquals(
-                "Orig. des.: Ramsaria avicennae Heidari & Hauer Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018:146",
+                "Orig. des.: Ramsaria avicennae Heidari & Hauer Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018:1461",
                 regItem.getNameTypeDesignations().get(0).getText());
         assertEquals(
                 "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
@@ -159,6 +161,13 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals(
                 "Registration on 2019-02-06 13:54:35",
                 regItem.getMetadata().getText());
+        List<LinkElement> footnoteKeys = regItem.getFootNoteKeys();
+        assertEquals(1,  footnoteKeys.size());
+        assertEquals("1", footnoteKeys.get(0).getText());
+        List<BaseElement> footnotes = regItem.getFootNotes();
+        assertEquals(1, footnotes.size());
+        assertEquals("1. editorial note on the type name of Ramsaria", footnotes.get(0).getText());
+
     }
 
     @Test
