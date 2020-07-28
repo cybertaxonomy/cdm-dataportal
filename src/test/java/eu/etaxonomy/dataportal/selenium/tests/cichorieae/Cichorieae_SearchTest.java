@@ -25,7 +25,6 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.GenericPortalPage;
 import eu.etaxonomy.dataportal.pages.PortalPage;
 import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
-import eu.etaxonomy.dataportal.selenium.UrlLoaded;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 import junit.framework.Assert;
 
@@ -89,7 +88,7 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
         GalleryImage firstImage = galleryImageRows.get(0).get(0);
         assertNull("caption should be off", firstImage.getCaptionText());
         if(searchResultPage.isZenTheme()) {
-            searchResultPage.clickLink(firstImage.getImageLink(), new UrlLoaded("http://media.bgbm.org/erez/erez?src=EditWP6/photos/Lactuca_triquetra_Bc_01.JPG"), null);
+            firstImage.getImageLink().getUrl().equals("http://media.bgbm.org/erez/erez?src=EditWP6/photos/Lactuca_triquetra_Bc_01.JPG");
         } else {
             searchResultPage.clickLink(firstImage.getImageLink(), new VisibilityOfElementLocated(By.id("images")), GenericPortalPage.class);
         }

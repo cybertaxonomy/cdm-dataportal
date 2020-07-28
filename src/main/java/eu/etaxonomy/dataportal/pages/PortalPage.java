@@ -28,6 +28,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.google.common.base.Function;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
@@ -110,7 +111,12 @@ public abstract class PortalPage {
 
     public boolean isZenTheme() {
         if(isZenTheme == null) {
-            isZenTheme = driver.getPageSource().contains("themes/zen_dataportal");
+            try {
+                WebElement bodyElement = driver.findElement(By.tagName("body"));
+                isZenTheme = bodyElement.getAttribute("class").contains("zen_dataportal");
+            } catch (ElementNotFoundException e) {
+                // IGNORE
+            }
         }
         return isZenTheme.booleanValue();
     }
