@@ -186,13 +186,18 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         /* Credits */
         featureClass = "credits";
         featureLabel = "Credits";
-        blockTextFull = featureLabel + "\nChristodoulou C. S. 2009: Images (1 added).\nMakris C. 2009: Images (1 added).";
-        expectedCssDisplay = "block";
+        blockTextFull = featureLabel + " Christodoulou C. S. 2009: Images (1 added). Makris C. 2009: Images (1 added).";
+        if(p.isZenTheme()) {
+            expectedCssDisplay = "inline";
+        } else {
+            // old garland theme
+            expectedCssDisplay = "block";
+        }
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
         featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
 
-        assertEquals(blockTextFull, featureBlock.getText());
+        assertEquals(blockTextFull, featureBlock.getText().replaceAll("\\n", " "));
         featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(0, featureBlock.getOriginalSourcesSections().size());
         assertEquals("Expecting no FootnoteKeys", 0, featureBlock.countFootNoteKeys());

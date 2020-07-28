@@ -25,7 +25,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -94,9 +93,6 @@ public abstract class PortalPage {
     @FindBy(className="node")
     protected WebElement node;
 
-    @FindBys({@FindBy(id="tabs-wrapper"), @FindBy(className="primary")})
-    @CacheLookup
-    protected WebElement primaryTabs;
 
     @FindBy(id="block-cdm-dataportal-2")
     @CacheLookup
@@ -109,6 +105,15 @@ public abstract class PortalPage {
     @FindBy(className="messages")
     @CacheLookup
     protected List<WebElement> messages;
+
+    private Boolean isZenTheme;
+
+    public boolean isZenTheme() {
+        if(isZenTheme == null) {
+            isZenTheme = driver.getPageSource().contains("themes/zen_dataportal");
+        }
+        return isZenTheme.booleanValue();
+    }
 
     /**
      * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
@@ -335,8 +340,15 @@ public abstract class PortalPage {
 
     public List<LinkElement> getPrimaryTabs(){
         List<LinkElement> tabs = new ArrayList<LinkElement>();
-        List<WebElement> links = primaryTabs.findElements(By.tagName("a"));
-        for(WebElement a : links) {
+        List<WebElement> primaryTabLinks = null;
+        if(isZenTheme()) {
+            primaryTabLinks = driver.findElements(By.cssSelector(".tabs-primary li a"));
+        } else {
+            // try the old garland theme
+            primaryTabLinks = driver.findElements(By.cssSelector("#tabs-wrapper ul.primary li a"));
+        }
+
+        for(WebElement a : primaryTabLinks) {
             WebElement renderedLink = a;
             if(renderedLink.isDisplayed()){
                 tabs.add(new LinkElement(renderedLink));
