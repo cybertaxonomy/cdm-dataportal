@@ -54,7 +54,7 @@ public class GenericPortalPage extends PortalPage {
         wait.until(
                     new AllTrue(
                                 new PageTitleValidated(context.prepareTitle("Search results")),
-                                new VisibilityOfElementLocated(By.id("container"))
+                                new VisibilityOfElementLocated(By.id("search_results"))
                                 )
                     );
         return new TaxonSearchResultPage(driver, context);

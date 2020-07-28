@@ -413,7 +413,7 @@ public abstract class PortalPage {
      */
     public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> pageType, Long duration, TimeUnit waitUnit) {
 
-        if( pageType.getClass().equals(PortalPage.class) ) {
+        if( pageType!= null && pageType.getClass().equals(PortalPage.class) ) {
             throw new RuntimeException("Parameter pageType must be a subclass of PortalPage");
         }
         String targetWindow = null;
@@ -447,15 +447,19 @@ public abstract class PortalPage {
 
         Constructor<T> constructor;
         T pageInstance;
-        try {
-            constructor = pageType.getConstructor(WebDriver.class, DataPortalContext.class);
-            pageInstance = constructor.newInstance(driver, context);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            if(pageType != null) {
+            try {
+                constructor = pageType.getConstructor(WebDriver.class, DataPortalContext.class);
+                pageInstance = constructor.newInstance(driver, context);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            // take screenshot of new page
+            takeScreenShot();
+            return pageInstance;
+        } else {
+            return null;
         }
-        // take screenshot of new page
-        takeScreenShot();
-        return pageInstance;
     }
 
 

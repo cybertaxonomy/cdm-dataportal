@@ -345,7 +345,7 @@ function compose_cdm_media_gallerie($configuration) {
   for ($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++) {
     $captionParts = array();
     $mediaIndex = 0;
-    $out .= '<tr>';
+    $out .= '<tr class="media-row">';
     for ($c = 0; $c < $cols; $c++) {
       $media = array_shift($mediaList);
       if(!$media){
@@ -481,7 +481,7 @@ function compose_cdm_media_gallerie($configuration) {
     $out .= '</tr>'; // End of media parts.
     if ($showCaption) {
       if ( (is_array($captionElements) && count($captionElements) > 0) || $caption_link_uri) {
-        $out .= '<tr>';
+        $out .= '<tr class="caption-row">';
         // Add caption row.
         foreach ($captionParts as $captionPartHtml) {
           $out .= '<td class="caption">' . $captionPartHtml . '</td>';
@@ -499,7 +499,7 @@ function compose_cdm_media_gallerie($configuration) {
       $moreHtml = t('open gallery');
     }
     $moreHtml = l($moreHtml, $galleryLinkUri);
-    $out .= '<tr><td colspan="' . $cols . '">' . $moreHtml . '</td></tr>';
+    $out .= '<tr class="more-items-row"><td colspan="' . $cols . '">' . $moreHtml . '</td></tr>';
   }
   $out .= '</table>';
 
