@@ -65,18 +65,15 @@ public class ElementUtils {
 
         ArrayList<List<GalleryImage>> galleryImageRows = new ArrayList<List<GalleryImage>>();
 
-        List<WebElement> tableRows = gallery.findElements(By.cssSelector("tr.media-row"));
-        logger.debug("GalleryImages - total rows " + tableRows.size());
+        List<WebElement> mediaRows = gallery.findElements(By.cssSelector("tr.media-row"));
+        List<WebElement> captionRows = gallery.findElements(By.cssSelector("tr.caption-row"));
+        logger.debug("GalleryImages - media rows: " + mediaRows.size() + " caption rows: " + captionRows.size());
         // loop table rows
-        for(int rowId = 0; rowId * 2 < tableRows.size() && tableRows.size() > 0; rowId++ ){
+        for(int rowId = 0; rowId < mediaRows.size(); rowId++ ){
             logger.debug("GalleryImages - gallery row " + rowId );
-            List<WebElement> imageCells = tableRows.get(rowId * 2).findElements(By.tagName("td"));
-            logger.debug("GalleryImages - number of image cells: " + imageCells.size());
-            List<WebElement> captionCells = null;
-            if(tableRows.size() > rowId * 2 + 1){
-                captionCells = tableRows.get(rowId * 2 + 1).findElements(By.cssSelector("tr.caption-row"));
-                logger.debug("GalleryImages - number of caption cells: " + captionCells.size());
-            }
+            List<WebElement> imageCells = mediaRows.get(rowId).findElements(By.tagName("td"));
+            List<WebElement> captionCells = captionRows.get(rowId).findElements(By.tagName("td"));;
+            logger.debug("GalleryImages - image cells: " + imageCells.size() + " caption cells "+ captionCells.size());
 
             galleryImageRows.add(new ArrayList<GalleryImage>());
 
