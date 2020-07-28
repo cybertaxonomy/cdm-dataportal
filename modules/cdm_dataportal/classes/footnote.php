@@ -32,15 +32,12 @@ class Footnote {
    * @todo please document this function.
    */
   public function doRender() {
-    $variables = array(
-      'footnoteKey' => $this->key,
-      'footnoteText' => $this->object
-    );
+
+    $enclosing_tag = null;
     if(is_string($this->enclosing_tag)){
-      $variables['enclosing_tag'] = $this->enclosing_tag;
+      $enclosing_tag = $this->enclosing_tag;
     }
-    return theme('cdm_footnote',
-      $variables
-    );
+
+    return footnote_markup($this->key, $this->object, $enclosing_tag);
   }
 }

@@ -274,19 +274,22 @@ function theme_cdm_footnote_key($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * @param null $footnoteKey
+ * @param null $footnoteText
+ * @param string $enclosing_tag
+ *   default is 'span'
+ *
+ * @return string
  */
-function theme_cdm_footnote($variables) {
-  $footnoteKey = $variables['footnoteKey'];
-  $footnoteText = $variables['footnoteText'];
-  $enclosing_tag = $variables['enclosing_tag'];
+function footnote_markup($footnoteKey = null, $footnoteText = null, $enclosing_tag = 'span') {
   _add_js_footnotes();
-  $out = '<' . $enclosing_tag . ' class="footnote footnote-' . $footnoteKey . '">'
+  if($enclosing_tag == null){
+    $enclosing_tag = 'span';
+  }
+  return '<' . $enclosing_tag . ' class="footnote footnote-' . $footnoteKey . '">'
     . '<a name="footnote-' . $footnoteKey . '"></a>'
     . '<span class="footnote-anchor">' . $footnoteKey . '.</span>&nbsp;' . $footnoteText
     . '</' . $enclosing_tag . '>';
-  return $out;
 }
 
 /**
