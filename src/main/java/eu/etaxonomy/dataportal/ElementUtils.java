@@ -72,9 +72,11 @@ public class ElementUtils {
         for(int rowId = 0; rowId < mediaRows.size(); rowId++ ){
             logger.debug("GalleryImages - gallery row " + rowId );
             List<WebElement> imageCells = mediaRows.get(rowId).findElements(By.tagName("td"));
-            List<WebElement> captionCells = captionRows.get(rowId).findElements(By.tagName("td"));;
-            logger.debug("GalleryImages - image cells: " + imageCells.size() + " caption cells "+ captionCells.size());
-
+            List<WebElement> captionCells = null;
+            if(rowId < captionRows.size()) {
+                captionCells = captionRows.get(rowId).findElements(By.tagName("td"));
+                logger.debug("GalleryImages - image cells: " + imageCells.size() + " caption cells "+ captionCells.size());
+            }
             galleryImageRows.add(new ArrayList<GalleryImage>());
 
             // loop table cells in row
