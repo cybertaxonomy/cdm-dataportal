@@ -1847,7 +1847,7 @@ function compose_description_elements_distribution($description_elements){
     );
 
 
-    $status = distribution_status_label_and_markup($description_element);
+    $status = distribution_status_label_and_markup([$description_element]);
 
     $out = '';
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
@@ -1866,21 +1866,22 @@ function compose_description_elements_distribution($description_elements){
 }
 
   /**
-   * @param $description_element
+   * @param array $distribution_status
    * @return array an array with following keys
    *   - 'label': the plain text status label
    *   - 'markup': markup for the status
    */
-  function distribution_status_label_and_markup($description_element, $status_glue = '&#8210; ') {
+  function distribution_status_label_and_markup(array $distribution_status, $status_glue = '&#8210; ') {
+
     $status_markup = '';
     $status_label = '';
 
-    if (isset($description_element->status)) {
-      $status_label = $description_element->status->representation_L10n;
-      $status_markup =  '<span class="distributionStatus"> '
-        . $status_glue
-        . '<span class="distributionStatus-' . $description_element->status->idInVocabulary . '">'
-        . $status_label
+    foreach($distribution_status as $status) {
+      $status_label .= ($status_label ? $status_glue : '') . $status->representation_L10n;
+      $status_markup .=  '<span class="distributionStatus"> '
+        . ($status_markup ? $status_glue : '')
+        . '<span class="distributionStatus-' . $status->idInVocabulary . '">'
+        .  $status->representation_L10n
         . '</span></span>';
 
     };
@@ -1970,7 +1971,23 @@ function compose_description_elements_distribution($description_elements){
     return $merged_tree;
   }
 
-
+  /**
+   * @param $distribution_tree
+   *  A tree cdm TreeNode items. A TreeNode item has a NamedArea as nodeId
+   *  and Distribution items as data array. Per data array some Distributions may
+   *  be with status information, others only with sources, others with both.
+   *  Each node may also have subordinate node items in the children field.
+   *  TreeNode:
+   *   - array data
+   *   - array children
+   *   - int numberOfChildren
+   *   - stdClass nodeId
+   *
+   * @param $feature_block_settings
+   *
+   * @return array
+   * @throws \Exception
+   */
   function compose_distribution_hierarchy($distribution_tree, $feature_block_settings){
 
     static $hierarchy_style;
@@ -2007,19 +2024,31 @@ function compose_description_elements_distribution($description_elements){
     return $render_array;
   }
 
-  /**
-   * this function should produce markup as the compose_description_elements_distribution()
-   * function.
-   *
-   * @see compose_description_elements_distribution()
-   *
-   * @param $distribution_tree
-   * @param $feature_block_settings
-   * @param $tree_nodes
-   * @param $markup
-   * @param $hierarchy_style
-   */
-  function _compose_distribution_hierarchy($tree_nodes, $feature_block_settings, &$markup, $hierarchy_style, $level_index = -1){
+/**
+ * this function should produce markup as the
+ * compose_description_elements_distribution() function.
+ *
+ * @param array $tree_nodes
+ *  An array of cdm TreeNode items. A TreeNode item has a NamedArea as nodeId
+ *  and Distribution items as data array. Per data array some Distributions may
+ *  be with status information, others only with sources, others with both.
+ *  TreeNode:
+ *   - array data
+ *   - array children
+ *   - int numberOfChildren
+ *   - stdClass nodeId
+ * @param array $feature_block_settings
+ * @param $markup
+ * @param $hierarchy_style
+ * @param int $level_index
+ *
+ * @throws \Exception
+ *
+ * @see compose_description_elements_distribution()
+ * @see compose_distribution_hierarchy()
+ *
+ */
+  function _compose_distribution_hierarchy(array $tree_nodes, array $feature_block_settings, &$markup, $hierarchy_style, $level_index = -1){
 
     $level_index++;
     static $enclosingTag = "span";
@@ -2032,44 +2061,50 @@ function compose_description_elements_distribution($description_elements){
 
     $node_index = -1;
     $per_node_markup = array();
+
     foreach ($tree_nodes as $node){
 
       $per_node_markup[++$node_index] = '';
-
       $label = $node->nodeId->representation_L10n;
 
       $distributions = $node->data;
       $distribution_uuids = array();
       $distribution_aggregate = NULL;
-        foreach($distributions as $distribution){
+      $status = ['label' => '', 'markup' => ''];
 
-          $distribution_uuids[] = $distribution->uuid;
-
-          // if there is more than one distribution we aggregate the sources and
-          // annotations into a synthetic distribution so that the footnote keys
-          // can be rendered consistently
-          if(!$distribution_aggregate) {
-            $distribution_aggregate = $distribution;
-            if(!isset($distribution_aggregate->sources[0])){
-              $distribution_aggregate->sources = array();
-            }
-            if(!isset($distribution_aggregate->annotations[0])){
-              $distribution_aggregate->annotations = array();
-            }
+      foreach($distributions as $distribution){
+        $distribution_uuids[] = $distribution->uuid;
+        // if there is more than one distribution we aggregate the sources and
+        // annotations into a synthetic distribution so that the footnote keys
+        // can be rendered consistently
+        if(!$distribution_aggregate) {
+          $distribution_aggregate = $distribution;
+          if(isset($distribution->status)){
+            $distribution_aggregate->status = [$distribution->status];
           } else {
-            if(isset($distribution->sources[0])) {
-              $distribution_aggregate->sources = array_merge($distribution_aggregate->sources,
-                $distribution->sources);
-            }
-            if(isset($distribution->annotations[0])) {
-              $distribution_aggregate->annotations = array_merge($distribution_aggregate->annotations,
-                $distribution->annotations);
-            }
+            $distribution_aggregate->status = [];
+          }
+          if(!isset($distribution_aggregate->sources[0])){
+            $distribution_aggregate->sources = array();
+          }
+          if(!isset($distribution_aggregate->annotations[0])){
+            $distribution_aggregate->annotations = array();
+          }
+        } else {
+          if(isset($distribution->status)){
+            $distribution_aggregate->status[] = $distribution->status;
+          }
+          if(isset($distribution->sources[0])) {
+            $distribution_aggregate->sources = array_merge($distribution_aggregate->sources,
+              $distribution->sources);
+          }
+          if(isset($distribution->annotations[0])) {
+            $distribution_aggregate->annotations = array_merge($distribution_aggregate->annotations,
+              $distribution->annotations);
           }
         }
+      }
 
-      $status_label= '';
-      $status_markup = '';
       $annotations_and_sources =  null;
       if($distribution_aggregate) {
         $annotations_and_sources = handle_annotations_and_sources(
@@ -2079,7 +2114,8 @@ function compose_description_elements_distribution($description_elements){
           UUID_DISTRIBUTION
         );
 
-        $status = distribution_status_label_and_markup($distribution_aggregate, $level_style['status_glue']);
+        $status = distribution_status_label_and_markup($distribution_aggregate->status, $level_style['status_glue']);
+      }
 
       $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'
         . join(' descriptionElement-', $distribution_uuids)
@@ -2110,7 +2146,6 @@ function compose_description_elements_distribution($description_elements){
       }
 
       $per_node_markup[$node_index] .= '</' . $enclosingTag . '>';
-      }
     }
     $markup .= $level_style['item_group_prefix']  . join( $level_style['item_glue'], $per_node_markup) . $level_style['item_group_postfix'];
   }
