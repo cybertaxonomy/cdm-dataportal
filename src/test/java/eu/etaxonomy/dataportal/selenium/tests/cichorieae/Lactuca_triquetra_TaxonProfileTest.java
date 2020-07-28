@@ -86,7 +86,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         FeatureBlock featureBlock;
         int featureId = 0;
 
-        int descriptionElementFontSize = 12;
+        int descriptionElementFontSize = 14;
         String expectedCssDisplay = "inline";
         String expectedListStyleType = "none";
         String expectedListStylePosition = "outside";
