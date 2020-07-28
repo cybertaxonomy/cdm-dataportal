@@ -61,7 +61,12 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
 
         List<LinkElement> primaryTabs = p.getPrimaryTabs();
         int tabId = 0;
-        assertEquals("General\n(active tab)", primaryTabs.get(tabId++).getText());
+        if(p.isZenTheme()) {
+            assertEquals("General", primaryTabs.get(tabId++).getText());
+        } else {
+            // old garland theme
+            assertEquals("General\n(active tab)", primaryTabs.get(tabId++).getText());
+        }
         assertEquals("Synonymy", primaryTabs.get(tabId++).getText());
         assertEquals("Images", primaryTabs.get(tabId++).getText());
         assertEquals("Specimens", primaryTabs.get(tabId++).getText());
