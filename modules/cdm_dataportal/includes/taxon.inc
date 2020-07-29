@@ -393,12 +393,16 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
     $referenceUri = FALSE;
   }
   $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_tags, $is_invalid);
-  $taxon_footnotes = render_entities_annotations_as_footnote_keys([$taxon->name,$taxon], $footnoteListKey);
+
+  // must come before the rendering the relationships so that the footnote key
+  // numbers are in correct order
+  $taxon_and_name_footnotes = render_taxon_and_name_footnotes($taxon);
+
   $name_relations = cdm_name_relationships_for_taxon($taxon);
   $name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
 
   $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>'
-    . $out_taxon_part . $taxon_footnotes;
+    . $out_taxon_part . $taxon_and_name_footnotes;
   if(isset($name_relations_render_array['list']['items'][0])){
     $out .= ' '  . drupal_render($name_relations_render_array);
   }
@@ -408,6 +412,36 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   RenderHints::popFromRenderStack();
 
   return $out;
+}
+
+/**
+ * Convenience function to create footnotes of annotations and sources for a
+ * taxon and name at the same time. Calls handle_annotations_and_sources()
+ * internally twice and combines the resulting footnote markup
+ *
+ * @param $taxon
+ *
+ * @return string
+ *
+ * @see synonymy_annotations_and_source_config()
+ */
+function render_taxon_and_name_footnotes($taxon) {
+  $annotations_and_sources_taxon = handle_annotations_and_sources(
+    $taxon,
+    synonymy_annotations_and_source_config(),
+    '',
+    RenderHints::getFootnoteListKey()
+  );
+  $annotations_and_sources_name = handle_annotations_and_sources(
+    $taxon->name,
+    synonymy_annotations_and_source_config(),
+    '',
+    RenderHints::getFootnoteListKey()
+  );
+  $footnotes = $annotations_and_sources_taxon['foo_note_keys'] .
+    ($annotations_and_sources_taxon['foo_note_keys'] && $annotations_and_sources_name['foo_note_keys'] ? ',' : '') .
+    $annotations_and_sources_name['foo_note_keys'];
+  return $footnotes;
 }
 
 
@@ -571,7 +605,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
             }
             $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
           }
-          $out .= render_entities_annotations_as_footnote_keys([$taxon]);
+          $out .= render_taxon_and_name_footnotes($taxon);
           if ($showMedia_synonyms) {
             $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
           }
@@ -599,7 +633,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
         }
         $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
       }
-      $out .= render_entities_annotations_as_footnote_keys([$taxon]);
+      $out .= render_taxon_and_name_footnotes($taxon);
 
       if ($showMedia_taxa) {
         $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));

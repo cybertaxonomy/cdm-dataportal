@@ -717,20 +717,7 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     if(isset($name_relationships['list']['items'][0])){
       $accepted_name .= ' ' . drupal_render($name_relationships);
     }
-
-    // handle annotations of the name and taxon
-    $annotations_and_sources_taxon = handle_annotations_and_sources(
-      $taxon,
-      synonymy_annotations_and_source_config(),
-      '',
-      RenderHints::getFootnoteListKey());
-    $annotations_and_sources_name = handle_annotations_and_sources(
-      $taxon->name,
-      synonymy_annotations_and_source_config(),
-      '',
-      RenderHints::getFootnoteListKey());
-
-    $accepted_name .= $annotations_and_sources_taxon['foot_note_keys'] . ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ', ': '') . $annotations_and_sources_name['foot_note_keys'];
+    $accepted_name .= render_taxon_and_name_footnotes($taxon);
     $accepted_name .= '</div>';
     RenderHints::popFromRenderStack();
   }
