@@ -481,7 +481,6 @@ function handle_annotations_and_sources_config($feature_block_settings){
  *        the name in source strings are de-duplicated
  *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
  *
- * @see cdm_entities_annotations_footnote_keys()
  */
   function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $footnote_list_key_suggestion) {
 

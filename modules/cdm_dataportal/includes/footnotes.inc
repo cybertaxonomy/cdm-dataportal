@@ -41,22 +41,21 @@ const FOOTNOTE_KEY_SUFFIX_ANNOTATIONS = '-annotations';
  *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
  *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnote key for annotations will be set to
  *    RenderHints::getFootnoteListKey().'-annotations'.
+ *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
+ *    $is_bibliography_aware is set TRUE.
  * @param bool $do_link_to_reference
  *    Create a link to the reference pages for sources when TRUE.
  * @param bool $do_link_to_name_used_in_source
  *    Create a link to the name pages for name in source when TRUE.
  * @param bool $is_bibliography_aware
  *    Put source references into the bibliography when this param is TRUE.
- *
+ *    For original sources the $footnote_list_key_suggestion will be overwritten
+ *    by bibliography_footnote_list_key() when
+ *    $is_bibliography_aware is set TRUE.
  * @return String
  *   The foot note keys as markup
  *
- * @throws \Exception re-throw exception from theme()
- * @see cdm_entities_annotations_footnote_keys()
- *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
- *    $is_bibliography_aware is set TRUE.
- * @$original_source_footnote_tag
- *    null will cause bibliography_footnote_list_key to use the default
+ * NOTE: Only used in @see handle_annotations_and_sources()
  */
 function render_entity_footnotes(
   $cdm_entity,
@@ -121,6 +120,8 @@ function render_entity_footnotes(
  *    RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS otherwise the supplied key will be used.
  *
  * @return array of footnote keys
+ *
+ * @deprecated unused, needs to be removed
  */
 function cdm_entities_annotations_footnote_keys(array $cdm_entities, $footnote_list_key_suggestion = NULL) {
 
@@ -207,6 +208,7 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
  *
  * @return string
  *   The markup.
+ * @deprecated unused, needs to be removed
  */
 function render_entities_annotations_as_footnote_keys(array $cdm_entities, $footnote_list_key =null){
 
@@ -252,7 +254,6 @@ function render_footnote_keys(array $footnote_keys, $separator) {
  *  The tag for the footnote element
  *
  * @return string
- * @throws \Exception
  */
 function render_annotation_footnotes($footnote_list_key = null, $element_tag = 'span') {
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
