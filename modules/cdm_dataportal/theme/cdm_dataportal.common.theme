@@ -170,7 +170,7 @@ function theme_cdm_entities_annotations_as_footnotekeys($variables) {
     $footNoteKeys = cdm_entity_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);
   }
   foreach ($footNoteKeys as $a) {
-    $out .= theme('cdm_footnote_key', array('footnoteKey' => $a, 'separator' => ($out ? ',' : '')));
+    $out .= cdm_footnote_key($a, ($out ? ',' : ''));
   }
   return $out;
 }
