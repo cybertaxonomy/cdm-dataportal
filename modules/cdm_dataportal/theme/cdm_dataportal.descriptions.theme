@@ -330,7 +330,7 @@ function theme_cdm_list_IdentificationKeys($variables) {
     $out .= '</li>';
   }
   $out .= '</ul>';
-  $out .= render_annotation_footnotes(RenderHints::getRenderPath());
+  $out .= render_footnotes(RenderHints::getRenderPath());
   RenderHints::popFromRenderStack();
 
   return $out;

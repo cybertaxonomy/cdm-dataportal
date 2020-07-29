@@ -15,7 +15,6 @@
  * @author
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
-const FOOTNOTE_KEY_SUFFIX_ANNOTATIONS = '-annotations';
 
 /**
  * Creates the footnotes for the given CDM instance.
@@ -24,10 +23,9 @@ const FOOTNOTE_KEY_SUFFIX_ANNOTATIONS = '-annotations';
  * parameters $footnote_list_key_suggestion and $is_bibliography_aware, see parameter $footnote_list_key_suggestion
  * for more details.
  *
- * possible keys for
- *     - annotation footnotes:
+ * possible keys for annotation and source footnotes:
  *       - $footnote_list_key_suggestion
- *       - RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS
+ *       - RenderHints::getFootnoteListKey()
  *     - original source footnotes
  *       - "BIBLIOGRAPHY" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 1 )
  *       - "BIBLIOGRAPHY-$footnote_list_key_suggestion" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 0 )
@@ -39,8 +37,7 @@ const FOOTNOTE_KEY_SUFFIX_ANNOTATIONS = '-annotations';
  *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
  * @param $footnote_list_key_suggestion string
  *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
- *    method calls by calling RenderHints::getFootnoteListKey(). NOTE: the footnote key for annotations will be set to
- *    RenderHints::getFootnoteListKey().'-annotations'.
+ *    method calls by calling RenderHints::getFootnoteListKey().
  *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
  * @param bool $do_link_to_reference
@@ -107,33 +104,6 @@ function render_entity_footnotes(
 }
 
 /**
- * Fetches the list of visible annotations for each of the cdm entities and returns the footnote keys for them.
- *
- * The footnotes are passed to the FootnoteManager in order to store the annotations and to create the footnote keys.
- *
- * @see cdm_fetch_visible_annotations()
- *
- * @param array $cdm_entities
- *   An array of CdmBase instances.
- * @param $footnote_list_key_suggestion string
- *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined be set to
- *    RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS otherwise the supplied key will be used.
- *
- * @return array of footnote keys
- *
- * @deprecated unused, needs to be removed
- */
-function cdm_entities_annotations_footnote_keys(array $cdm_entities, $footnote_list_key_suggestion = NULL) {
-
-  $foot_note_keys = [];
-  foreach ($cdm_entities as $cdm_entity) {
-    $foot_note_keys = array_merge($foot_note_keys, cdm_entity_annotations_as_footnote_keys($cdm_entity,$footnote_list_key_suggestion));
-  }
-
-  return $foot_note_keys;
-}
-
-/**
  * Fetches the list of visible annotations for the cdm entity or for the comparable
  * object and returns the footnote keys.
  *
@@ -142,23 +112,20 @@ function cdm_entities_annotations_footnote_keys(array $cdm_entities, $footnote_l
 
  * @param stdClass $cdm_entity
  *   A single CdmBase instance ore comparable object.
- * @param $footnote_list_key_suggestion string
- *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined be set to
- *    RenderHints::getFootnoteListKey().'-annotations' otherwise the supplied key will be used.
+ * @param $footnote_list_key string
+ *    optional parameter. If this parameter is left empty (null, 0, "") the
+ *    footnote key will be set to RenderHints::getFootnoteListKey()
+ *    otherwise the supplied $footnote_list_key will be used.
  * @return array of footnote keys
  *
  * @see cdm_fetch_visible_annotations()
  */
-function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote_list_key_suggestion = NULL) {
+function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote_list_key = NULL) {
 
   $foot_note_keys = [];
 
-  // Getting the key for the FootnoteManager.
-  if (isset($footnote_list_key_suggestion)) {
-    $footnote_list_key = $footnote_list_key_suggestion;
-  } else {
-    $footnote_list_key = RenderHints::getFootnoteListKey() . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS;
-    throw new Exception("FOOTNOTE_KEY_SUFFIX_ANNOTATIONS");
+  if (!isset($footnote_list_key) || !$footnote_list_key) {
+    $footnote_list_key = RenderHints::getFootnoteListKey();
   }
 
   // Adding the footnotes keys.
@@ -170,59 +137,6 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
   }
 
   return $foot_note_keys;
-}
-
-/**
- * Created and registers footnotes in the FootnoteManager and returns the
- * footnote keys as markup.
- *
- * The following cdm cdm classes are annotatable:
- *
- * - DescriptionElementBase
- * - EventBase
- * - HomotypicalGroup
- * - IdentifiableEntity
- * - DescriptionBase
- * - IdentifiableMediaEntity
- * - Media
- * - Sequence
- * - TaxonBase
- * - TaxonName
- * - TaxonomicTree
- * - TermBase
- * - LanguageStringBase
- * - ReferencedEntityBase
- * - NomenclaturalStatus
- * - OriginalSourceBase
- * - RelationshipBase
- * - TypeDesignationBase
- * - TaxonNode
- * - WorkingSet
- *
- * @param array $cdm_entities
- *   An array of CdmBase instances.
- * @param $footnote_list_key_suggestion string
- *    optional parameter. If this parameter is left empty (null, 0, "") the
- *   footnote key will be determined be set to
- *   RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS otherwise the supplied
- *   key will be used.
- *
- * @return string
- *   The markup.
- * @deprecated unused, needs to be removed
- */
-function render_entities_annotations_as_footnote_keys(array $cdm_entities, $footnote_list_key =null){
-
-  // check if footnotes for annotations are disabled completely
-  if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
-    return '';
-  }
-  $markup = '';
-  $footNoteKeys = cdm_entities_annotations_footnote_keys($cdm_entities, $footnote_list_key);
-  foreach ($footNoteKeys as $a) {
-    $markup .= render_footnote_key($a, ($markup ? ',' : ''));
-  }
-  return $markup;
 }
 
 /**
@@ -244,23 +158,6 @@ function render_footnote_keys(array $footnote_keys, $separator) {
     }
   }
   return $footnotes_markup;
-}
-
-/**
- * Create markup for the footnotes mapped to the $footnoteListKey.
- *
- * @param null $footnote_list_key
- *  The footnote list key, see RenderHints::getFootnoteListKey()
- * @param $element_tag
- *  The tag for the footnote element
- *
- * @return string
- */
-function render_annotation_footnotes($footnote_list_key = null, $element_tag = 'span') {
-  if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
-    return '';
-  }
-  return render_footnotes($footnote_list_key . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS, $element_tag);
 }
 
 /**
@@ -336,31 +233,3 @@ function render_footnotes($footnote_list_key = null, $element_tag = 'span') {
   return $out;
 }
 
-/**
- * Renders the footnotes for annotations and sources, etc.
- *
- * @param string $footnote_list_key
- *    RenderHints::getFootnoteListKey() will be used if this parameter is undefined.
- * @param string $enclosingTag
- *    Default tag is 'span'
- *
- * @return string
- *    The markup string
- * @deprecated to be replaced by render_footnotes() once FOOTNOTE_KEY_SUFFIX_ANNOTATIONS is no longer used
- */
-function render_footnotes_annotation_and_sources($footnote_list_key = NULL, $enclosingTag = 'span'){
-
-  if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
-    return '';
-  }
-  if(!$footnote_list_key){
-    $footnote_list_key = RenderHints::getFootnoteListKey();
-  }
-
-  $out = '<' . $enclosingTag . ' class="footnotes footnotes-' . $footnote_list_key . ' ">'
-    . FootnoteManager::renderFootnoteList($footnote_list_key . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS) . ' ' . FootnoteManager::renderFootnoteList($footnote_list_key)
-    . '</' . $enclosingTag . '>';
-  FootnoteManager::removeFootnoteList($footnote_list_key . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS);
-  FootnoteManager::removeFootnoteList($footnote_list_key);
-  return $out;
-}

@@ -2132,7 +2132,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
       }
     }
 
-    $content['footnotes'] = markup_to_render_array(render_footnotes_annotation_and_sources());
+    $content['footnotes'] = markup_to_render_array(render_footnotes());
 
     $taxon_name_page->content = $content;
     RenderHints::popFromRenderStack();
