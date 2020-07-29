@@ -30,7 +30,8 @@
  */
 class RenderHints {
   private static $renderStack = array();
-  private static $footnoteListKey = FALSE;
+  private static $footnoteListKey = '';
+  private static $footnoteListKeyDefault = 'PAGE_GLOBAL';
 
   /**
    * Private constructor.
@@ -38,10 +39,19 @@ class RenderHints {
   private function __construct() {}
 
   /**
-   * @todo document this function.
+   * @return string
+   *   The FootnoteListKey as set or the default FootnoteListKey ('PAGE_GLOBAL')
    */
   public static function getFootnoteListKey() {
-    return self::$footnoteListKey;
+    return self::$footnoteListKey ? self::$footnoteListKey : self::$footnoteListKeyDefault;
+  }
+
+  /**
+   * @return bool
+   *   true if the FootnoteListKey is unset or reset (== $footnoteListKeyDefault)
+   */
+  public static function isUnsetFootnoteListKey() {
+    return self::$footnoteListKey === self::$footnoteListKeyDefault;
   }
 
   /**
@@ -52,10 +62,10 @@ class RenderHints {
   }
 
   /**
-   * @todo document this function.
+   * Reset the FootnoteListKey to the default value = 'PAGE_GLOBAL'
    */
   public static function clearFootnoteListKey() {
-    self::$footnoteListKey = FALSE;
+    self::$footnoteListKey = self::$footnoteListKeyDefault;
   }
 
   /**

@@ -1413,7 +1413,7 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
 
   $key = 'name_relationships';
   RenderHints::pushToRenderStack($key);
-  if(!RenderHints::getFootnoteListKey()){
+  if(RenderHints::isUnsetFootnoteListKey()){
     RenderHints::setFootnoteListKey($key);
   }
   // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
