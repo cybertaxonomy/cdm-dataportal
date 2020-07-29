@@ -147,16 +147,19 @@ function tagNameParts($name, $numOfNameTokens) {
  * - TaxonNode
  * - WorkingSet
  *
- * @param array $variables
- *   An associative array containing:
- *  - cdmBase_list: An array of CdmBase instances or a single instance.
- *  - footnote_list_key
+ * @param array $cdm_entities
+ *   An array of CdmBase instances.
+ * @param $footnote_list_key_suggestion string
+ *    optional parameter. If this parameter is left empty (null, 0, "") the
+ *   footnote key will be determined be set to
+ *   RenderHints::getFootnoteListKey().'-annotations' otherwise the supplied
+ *   key will be used.
  *
- * @ingroup themeable
+ * @return string
+ *   The markup.
  */
-function theme_cdm_entities_annotations_as_footnotekeys($variables) {
-  $cdm_entities = $variables['cdmBase_list'];
-  $footnote_list_key = $variables['footnote_list_key'];
+function cdm_entities_annotations_as_footnotekeys($cdm_entities, $footnote_list_key =null){
+
   // check if footnotes for annotations are disabled completely
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
