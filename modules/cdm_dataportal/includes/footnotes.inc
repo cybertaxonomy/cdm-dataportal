@@ -318,6 +318,7 @@ function render_footnote($footnoteKey = null, $footnoteText = null, $enclosing_t
  *  The tag for the footnote element
  *
  * @return string
+ *   The markup
  */
 function render_footnotes($footnote_list_key = null, $element_tag = 'span') {
 

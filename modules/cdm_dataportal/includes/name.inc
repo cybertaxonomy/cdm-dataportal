@@ -1038,6 +1038,8 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
       $annotations_and_sources = handle_annotations_and_sources(
         $textual_type_designation,
         array(
+          // these settings differ from those provided by typedesignations_annotations_and_sources_config()
+          // TODO is this by purpose? please document the reason for the difference
           'sources_as_content' => false, // as footnotes
           'link_to_name_used_in_source' => false,
           'link_to_reference' => true,

@@ -719,10 +719,26 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     }
 
     // handle annotations of the name and taxon
-    $special_annotations_array = array();
-    $special_annotations_array[] = $taxon->name;
-    $special_annotations_array[] = $taxon;
-    $accepted_name .= render_entities_annotations_as_footnote_keys($special_annotations_array,  $synonymy_render_path . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS);
+    $bibliography_settings = get_bibliography_settings();
+    $annotations_and_sources_config = [
+      'sources_as_content' => FALSE,
+      'link_to_name_used_in_source' => TRUE,
+      'link_to_reference' => TRUE,
+      'add_footnote_keys' => TRUE,
+      'bibliography_aware' => $bibliography_settings['enabled'] == 1
+    ];
+    $annotations_and_sources_taxon = handle_annotations_and_sources(
+      $taxon,
+      $annotations_and_sources_config,
+      '',
+      null);
+    $annotations_and_sources_name = handle_annotations_and_sources(
+      $taxon,
+      $annotations_and_sources_config,
+      '',
+      null);
+
+    $accepted_name .= $annotations_and_sources_taxon['foot_note_keys'] . ($annotations_and_sources_taxon['foot_note_keys'] ? ', ': '') . $annotations_and_sources_name['foot_note_keys'];
     $accepted_name .= '</div>';
     RenderHints::popFromRenderStack();
   }
