@@ -59,8 +59,8 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
 
   // ------- footnotes ------- //
   $out .= '<ul class="footnotes">';
-  $out .= cdm_annotation_footnotes(RenderHints::getFootnoteListKey(), 'li');
-  $out .= cdm_footnotes(RenderHints::getFootnoteListKey(), 'li');
+  $out .= render_annotation_footnotes(RenderHints::getFootnoteListKey(), 'li');
+  $out .= render_footnotes(RenderHints::getFootnoteListKey(), 'li');
   $out .= '</ul>';
 
   $out .= '</div>';
@@ -124,8 +124,8 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
   // all foonotes of the homotypic group and also of the accepted taxon are
   // rendered here, both should have the same footnote key
   $out .= '<ul class="footnotes">';
-  $out .= cdm_annotation_footnotes(RenderHints::getFootnoteListKey(), 'li');
-  $out .= cdm_footnotes(RenderHints::getFootnoteListKey(), 'li');
+  $out .= render_annotation_footnotes(RenderHints::getFootnoteListKey(), 'li');
+  $out .= render_footnotes(RenderHints::getFootnoteListKey(), 'li');
   $out .= '</ul>';
 
   $out .= '</div>';

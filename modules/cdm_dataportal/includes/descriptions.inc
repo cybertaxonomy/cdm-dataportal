@@ -527,7 +527,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
       } // END of loop over sources
 
       // annotations footnotes separate from sources
-      $annotations_and_sources['foot_note_keys'] = footnote_keys_to_markup(
+      $annotations_and_sources['foot_note_keys'] = render_footnote_keys(
         cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion), ', '
       );
 
@@ -535,7 +535,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
     // footnotes for sources and annotations or put into into bibliography if requested ...
     if ($config['add_footnote_keys'] == 1) {
-        $annotations_and_sources['foot_note_keys'] = cdm_entity_footnotes(
+        $annotations_and_sources['foot_note_keys'] = render_entity_footnotes(
           $entity, ',',
           $footnote_list_key_suggestion,
           $config['link_to_reference'] == 1,
@@ -736,9 +736,9 @@ function cdm_entity_sources_sorted($entity) {
             /*
              * Footnotes for the feature block
              */
-            $block->content[] = markup_to_render_array(cdm_footnotes(PSEUDO_FEATURE_BIBLIOGRAPHY . '-' . $feature_node->term->uuid));
-            $block->content[] = markup_to_render_array(cdm_footnotes($feature_node->term->uuid));
-            $block->content[] = markup_to_render_array(cdm_annotation_footnotes($feature_node->term->uuid));
+            $block->content[] = markup_to_render_array(render_footnotes(PSEUDO_FEATURE_BIBLIOGRAPHY . '-' . $feature_node->term->uuid));
+            $block->content[] = markup_to_render_array(render_footnotes($feature_node->term->uuid));
+            $block->content[] = markup_to_render_array(render_annotation_footnotes($feature_node->term->uuid));
           }
         } // END all other features
 
@@ -1035,9 +1035,9 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
       );
     }
 
-    $block->content[] = markup_to_render_array(cdm_footnotes('BIBLIOGRAPHY-' . UUID_DISTRIBUTION));
-    $block->content[] = markup_to_render_array(cdm_footnotes(UUID_DISTRIBUTION));
-    $block->content[] = markup_to_render_array(cdm_annotation_footnotes(UUID_DISTRIBUTION));
+    $block->content[] = markup_to_render_array(render_footnotes('BIBLIOGRAPHY-' . UUID_DISTRIBUTION));
+    $block->content[] = markup_to_render_array(render_footnotes(UUID_DISTRIBUTION));
+    $block->content[] = markup_to_render_array(render_annotation_footnotes(UUID_DISTRIBUTION));
 
     return $block;
   }
@@ -1659,9 +1659,9 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
     $text_data_out, $feature
   );
 
-  $footnotes = cdm_footnotes('BIBLIOGRAPHY-' . $footnote_key_suggestion);
-  $footnotes .= cdm_footnotes($footnote_key_suggestion); // FIXME is this needed at all?
-  $footnotes .= cdm_annotation_footnotes($footnote_key_suggestion);
+  $footnotes = render_footnotes('BIBLIOGRAPHY-' . $footnote_key_suggestion);
+  $footnotes .= render_footnotes($footnote_key_suggestion); // FIXME is this needed at all?
+  $footnotes .= render_annotation_footnotes($footnote_key_suggestion);
 
   return  markup_to_render_array(  // FIXME markup_to_render_array should no longer be needed
     '<div class="common-taxon-name">' . $common_name_out . '</div>'

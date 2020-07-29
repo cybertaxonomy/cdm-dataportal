@@ -580,7 +580,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
   $out .= '</span>';
   if ($show_annotations) {
-    // $out .= theme('cdm_entities_annotations_as_footnotekeys', $taxonName);
+    // $out .= render_entities_annotations_as_footnote_keys([$taxonName]);
   }
   return $out;
 }
@@ -984,7 +984,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           // footnotes should be rendered in the parent element so we
           // are relying on the FootnoteListKey set there
           $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $citation_footnote_str);
-          $footnote_key_markup = cdm_footnote_key($_fkey2, $separator, TRUE);
+          $footnote_key_markup = render_footnote_key($_fkey2, $separator, TRUE);
         }
 
         $type_citation_markup .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">' . $authorteam_str . '</span>';
@@ -1064,7 +1064,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
     RenderHints::getFootnoteListKey(),
     (isset($derivedUnitFacadeInstance->collection->titleCache) ? $derivedUnitFacadeInstance->collection->titleCache : FALSE)
   );
-  $out .= cdm_footnote_key($_fkey, $separator);
+  $out .= render_footnote_key($_fkey, $separator);
   $out .= '</' . $enclosing_tag .'>';
 
   RenderHints::popFromRenderStack();
@@ -1435,7 +1435,7 @@ function compose_name_relationships_list($name_relations, $current_name_uuid, $c
 
   RenderHints::popFromRenderStack();
   if(RenderHints::getFootnoteListKey() == $key) {
-    $render_array['footnotes'] = markup_to_render_array(cdm_footnotes(RenderHints::getFootnoteListKey()));
+    $render_array['footnotes'] = markup_to_render_array(render_footnotes(RenderHints::getFootnoteListKey()));
     RenderHints::clearFootnoteListKey();
   }
   return $render_array;
@@ -1590,7 +1590,7 @@ function name_relationship_footnote_markup($name_rel)
   }
   if ($footnote_markup) {
     $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = cdm_footnote_key($fnkey,',',TRUE);
+    $footnote_key_markup = render_footnote_key($fnkey,',',TRUE);
   }
   return $footnote_key_markup;
 }
@@ -1622,7 +1622,7 @@ function nomenclatural_reference_footnote_key_markup($name)
   }
   if ($footnote_markup) {
     $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = cdm_footnote_key($fnkey, ',',TRUE);
+    $footnote_key_markup = render_footnote_key($fnkey, ',',TRUE);
   }
   return $footnote_key_markup;
 }
@@ -1990,7 +1990,7 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
     // footnotes should be rendered in the parent element so we
     // are relying on the FootnoteListKey set there
     $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $typeDesignation->citation->titleCache);
-    $res .= cdm_footnote_key($fkey_typeDesignation, $footnote_separator,TRUE) . ')';
+    $res .= render_footnote_key($fkey_typeDesignation, $footnote_separator,TRUE) . ')';
   }
   return $res;
 }

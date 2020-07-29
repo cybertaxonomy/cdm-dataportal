@@ -72,7 +72,7 @@ function compose_taxon_node_status(array $taxon_nodes){
           $status_markup[] = sprintf($tokes['status'], '');
         }
       }
-      $render_array['taxon-node-status'] = markup_to_render_array($label . ': ' . join('; ', $status_markup) . cdm_footnotes(RenderHints::getFootnoteListKey()));
+      $render_array['taxon-node-status'] = markup_to_render_array($label . ': ' . join('; ', $status_markup) . render_footnotes(RenderHints::getFootnoteListKey()));
       $render_array['taxon-node-status']['#prefix'] = '<div class="taxon-node-status">';
       $render_array['taxon-node-status']['#suffix'] = '</div>';
     }

@@ -722,7 +722,7 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     $special_annotations_array = array();
     $special_annotations_array[] = $taxon->name;
     $special_annotations_array[] = $taxon;
-    $accepted_name .= cdm_entities_annotations_as_footnotekeys($special_annotations_array,  $synonymy_render_path . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS);
+    $accepted_name .= render_entities_annotations_as_footnote_keys($special_annotations_array,  $synonymy_render_path . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS);
     $accepted_name .= '</div>';
     RenderHints::popFromRenderStack();
   }

@@ -145,7 +145,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
       if($sensu_strings['order_by_key'] != $sensu_reference->titleCache){
         $sensu_reference_markup = cdm_reference_markup($sensu_reference);
         $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
-        $footnote_key = cdm_footnote_key($footnote_key);
+        $footnote_key = render_footnote_key($footnote_key);
         $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['markup'] . $footnote_key . '</span>';
       }
     }
@@ -209,8 +209,8 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
     $out .= '</ul>';
   }
 
-  $footnotes = cdm_footnotes($footnote_list_key, 'li');
-  $footnotes .= cdm_annotation_footnotes($footnote_list_key,'li');
+  $footnotes = render_footnotes($footnote_list_key, 'li');
+  $footnotes .= render_annotation_footnotes($footnote_list_key,'li');
 
   $out .= '<ul class="footnotes">' . $footnotes . '</ul>';
   $out .= '</div>';
@@ -393,7 +393,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
     $referenceUri = FALSE;
   }
   $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_tags, $is_invalid);
-  $taxon_footnotes = cdm_entities_annotations_as_footnotekeys([$taxon->name,$taxon], $footnoteListKey);
+  $taxon_footnotes = render_entities_annotations_as_footnote_keys([$taxon->name,$taxon], $footnoteListKey);
   $name_relations = cdm_name_relationships_for_taxon($taxon);
   $name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
 
@@ -435,7 +435,7 @@ function cdm_accepted_for($accepted_for_uuid) {
       $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
     }
     $out .= render_taxon_or_name($synonym->name, NULL, $referenceUri);
-    $out .= cdm_entities_annotations_as_footnotekeys($synonym);
+    $out .= render_entities_annotations_as_footnote_keys([$synonym]);
     $out .= '</span>';
   }
   RenderHints::popFromRenderStack();
@@ -566,7 +566,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
             }
             $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
           }
-          $out .= cdm_entities_annotations_as_footnotekeys($taxon);
+          $out .= render_entities_annotations_as_footnote_keys([$taxon]);
           if ($showMedia_synonyms) {
             $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
           }
@@ -594,7 +594,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
         }
         $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
       }
-      $out .= cdm_entities_annotations_as_footnotekeys($taxon);
+      $out .= render_entities_annotations_as_footnote_keys([$taxon]);
 
       if ($showMedia_taxa) {
         $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));

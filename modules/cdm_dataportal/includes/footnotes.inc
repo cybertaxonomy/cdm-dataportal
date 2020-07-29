@@ -49,7 +49,7 @@ const FOOTNOTE_KEY_SUFFIX_ANNOTATIONS = '-annotations';
  *    Put source references into the bibliography when this param is TRUE.
  *
  * @return String
- *   The foot note keys
+ *   The foot note keys as markup
  *
  * @throws \Exception re-throw exception from theme()
  * @see cdm_entities_annotations_footnote_keys()
@@ -58,7 +58,7 @@ const FOOTNOTE_KEY_SUFFIX_ANNOTATIONS = '-annotations';
  * @$original_source_footnote_tag
  *    null will cause bibliography_footnote_list_key to use the default
  */
-function cdm_entity_footnotes(
+function render_entity_footnotes(
   $cdm_entity,
   $separator = ',',
   $footnote_list_key_suggestion = null,
@@ -104,7 +104,7 @@ function cdm_entity_footnotes(
   }
   // Sort and render footnote keys.
   asort($footnote_keys);
-  return footnote_keys_to_markup($footnote_keys, $separator);
+  return render_footnote_keys($footnote_keys, $separator);
 }
 
 /**
@@ -152,7 +152,7 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
 
   $foot_note_keys = [];
 
-  // Getting the key for the footnotemanager.
+  // Getting the key for the FootnoteManager.
   if (isset($footnote_list_key_suggestion)) {
     $footnote_list_key = $footnote_list_key_suggestion;
   } else {
@@ -171,6 +171,58 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
 }
 
 /**
+ * Created and registers footnotes in the FootnoteManager and returns the
+ * footnote keys as markup.
+ *
+ * The following cdm cdm classes are annotatable:
+ *
+ * - DescriptionElementBase
+ * - EventBase
+ * - HomotypicalGroup
+ * - IdentifiableEntity
+ * - DescriptionBase
+ * - IdentifiableMediaEntity
+ * - Media
+ * - Sequence
+ * - TaxonBase
+ * - TaxonName
+ * - TaxonomicTree
+ * - TermBase
+ * - LanguageStringBase
+ * - ReferencedEntityBase
+ * - NomenclaturalStatus
+ * - OriginalSourceBase
+ * - RelationshipBase
+ * - TypeDesignationBase
+ * - TaxonNode
+ * - WorkingSet
+ *
+ * @param array $cdm_entities
+ *   An array of CdmBase instances.
+ * @param $footnote_list_key_suggestion string
+ *    optional parameter. If this parameter is left empty (null, 0, "") the
+ *   footnote key will be determined be set to
+ *   RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS otherwise the supplied
+ *   key will be used.
+ *
+ * @return string
+ *   The markup.
+ */
+function render_entities_annotations_as_footnote_keys(array $cdm_entities, $footnote_list_key =null){
+
+  // check if footnotes for annotations are disabled completely
+  if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
+    return '';
+  }
+  $markup = '';
+  $footNoteKeys = cdm_entities_annotations_footnote_keys($cdm_entities, $footnote_list_key);
+  foreach ($footNoteKeys as $a) {
+    $markup .= render_footnote_key($a, ($markup ? ',' : ''));
+  }
+  return $markup;
+}
+
+/**
  * Creates markup for an array of foot note keys
  *
  * @param array $footnote_keys
@@ -178,12 +230,12 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
  *
  * @return string
  */
-function footnote_keys_to_markup(array $footnote_keys, $separator) {
+function render_footnote_keys(array $footnote_keys, $separator) {
 
   $footnotes_markup = '';
   foreach ($footnote_keys as $foot_note_key) {
     try {
-      $footnotes_markup .= cdm_footnote_key($foot_note_key, ($footnotes_markup ? $separator : ''));
+      $footnotes_markup .= render_footnote_key($foot_note_key, ($footnotes_markup ? $separator : ''));
     } catch (Exception $e) {
       drupal_set_message("Exception: " . $e->getMessage(), 'error');
     }
@@ -202,11 +254,11 @@ function footnote_keys_to_markup(array $footnote_keys, $separator) {
  * @return string
  * @throws \Exception
  */
-function cdm_annotation_footnotes($footnote_list_key = null, $element_tag = 'span') {
+function render_annotation_footnotes($footnote_list_key = null, $element_tag = 'span') {
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
   }
-  return cdm_footnotes($footnote_list_key . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS, $element_tag);
+  return render_footnotes($footnote_list_key . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS, $element_tag);
 }
 
 /**
@@ -219,7 +271,7 @@ function cdm_annotation_footnotes($footnote_list_key = null, $element_tag = 'spa
  * @return string
  *   The footnote key markup
  */
-function cdm_footnote_key($footnoteKey = null, $separator = '', $separator_off = false) {
+function render_footnote_key($footnoteKey = null, $separator = '', $separator_off = false) {
 
   if (!is_object($footnoteKey) or !isset($footnoteKey->footnoteListKey)) {
     return '';
@@ -244,7 +296,7 @@ function cdm_footnote_key($footnoteKey = null, $separator = '', $separator_off =
  *
  * @return string
  */
-function footnote_markup($footnoteKey = null, $footnoteText = null, $enclosing_tag = 'span') {
+function render_footnote($footnoteKey = null, $footnoteText = null, $enclosing_tag = 'span') {
   _add_js_footnotes();
   if($enclosing_tag == null){
     $enclosing_tag = 'span';
@@ -267,7 +319,7 @@ function footnote_markup($footnoteKey = null, $footnoteText = null, $enclosing_t
  *
  * @return string
  */
-function cdm_footnotes($footnote_list_key = null, $element_tag = 'span') {
+function render_footnotes($footnote_list_key = null, $element_tag = 'span') {
 
   if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';

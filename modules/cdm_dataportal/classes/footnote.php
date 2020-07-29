@@ -38,6 +38,6 @@ class Footnote {
       $enclosing_tag = $this->enclosing_tag;
     }
 
-    return footnote_markup($this->key, $this->object, $enclosing_tag);
+    return render_footnote($this->key, $this->object, $enclosing_tag);
   }
 }
