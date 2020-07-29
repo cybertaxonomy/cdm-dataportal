@@ -195,59 +195,6 @@ function cdm_annotation_footnotes($footnote_list_key = null, $element_tag = 'spa
   return cdm_footnotes($footnote_list_key . '-annotations', $element_tag);
 }
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_annotation_content($variables) {
-  $AnnotationTO = $variables['AnnotationTO'];
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cdm_annotations.js');
-  drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/jquery.form.js');
-
-  $out = theme('cdm_list_of_annotations', array('annotationElements' => $AnnotationTO->annotationElements));
-
-  $annotationUrl = cdm_compose_url(CDM_WS_ANNOTATIONS, array(
-    $AnnotationTO->uuid,
-  ));
-  $annotationProxyUrl = url('cdm_api/proxy/' . urlencode($annotationUrl) . '/cdm_annotation_post');
-
-  // TODO users have to be authenticated to the dataportal to be able to write
-  // annotations.
-  $out .= '
-        <div class="annotation_create">
-          <form action="' . $annotationProxyUrl . '" method="POST">
-            <textarea name="annotation"></textarea>
-            <input type="hidden" name="commentator" value="">
-            <input type="submit" value="' . t('Save annotation') . '" />
-          </form>
-       </div>
-  ';
-
-  return $out;
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_list_of_annotations($variables) {
-  $annotationElements = $variables['annotationElements'];
-  $out = '<ul class="annotation_list">';
-
-  foreach ($annotationElements as $key => $row) {
-    $created[$key] = $row;
-  }
-  array_multisort($created, SORT_ASC, $annotationElements);
-
-  foreach ($annotationElements as $annotation) {
-    $out .= '<li>' . $annotation->text . '</li>';
-  }
-
-  $out .= '</ul>';
-
-  return $out;
-}
-
 /* ============================ footnotes ============================= */
 /**
  * @todo Please document this function.
