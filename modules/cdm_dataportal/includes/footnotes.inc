@@ -343,9 +343,9 @@ function render_footnotes($footnote_list_key = null, $element_tag = 'span') {
  *
  * @return string
  *    The markup string
- *
+ * @deprecated to be replaced by render_footnotes() once FOOTNOTE_KEY_SUFFIX_ANNOTATIONS is no longer used
  */
-function render_cdm_footnotes($footnote_list_key = NULL, $enclosingTag = 'span'){
+function render_footnotes_annotation_and_sources($footnote_list_key = NULL, $enclosingTag = 'span'){
 
   if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';

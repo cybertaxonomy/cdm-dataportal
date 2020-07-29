@@ -701,7 +701,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
       $render_array['nomenclatural_act']['#weight'] + 10 );
   }
 
-  $render_array['nomenclatural_act']['footnotes'] = markup_to_render_array(render_cdm_footnotes(),
+  $render_array['nomenclatural_act']['footnotes'] = markup_to_render_array(render_footnotes_annotation_and_sources(),
     100
   );
 
