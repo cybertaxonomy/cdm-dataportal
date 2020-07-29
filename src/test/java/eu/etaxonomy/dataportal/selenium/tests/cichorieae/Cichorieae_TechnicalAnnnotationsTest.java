@@ -8,10 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
@@ -55,9 +51,12 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
         // Credits contains an technical annotation but this must not be displayed
         FeatureBlock creditsBlock = p.getFeatureBlockAt(1, "credits", "div", "div");
         //testing this is not possible due to SCHROTT-CODE // assertEquals("expecting 1 DescriptionElements in citation", 1, creditsBlock.getDescriptionElements().size());
-        assertEquals("Credits\nBoufford D. E. 2009: Images (12 added)\nSmalla M. 2009: Images (1 added)\nSun H. 2009: Images (3 added)\nYue J. 2009: Images (1 added)\nZhang J. 2009: Images (1 added).", creditsBlock.getText());
-        assertFalse("expecting no footnoteKeys", creditsBlock.hasFootNoteKeys());
-        assertFalse("expecting no footnotes", creditsBlock.hasFootNotes());
+        assertEquals("Credits\nBoufford D. E. 2009: Images (12 added)\nSmalla M. 2009: Images (1 added)\nSun H. 2009: Images (3 added)\nYue J. 2009: Images (1 added)\nZhang J. 2009: Images (1 added).\n" +
+                "\n" +
+                "1\n" +
+                "1. This fact has been moved from Soroseris gillii (S. Moore) Stebbins to this taxon.", creditsBlock.getText());
+        assertTrue("expecting 1 footnote keys", creditsBlock.hasFootNoteKeys());
+        assertTrue("expecting no footnotes", creditsBlock.hasFootNotes());
     }
 
     @Test

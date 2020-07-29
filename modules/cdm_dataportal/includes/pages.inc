@@ -731,14 +731,14 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
       $taxon,
       $annotations_and_sources_config,
       '',
-      null);
+      RenderHints::getFootnoteListKey());
     $annotations_and_sources_name = handle_annotations_and_sources(
-      $taxon,
+      $taxon->name,
       $annotations_and_sources_config,
       '',
-      null);
+      RenderHints::getFootnoteListKey());
 
-    $accepted_name .= $annotations_and_sources_taxon['foot_note_keys'] . ($annotations_and_sources_taxon['foot_note_keys'] ? ', ': '') . $annotations_and_sources_name['foot_note_keys'];
+    $accepted_name .= $annotations_and_sources_taxon['foot_note_keys'] . ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ', ': '') . $annotations_and_sources_name['foot_note_keys'];
     $accepted_name .= '</div>';
     RenderHints::popFromRenderStack();
   }
