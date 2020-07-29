@@ -438,9 +438,9 @@ function render_taxon_and_name_footnotes($taxon) {
     '',
     RenderHints::getFootnoteListKey()
   );
-  $footnotes = $annotations_and_sources_taxon['foo_note_keys'] .
-    ($annotations_and_sources_taxon['foo_note_keys'] && $annotations_and_sources_name['foo_note_keys'] ? ',' : '') .
-    $annotations_and_sources_name['foo_note_keys'];
+  $footnotes = $annotations_and_sources_taxon['foot_note_keys'] .
+    ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ',' : '') .
+    $annotations_and_sources_name['foot_note_keys'];
   return $footnotes;
 }
 
