@@ -1024,10 +1024,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         }
         $out .= $annotations_and_sources['foot_note_keys'];
       }
-
-
       $out .= '</'. $element_tag .'>';
-
     }
   } // END Specimen type designations
 
@@ -1220,7 +1217,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
           $mediaSpecimen,
           typedesignations_annotations_and_sources_config(),
           '',
-          null
+          RenderHints::getFootnoteListKey()
         );
         if(is_array( $annotations_and_sources['source_references'])){
           $source_citations = array_merge($source_citations, $annotations_and_sources['source_references']);

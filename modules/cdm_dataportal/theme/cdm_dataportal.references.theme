@@ -144,7 +144,6 @@ function cdm_doi($doi, $iconified = true) {
  * @param bool $do_link_to_name_used_in_source
  *
  * @return string
- * @throws \Exception
  */
 function render_original_source($source, $do_link_to_reference = TRUE, $do_link_to_name_used_in_source = FALSE) {
   $out = '';

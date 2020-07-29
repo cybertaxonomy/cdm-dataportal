@@ -43,7 +43,7 @@ function compose_taxon_node_status(array $taxon_nodes){
         'add_footnote_keys' => true,
         'bibliography_aware' => $bibliography_settings['enabled'] == 1),
         '',
-        null);
+        RenderHints::getFootnoteListKey());
 
       if(isset($taxon_node->status)){
         $state_label = strtolower($taxon_node->status->message_L10n);
