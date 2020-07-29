@@ -899,9 +899,14 @@ function cdm_compose_annotations_uri($cdm_entity) {
   $cdm_entity_type = $cdm_entity->class;
 
   if($cdm_entity_type == 'DerivedUnitFacade'){
-    // TODO we may want to implement a derivedUnitFacade/{uuid}/annotations service and use that instead
-    $cdm_entity_type = $cdm_entity->fieldUnitEntityReference->type;
-    $cdm_entity_uuid = $cdm_entity->fieldUnitEntityReference->uuid;
+    if(isset($cdm_entity->fieldUnitEntityReference)){
+      // TODO we may want to implement a derivedUnitFacade/{uuid}/annotations service and use that instead
+      $cdm_entity_type = $cdm_entity->fieldUnitEntityReference->type;
+      $cdm_entity_uuid = $cdm_entity->fieldUnitEntityReference->uuid;
+    } elseif(isset($cdm_entity->baseUnitEntityReference)){
+      $cdm_entity_type = $cdm_entity->baseUnitEntityReference->type;
+      $cdm_entity_uuid = $cdm_entity->baseUnitEntityReference->uuid;
+    }
   } elseif ($cdm_entity_type == 'TypedEntityReference'){
     $cdm_entity_type = $cdm_entity->type;
     $cdm_entity_uuid = $cdm_entity->uuid;
@@ -911,7 +916,7 @@ function cdm_compose_annotations_uri($cdm_entity) {
     }
   }
 
-  if(!$cdm_entity_uuid){
+  if(!isset($cdm_entity_uuid) || !isset($cdm_entity_type) || !$cdm_entity_type ){
     // silently give up
     return;
   }
