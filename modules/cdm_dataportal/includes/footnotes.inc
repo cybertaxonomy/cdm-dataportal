@@ -158,6 +158,7 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
     $footnote_list_key = $footnote_list_key_suggestion;
   } else {
     $footnote_list_key = RenderHints::getFootnoteListKey() . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS;
+    throw new Exception("FOOTNOTE_KEY_SUFFIX_ANNOTATIONS");
   }
 
   // Adding the footnotes keys.
