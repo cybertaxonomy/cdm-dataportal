@@ -152,7 +152,7 @@ function tagNameParts($name, $numOfNameTokens) {
  * @param $footnote_list_key_suggestion string
  *    optional parameter. If this parameter is left empty (null, 0, "") the
  *   footnote key will be determined be set to
- *   RenderHints::getFootnoteListKey().'-annotations' otherwise the supplied
+ *   RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS otherwise the supplied
  *   key will be used.
  *
  * @return string
@@ -167,10 +167,10 @@ function cdm_entities_annotations_as_footnotekeys($cdm_entities, $footnote_list_
   $out = '';
   if(is_array($cdm_entities)){
     // array of entities
-    $footNoteKeys = cdm_entities_annotations_footnotekeys($cdm_entities, $footnote_list_key);
+    $footNoteKeys = cdm_entities_annotations_footnote_keys($cdm_entities, $footnote_list_key);
   } else {
     // single entity
-    $footNoteKeys = cdm_entity_annotations_as_footnotekeys($cdm_entities, $footnote_list_key);
+    $footNoteKeys = cdm_entity_annotations_as_footnote_keys($cdm_entities, $footnote_list_key);
   }
   foreach ($footNoteKeys as $a) {
     $out .= cdm_footnote_key($a, ($out ? ',' : ''));

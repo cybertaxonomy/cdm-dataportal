@@ -472,8 +472,9 @@ function handle_annotations_and_sources_config($feature_block_settings){
  *    optional parameter. If this paramter is left empty (null, 0, "") the
  *   footnote key will be determined by the nested method calls by calling
  *   RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations
- *   will be set to RenderHints::getFootnoteListKey().'-annotations'. @return
- *   array an associative array with the following elements:
+ *   will be set to RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS.
+ * @return array
+ * an associative array with the following elements:
  *   - foot_note_keys: all footnote keys as markup
  *   - source_references: an array of the source references citations
  *   - names used in source: an associative array of the names in source,
@@ -482,7 +483,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
  *
  * @throws \Exception
  *
- * @see cdm_entities_annotations_footnotekeys()
+ * @see cdm_entities_annotations_footnote_keys()
  */
   function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $footnote_list_key_suggestion) {
 
@@ -527,14 +528,14 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
       // annotations footnotes separate from sources
       $annotations_and_sources['foot_note_keys'] = footnote_keys_to_markup(
-        cdm_entity_annotations_as_footnotekeys($entity, $footnote_list_key_suggestion), ', '
+        cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion), ', '
       );
 
     } // END of references inline
 
     // footnotes for sources and annotations or put into into bibliography if requested ...
     if ($config['add_footnote_keys'] == 1) {
-        $annotations_and_sources['foot_note_keys'] = cdm_create_footnotes(
+        $annotations_and_sources['foot_note_keys'] = cdm_entity_footnotes(
           $entity, ',',
           $footnote_list_key_suggestion,
           $config['link_to_reference'] == 1,

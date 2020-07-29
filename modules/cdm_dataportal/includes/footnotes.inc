@@ -15,6 +15,7 @@
  * @author
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
+const FOOTNOTE_KEY_SUFFIX_ANNOTATIONS = '-annotations';
 
 /**
  * Creates the footnotes for the given CDM instance.
@@ -26,14 +27,14 @@
  * possible keys for
  *     - annotation footnotes:
  *       - $footnote_list_key_suggestion
- *       - RenderHints::getFootnoteListKey().'-annotations'
+ *       - RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS
  *     - original source footnotes
  *       - "BIBLIOGRAPHY" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 1 )
  *       - "BIBLIOGRAPHY-$footnote_list_key_suggestion" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 0 )
  *       - $footnote_list_key_suggestion (when $is_bibliography_aware)
  *
- * @param $description_element
- *   A CDM DescriptionElement instance
+ * @param $cdm_entity
+ *   A CDM entity
  * @param string $separator
  *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
  * @param $footnote_list_key_suggestion string
@@ -51,14 +52,14 @@
  *   The foot note keys
  *
  * @throws \Exception re-throw exception from theme()
- * @see cdm_entities_annotations_footnotekeys()
+ * @see cdm_entities_annotations_footnote_keys()
  *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
  * @$original_source_footnote_tag
  *    null will cause bibliography_footnote_list_key to use the default
  */
-function cdm_create_footnotes(
-  $description_element,
+function cdm_entity_footnotes(
+  $cdm_entity,
   $separator = ',',
   $footnote_list_key_suggestion = null,
   $do_link_to_reference = FALSE,
@@ -66,10 +67,10 @@ function cdm_create_footnotes(
   $is_bibliography_aware = FALSE
 ){
 
-  $sources = cdm_entity_sources_sorted($description_element);
+  $sources = cdm_entity_sources_sorted($cdm_entity);
 
   // Annotations as footnotes.
-  $footnote_keys = cdm_entity_annotations_as_footnotekeys($description_element, $footnote_list_key_suggestion);
+  $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key_suggestion);
 
   // Source references as footnotes.
   if($is_bibliography_aware){
@@ -96,7 +97,9 @@ function cdm_create_footnotes(
         $original_source_footnote_tag
       );
       // Ensure uniqueness of the footnote keys.
-      cdm_add_footnote_to_array($footnote_keys, $fn_key);
+      if(array_search($fn_key, $footnote_keys)=== false) {
+        $footnote_keys[] = $fn_key;
+      }
     }
   }
   // Sort and render footnote keys.
@@ -115,15 +118,15 @@ function cdm_create_footnotes(
  *   An array of CdmBase instances.
  * @param $footnote_list_key_suggestion string
  *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined be set to
- *    RenderHints::getFootnoteListKey().'-annotations' otherwise the supplied key will be used.
+ *    RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS otherwise the supplied key will be used.
  *
  * @return array of footnote keys
  */
-function cdm_entities_annotations_footnotekeys(array $cdm_entities, $footnote_list_key_suggestion = NULL) {
+function cdm_entities_annotations_footnote_keys(array $cdm_entities, $footnote_list_key_suggestion = NULL) {
 
   $foot_note_keys = [];
   foreach ($cdm_entities as $cdm_entity) {
-    $foot_note_keys = array_merge($foot_note_keys, cdm_entity_annotations_as_footnotekeys($cdm_entity,$footnote_list_key_suggestion));
+    $foot_note_keys = array_merge($foot_note_keys, cdm_entity_annotations_as_footnote_keys($cdm_entity,$footnote_list_key_suggestion));
   }
 
   return $foot_note_keys;
@@ -145,7 +148,7 @@ function cdm_entities_annotations_footnotekeys(array $cdm_entities, $footnote_li
  *
  * @see cdm_fetch_visible_annotations()
  */
-function cdm_entity_annotations_as_footnotekeys(stdClass $cdm_entity, $footnote_list_key_suggestion = NULL) {
+function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote_list_key_suggestion = NULL) {
 
   $foot_note_keys = [];
 
@@ -153,7 +156,7 @@ function cdm_entity_annotations_as_footnotekeys(stdClass $cdm_entity, $footnote_
   if (isset($footnote_list_key_suggestion)) {
     $footnote_list_key = $footnote_list_key_suggestion;
   } else {
-    $footnote_list_key = RenderHints::getFootnoteListKey() . '-annotations';
+    $footnote_list_key = RenderHints::getFootnoteListKey() . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS;
   }
 
   // Adding the footnotes keys.
@@ -189,17 +192,6 @@ function footnote_keys_to_markup(array $footnote_keys, $separator) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function cdm_add_footnote_to_array(&$footnote_list, $footnote) {
-  if (!cdm_exist_footnote($footnote_list, $footnote)) {
-    $footnote_list[] = $footnote;
-  }
-}
-
-
-/**
  * Create markup for the footnotes mapped to the $footnoteListKey.
  *
  * @param null $footnote_list_key
@@ -214,7 +206,7 @@ function cdm_annotation_footnotes($footnote_list_key = null, $element_tag = 'spa
   if (variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
   }
-  return cdm_footnotes($footnote_list_key . '-annotations', $element_tag);
+  return cdm_footnotes($footnote_list_key . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS, $element_tag);
 }
 
 /**
@@ -311,25 +303,9 @@ function render_cdm_footnotes($footnote_list_key = NULL, $enclosingTag = 'span')
   }
 
   $out = '<' . $enclosingTag . ' class="footnotes footnotes-' . $footnote_list_key . ' ">'
-    . FootnoteManager::renderFootnoteList($footnote_list_key . '-annotations') . ' ' . FootnoteManager::renderFootnoteList($footnote_list_key)
+    . FootnoteManager::renderFootnoteList($footnote_list_key . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS) . ' ' . FootnoteManager::renderFootnoteList($footnote_list_key)
     . '</' . $enclosingTag . '>';
-  FootnoteManager::removeFootnoteList($footnote_list_key . '-annotations');
+  FootnoteManager::removeFootnoteList($footnote_list_key . FOOTNOTE_KEY_SUFFIX_ANNOTATIONS);
   FootnoteManager::removeFootnoteList($footnote_list_key);
   return $out;
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function cdm_exist_footnote($footnote_list, $footnote) {
-  $result = FALSE;
-  if (is_array($footnote_list)) {
-    foreach ($footnote_list as $element) {
-      if ($element == $footnote) {
-        $result = TRUE;
-      }
-    }
-  }
-  return $result;
 }
