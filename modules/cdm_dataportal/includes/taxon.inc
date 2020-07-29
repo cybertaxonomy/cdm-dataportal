@@ -435,7 +435,12 @@ function cdm_accepted_for($accepted_for_uuid) {
       $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
     }
     $out .= render_taxon_or_name($synonym->name, NULL, $referenceUri);
-    $out .= render_entities_annotations_as_footnote_keys([$synonym]);
+    $annotations_and_sources = handle_annotations_and_sources(
+      $synonym,
+      annotations_and_source_config(),
+      '',
+      RenderHints::getFootnoteListKey());
+    $out .= $annotations_and_sources['foot_note_keys'];
     $out .= '</span>';
   }
   RenderHints::popFromRenderStack();
