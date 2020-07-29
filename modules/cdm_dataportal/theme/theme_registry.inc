@@ -38,12 +38,6 @@ function cdm_dataportal_theme() {
 
     // Themes in cdm_dataportal.common.theme.
     'cdm_entities_annotations_as_footnotekeys' => array('variables' => array('cdmBase_list' => NULL, 'footnote_list_key' => NULL)),
-    'cdm_footnote_key' => array('variables' => array(
-        'footnoteKey' => NULL,
-        'separator' => '',
-        'highlightable' => TRUE,
-        'separator_off' => FALSE,
-    )),
     'cdm_marker' => array('variables' => array('label' => NULL, 'attributes' => NULL)),
     'cdm_pager' => array('variables' => array('pager' => NULL, 'path' => NULL, 'parameters' => NULL)),
     'cdm_pager_link' => array('variables' => array(

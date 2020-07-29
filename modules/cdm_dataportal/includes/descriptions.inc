@@ -434,11 +434,7 @@ function footnote_keys_to_markup(array $footnote_keys, $separator) {
   $footnotes_markup = '';
   foreach ($footnote_keys as $foot_note_key) {
     try {
-      $footnotes_markup .= theme('cdm_footnote_key',
-        array(
-          'footnoteKey' => $foot_note_key,
-          'separator' => ($footnotes_markup ? $separator : '')
-        ));
+      $footnotes_markup .= cdm_footnote_key($foot_note_key, ($footnotes_markup ? $separator : ''));
     } catch (Exception $e) {
       drupal_set_message("Exception: " . $e->getMessage(), 'error');
     }

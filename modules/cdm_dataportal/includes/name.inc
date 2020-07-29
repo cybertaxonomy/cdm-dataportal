@@ -984,13 +984,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           // footnotes should be rendered in the parent element so we
           // are relying on the FootnoteListKey set there
           $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $citation_footnote_str);
-          $footnote_key_markup = theme('cdm_footnote_key', array(
-            'footnoteKey' => $_fkey2,
-            'separator' => $separator,
-            'highlightable' => TRUE,
-            'separator_off' => TRUE,
-          ));
-
+          $footnote_key_markup = cdm_footnote_key($_fkey2, $separator, TRUE);
         }
 
         $type_citation_markup .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">' . $authorteam_str . '</span>';
@@ -1070,7 +1064,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
     RenderHints::getFootnoteListKey(),
     (isset($derivedUnitFacadeInstance->collection->titleCache) ? $derivedUnitFacadeInstance->collection->titleCache : FALSE)
   );
-  $out .= theme('cdm_footnote_key', array('footnoteKey' => $_fkey, 'separator' => $separator));
+  $out .= cdm_footnote_key($_fkey, $separator);
   $out .= '</' . $enclosing_tag .'>';
 
   RenderHints::popFromRenderStack();
@@ -1596,12 +1590,7 @@ function name_relationship_footnote_markup($name_rel)
   }
   if ($footnote_markup) {
     $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = theme('cdm_footnote_key', array(
-      'footnoteKey' => $fnkey,
-      'separator' => ',',
-      'highlightable' => TRUE,
-      'separator_off' => TRUE,
-    ));
+    $footnote_key_markup = cdm_footnote_key($fnkey,, ',',TRUE);
   }
   return $footnote_key_markup;
 }
@@ -1633,12 +1622,7 @@ function nomenclatural_reference_footnote_key_markup($name)
   }
   if ($footnote_markup) {
     $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = theme('cdm_footnote_key', array(
-      'footnoteKey' => $fnkey,
-      'separator' => ',',
-      'highlightable' => TRUE,
-      'separator_off' => TRUE,
-    ));
+    $footnote_key_markup = cdm_footnote_key($fnkey, ',',TRUE);
   }
   return $footnote_key_markup;
 }
@@ -2006,12 +1990,7 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
     // footnotes should be rendered in the parent element so we
     // are relying on the FootnoteListKey set there
     $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $typeDesignation->citation->titleCache);
-    $res .= theme('cdm_footnote_key', array(
-        'footnoteKey' => $fkey_typeDesignation,
-        'separator' => $footnote_separator,
-        'highlightable' => TRUE,
-        'separator_off' => TRUE,
-      )) . ')';
+    $res .= cdm_footnote_key($fkey_typeDesignation, $footnote_separator,TRUE) . ')';
   }
   return $res;
 }

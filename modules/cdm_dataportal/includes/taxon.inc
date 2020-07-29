@@ -145,7 +145,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
       if($sensu_strings['order_by_key'] != $sensu_reference->titleCache){
         $sensu_reference_markup = cdm_reference_markup($sensu_reference);
         $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
-        $footnote_key = theme('cdm_footnote_key', array('footnoteKey' => $footnote_key));
+        $footnote_key = cdm_footnote_key(footnoteKey);
         $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['markup'] . $footnote_key . '</span>';
       }
     }
