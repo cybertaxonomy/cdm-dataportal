@@ -368,7 +368,7 @@ function toc_list_item($label, $attributes = array(), $fragment = null) {
  *   The foot note keys
  *
  * @throws \Exception re-throw exception from theme()
- * @see cdm_entities_annotations_as_footnotekeys()
+ * @see cdm_entities_annotations_footnotekeys()
  *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
  * @$original_source_footnote_tag
@@ -592,7 +592,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
  *
  * @throws \Exception
  *
- * @see cdm_entities_annotations_as_footnotekeys()
+ * @see cdm_entities_annotations_footnotekeys()
  */
   function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $footnote_list_key_suggestion) {
 

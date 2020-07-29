@@ -2801,7 +2801,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
  *
  * @return array of footnote keys
  */
-function cdm_entities_annotations_as_footnotekeys(array $cdm_entities, $footnote_list_key_suggestion = NULL) {
+function cdm_entities_annotations_footnotekeys(array $cdm_entities, $footnote_list_key_suggestion = NULL) {
 
   $foot_note_keys = [];
   foreach ($cdm_entities as $cdm_entity) {
