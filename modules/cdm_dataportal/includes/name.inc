@@ -1590,7 +1590,7 @@ function name_relationship_footnote_markup($name_rel)
   }
   if ($footnote_markup) {
     $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = cdm_footnote_key($fnkey,, ',',TRUE);
+    $footnote_key_markup = cdm_footnote_key($fnkey,',',TRUE);
   }
   return $footnote_key_markup;
 }
