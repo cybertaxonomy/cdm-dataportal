@@ -107,7 +107,8 @@ public class BaseElement {
 
     public List<BaseElement> getFootNotes(){
         return ElementUtils.baseElementsFromFootNoteListElements(
-                getElement().findElements(By.xpath("//*[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]"))
+                // NOTE: the training space character in 'footnote ' is important. Without it would also match the footnote-anchor!
+                getElement().findElements(By.xpath("//*[contains(@class, 'footnotes')]/span[contains(@class, 'footnote ')]"))
                 );
     }
 

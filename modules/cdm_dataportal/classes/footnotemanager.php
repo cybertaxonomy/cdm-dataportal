@@ -158,7 +158,7 @@ class FootnoteManager {
    * @param $footnoteListKey
    * @param $object
    *
-   * @return
+   * @return bool|int|string
    */
   private static function footnoteExists($footnoteListKey, $object) {
     foreach (self::$fnstore[$footnoteListKey] as $key => $fn) {
