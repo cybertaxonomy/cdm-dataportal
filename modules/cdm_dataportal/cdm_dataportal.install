@@ -464,6 +464,24 @@ function cdm_dataportal_update_7500()
 
   return join(', ', $tasks_performed);
 };
+
+/**
+ * update for RELEASE 5.17:
+ *  - enable new default TaxonRelationshipTypes: UUID_PROPARTE_MISAPPLIEDNAME_FOR,
+ *    UUID_PARTIAL_MISAPPLIEDNAME_FOR, UUID_PROPARTE_SYNONYM_FOR, UUID_PARTIAL_SYNONYM_FOR.
+ */
+function cdm_dataportal_update_7600()
+{
+  $tasks_performed = array();
+
+  variable_del('cdm_dataportal_all_footnotes');
+  $tasks_performed[] = "obsolete variable 'cdm_dataportal_all_footnotes' deleted";
+  variable_del('cdm_dataportal_annotations_footnotes');
+  $tasks_performed[] = "obsolete variable 'cdm_dataportal_annotations_footnotes' deleted";
+
+  return join(', ', $tasks_performed);
+};
+
 /* ======================================================================== */
 
 /**

@@ -1547,31 +1547,6 @@ function cdm_settings_layout() {
       respective configuration site for taxon, search or media.') . '</p>',
   );
 
-  // ---- footnotes --- //
-  $form['footnotes'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Footnotes'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
-    '#description' => t('Taxa data such authors, synonyms names, descriptions,
-      media or distribution areas may have annotations or footnotes. When the
-      footnotes are enabled they will be visible (if they exist).'),
-  );
-
-  $form['footnotes']['cdm_dataportal_all_footnotes'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Do not show footnotes'),
-    '#default_value' => variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES),
-    '#description' => t('Check this if you do not want to show any footnotes'),
-  );
-
-  $form['footnotes']['cdm_dataportal_annotations_footnotes'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Do not show annotation footnotes'),
-    '#default_value' => variable_get('cdm_dataportal_annotations_footnotes', CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES),
-    '#description' => t('Check this if you do not want to show annotation footnotes'),
-  );
-
   $form['annotations'] = array(
     '#type' => 'fieldset',
     '#title' => t('Annotations'),
