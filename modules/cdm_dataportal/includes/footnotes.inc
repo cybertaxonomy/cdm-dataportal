@@ -273,10 +273,15 @@ function bibliography_footnote_list_key($key_suggestion = null) {
 
 
 /**
+ * Creates markup for the name relationship and creates a footnote in the
+ * {@link \FootnoteManager}. The resulting foonote key is returned as markup.
+ *
  * @param $name_rel
+ *   The cdm name relationship
  * @return string
+ *  The makrup for the footnote key
  */
-function name_relationship_footnote_markup($name_rel)
+function handle_name_relationship_as_footnote($name_rel)
 {
   $footnote_markup = '';
   $footnote_key_markup = '';
@@ -295,4 +300,37 @@ function name_relationship_footnote_markup($name_rel)
   }
   return $footnote_key_markup;
 }
+
+/**
+ * @param $nom_status
+ * @return string
+ */
+function nomenclatural_status_footnote_markup($nom_status)
+{
+  // NomenclaturalStatus is a subclass of ReferencedEntityBase
+  // and has the same structure as TaxonNameRelationship
+  return handle_name_relationship_as_footnote($nom_status);
+}
+
+/**
+ * @param $name
+ * @return string
+ */
+function nomenclatural_reference_footnote_key_markup($name)
+{
+  $footnote_markup = '';
+  $footnote_key_markup = '';
+  if (isset($name->nomenclaturalReference) && $name->nomenclaturalReference) {
+    $footnote_markup .= '<span class="reference">' . $name->nomenclaturalReference->titleCache . '</span>';
+  }
+  if (isset($name->nomenclaturalMicroReference)) {
+    $footnote_markup .= ($footnote_key_markup ? ':' : '') . '<span class="reference_detail">' . $name->nomenclaturalMicroReference . '</span>';
+  }
+  if ($footnote_markup) {
+    $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
+    $footnote_key_markup = render_footnote_key($fnkey, ',',TRUE);
+  }
+  return $footnote_key_markup;
+}
+
 

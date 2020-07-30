@@ -1509,7 +1509,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
       $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
 
-      $rel_footnote_key_markup = name_relationship_footnote_markup($name_rel);
+      $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
       $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
 
       $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
@@ -1529,7 +1529,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
       $non_nec_markup = '';
       foreach ($non_nec_name_rels as $name_rel) {
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-        $rel_footnote_key_markup = name_relationship_footnote_markup($name_rel);
+        $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
         $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = $non_nec_markup ? ' nec ' : 'non';
@@ -1549,7 +1549,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
       foreach ($orthographic_variants as $name_rel) {
 
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-        $rel_footnote_key_markup = name_relationship_footnote_markup($name_rel);
+        $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
         $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, TRUE);
         $nomref_footnote_key_markup = nomenclatural_reference_footnote_key_markup($name_rel->toName);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
@@ -1568,37 +1568,6 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
   return $render_array;
 }
 
-/**
- * @param $nom_status
- * @return string
- */
-function nomenclatural_status_footnote_markup($nom_status)
-{
-  // NomenclaturalStatus is a subclass of ReferencedEntityBase
-  // and has the same structure as TaxonNameRelationship
-  return name_relationship_footnote_markup($nom_status);
-}
-
-/**
- * @param $name
- * @return string
- */
-function nomenclatural_reference_footnote_key_markup($name)
-{
-  $footnote_markup = '';
-  $footnote_key_markup = '';
-  if (isset($name->nomenclaturalReference) && $name->nomenclaturalReference) {
-    $footnote_markup .= '<span class="reference">' . $name->nomenclaturalReference->titleCache . '</span>';
-  }
-  if (isset($name->nomenclaturalMicroReference)) {
-    $footnote_markup .= ($footnote_key_markup ? ':' : '') . '<span class="reference_detail">' . $name->nomenclaturalMicroReference . '</span>';
-  }
-  if ($footnote_markup) {
-    $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = render_footnote_key($fnkey, ',',TRUE);
-  }
-  return $footnote_key_markup;
-}
 
 
 /**
