@@ -1721,7 +1721,11 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
   if (!$taxon_in_current_classification) {
     $classifications = get_classifications_for_taxon($taxon);
     RenderHints::pushToRenderStack('not_in_current_classification');
+    RenderHints::setFootnoteListKey('not_in_current_classification');
+    FootnoteManager::blockFootnotesFor('not_in_current_classification');
     $taxon_name_markup = render_taxon_or_name($taxon);
+    FootnoteManager::unblockFootnotesFor('not_in_current_classification');
+    RenderHints::clearFootnoteListKey();
 
     if (count($classifications) == 0) {
       drupal_set_message(t('This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification.',

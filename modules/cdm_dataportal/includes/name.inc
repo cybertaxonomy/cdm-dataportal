@@ -474,7 +474,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         foreach ($nom_status_tagged_text as &$tt){
          if($tt->type == 'nomStatus'&& isset($tt->entityReference)) {
            $nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
-           $nom_status_fkey = nomenclatural_status_footnote_markup($nom_status);
+           $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
            $tt->text .= $nom_status_fkey;
            $tt_to_markup_options['html'] = true;
          }
@@ -1551,7 +1551,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
         $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
         $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, TRUE);
-        $nomref_footnote_key_markup = nomenclatural_reference_footnote_key_markup($name_rel->toName);
+        $nomref_footnote_key_markup = handle_nomenclatural_reference_as_footnote($name_rel->toName);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';

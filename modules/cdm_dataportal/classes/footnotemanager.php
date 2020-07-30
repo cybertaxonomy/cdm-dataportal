@@ -21,8 +21,8 @@
  * the RenderHints class by calling @see RenderHints::setFootnoteListKey($footnoteListKey)
  */
 class FootnoteManager {
-  private static $fnstore = array();
-  //private static $footnote_key_index = 1;
+  private static $fnstore = [];
+  private static $blockedFootnoteLitsKeys = [];
   /*
    * An associative array holding information on
    * special footnote sets which are to be handle separately
@@ -84,9 +84,15 @@ class FootnoteManager {
    * @param string $separator
    *
    * @return string
-   *   The rendered footnotelist.
+   *   The rendered footnotelist or an empty string if the $footnoteListKey is
+   *   blocked
    */
   public static function renderFootnoteList($footnoteListKey, $separator = ', ') {
+
+    if(self::isBlockedFootnoteListKey($footnoteListKey)){
+      // the footnote key is blocked, don't render it!
+      return '';
+    }
     $out = '';
     if (array_key_exists($footnoteListKey, self::$fnstore)) {
       foreach (self::$fnstore[$footnoteListKey] as $fn) {
@@ -102,13 +108,11 @@ class FootnoteManager {
    *
    * @param $footnoteListKey
    * @param $object
-   * @param $theme
-   * @param $themeArguments
    *
    * @return FootnoteKey
    */
-  public static function addNewFootnote($footnoteListKey, $object = NULL, $enclosing_tag = null) {
-    if (!$object || !$footnoteListKey) {
+  public static function addNewFootnote($footnoteListKey, $object = NULL) {
+    if (!$object || !$footnoteListKey || self::isBlockedFootnoteListKey($footnoteListKey)) {
       return null;
     }
     if (!array_key_exists($footnoteListKey, self::$fnstore)) {
@@ -212,6 +216,27 @@ class FootnoteManager {
       }
     }
     return self::$default_set_definition;
+  }
+
+  public static function blockFootnotesFor($footnoteListKey) {
+    if(array_search($footnoteListKey, self::$blockedFootnoteLitsKeys) === false){
+      self::$blockedFootnoteLitsKeys[] = $footnoteListKey;
+    }
+  }
+  public static function unblockFootnotesFor($footnoteListKey) {
+    $index = array_search($footnoteListKey, self::$blockedFootnoteLitsKeys);
+    if($index !== false){
+      unset(self::$blockedFootnoteLitsKeys[$index]);
+    }
+  }
+
+  /**
+   * @param $footnoteListKey
+   *
+   * @return bool
+   */
+  public static function isBlockedFootnoteListKey($footnoteListKey) {
+    return array_search($footnoteListKey, self::$blockedFootnoteLitsKeys) !== false;
   }
 
   /**

@@ -273,13 +273,14 @@ function bibliography_footnote_list_key($key_suggestion = null) {
 
 
 /**
- * Creates markup for the name relationship and creates a footnote in the
- * {@link \FootnoteManager}. The resulting foonote key is returned as markup.
+ * Creates footnote markup for the name relationship and
+ * registers it in the {@link \FootnoteManager}. The resulting foonote
+ * key is returned as markup.
  *
  * @param $name_rel
  *   The cdm name relationship
  * @return string
- *  The makrup for the footnote key
+ *  The markup for the footnote key
  */
 function handle_name_relationship_as_footnote($name_rel)
 {
@@ -302,10 +303,15 @@ function handle_name_relationship_as_footnote($name_rel)
 }
 
 /**
+ * Creates footnote markup for nomenclatural status and
+ * registers it in the {@link \FootnoteManager}. The resulting foonote
+ * key is returned as markup.
+ *
  * @param $nom_status
  * @return string
+ *  The markup for the footnote key
  */
-function nomenclatural_status_footnote_markup($nom_status)
+function handle_nomenclatural_status_as_footnote($nom_status)
 {
   // NomenclaturalStatus is a subclass of ReferencedEntityBase
   // and has the same structure as TaxonNameRelationship
@@ -313,10 +319,16 @@ function nomenclatural_status_footnote_markup($nom_status)
 }
 
 /**
+ * Creates footnote markup for nomenclatural reference of the name and
+ * registers it in the {@link \FootnoteManager}. The resulting foonote
+ * key is returned as markup.
+ *
  * @param $name
+ * The name whose nomenclatural reference is to be shown as footnote
  * @return string
+ *  The markup for the footnote key
  */
-function nomenclatural_reference_footnote_key_markup($name)
+function handle_nomenclatural_reference_as_footnote($name)
 {
   $footnote_markup = '';
   $footnote_key_markup = '';
