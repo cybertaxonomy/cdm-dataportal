@@ -65,6 +65,10 @@ function render_entity_footnotes(
 
   $sources = cdm_entity_sources_sorted($cdm_entity);
 
+  if (!isset($footnote_list_key_suggestion) || !$footnote_list_key_suggestion) {
+    $footnote_list_key_suggestion = RenderHints::getFootnoteListKey();
+  }
+
   // Annotations as footnotes.
   $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key_suggestion);
 
@@ -75,9 +79,6 @@ function render_entity_footnotes(
     $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause bibliography_footnote_list_key to use the default
   } else {
     $sources_footnote_list_key = $footnote_list_key_suggestion;
-    if(!$sources_footnote_list_key) {
-      RenderHints::getFootnoteListKey();
-    }
     $original_source_footnote_tag = NULL;
   }
 
@@ -223,6 +224,10 @@ function render_footnotes($footnote_list_key = null, $element_tag = 'span') {
 
   if (variable_get('cdm_dataportal_all_footnotes', CDM_DATAPORTAL_ALL_FOOTNOTES)) {
     return '';
+  }
+
+  if (!isset($footnote_list_key) || !$footnote_list_key) {
+    $footnote_list_key = RenderHints::getFootnoteListKey();
   }
 
   $out = '<' . $element_tag . ' class="footnotes footnotes-' . $footnote_list_key . ' ">'

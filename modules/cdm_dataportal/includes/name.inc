@@ -701,9 +701,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
       $render_array['nomenclatural_act']['#weight'] + 10 );
   }
 
-  $render_array['nomenclatural_act']['footnotes'] = markup_to_render_array(render_footnotes(),
-    100
-  );
+  $render_array['nomenclatural_act']['footnotes'] = markup_to_render_array(render_footnotes(),100);
 
   // registration date and office
   $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto);

@@ -41,7 +41,7 @@ public class Cichorieae_FootnoteTest extends CdmDataPortalTestBase{
     public void crepidiastrum_chelidoniifolium_issue_2772() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepidiastrum_chelidoniifolium_uuid);
         String expectedName = "Crepidiastrum chelidoniifolium";
-        assertEquals(getContext().prepareTitle(expectedName), driver.getTitle());
+        assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
 
         assertEquals("expecting one footnoteKey", 1, p.getHeterotypicalGroupFootNoteKeys(2).size());
         List<BaseElement> footNotes = p.getHeterotypicalGroupFootNotes(2);
