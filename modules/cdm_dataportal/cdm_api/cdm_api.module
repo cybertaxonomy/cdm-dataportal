@@ -689,13 +689,27 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
 
   // (3)
   // Append the query string supplied by $query.
-  if (isset($query)) {
-    $uri_pattern .= (strpos($uri_pattern, '?') !== FALSE ? '&' : '?') . $query;
-  }
+  $uri_pattern = append_query_parameters($uri_pattern, $query);
 
   $path = $uri_pattern;
 
   $uri = variable_get('cdm_webservice_url', '') . $path;
+  return $uri;
+}
+
+/**
+ * @param string $uri
+ *
+ * @param $query_string
+ *
+ * @return string
+ */
+function append_query_parameters($uri, $query_string) {
+
+  if (isset($query_string)) {
+    $uri .= (strpos($uri, '?') !== FALSE ? '&' : '?') . $query_string;
+  }
+
   return $uri;
 }
 
@@ -1050,8 +1064,8 @@ function cdm_ws_base_uri($cdm_type_simple)
  */
 function cdm_ws_page($resource_uri, $page_size, $page_index, array $query = array(), $method = 'GET', $absolute_uri = FALSE) {
 
-  $query['page_index'] = $page_index;
-  $query['page_size'] = $page_size;
+  $query['pageNumber'] = $page_index;
+  $query['pageSize'] = $page_size;
 
   $pager = cdm_ws_get($resource_uri, NULL, queryString($query), $method, $absolute_uri);
   if(is_array($pager)){
@@ -2034,8 +2048,8 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
  *   URL to the webservice.
  * @param array $pathParameters
  *   An array of path parameters.
- * @param string $query
- *   A query string to be appended to the URL.
+ * @param string $query_string
+ *   A query_string string to be appended to the URL.
  * @param string $method
  *   The HTTP method to use, valid values are "GET" or "POST";
  * @param bool $absoluteURI
@@ -2044,20 +2058,24 @@ function _mergeFeatureTreeDescriptions($featureNodes, $descriptionElements) {
  * @return object| array
  *   The de-serialized webservice response object.
  */
-function cdm_ws_get($uri, $pathParameters = array(), $query = NULL, $method = "GET", $absoluteURI = FALSE) {
+function cdm_ws_get($uri, $pathParameters = array(), $query_string = NULL, $method = "GET", $absoluteURI = FALSE) {
 
   static $cacheL1 = array();
 
   $data = NULL;
-  // store query string in $data and clear the query, $data will be set as HTTP request body
+  // store query_string string in $data and clear the query_string, $data will be set as HTTP request body
   if($method == 'POST'){
-    $data = $query;
-    $query = NULL;
+    $data = $query_string;
+    $query_string = NULL;
   }
 
   // Transform the given uri path or pattern into a proper webservice uri.
   if (!$absoluteURI) {
-    $uri = cdm_compose_url($uri, $pathParameters, $query);
+    $uri = cdm_compose_url($uri, $pathParameters, $query_string);
+  } else {
+    if($query_string){
+      $uri = append_query_parameters($uri, $query_string);
+    }
   }
   cdm_ws_apply_classification_subtree_filter($uri);
 
