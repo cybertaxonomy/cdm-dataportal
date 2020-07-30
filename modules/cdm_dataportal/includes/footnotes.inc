@@ -20,25 +20,25 @@
  * Creates the footnotes for the given CDM instance.
  *
  * Footnotes are created for annotations and original sources whereas the resulting footnote keys depend on the
- * parameters $footnote_list_key_suggestion and $is_bibliography_aware, see parameter $footnote_list_key_suggestion
+ * parameters $footnote_list_key and $is_bibliography_aware, see parameter $footnote_list_key
  * for more details.
  *
  * possible keys for annotation and source footnotes:
- *       - $footnote_list_key_suggestion
+ *       - $footnote_list_key
  *       - RenderHints::getFootnoteListKey()
  *     - original source footnotes
  *       - "BIBLIOGRAPHY" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 1 )
- *       - "BIBLIOGRAPHY-$footnote_list_key_suggestion" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 0 )
- *       - $footnote_list_key_suggestion (when $is_bibliography_aware)
+ *       - "BIBLIOGRAPHY-$footnote_list_key" (when !$is_bibliography_aware && bibliography_settings['enabled'] == 0 )
+ *       - $footnote_list_key (when $is_bibliography_aware)
  *
  * @param $cdm_entity
  *   A CDM entity
  * @param string $separator
  *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
- * @param $footnote_list_key_suggestion string
+ * @param $footnote_list_key string
  *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
  *    method calls by calling RenderHints::getFootnoteListKey().
- *    For original sources the $footnote_list_key_suggestion will be overwritten by bibliography_footnote_list_key() when
+ *    For original sources the $footnote_list_key will be overwritten by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
  * @param bool $do_link_to_reference
  *    Create a link to the reference pages for sources when TRUE.
@@ -46,7 +46,7 @@
  *    Create a link to the name pages for name in source when TRUE.
  * @param bool $is_bibliography_aware
  *    Put source references into the bibliography when this param is TRUE.
- *    For original sources the $footnote_list_key_suggestion will be overwritten
+ *    For original sources the $footnote_list_key will be overwritten
  *    by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
  * @return String
@@ -57,7 +57,7 @@
 function render_entity_footnotes(
   $cdm_entity,
   $separator = ',',
-  $footnote_list_key_suggestion = null,
+  $footnote_list_key = null,
   $do_link_to_reference = FALSE,
   $do_link_to_name_used_in_source = FALSE,
   $is_bibliography_aware = FALSE
@@ -65,20 +65,20 @@ function render_entity_footnotes(
 
   $sources = cdm_entity_sources_sorted($cdm_entity);
 
-  if (!isset($footnote_list_key_suggestion) || !$footnote_list_key_suggestion) {
-    $footnote_list_key_suggestion = RenderHints::getFootnoteListKey();
+  if (!isset($footnote_list_key) || !$footnote_list_key) {
+    $footnote_list_key = RenderHints::getFootnoteListKey();
   }
 
   // Annotations as footnotes.
-  $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key_suggestion);
+  $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key);
 
   // Source references as footnotes.
   if($is_bibliography_aware){
     $bibliography_settings = get_bibliography_settings();
-    $sources_footnote_list_key = bibliography_footnote_list_key($footnote_list_key_suggestion);
+    $sources_footnote_list_key = bibliography_footnote_list_key($footnote_list_key);
     $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause bibliography_footnote_list_key to use the default
   } else {
-    $sources_footnote_list_key = $footnote_list_key_suggestion;
+    $sources_footnote_list_key = $footnote_list_key;
     $original_source_footnote_tag = NULL;
   }
 
@@ -237,4 +237,31 @@ function render_footnotes($footnote_list_key = null, $element_tag = 'span') {
   FootnoteManager::removeFootnoteList($footnote_list_key);
   return $out;
 }
+
+/**
+ * This method determines the footnote key for original sources to be shown in the bibliography block
+ *
+ * The footnote key depends on the value of the 'enabled' value of the bibliography_settings
+ *    - enabled == 1 -> "BIBLIOGRAPHY"
+ *    - enabled == 0 -> "BIBLIOGRAPHY-$key_suggestion"
+ *
+ * @see get_bibliography_settings() and @see constant BIBLIOGRAPHY_FOOTNOTE_KEY
+ *
+ * @param $key_suggestion string
+ *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be retrieved by
+ *    calling RenderHints::getFootnoteListKey().
+
+ *
+ * @return string
+ *  the footnote_list_key
+ */
+function bibliography_footnote_list_key($key_suggestion = null) {
+  if(!$key_suggestion){
+    $key_suggestion = RenderHints::getFootnoteListKey();
+  }
+  $bibliography_settings = get_bibliography_settings();
+  $footnote_list_key = $bibliography_settings['enabled'] == 1 ? BIBLIOGRAPHY_FOOTNOTE_KEY : BIBLIOGRAPHY_FOOTNOTE_KEY . '-' . $key_suggestion;
+  return $footnote_list_key;
+}
+
 

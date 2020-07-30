@@ -454,145 +454,6 @@ function handle_annotations_and_sources_config($feature_block_settings){
 }
 
 /**
- * @param $entity
- * @param $config array
- *   An associative array to configure the display of the annotations and
- *   sources. The array has the following keys
- *   - sources_as_content
- *   - link_to_name_used_in_source
- *   - link_to_reference
- *   - add_footnote_keys
- *   - bibliography_aware
- *   Valid values are 1 or 0.
- * @param $inline_text_prefix
- *   Only used to decide if the source references should be enclosed in
- *   brackets or not when displayed inline. This text will not be included into
- *   the response.
- * @param $footnote_list_key_suggestion string
- *    optional parameter. If this paramter is left empty (null, 0, "") the
- *   footnote key will be determined by the nested method calls by calling
- *   RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations
- *   will be set to RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS.
- * @return array
- * an associative array with the following elements:
- *   - foot_note_keys: all footnote keys as markup
- *   - source_references: an array of the source references citations
- *   - names used in source: an associative array of the names in source,
- *        the name in source strings are de-duplicated
- *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
- *
- */
-  function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $footnote_list_key_suggestion) {
-
-    $annotations_and_sources = array(
-      'foot_note_keys' => NULL,
-      'source_references' => [],
-      'names_used_in_source' => []
-    );
-
-    // some entity types only have single sources:
-    $sources = cdm_entity_sources_sorted($entity);
-
-    if ($config['sources_as_content'] == 1) {
-      foreach ($sources as $source) {
-        if (_is_original_source_type($source)) {
-          $reference_citation = render_original_source(
-            $source,
-            $config['link_to_reference'] == 1,
-            $config['link_to_name_used_in_source'] == 1
-          );
-
-          if ($reference_citation) {
-            if (empty($inline_text_prefix)) {
-              $annotations_and_sources['source_references'][] = $reference_citation;
-            } else {
-              $annotations_and_sources['source_references'][] = ' (' . $reference_citation . ')';
-            }
-          }
-
-          // also put the name in source into the array, these are already included in the $reference_citation but are
-          // still required to be available separately in some contexts.
-          $name_in_source_render_array = compose_name_in_source(
-            $source,
-            $config['link_to_name_used_in_source'] == 1
-          );
-
-          if (!empty($name_in_source_render_array)) {
-            $annotations_and_sources['names_used_in_source'][$name_in_source_render_array['#_plaintext']] = drupal_render($name_in_source_render_array);
-          }
-        }
-      } // END of loop over sources
-
-      // annotations footnotes separate from sources
-      $annotations_and_sources['foot_note_keys'] = render_footnote_keys(
-        cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion), ', '
-      );
-
-    } // END of references inline
-
-    // footnotes for sources and annotations or put into into bibliography if requested ...
-    if ($config['add_footnote_keys'] == 1) {
-        $annotations_and_sources['foot_note_keys'] = render_entity_footnotes(
-          $entity, ',',
-          $footnote_list_key_suggestion,
-          $config['link_to_reference'] == 1,
-          $config['link_to_name_used_in_source'] == 1,
-          !empty($config['bibliography_aware'])
-        );
-    }
-
-    return $annotations_and_sources;
-  }
-
-/**
- * Get the source or the sources from a cdm entity and return them ordered by see compare_original_sources()
- * (Some entity types only have single sources)
- * @param $entity
- *
- * @return array
- */
-function cdm_entity_sources_sorted($entity) {
-  if (isset($entity->source) && is_object($entity->source)) {
-    $sources = [$entity->source];
-  }
-  else if (isset($entity->sources)) {
-    $sources = $entity->sources;
-  }
-  else {
-    $sources = [];
-  }
-  usort($sources, 'compare_original_sources');
-  return $sources;
-}
-
-
-/**
-   * This method determines the footnote key for original sources to be shown in the bibliography block
-   *
-   * The footnote key depends on the value of the 'enabled' value of the bibliography_settings
-   *    - enabled == 1 -> "BIBLIOGRAPHY"
-   *    - enabled == 0 -> "BIBLIOGRAPHY-$key_suggestion"
-   *
-   * @see get_bibliography_settings() and @see constant BIBLIOGRAPHY_FOOTNOTE_KEY
-   *
-   * @param $key_suggestion string
-   *    optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be retrieved by
-   *    calling RenderHints::getFootnoteListKey().
-
-   *
-   * @return string
-   *  the footnote_list_key
-   */
-  function bibliography_footnote_list_key($key_suggestion = null) {
-    if(!$key_suggestion){
-      $key_suggestion = RenderHints::getFootnoteListKey();
-    }
-    $bibliography_settings = get_bibliography_settings();
-    $footnote_list_key = $bibliography_settings['enabled'] == 1 ? BIBLIOGRAPHY_FOOTNOTE_KEY : BIBLIOGRAPHY_FOOTNOTE_KEY . '-' . $key_suggestion;
-    return $footnote_list_key;
-  }
-
-/**
  * Provides the according tag name for the description element markup which
  * fits the  $feature_block_settings['as_list'] value
  *
@@ -1672,20 +1533,18 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
  *   The CDM CommonTaxonName entity.
  * @param $feature_block_settings
  *
- * @param $footnote_key_suggestion
- *
- * @param $element_tag_name
+ * @param $footnote_key
  *
  * @return array
  *   Drupal render array
  *
  * @ingroup compose
  */
-function compose_description_element_common_taxon_name($element, $feature_block_settings, $footnote_key_suggestion = NULL)
+function compose_description_element_common_taxon_name($element, $feature_block_settings, $footnote_key = NULL)
 {
 
-  if(!$footnote_key_suggestion) {
-    $footnote_key_suggestion = $element->feature->uuid;
+  if(!$footnote_key) {
+    $footnote_key = $element->feature->uuid;
   }
 
   $name = '';
@@ -1694,7 +1553,7 @@ function compose_description_element_common_taxon_name($element, $feature_block_
   }
 
 
-  return compose_description_element($element, $feature_block_settings, $name, $footnote_key_suggestion);
+  return compose_description_element($element, $feature_block_settings, $name, $footnote_key);
 }
 
 /**
