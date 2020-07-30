@@ -43,7 +43,11 @@ class RenderHints {
    *   The FootnoteListKey as set or the default FootnoteListKey ('PAGE_GLOBAL')
    */
   public static function getFootnoteListKey() {
-    return self::$footnoteListKey ? self::$footnoteListKey : self::$footnoteListKeyDefault;
+    if(self::$footnoteListKey){
+      return self::$footnoteListKey;
+    } else {
+      return self::$footnoteListKeyDefault;
+    }
   }
 
   /**

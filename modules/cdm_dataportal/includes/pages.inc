@@ -694,8 +694,6 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
   // homotypic group and accepted taxon should have the same footnote key
   $referenceUri = '';
   if ($add_accepted_taxon) {
-    // remember the last part of the render path
-    $synonymy_render_path = RenderHints::getRenderPath();
     // set new render path for the accepted taxon so
     // it can be styled differently via the name render part definitions
     RenderHints::pushToRenderStack('accepted_taxon');

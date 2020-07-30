@@ -1569,30 +1569,6 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 }
 
 /**
- * @param $name_rel
- * @return string
- */
-function name_relationship_footnote_markup($name_rel)
-{
-  $footnote_markup = '';
-  $footnote_key_markup = '';
-  if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered) {
-    $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span> ';
-  }
-  if (isset($name_rel->citation)) {
-    $footnote_markup .= '<span class="reference">' . $name_rel->citation->titleCache . '</span>';
-  }
-  if (isset($name_rel->citationMicroReference) && $name_rel->citationMicroReference) {
-    $footnote_markup .= (isset($name_rel->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->citationMicroReference . '</span>';
-  }
-  if ($footnote_markup) {
-    $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = render_footnote_key($fnkey,',',TRUE);
-  }
-  return $footnote_key_markup;
-}
-
-/**
  * @param $nom_status
  * @return string
  */
