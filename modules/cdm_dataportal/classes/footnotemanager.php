@@ -90,7 +90,7 @@ class FootnoteManager {
     $out = '';
     if (array_key_exists($footnoteListKey, self::$fnstore)) {
       foreach (self::$fnstore[$footnoteListKey] as $fn) {
-        $out .= $fn->doRender() . $separator;
+        $out .= $fn->doRender($footnoteListKey) . $separator;
       }
       $out = substr($out, 0, strlen($out) - strlen($separator));
     }

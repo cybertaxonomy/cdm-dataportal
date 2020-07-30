@@ -29,15 +29,20 @@ class Footnote {
   }
 
   /**
-   * @todo please document this function.
+   * Creates markup for the footnote.
+   *
+   * @param $footnote_list_key
+   *
+   * @return string
+   *  The markup for the footnote
    */
-  public function doRender() {
+  public function doRender($footnote_list_key = null) {
 
     $enclosing_tag = null;
     if(is_string($this->enclosing_tag)){
       $enclosing_tag = $this->enclosing_tag;
     }
 
-    return render_footnote($this->key, $this->object, $enclosing_tag);
+    return render_footnote($this->key, $this->object, $enclosing_tag, $footnote_list_key);
   }
 }

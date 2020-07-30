@@ -1,5 +1,6 @@
 package eu.etaxonomy.dataportal.pages;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -145,14 +146,26 @@ public abstract class PortalPage {
         this.pageUrl = new URL(context.getBaseUri().toString() + "?" + DRUPAL_PAGE_QUERY + initialDrupalPagePath);
 
         // tell browser to navigate to the page
+        logger.info("loading " + pageUrl);
         driver.get(pageUrl.toString());
+        logger.info("loading done");
 
         takeScreenShot();
+
 
         // This call sets the WebElement fields.
         PageFactory.initElements(driver, this);
 
-        logger.info("loading " + pageUrl);
+        pageHealthChecks();
+
+
+
+    }
+
+    /**
+     *
+     */
+    protected void pageHealthChecks() {
 
         try {
             String ignore_error = "Expecting web service to return pager objects but received an array";
@@ -161,8 +174,10 @@ public abstract class PortalPage {
         } catch (NoSuchElementException e) {
             //IGNORE since this is expected!
         }
+        assertFalse("The default footnote list key PAGE_GLOBAL must not occur in the page.", driver.getPageSource().contains("member-of-footnotes-PAGE_GLOBAL"));
 
     }
+
 
     /**
      * Creates a new PortaPage at given URL location. An Exception is thrown if

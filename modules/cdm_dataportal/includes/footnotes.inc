@@ -15,6 +15,7 @@
  * @author
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
+const MEMBER_OF_FOOTNOTES = ' member-of-footnotes-';
 
 /**
  * Creates the footnotes for the given CDM instance.
@@ -183,25 +184,31 @@ function render_footnote_key($footnoteKey = null, $separator = '', $separator_of
   if ($separator_off) {
     $separator = '';
   }
-  $out = '<span class="footnote-key footnote-key-' . $footnoteKey->keyStr . ' member-of-footnotes-' . $footnoteKey->footnoteListKey . '">'
+  $out = '<span class="footnote-key footnote-key-' . $footnoteKey->keyStr . MEMBER_OF_FOOTNOTES . $footnoteKey->footnoteListKey . '">'
     . $separator . '<a href="#footnote-' . $footnoteKey->keyStr . '">' . $footnoteKey->keyStr . '</a>' . '</span>';
   return $out;
 }
 
 /**
+ * Create the markup for a footnote. This method is used in {@link Footnote::doRender()}
  * @param null $footnoteKey
  * @param null $footnoteText
  * @param string $enclosing_tag
  *   default is 'span'
  *
  * @return string
+ *
  */
-function render_footnote($footnoteKey = null, $footnoteText = null, $enclosing_tag = 'span') {
+function render_footnote($footnoteKey = null, $footnoteText = null, $enclosing_tag = 'span', $footnote_list_key = null) {
   _add_js_footnotes();
   if($enclosing_tag == null){
     $enclosing_tag = 'span';
   }
-  return '<' . $enclosing_tag . ' class="footnote footnote-' . $footnoteKey . '">'
+  $class_attribute_member_of = '';
+  if($footnote_list_key){
+    $class_attribute_member_of = MEMBER_OF_FOOTNOTES . $footnote_list_key;
+  }
+  return '<' . $enclosing_tag . ' class="footnote footnote-' . $footnoteKey . $class_attribute_member_of . '">'
     . '<a name="footnote-' . $footnoteKey . '"></a>'
     . '<span class="footnote-anchor">' . $footnoteKey . '.</span>&nbsp;' . $footnoteText
     . '</' . $enclosing_tag . '>';
