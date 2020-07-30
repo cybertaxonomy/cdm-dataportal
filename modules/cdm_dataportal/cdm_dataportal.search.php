@@ -1143,9 +1143,7 @@ function cdm_dataportal_search_registration_filter_form($form, &$form_state) {
   );
 
   $form['submit'] = array(
-    '#type' => 'submit',
-    '#attributes' => array('class' => array('fa-icon'), 'title' => t('Search')),
-    '#value' => decode_entities('&#xf002;'), // fontawesome search icon
+    '#markup' => '<button type="submit" title="Search" class="form-submit">' . font_awesome_icon_markup('fa-search') . '</button>'
 //    '#prefix' => "<div class=\"form-item\"><label>&nbsp</label>",
 //    '#suffix' => "</div>"
 
