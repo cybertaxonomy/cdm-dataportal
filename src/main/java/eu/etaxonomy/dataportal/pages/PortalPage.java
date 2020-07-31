@@ -85,8 +85,11 @@ public abstract class PortalPage {
 
     // ==== WebElements === //
 
-    @FindBy(className="node")
-    protected WebElement portalContent;
+    @FindBy(id = "content")
+    protected WebElement mainContentZen;
+
+    @FindBy(id = "contento")
+    protected WebElement mainContentGarland;
 
 //    @FindBy(tagName="title")
 //    @CacheLookup
@@ -109,6 +112,8 @@ public abstract class PortalPage {
     protected List<WebElement> messages;
 
     private Boolean isZenTheme;
+
+    private BaseElement mainContentBaseElement;
 
     public boolean isZenTheme() {
         if(isZenTheme == null) {
@@ -251,7 +256,7 @@ public abstract class PortalPage {
     }
 
     /**
-     * navigate and reload the page if not jet there
+     * navigate and reload the page if not yet there
      */
     public void get() {
         if(!driver.getCurrentUrl().equals(pageUrl.toString())){
@@ -380,11 +385,25 @@ public abstract class PortalPage {
     }
 
     /**
-     * Provides access to the the CDM specific content which is put into the <code>div</code> DOM element which has the class attribute <code>class="... node ..."</code>
-     * @return
+     * Provides access to the the CDM specific main content <code>div</code> element.
+     *
+     *
+     * @return the main content div
      */
     public BaseElement getDataPortalContent() {
-        return new BaseElement(portalContent);
+        return new BaseElement(mainContent());
+    }
+
+
+    protected WebElement mainContent() {
+        WebElement mainContent;
+        if(isZenTheme()) {
+            mainContent = mainContentZen;
+        } else {
+            // fallback to garland
+            mainContent = mainContentGarland;
+        }
+        return mainContent;
     }
 
     public ClassificationTreeBlock getClassificationTree() {
