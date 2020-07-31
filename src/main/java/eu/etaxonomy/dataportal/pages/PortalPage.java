@@ -85,15 +85,7 @@ public abstract class PortalPage {
 
     // ==== WebElements === //
 
-    @FindBy(id = "content")
-    protected WebElement mainContentZen;
-
-    @FindBy(id = "contento")
-    protected WebElement mainContentGarland;
-
-//    @FindBy(tagName="title")
-//    @CacheLookup
-//    protected WebElement title;
+    protected BaseElement mainContent = null;
 
     @FindBy(className="node")
     protected WebElement node;
@@ -113,7 +105,6 @@ public abstract class PortalPage {
 
     private Boolean isZenTheme;
 
-    private BaseElement mainContentBaseElement;
 
     public boolean isZenTheme() {
         if(isZenTheme == null) {
@@ -391,17 +382,13 @@ public abstract class PortalPage {
      * @return the main content div
      */
     public BaseElement getDataPortalContent() {
-        return new BaseElement(mainContent());
-    }
-
-
-    protected WebElement mainContent() {
-        WebElement mainContent;
-        if(isZenTheme()) {
-            mainContent = mainContentZen;
-        } else {
-            // fallback to garland
-            mainContent = mainContentGarland;
+        if(mainContent == null) {
+            if(isZenTheme()) {
+                mainContent = new BaseElement(driver.findElement(By.id("content")));
+            } else {
+                // fallback to garland
+                mainContent = new BaseElement(driver.findElement(By.id("squeeze")));
+            }
         }
         return mainContent;
     }

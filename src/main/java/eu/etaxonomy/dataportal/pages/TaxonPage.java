@@ -76,13 +76,13 @@ public class TaxonPage extends PortalPage {
     }
 
     public List<WebElement> getTaxonNodeStatusContainer() {
-        List<WebElement> taxonNodeStatus = mainContent().findElements(By.className("taxon-node-status"));
+        List<WebElement> taxonNodeStatus = getDataPortalContent().getElement().findElements(By.className("taxon-node-status"));
         return taxonNodeStatus;
     }
 
     public List<TaxonNodeStatusElement> getTaxonNodeStates() {
         List<TaxonNodeStatusElement> statusEls = new ArrayList<>();
-        List<WebElement> taxonNodeStatus = mainContent().findElements(By.className("taxon-node-status"));
+        List<WebElement> taxonNodeStatus = getDataPortalContent().getElement().findElements(By.className("taxon-node-status"));
         for(WebElement el : taxonNodeStatus) {
             statusEls.add(new TaxonNodeStatusElement(el));
         }

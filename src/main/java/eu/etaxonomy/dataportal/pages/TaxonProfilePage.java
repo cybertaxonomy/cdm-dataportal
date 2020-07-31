@@ -147,7 +147,7 @@ public class TaxonProfilePage extends TaxonPage {
 
         logger.setLevel(Level.TRACE);
         logger.trace("getFeatureBlockAt()");
-        List<WebElement> featureBlocks = mainContent().findElements(By.className("block-cdm-dataportal-feature"));
+        List<WebElement> featureBlocks = getDataPortalContent().getElement().findElements(By.className("block-cdm-dataportal-feature"));
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
             if(logger.isTraceEnabled()) {
@@ -164,7 +164,7 @@ public class TaxonProfilePage extends TaxonPage {
 
     public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String ... elementTag){
 
-        List<WebElement> featureBlocks = mainContent().findElements(By.className("block-cdm-dataportal-feature"));
+        List<WebElement> featureBlocks = getDataPortalContent().getElement().findElements(By.className("block-cdm-dataportal-feature"));
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
             if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
