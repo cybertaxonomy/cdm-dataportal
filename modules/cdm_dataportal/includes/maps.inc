@@ -57,34 +57,34 @@ function compose_map($map_id, $occurrence_query = NULL, $kml_request_url, $distr
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
-    if($force_map_type === NULL){
-      $force_map_type = $map_settings['map_type'];
-    }
+  if($force_map_type === NULL){
+    $force_map_type = $map_settings['map_type'];
+  }
 
-    if ($force_map_type == 1) {
-      _add_jquery_ui();
-      $map_html = cdm_map_openlayers(
-        $map_id,
-        $occurrence_query,
-        $kml_request_url,
-        $distribution_query,
-        $legend_format_query,
-        $map_settings['caption'],
-        $event_listeners,
-        $resizable
-      );
-    }
-     else {
-      $map_height = round($map_settings['image_map']['width'] / (float)$map_settings['aspect_ratio']);
-      $map_html = cdm_map_plain_image(
-        $map_settings['image_map']['width'],
-        $map_height,
-        $occurrence_query,
-        $distribution_query,
-        $legend_format_query,
-        $map_settings['caption']
-      );
-     }
+  if ($force_map_type == 1) {
+    _add_jquery_ui();
+    $map_html = cdm_map_openlayers(
+      $map_id,
+      $occurrence_query,
+      $kml_request_url,
+      $distribution_query,
+      $legend_format_query,
+      $map_settings['caption'],
+      $event_listeners,
+      $resizable
+    );
+  }
+   else {
+    $map_height = round($map_settings['image_map']['width'] / (float)$map_settings['aspect_ratio']);
+    $map_html = cdm_map_plain_image(
+      $map_settings['image_map']['width'],
+      $map_height,
+      $occurrence_query,
+      $distribution_query,
+      $legend_format_query,
+      $map_settings['caption']
+    );
+   }
   return markup_to_render_array($map_html);
 }
 

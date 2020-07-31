@@ -37,6 +37,8 @@
     defaultBaseLayerName: 'open_topomap',
     maxZoom: 15,
     minZoom: 0,
+      // hide the map when the data layer has no features
+      hideEmptyMap: true,
     debug: true,
     /**
      * allows the map to display parts of the layers which are outside
@@ -269,6 +271,17 @@
       }
 
         /**
+         * Removes the map and the parent container from the
+         * DOM and destroys the OpenLayers map object
+         */
+        function removeMap() {
+            //  if you are using an application which removes a container
+            //  of the map from the DOM, you need to ensure that you destroy the map before this happens;
+            map.destroy;
+            jQuery(map.div).parent().remove();
+        }
+
+        /**
          *
          */
         this.create = function(){ // public function
@@ -379,8 +392,13 @@
                     "featureselected": onKmlFeatureSelect,
                     "featureunselected": onKmlFeatureUnselect,
                     'loadend': function(event) {
-                        applyLayerZoomBounds(event);
-                        disablePolygonFeatureClick(event);
+                        if(opts.hideEmptyMap && kmlLayer.features.length == 0){
+                            log("No feature in KML layer, removing map ...")
+                            removeMap();
+                        } else {
+                            applyLayerZoomBounds(event);
+                            disablePolygonFeatureClick(event);
+                        }
                     }
                 });
                 map.addControl(kmlSelectControl);
