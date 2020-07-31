@@ -18,7 +18,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.pages.PortalPage;
-import eu.etaxonomy.dataportal.selenium.UrlLoaded;
 
 /**
  * @author a.kohlbecker
@@ -40,7 +39,6 @@ public class OpenLayersMap {
 
     public static List<OpenLayersMap> findOpenLayersMaps(PortalPage page) {
         try {
-            page.getWait().until(new UrlLoaded(page.getPageURL().toString()));
             List<WebElement> maps = page.getDataPortalContent().getElement()
                     .findElements(By.className("openlayers-container"));
             return maps.stream().map(m -> new OpenLayersMap(m)).collect(Collectors.toList());
