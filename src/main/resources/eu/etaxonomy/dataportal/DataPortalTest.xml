@@ -39,7 +39,7 @@
 <!--   <entry key="dataPortalContext.diptera.sshHost">edit-int</entry> -->
 <!--   <entry key="dataPortalContext.diptera.sshUser">test-user</entry> -->
 
-  <entry key="dataPortalContext.reference.baseUri">http://int.e-taxonomy.eu/dataportal/integration/reference</entry>
+  <entry key="dataPortalContext.reference.siteUri">http://int.e-taxonomy.eu/dataportal/integration/reference</entry>
   <entry key="dataPortalContext.reference.siteName">Integration test reference</entry>
   <entry key="dataPortalContext.reference.drupalRoot">/var/www/drupal-7</entry>
 <!--   <entry key="dataPortalContext.reference.sshHost">edit-int</entry> -->
