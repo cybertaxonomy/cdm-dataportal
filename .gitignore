@@ -13,6 +13,6 @@ target
 .classpath
 .settings/
 composer.lock
-
+.attach*
 C:\\nppdf32Log\\debuglog.txt
 workbench.xmi
