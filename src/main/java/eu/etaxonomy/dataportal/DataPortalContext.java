@@ -8,8 +8,11 @@
  */
 package eu.etaxonomy.dataportal;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
-import java.util.UUID;
+
+import eu.etaxonomy.drush.DrushExecuter;
 
 /**
  *
@@ -18,49 +21,28 @@ import java.util.UUID;
  */
 public class DataPortalContext {
 
-    URI baseUri;
-    URI cdmServerUri;
-    UUID classificationUUID;
-    String siteName; //TODO could be read with drush: $ drush vget site_name
+    URI siteUri;
+    String siteName; //TODO read with drush: $ drush vget site_name
     String themeName;
-    private String siteLabel;
+    File drupalRoot;
+    String sshHost;
+    String sshUser;
 
-    public DataPortalContext(URI baseUri, URI cdmServerUri, UUID classificationUUID, String siteName, String siteLabel) {
-            this.baseUri = baseUri;
-            this.cdmServerUri = cdmServerUri;
-            this.classificationUUID = classificationUUID;
+    public DataPortalContext(URI siteUri, String siteName, String drupalRoot, String sshHost, String sshUser) {
+            this.siteUri = siteUri;
             this.siteName = siteName;
-            this.siteLabel = siteLabel;
+            this.drupalRoot = new File(drupalRoot);
+            this.sshHost = sshHost;
+            this.sshUser = sshUser;
     }
 
-    public URI getBaseUri() {
-        return baseUri;
-    }
-
-    /**
-     * <code>UNUSED</code>
-     * @return
-     */
-    public URI getCdmServerUri() {
-        return cdmServerUri;
-    }
-
-    /**
-     * <code>UNUSED</code>
-     * @return
-     */
-    public UUID getClassificationUUID() {
-        return classificationUUID;
+    public URI getSiteUri() {
+        return siteUri;
     }
 
     public String getSiteName() {
         return siteName;
     }
-
-    public String getSiteLabel() {
-        return siteLabel;
-    }
-
 
 
     /**
@@ -71,6 +53,15 @@ public class DataPortalContext {
      */
     public String prepareTitle(String pageHeader) {
         return pageHeader + " | " + getSiteName();
+    }
+
+    public DrushExecuter drushExecuter() throws IOException, InterruptedException {
+        DrushExecuter dex = new DrushExecuter();
+        dex.setDrupalRoot(drupalRoot);
+        dex.setSiteURI(siteUri);
+        dex.setSshHost(sshHost);
+        dex.setSshUser(sshUser);
+        return dex;
     }
 
 }

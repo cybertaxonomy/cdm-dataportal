@@ -51,13 +51,13 @@ public abstract class CdmDataPortalTestBase extends Assert{
 	}
 
 	/**
-	 * Return the {@link DataPortalSite#getBaseUri()} of the currently active
+	 * Return the {@link DataPortalSite#getSiteUri()} of the currently active
 	 * context as String
 	 *
 	 * @return string representation of the DataPortal base URI
 	 */
 	public String getBaseUrl() {
-		return context.getBaseUri().toString();
+		return context.getSiteUri().toString();
 	}
 
 

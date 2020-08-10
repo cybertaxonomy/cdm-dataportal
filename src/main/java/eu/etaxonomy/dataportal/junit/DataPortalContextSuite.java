@@ -85,12 +85,12 @@ public class DataPortalContextSuite extends Suite{
 
 		@Override
 		protected String getName() {
-			return String.format("%s@%s", getTestClass().getName(), context.getSiteLabel());
+			return getTestClass().getName();
 		}
 
 		@Override
 		protected String testName(final FrameworkMethod method) {
-			return String.format("%s@%s", method.getName(), context.getSiteLabel());
+			return method.getName();
 
 		}
 

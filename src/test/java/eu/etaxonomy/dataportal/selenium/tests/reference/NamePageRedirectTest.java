@@ -39,7 +39,7 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
 
     @Before
     public void setUp() throws Exception {
-        driver.get(getContext().getBaseUri().toString());
+        driver.get(getContext().getSiteUri().toString());
     }
 
     /**

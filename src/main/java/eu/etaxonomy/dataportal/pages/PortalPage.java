@@ -139,7 +139,7 @@ public abstract class PortalPage {
 
         this.initialDrupalPagePath = getDrupalPageBase() + (pagePathSuffix != null ? "/" + pagePathSuffix: "");
 
-        this.pageUrl = new URL(context.getBaseUri().toString() + "?" + DRUPAL_PAGE_QUERY + initialDrupalPagePath);
+        this.pageUrl = new URL(context.getSiteUri().toString() + "?" + DRUPAL_PAGE_QUERY + initialDrupalPagePath);
 
         // tell browser to navigate to the page
         logger.info("loading " + pageUrl);
@@ -188,7 +188,7 @@ public abstract class PortalPage {
 
         this.wait = new JUnitWebDriverWait(driver, 25);
 
-        this.pageUrl = new URL(context.getBaseUri().toString());
+        this.pageUrl = new URL(context.getSiteUri().toString());
 
         // tell browser to navigate to the given URL
         driver.get(url.toString());
@@ -223,7 +223,7 @@ public abstract class PortalPage {
 
         // preliminary set the pageUrl to the base path of this page, this is used in the next setp to check if the
         // driver.getCurrentUrl() is a sub path of the base path
-        this.pageUrl = new URL(context.getBaseUri().toString());
+        this.pageUrl = new URL(context.getSiteUri().toString());
 
         takeScreenShot();
 
@@ -275,7 +275,7 @@ public abstract class PortalPage {
                 m.matches();
                 return m.group(1);
             } else {
-                String uriBasePath = context.getBaseUri().getPath();
+                String uriBasePath = context.getSiteUri().getPath();
                 if(!uriBasePath.endsWith("/")){
                     uriBasePath += "/";
                 }

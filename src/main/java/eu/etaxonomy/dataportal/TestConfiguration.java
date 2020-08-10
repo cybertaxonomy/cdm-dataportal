@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.selenium.WebDriverFactory;
 
 /**
@@ -115,6 +114,10 @@ public class TestConfiguration {
 	public static String getProperty(String key) throws TestConfigurationException{
 		return getProperty(key, String.class, false);
 	}
+
+	   public static String getProperty(String key, boolean nonNull) throws TestConfigurationException{
+	        return getProperty(key, String.class, nonNull);
+	    }
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getProperty(String key, Class<T> type, boolean nonNull) throws TestConfigurationException{

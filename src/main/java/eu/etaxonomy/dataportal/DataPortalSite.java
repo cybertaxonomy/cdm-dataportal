@@ -9,7 +9,6 @@
 package eu.etaxonomy.dataportal;
 
 import java.net.URI;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -34,12 +33,12 @@ public enum DataPortalSite {
 
         try {
 
-            URI baseUri = TestConfiguration.getProperty(composePropertyKey("baseUri"), URI.class, true);
-            URI cdmServerUri = TestConfiguration.getProperty(composePropertyKey("cdmServerUri"), URI.class, false);
-            UUID classificationUUID = TestConfiguration.getProperty(composePropertyKey("classificationUUID"), UUID.class, true);
-            String siteName = TestConfiguration.getProperty(composePropertyKey("siteName"));
-            String siteLabel = this.name();
-            context = new DataPortalContext(baseUri, cdmServerUri, classificationUUID, siteName, siteLabel);
+            URI siteUri = TestConfiguration.getProperty(composePropertyKey("siteUri"), URI.class, true);
+            String siteName = TestConfiguration.getProperty(composePropertyKey("siteName"), true);
+            String drupalRoot = TestConfiguration.getProperty(composePropertyKey("drupalRoot"), true);
+            String sshHost = TestConfiguration.getProperty(composePropertyKey("sshHost"));
+            String sshUser = TestConfiguration.getProperty(composePropertyKey("sshUser"));
+            context = new DataPortalContext(siteUri, siteName, drupalRoot, sshHost, sshUser);
         } catch (TestConfigurationException e) {
             logger.error("Configuration Error: ", e);
             System.exit(-1);

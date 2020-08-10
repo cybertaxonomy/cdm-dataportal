@@ -35,7 +35,7 @@ public abstract class CdmDataPortalSeleniumRCTestBase extends CdmDataPortalTestB
     @Before
     public void setUpSelenium() {
         if(selenium == null) {
-            selenium = new WebDriverBackedSelenium(driver, getContext().getBaseUri().toString());
+            selenium = new WebDriverBackedSelenium(driver, getContext().getSiteUri().toString());
         }
     }
 
