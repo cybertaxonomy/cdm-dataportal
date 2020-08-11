@@ -122,23 +122,25 @@ public class DataPortalContextSuite extends Suite{
 		DataPortalContexts dataPortalContextsAnotation = getTestClass().getJavaClass().getAnnotation(DataPortalContexts.class);
 		DataPortalContextProvider contextProvider = null;
 
-		if(dataPortalContextsAnotation.siteListUrl()){
-            String siteListUrlString = System.getProperty(SYSTEM_PROPERTY_SITE_LIST_URL);
-            if(System.getProperty(SYSTEM_PROPERTY_SITE_LIST_URL) == null) {
-                throw new RuntimeException("The system property " + SYSTEM_PROPERTY_SITE_LIST_URL + " must be set if 'siteListUrl' is enabled");
-            }
-            try {
-                contextProvider = new DataPortalsListContextProvider(new URL(siteListUrlString));
-            } catch (MalformedURLException e) {
-                throw new RuntimeException("Error parsing the provided URL", e);
-            }
-		} else {
-		    contextProvider = new DataPortalSiteContextProvider(dataPortalContextsAnotation.value());
-		}
+		if(dataPortalContextsAnotation != null) {
+    		if(dataPortalContextsAnotation.siteListUrl()){
+                String siteListUrlString = System.getProperty(SYSTEM_PROPERTY_SITE_LIST_URL);
+                if(System.getProperty(SYSTEM_PROPERTY_SITE_LIST_URL) == null) {
+                    throw new RuntimeException("The system property " + SYSTEM_PROPERTY_SITE_LIST_URL + " must be set if 'siteListUrl' is enabled");
+                }
+                try {
+                    contextProvider = new DataPortalsListContextProvider(new URL(siteListUrlString));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException("Error parsing the provided URL", e);
+                }
+    		} else {
+    		    contextProvider = new DataPortalSiteContextProvider(dataPortalContextsAnotation.value());
+    		}
 
-		assert contextProvider != null;
-		for (DataPortalContext dataPortalContext : contextProvider.contexts()) {
-		    runners.add(new TestClassRunnerWithDataPortalContext(klass, dataPortalContext));
+    		assert contextProvider != null;
+    		for (DataPortalContext dataPortalContext : contextProvider.contexts()) {
+    		    runners.add(new TestClassRunnerWithDataPortalContext(klass, dataPortalContext));
+    		}
 		}
 	}
 
