@@ -411,7 +411,7 @@ function compose_cdm_media_gallerie($configuration) {
 
           // media captions will be loaded via AHAH
           _add_js_ahah();
-          $content_url = cdm_compose_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
+          $content_url = cdm_compose_ws_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
           //if $captionElements == null, set $captionPartHtml = '' otherwise the loading image is shown but nothing is loaded.
           if ($captionElements) {
 
@@ -852,7 +852,7 @@ function taxon_media_gallery_fsi($taxon, $media) {
 function taxon_media_gallery_universalviewer($taxon, $media) {
 
   $media_query_parameters = taxon_media_query_parameters();
-  $manifest_uri = cdm_compose_url(
+  $manifest_uri = cdm_compose_ws_url(
     CDM_WS_IIIF_TAXON_MANIFEST,
     array($taxon->uuid),
     queryString($media_query_parameters)

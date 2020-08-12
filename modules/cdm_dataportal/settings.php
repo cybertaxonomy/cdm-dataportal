@@ -32,15 +32,18 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
   define('NO_SORT', -1);
   define('SORT_HIERARCHICAL', 9);
 
-  define('CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE', 25);
+  const CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT = 25;
+  const CDM_SEARCH_RESULT_PAGE_SIZE = 'cdm_dataportal_search_items_on_page';
 
   define('SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX_DEFAULT', 1);
   define('SEARCH_RESULTS_SHOW_THUMBNAIL_CHECKBOX', 'search_results_show_thumbnail_checkbox');
  const CDM_DATAPORTAL_NOMREF_IN_TITLE = 'cdm_dataportal_nomref_in_title';
  const CDM_DATAPORTAL_NOMREF_IN_TITLE_DEFAULT =  1;
-  define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE', 0);
-  define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE', 50);
-  define('CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_SHOW_DETERMINED_AS', 0);
+ const CDM_SPECIMEN_LIST_VIEW_MODE = 'cdm_specimen_list_view_mode';
+ const CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT = 'derivate_table';
+ const CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE = 'derivate_table';
+ const CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE = 'derivate_tree';
+ const CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH = 'derivate_path';
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE', 'cdm_synonymy_accepted_taxon_sec_separate');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL', 'cdm_synonymy_accepted_taxon_sec_separate_label');
@@ -48,7 +51,6 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
   define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
   define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
-  define('CDM_DATAPORTAL_SPECIMEN_DERIVATE_TREE', 0);
 
   define('CDM_SEARCH_BLAST_SERVICE_URI', 'http://bgbm-import:9001/api/sequence');
   define('CDM_SEARCH_BLAST_ENABLED', 0);
@@ -1185,8 +1187,8 @@ function cdm_settings_general() {
   );
   $form['cdm_webservice']['freetext_index']['operations'] = array(
     '#markup' => "<div>" . t('Operations: !url1 !url2', array(
-        '!url1' => l(t("Purge"), cdm_compose_url(CDM_WS_MANAGE_PURGE, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
-        '!url2' => l(t("Reindex"), cdm_compose_url(CDM_WS_MANAGE_REINDEX, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
+        '!url1' => l(t("Purge"), cdm_compose_ws_url(CDM_WS_MANAGE_PURGE, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
+        '!url2' => l(t("Reindex"), cdm_compose_ws_url(CDM_WS_MANAGE_REINDEX, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
       ))
     . '<div id="index-progress"></div></div>',
   );
@@ -1885,7 +1887,6 @@ function cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $c
 
   $default_values = unserialize(CDM_DATAPORTAL_GALLERY_SETTINGS);
   $gallery_settings = variable_get($form_name, $default_values);
-  // $test = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);
   if ($form_name == CDM_DATAPORTAL_SEARCH_GALLERY_NAME) {
     /*
     TODO: why cdm_dataportal_search_items_on_page does not save the value on $test???
@@ -2672,29 +2673,26 @@ ie	introduced: formerly introduced
 
   $form['taxon_specimens'][SPECIMEN_MAP_VISIBILITY]  = _cdm_map_visibility_setting('specimen');
 
-  $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show specimen derivatives in a compressed table'),
-    '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE),
-    '#description' => t('If checked, the specimen will be listed in a table. Every row represents
-    a collection and it can be expanded to get an overview of the specimens and their derivates.'),
+
+  $form['taxon_specimens'][CDM_SPECIMEN_LIST_VIEW_MODE] = array(
+      '#type' => 'radios',
+      '#title' => t('View mode for lists of specimens or occurrences.'),
+      '#default_value' => variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT),
+      '#options' => [
+        CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE => 'Compressed derivate table',
+        CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE => 'Derivate tree',
+        CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH => 'Derivate path'
+      ],
+      '#description' => 'Available view modes for listing specimens and occurrences are:
+        <ul>
+         <li>' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE . ': As compressed table where every row represents
+    a collection. Rows can be expanded to get an overview of the specimens and their derivatives.</li>
+         <li>' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE . ': As tree of all derivations stemming from the field unit</li>
+         <li>' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH . ': As the path of derivatives from the specimen to the field unit</li>
+       </ul>'
   );
 
-  $form['taxon_specimens']['cdm_dataportal_compressed_specimen_derivate_table_page_size'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Number of records per page') . ':',
-      '#default_value' => variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size', CDM_DATAPORTAL_COMPRESSED_SPECIMEN_DERIVATE_TABLE_PAGE_SIZE),
-  );
-
-    $form['taxon_specimens']['cdm_dataportal_specimen_derivate_tree'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Show specimen derivatives in a tree view'),
-        '#default_value' => variable_get('cdm_dataportal_specimen_derivate_tree', CDM_DATAPORTAL_SPECIMEN_DERIVATE_TREE),
-        '#description' => t('If checked, the specimen will be listed in a tree view.'),
-    );
-
-
-    $featureTrees = cdm_get_featureTrees_as_options(TRUE);
+  $featureTrees = cdm_get_featureTrees_as_options(TRUE);
   $profile_feature_tree_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);
   if(!isset($featureTrees['options'][$profile_feature_tree_uuid])) {
     $profile_feature_tree_uuid = UUID_DEFAULT_FEATURETREE;
@@ -2807,10 +2805,10 @@ function cdm_settings_layout_search() {
     This function works on indexed taxon names. If you experience any delay maybe you have to reindex (see above).'),
   );
 
-  $form['search_settings']['cdm_dataportal_search_items_on_page'] = array(
+  $form['search_settings'][CDM_SEARCH_RESULT_PAGE_SIZE] = array(
     '#type' => 'textfield',
     '#title' => t('Results per page') . ':',
-    '#default_value' => variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE),
+    '#default_value' => variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT),
     '#description' => t('Number of results to display per page.'),
   );
 
@@ -2869,7 +2867,7 @@ function cdm_settings_layout_search() {
     );
 
   // --- SEARCH TAXA GALLERY ---- //
-  $items = variable_get('cdm_dataportal_search_items_on_page', CDM_DATAPORTAL_SEARCH_ITEMS_ON_PAGE);
+  $items = variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT);
   $collapsed = FALSE;
   $form_name = CDM_DATAPORTAL_SEARCH_GALLERY_NAME;
   $form_title = 'Taxa Search thumbnails';
@@ -3584,7 +3582,7 @@ function cdm_view_cache_site() {
   $request_params = array();
   $request_params['class'] = "Taxon";
 
-  $cdm_ws_page_taxa_url = cdm_compose_url(CDM_WS_TAXON . ".json", NULL, queryString($request_params));
+  $cdm_ws_page_taxa_url = cdm_compose_ws_url(CDM_WS_TAXON . ".json", NULL, queryString($request_params));
   $cdm_ws_page_taxa_url = uri_uriByProxy($cdm_ws_page_taxa_url);
   $cdm_ws_page_taxa_url = rtrim($cdm_ws_page_taxa_url, '/');
 

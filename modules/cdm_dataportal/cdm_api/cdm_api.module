@@ -646,15 +646,36 @@ function timePeriodAsOrderKey($period) {
  * @return string
  *   A complete URL with parameters to a CDM webservice.
  */
-function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL) {
+function cdm_compose_ws_url($uri_pattern, $pathParameters = array(), $query = NULL) {
   if (empty($pathParameters)) {
     $pathParameters = array();
   }
+  $path = cdm_compose_url($uri_pattern, $pathParameters, $query);
+
+  $uri = variable_get('cdm_webservice_url', '') . $path;
+  return $uri;
+}
+
+/**
+ * Composes a relative Url with parameters and querystring.
+ *
+ * @param string $uri_pattern
+ *   String with place holders ($0, $1, ..) that should be replaced by the
+ *   according element of the $pathParameters array.
+ * @param array $pathParameters
+ *   An array of path elements, or a single element.
+ * @param string $query
+ *   A query string to append to the URL.
+ *
+ * @return string
+ *   A relative URL with query parameters.
+ */
+function cdm_compose_url($uri_pattern, $pathParameters, $query = NULL) {
 
   // (1)
   // Substitute all place holders ($0, $1, ..) in the $uri_pattern by the
   // according element of the $pathParameters array.
-  static $helperArray = array();
+  static $helperArray = [];
   if (isset($pathParameters) && !is_array($pathParameters)) {
     $helperArray[0] = $pathParameters;
     $pathParameters = $helperArray;
@@ -663,10 +684,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
   $i = 0;
   while (strpos($uri_pattern, "$" . $i) !== FALSE) {
     if (count($pathParameters) <= $i) {
-        drupal_set_message(
-          t('cdm_compose_url(): missing pathParameter @index for !uri_pattern',
-            array('@index' => $i, '!uri_pattern' => $uri_pattern )),
-          'error');
+      drupal_set_message('cdm_compose_url(): missing pathParameter ' . $i .' for ' . $uri_pattern, 'error');
       break;
     }
     $uri_pattern = str_replace("$" . $i, rawurlencode($pathParameters[$i]), $uri_pattern);
@@ -692,9 +710,7 @@ function cdm_compose_url($uri_pattern, $pathParameters = array(), $query = NULL)
   $uri_pattern = append_query_parameters($uri_pattern, $query);
 
   $path = $uri_pattern;
-
-  $uri = variable_get('cdm_webservice_url', '') . $path;
-  return $uri;
+  return $path;
 }
 
 /**
@@ -941,7 +957,7 @@ function cdm_compose_annotations_uri($cdm_entity) {
   if($ws_base_uri === null){
       trigger_error(check_plain('Unsupported CDM Class - no annotations available for ' . $cdm_entity_type), E_USER_ERROR);
   }
-  return cdm_compose_url($ws_base_uri, array(
+  return cdm_compose_ws_url($ws_base_uri, array(
     $cdm_entity_uuid,
     'annotations',
   ));
@@ -1230,20 +1246,20 @@ function cdm_compose_taxonomy_root_level_path($taxon_uuid = FALSE, $ignore_rank_
   }
 
   if (!empty($taxon_uuid)) {
-    return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array(
+    return cdm_compose_ws_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_OF_TAXON, array(
       $view_uuid,
       $taxon_uuid,
     ));
   }
   else {
     if (is_uuid($rank_uuid)) {
-      return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK, array(
+      return cdm_compose_ws_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES_AT_RANK, array(
         $view_uuid,
         $rank_uuid,
       ));
     }
     else {
-      return cdm_compose_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES, array(
+      return cdm_compose_ws_url(CDM_WS_PORTAL_TAXONOMY_CHILDNODES, array(
         $view_uuid,
       ));
     }
@@ -2071,7 +2087,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query_string = NULL, $meth
 
   // Transform the given uri path or pattern into a proper webservice uri.
   if (!$absoluteURI) {
-    $uri = cdm_compose_url($uri, $pathParameters, $query_string);
+    $uri = cdm_compose_ws_url($uri, $pathParameters, $query_string);
   } else {
     if($query_string){
       $uri = append_query_parameters($uri, $query_string);

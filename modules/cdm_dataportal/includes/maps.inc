@@ -413,7 +413,7 @@ function compose_distribution_map($query_string) {
 function compose_type_designations_map($type_designations)
 {
   $typedesignations_uuid_param = cdm_uuid_list_parameter_value($type_designations);
-  $kml_request_uri = cdm_compose_url(CDM_WS_KML_TYPEDESIGNATIONS, array($typedesignations_uuid_param));
+  $kml_request_uri = cdm_compose_ws_url(CDM_WS_KML_TYPEDESIGNATIONS, array($typedesignations_uuid_param));
   $map_render_array = compose_map('specimens', null, $kml_request_uri, null, null, []);
   return $map_render_array;
 }
@@ -573,7 +573,7 @@ function occurrence_map_query_parameters($taxon)
 {
   $map_render_array = array();
   $occurrence_queryDto = cdm_ws_get(CDM_WS_GEOSERVICE_OCCURRENCEMAP, $taxon->uuid, http_build_query(relationship_filter_query_parameters()));
-  $kml_request_url = cdm_compose_url(CDM_WS_KML_TAXON_OCCURRENCE, array($taxon->uuid), http_build_query(relationship_filter_query_parameters()));
+  $kml_request_url = cdm_compose_ws_url(CDM_WS_KML_TAXON_OCCURRENCE, array($taxon->uuid), http_build_query(relationship_filter_query_parameters()));
 
   $map_visibility = variable_get(SPECIMEN_MAP_VISIBILITY, SPECIMEN_MAP_VISIBILITY_DEFAULT);
   if ($map_visibility == 'always' || $map_visibility == 'automatic' &&

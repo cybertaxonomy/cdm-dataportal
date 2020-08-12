@@ -1501,10 +1501,6 @@ msgstr ""
 msgid "to"
 msgstr ""
 
-#: cdm_api/cdm_api.module:821
-msgid "cdm_compose_url(): missing pathParameter @index for !uri_pattern"
-msgstr ""
-
 #: cdm_api/cdm_api.module:989
 msgid "Theme !theme is not yet supported by the function !function."
 msgstr ""

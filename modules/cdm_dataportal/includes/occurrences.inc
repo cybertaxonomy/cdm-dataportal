@@ -335,7 +335,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
             ''
         );
     }
-    if (variable_get('cdm_dataportal_compressed_specimen_derivate_table') || !$isSpecimen_page){
+    if ((variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE) || !$isSpecimen_page){
         $exclude_occurrence_fields[] = 'derivationEvents';
     }
 
@@ -1499,20 +1499,13 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                             }else{
                                 _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value);
                             }
-
                         }
-
                 }
-
-
             }
         } // END of loop over $derivedUnitFacade fields
 
-
-
         // template_preprocess_description_list() is not worting by weight so we do it right here
         uasort($groups, 'element_sort');
-
         $occurrence_elements = array(
            // '#title' => $title,
             '#theme' => 'description_list',
@@ -1688,7 +1681,7 @@ function compose_specimens_table_bottom_up($specimensOrObservations)
       //     -> Dynabox for the specimenOrObservation
       $gallery_name = $specimenOrObservation->uuid;
 
-      $derived_unit_ws_request = cdm_compose_url(CDM_WS_OCCURRENCE, array($specimenOrObservation->uuid));
+      $derived_unit_ws_request = cdm_compose_ws_url(CDM_WS_OCCURRENCE, array($specimenOrObservation->uuid));
       // --- Render associated media.
       $gallery_html = '';
       if (count($mediaList) > 0) {

@@ -197,7 +197,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
   $form['search']['pageSize'] = array(
     '#weight' => -1,
     '#type' => 'hidden',
-    '#value' => variable_get('cdm_dataportal_search_items_on_page', 25),
+    '#value' => variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT),
   );
 
   $form['search']['pageNumber'] = array(
@@ -428,7 +428,7 @@ function cdm_dataportal_search_blast_form($form, &$form_state) {
     $form['search']['pageSize'] = array(
         '#weight' => -1,
         '#type' => 'hidden',
-        '#value' => variable_get('cdm_dataportal_search_items_on_page', 25),
+        '#value' => variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT),
     );
 
     $form['search']['pageNumber'] = array(

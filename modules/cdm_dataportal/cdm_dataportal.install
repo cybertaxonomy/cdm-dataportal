@@ -469,15 +469,29 @@ function cdm_dataportal_update_7500()
  * update for RELEASE 5.17:
  *  - enable new default TaxonRelationshipTypes: UUID_PROPARTE_MISAPPLIEDNAME_FOR,
  *    UUID_PARTIAL_MISAPPLIEDNAME_FOR, UUID_PROPARTE_SYNONYM_FOR, UUID_PARTIAL_SYNONYM_FOR.
+ *  - delete variable cdm_dataportal_compressed_specimen_derivate_table_page_size
+ *  - transform variables  cdm_dataportal_specimen_derivate_tree, cdm_dataportal_compressed_specimen_derivate_table to CDM_SPECIMEN_LIST_VIEW_MODE
+ *
  */
 function cdm_dataportal_update_7600()
 {
   $tasks_performed = array();
 
-  variable_del('cdm_dataportal_all_footnotes');
-  $tasks_performed[] = "obsolete variable 'cdm_dataportal_all_footnotes' deleted";
-  variable_del('cdm_dataportal_annotations_footnotes');
-  $tasks_performed[] = "obsolete variable 'cdm_dataportal_annotations_footnotes' deleted";
+  $tasks_performed[] = _remove_variable('cdm_dataportal_all_footnotes');
+  $tasks_performed[] =  _remove_variable('cdm_dataportal_annotations_footnotes');
+
+  $tasks_performed[] = _remove_variable('cdm_dataportal_compressed_specimen_derivate_table_page_size');
+
+  $specimen_list_view_mode = CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH;
+  if(variable_get('cdm_dataportal_specimen_derivate_tree', FALSE)){
+    $specimen_list_view_mode = CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE;
+  } else if(variable_get('cdm_dataportal_compressed_specimen_derivate_table', FALSE)){
+    $specimen_list_view_mode = CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE;
+  }
+  $tasks_performed[] = _create_variable(CDM_SPECIMEN_LIST_VIEW_MODE, $specimen_list_view_mode);
+  $tasks_performed[] = _remove_variable('cdm_dataportal_compressed_specimen_derivate_table_page_size');
+  $tasks_performed[] = _remove_variable('cdm_dataportal_specimen_derivate_tree');
+  $tasks_performed[] = _remove_variable('cdm_dataportal_compressed_specimen_derivate_table');
 
   return join(', ', $tasks_performed);
 };

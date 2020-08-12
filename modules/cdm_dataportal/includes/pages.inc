@@ -39,7 +39,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
     $fieldUnitDTOs = null;
     $specimensOrObservations = null;
-    if (variable_get('cdm_dataportal_specimen_derivate_tree')){
+    if (variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
       // get fieldUnitDTOs
       $fieldUnitDTOs = cdm_ws_get(CDM_WS_TAXON_FIELDUNIT_DTOS, array( $taxon->uuid));
       $fieldUnitDTOs = order_fieldUnitDtos_by_date_and_type($fieldUnitDTOs);
@@ -90,18 +90,16 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
     // -------------------------------------------------------
 
-    if(variable_get('cdm_dataportal_compressed_specimen_derivate_table')){
+    if((variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE)){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
-        $associatedFieldUnitsQuery_parameters = array();
-        if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
-            $associatedFieldUnitsQuery_parameters = array_merge($associatedFieldUnitsQuery_parameters, $_REQUEST['pager']);
-        }
-
-        $by_associatedtaxon_query = http_build_query($associatedFieldUnitsQuery_parameters);
-        $pager_field_units = cdm_ws_get(CDM_WS_PORTAL_TAXON,
-            array($taxon->uuid, 'associatedFieldUnits'),
-            $by_associatedtaxon_query . '&pageSize=' . variable_get('cdm_dataportal_compressed_specimen_derivate_table_page_size')
+        $pager_field_units = cdm_ws_page(
+          cdm_compose_url(CDM_WS_PORTAL_TAXON, [
+            $taxon->uuid,
+            'associatedFieldUnits'
+          ]),
+          variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT) * 2,
+          isset($_REQUEST['pager']['pageNumber']) ? isset($_REQUEST['pager']['pageNumber']) : 0
         );
 
         if (isset($pager_field_units->records[0])) {
@@ -122,7 +120,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
             10 // weight
         );
     }
-    else if(variable_get('cdm_dataportal_specimen_derivate_tree')){
+    else if((variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE)){ // FIXME this seems to be wrong
       $render_array['specimen_list'] = compose_specimen_table_top_down($fieldUnitDTOs);
       $render_array['specimen_list']['#weight'] = 2;
     } else {
@@ -817,7 +815,7 @@ function compose_cdm_taxon_page_experts($taxon){
       'expert_' . $expert_role_id,
       $taxon_node_agent_relation->agent->titleCache,
       // specifying both ends of the relationship will return only one record in the pager
-      cdm_compose_url(CDM_WS_PORTAL_AGENT,
+      cdm_compose_ws_url(CDM_WS_PORTAL_AGENT,
          array($taxon_node_agent_relation->agent->uuid, 'taxonNodeAgentRelations'),
         'taxon_uuid=' . $taxon->uuid . '&relType_uuid=' . $taxon_node_agent_relation->type->uuid),
       'cdm_taxon_expert',
