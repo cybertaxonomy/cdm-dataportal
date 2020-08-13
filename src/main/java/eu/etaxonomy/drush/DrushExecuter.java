@@ -25,6 +25,9 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Java executor for drush (https://www.drush.org/).
  *
@@ -55,8 +58,9 @@ public class DrushExecuter {
     }
 
     /**
-     * List indexes returned from
-     * <code>DrushExecuter.execute(DrushCommand cmd, String... value)</code>:
+     * The execution of this command via
+     * <code>DrushExecuter.execute({@linkplain DrushCommand#version})</code> results in
+     * a {@code List<String>} return variable with the following elements:
      *
      * <ol>
      * <li>major</li>
@@ -72,29 +76,34 @@ public class DrushExecuter {
     public static DrushCommand coreStatus = new DrushCommand(Arrays.asList("core-status"), null, null);
 
     /**
-     * List indexes returned from
-     * <code>DrushExecuter.execute(DrushCommand cmd, String... value)</code>:
-     * Multiple matches are possible:
+     * Executes {@code drush vget --exact <variable-key>}
+     * <p>
+     * The execution of this command via
+     * <code>DrushExecuter.execute({@linkplain DrushCommand#variableSet})</code> results in
+     * a {@code List<String>} return variable with the following elements:
+     *
      * <ol>
      * <li>value</li>
      * <li>value</li>
      * <li>value</li>
      * <ol>
      */
-    public static DrushCommand variableGet = new DrushCommand(Arrays.asList("vget", "%s"), ".*:\\s+'(?<value>.*)'",
-            null);
-
+    public static DrushCommand variableGet = new DrushCommand(Arrays.asList("vget", "--exact", "--format=json", "%s"));
     /**
-     * List indexes returned from
-     * <code>DrushExecuter.execute(DrushCommand cmd, String... value)</code>:
-     * Multiple matches are possible:
+     * Executes {@code drush vset --exact <variable-key> <variable-value>}
+     * <p>
+     * The execution of this command via
+     * <code>DrushExecuter.execute({@linkplain DrushCommand#variableSet})</code> results in
+     * a {@code List<String>} return variable with the following elements:
+     *
      * <ol>
      * <li>value</li>
      * <li>status</li>
      * <ol>
      */
     public static DrushCommand variableSet = new DrushCommand(Arrays.asList("--yes", "vset", "%s", "%s"), null,
-            "[^\\\"]*\\\"(?<value>.*)\\\"\\.\\s+\\[(?<status>\\w+)\\]");
+            "[^\\\"]*\\\"(.*)\\\".*\\[(\\w+)\\]"
+            );
 
     /**
      * @throws IOException
@@ -108,9 +117,9 @@ public class DrushExecuter {
             throw new RuntimeException("not yet implmented for Windows");
         }
 
-        List<String> matches = execute(version);
-        assert !matches.get(0).isEmpty() : "No suitable drush command found in the system";
-        String majorVersion = matches.get(0);
+        List<Object> matches = execute(version);
+        assert !((String) matches.get(0)).isEmpty() : "No suitable drush command found in the system";
+        String majorVersion = (String) matches.get(0);
         if (Integer.valueOf(majorVersion) < 8) {
             throw new RuntimeException("drush version >= 8 required");
         }
@@ -123,7 +132,7 @@ public class DrushExecuter {
      * @throws InterruptedException
      *             if the Process was interrupted
      */
-    public List<String> execute(DrushCommand cmd, String... value) throws IOException, InterruptedException {
+    public List<Object> execute(DrushCommand cmd, String... value) throws IOException, InterruptedException {
 
         List<String> executableWithArgs = new ArrayList<>();
 
@@ -154,7 +163,7 @@ public class DrushExecuter {
             }
         }
 
-        List<String> matches = new ArrayList<>();
+        List<Object> matches = new ArrayList<>();
 
         ProcessBuilder pb = new ProcessBuilder(executableWithArgs);
         logger.debug("Command: " + pb.command().toString());
@@ -162,8 +171,14 @@ public class DrushExecuter {
         int exitCode = process.waitFor();
 
         if (exitCode == 0) {
-            String out = readExecutionResponse(matches, process.getInputStream(), cmd.outRegex);
-            String error = readExecutionResponse(matches, process.getErrorStream(), cmd.errRegex);
+            String out, error;
+            if(cmd.jsonResult) {
+                out = readExecutionResponse(matches, process.getInputStream());
+                error = readExecutionResponse(matches, process.getErrorStream());
+            } else {
+                out = readExecutionResponse(matches, process.getInputStream(), cmd.outRegex);
+                error = readExecutionResponse(matches, process.getErrorStream(), cmd.errRegex);
+            }
             if (out != null && !out.isEmpty()) {
                 logger.error(error);
             }
@@ -176,7 +191,7 @@ public class DrushExecuter {
         return matches;
     }
 
-    protected String readExecutionResponse(List<String> matches, InputStream stream, Pattern regex) throws IOException {
+    protected String readExecutionResponse(List<Object> matches, InputStream stream, Pattern regex) throws IOException {
         String out;
         if (regex != null) {
             Scanner scanner = new Scanner(stream);
@@ -209,13 +224,50 @@ public class DrushExecuter {
             logger.debug(out);
             return out;
         }
+    }
 
+    /**
+     * @param matches
+     * @param stream
+     * @return depending on the drupal variable type different return types are possible:
+     *  <ul>
+     *  <li>Object</li>
+     *  <li>List</li>
+     *  <li>List</li>
+     *  <li>String</li>
+     *  <li>Double</li>
+     *  <li>Integer</li>
+     *  </ul>
+     *
+     * @throws IOException
+     */
+    protected String readExecutionResponse(List<Object> matches, InputStream stream) throws IOException {
+        String out = IOUtils.toString(stream);
+        if(out != null) {
+            out = out.trim();
+            if(!out.isEmpty()) {
+                ObjectMapper mapper = new ObjectMapper();
+                if(out.startsWith("[")) {
+                   matches.add(mapper.readValue(out, new TypeReference<List<Object>>(){}));
+                } else  {
+                   matches.add(mapper.readValue(out, Object.class));
+                }
+                if(matches.isEmpty()) {
+                    logger.debug("no result");
+                } else {
+                    logger.debug("result object: " + matches.get(0));
+                }
+            }
+
+        }
+        return out;
     }
 
     public static class DrushCommand {
 
         Pattern outRegex;
         Pattern errRegex;
+        boolean jsonResult = false;
         List<String> args = new ArrayList<>();
 
         public DrushCommand(List<String> args, String outRegex, String errRegex) {
@@ -226,6 +278,15 @@ public class DrushExecuter {
             if (errRegex != null) {
                 this.errRegex = Pattern.compile(errRegex, Pattern.MULTILINE);
             }
+        }
+
+        /**
+         * For drush commands suopporting the {@code --format=json} option.
+         * @param args
+         */
+        public DrushCommand(List<String> args) {
+            this.args = args;
+            this.jsonResult = true;
         }
     }
 
@@ -239,17 +300,22 @@ public class DrushExecuter {
         DrushExecuter.logger.setLevel(Level.DEBUG);
         try {
             DrushExecuter dex = new DrushExecuter();
+            List<Object> results;
             dex.setDrupalRoot(new File("/home/andreas/workspaces/www/drupal-7"));
             dex.setSiteURI(new URI("http://edit.test/d7/caryophyllales/"));
-            dex.execute(coreStatus);
-            dex.execute(help);
-            List<String> results = dex.execute(variableSet, "cdm_webservice_url",
+//            dex.execute(coreStatus);
+//            dex.execute(help);
+            results = dex.execute(variableSet, "cdm_webservice_url",
                     "http://api.cybertaxonomy.org/cyprus/");
             if (!results.get(0).equals("http://api.cybertaxonomy.org/cyprus/")) {
                 throw new RuntimeException("unexpected result item 0: " + results.get(0));
             }
             if (!results.get(1).equals("success")) {
                 throw new RuntimeException("unexpected result item 1: " + results.get(0));
+            }
+            results = dex.execute(variableGet, "cdm_webservice_url");
+            if (!results.get(0).equals("http://api.cybertaxonomy.org/cyprus/")) {
+                throw new RuntimeException("unexpected result item 0: " + results.get(0));
             }
             // testing remote execution via ssh
             dex.sshHost = "edit-int";

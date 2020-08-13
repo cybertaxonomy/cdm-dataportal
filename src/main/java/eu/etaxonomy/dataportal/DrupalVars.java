@@ -18,5 +18,7 @@ public class DrupalVars {
 
     public static final String CDM_DATAPORTAL_TAXONPAGE_TABS = "cdm_dataportal_taxonpage_tabs";
 
+    public static final String CDM_SPECIMEN_LIST_VIEW_MODE = "cdm_specimen_list_view_mode";
+
 
 }
