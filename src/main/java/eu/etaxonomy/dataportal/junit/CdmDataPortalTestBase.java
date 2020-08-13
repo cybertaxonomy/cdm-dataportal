@@ -35,7 +35,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
 
 	private DataPortalContext context;
 
-    private Map<String,String> drupalVarsBeforeTest = new HashMap<>();
+    private Map<String,Object> drupalVarsBeforeTest = new HashMap<>();
 
 	public DataPortalContext getContext() {
 		return context;
@@ -89,7 +89,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
      */
     protected void setDrupalVar(String varKey, String varValue) throws IOException, InterruptedException {
         DrushExecuter dex = getContext().drushExecuter();
-        List<String> result = dex.execute(DrushExecuter.variableGet, varKey);
+        List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
         assertEquals(1, result.size());
         if(!drupalVarsBeforeTest.containsKey(varKey)) {
             // stored original values must not be replaced
@@ -104,7 +104,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
         boolean fail = false;
         for(String varKey : drupalVarsBeforeTest.keySet()) {
             try {
-                List<String> result = dex.execute(DrushExecuter.variableSet, varKey, drupalVarsBeforeTest.get(varKey));
+                List<Object> result = dex.execute(DrushExecuter.variableSet, varKey, drupalVarsBeforeTest.get(varKey).toString());
                 assertEquals("success", result.get(1));
             } catch (Exception e) {
                 logger.error("FATAL ERROR: Restoring the original drupal variable " + varKey + " = " + drupalVarsBeforeTest.get(varKey) + " failed.", e);

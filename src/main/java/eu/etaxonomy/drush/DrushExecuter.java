@@ -102,7 +102,7 @@ public class DrushExecuter {
      * <ol>
      */
     public static DrushCommand variableSet = new DrushCommand(Arrays.asList("--yes", "vset", "%s", "%s"), null,
-            "[^\\\"]*\\\"(.*)\\\".*\\[(\\w+)\\]"
+            ".*set\\sto*(.*)\\..*\\[(\\w+)\\]"
             );
 
     /**
