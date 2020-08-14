@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -101,7 +100,7 @@ public class BaseElement {
 
     public List<LinkElement> getFootNoteKeys(){
         return ElementUtils.linkElementsFromFootNoteKeyListElements(
-                getElement().findElements(By.xpath("//*[contains(@class, 'footnote-key')]/a"))
+                getElement().findElements(By.xpath(".//*[contains(@class, 'footnote-key')]/a"))
                 );
     }
 
@@ -160,10 +159,10 @@ public class BaseElement {
 
     public BaseElement(WebElement element) {
 
-        logger.setLevel(Level.TRACE);
         logger.trace("BaseElement() - constructor");
         this.element = element;
 
+        logger.debug("wrapping " + ElementUtils.webElementTagToMarkup(getElement()));
         // read and tokenize the class attribute
         if (element.getAttribute("class") != null) {
             String[] classTokens = element.getAttribute("class").split("\\s");
@@ -175,7 +174,7 @@ public class BaseElement {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "<" + this.getElement().getTagName() + ">" ;
+        return this.getClass().getSimpleName() + ":" + ElementUtils.webElementTagToMarkup(getElement()) ;
     }
 
     public String toStringWithLinks() {

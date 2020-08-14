@@ -986,7 +986,9 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
 }
 
 /**
- * Crates an array which can be used in render arrays to be passed to the theme_table() and theme_list().
+ * Crates an array which can be used in render arrays to be passed to the
+ * theme_table() and theme_list().
+ *
  * @param array $fieldunit_dtos
  *     list of FieldUnitDTOs
  */
@@ -1156,13 +1158,15 @@ function compose_compressed_specimen_derivate_table($field_unit_uuids) {
 }
 
 /**
- * Creates an array from a list of FieldUnitDTOs.
+ * Composes the view on specimens and occurrences as derivate tree
+ * starting from the field unit including all derivatives.
  *
+ * @see DM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE
  *
  * @param object $fieldunit_dtos
  *   list of FieldUnitDTOs
  * @return array
- *   An array containing the hierarchy of the field units corresponding to the taxon
+ *   The Drupal render array
  *
  * @ingroup compose
  */
@@ -1191,7 +1195,7 @@ function compose_specimen_table_top_down(array $fieldunit_dtos){
     // prefix attributes and rows with '#' to let it pass toF the theme function,
     // otherwise it is handled as child render array
     '#attributes' => array(
-      'class' => 'specimens',
+      'class' => 'specimens ' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE ,
       'id' => $tableId
     ),
     '#rows' => array(),
@@ -1644,7 +1648,7 @@ function compose_specimens_table_bottom_up($specimensOrObservations)
     '#weight' => 2,
     // prefix attributes and rows with '#' to let it pass toF the theme function,
     // otherwise it is handled as child render array
-    '#attributes' => array('class' => 'specimens'),
+    '#attributes' => array('class' => 'specimens '),
     '#rows' => array(),
   );
 

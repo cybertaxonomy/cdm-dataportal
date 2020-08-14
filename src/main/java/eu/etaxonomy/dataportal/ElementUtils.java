@@ -137,7 +137,7 @@ public class ElementUtils {
         if(StringUtils.isNotEmpty(classAttr)) {
             markup += " class=\""+ classAttr + "\"";
         }
-        markup += " >";
+        markup += ">";
         return markup;
     }
 
