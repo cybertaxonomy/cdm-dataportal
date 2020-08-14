@@ -21,6 +21,7 @@ import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.selenium.WebDriverFactory;
 import eu.etaxonomy.drush.DrushExecuter;
+import eu.etaxonomy.drush.DrushExecutionFailure;
 
 /**
  * @author a.kohlbecker
@@ -71,7 +72,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
 	}
 
 	@After
-    public void resetToOriginalState() throws IOException, InterruptedException {
+    public void resetToOriginalState() throws IOException, InterruptedException, DrushExecutionFailure {
         restoreOriginalVars();
     }
 
@@ -86,8 +87,9 @@ public abstract class CdmDataPortalTestBase extends Assert{
      *
      * @throws IOException
      * @throws InterruptedException
+     * @throws DrushExecutionFailure
      */
-    protected void setDrupalVar(String varKey, String varValue) throws IOException, InterruptedException {
+    protected void setDrupalVar(String varKey, String varValue) throws IOException, InterruptedException, DrushExecutionFailure {
         DrushExecuter dex = getContext().drushExecuter();
         List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
         assertEquals(1, result.size());
@@ -96,16 +98,14 @@ public abstract class CdmDataPortalTestBase extends Assert{
             drupalVarsBeforeTest.put(varKey, result.get(0));
         }
         result = dex.execute(DrushExecuter.variableSet, varKey, varValue);
-        assertEquals("success", result.get(1));
     }
 
-    protected void restoreOriginalVars() throws IOException, InterruptedException {
+    protected void restoreOriginalVars() throws IOException, InterruptedException, DrushExecutionFailure {
         DrushExecuter dex = getContext().drushExecuter();
         boolean fail = false;
         for(String varKey : drupalVarsBeforeTest.keySet()) {
             try {
                 List<Object> result = dex.execute(DrushExecuter.variableSet, varKey, drupalVarsBeforeTest.get(varKey).toString());
-                assertEquals("success", result.get(1));
             } catch (Exception e) {
                 logger.error("FATAL ERROR: Restoring the original drupal variable " + varKey + " = " + drupalVarsBeforeTest.get(varKey) + " failed.", e);
                 fail = true;

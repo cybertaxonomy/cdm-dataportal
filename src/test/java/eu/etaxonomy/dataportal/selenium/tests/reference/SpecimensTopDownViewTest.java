@@ -29,6 +29,7 @@ import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonPage;
 import eu.etaxonomy.drush.DrushExecuter;
+import eu.etaxonomy.drush.DrushExecutionFailure;
 
 /**
  * @author a.kohlbecker
@@ -40,7 +41,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
     private static final UUID glenodinium_apiculatum_t = UUID.fromString("d245083e-3bda-435f-9bb3-bdc2249ff23c");
 
     @Before
-    public void switchToView() throws IOException, InterruptedException {
+    public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
         Logger.getLogger(DrushExecuter.class).setLevel(Level.DEBUG);
         setDrupalVar(DrupalVars.CDM_DATAPORTAL_TAXONPAGE_TABS, "1");
         setDrupalVar(DrupalVars.CDM_SPECIMEN_LIST_VIEW_MODE, "derivate_path");

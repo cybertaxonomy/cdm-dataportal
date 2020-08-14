@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -53,13 +54,13 @@ public class DrushExecuter {
 
     private String sshHost = null;
 
-    public DrushExecuter() throws IOException, InterruptedException {
+    public DrushExecuter() throws IOException, InterruptedException, DrushExecutionFailure {
         findDrushCommand();
     }
 
     /**
      * The execution of this command via
-     * <code>DrushExecuter.execute({@linkplain DrushCommand#version})</code> results in
+     * <code>DrushExecuter.execute({@linkplain #version})</code> results in
      * a {@code List<String>} return variable with the following elements:
      *
      * <ol>
@@ -79,7 +80,7 @@ public class DrushExecuter {
      * Executes {@code drush vget --exact <variable-key>}
      * <p>
      * The execution of this command via
-     * <code>DrushExecuter.execute({@linkplain DrushCommand#variableSet})</code> results in
+     * <code>DrushExecuter.execute({@linkplain DrushExecuter#variableSet})</code> results in
      * a {@code List<String>} return variable with the following elements:
      *
      * <ol>
@@ -88,42 +89,45 @@ public class DrushExecuter {
      * <li>value</li>
      * <ol>
      */
-    public static DrushCommand variableGet = new DrushCommand(Arrays.asList("vget", "--exact", "--format=json", "%s"));
+    public static DrushCommand variableGet = new DrushCommand(Arrays.asList("vget", "--exact", "--format=json", "%s"), true);
     /**
      * Executes {@code drush vset --exact <variable-key> <variable-value>}
      * <p>
      * The execution of this command via
-     * <code>DrushExecuter.execute({@linkplain DrushCommand#variableSet})</code> results in
-     * a {@code List<String>} return variable with the following elements:
-     *
-     * <ol>
-     * <li>value</li>
-     * <li>status</li>
-     * <ol>
+     * <code>DrushExecuter.execute({@linkplain DrushExecuter#variableSet})</code> will not return any values.
+     * The command will fail with an {@link DrushExecutionFailure} if setting the variable was not successful.
      */
-    public static DrushCommand variableSet = new DrushCommand(Arrays.asList("--yes", "vset", "%s", "%s"), null,
-            ".*set\\sto*(.*)\\..*\\[(\\w+)\\]"
-            );
+    public static DrushCommand variableSet = new DrushCommand(Arrays.asList("--yes", "vset", "%s", "%s"), false);
 
     /**
      * @throws IOException
      *             if an I/O error occurs in the ProcessBuilder
      * @throws InterruptedException
      *             if the Process was interrupted
+     * @throws DrushExecutionFailure
+     *              if the drush command execution fails with an error code
      */
-    private void findDrushCommand() throws IOException, InterruptedException {
+    private void findDrushCommand() throws IOException, InterruptedException, DrushExecutionFailure {
 
         if (SystemUtils.IS_OS_WINDOWS) {
             throw new RuntimeException("not yet implmented for Windows");
         }
-
-        List<Object> matches = execute(version);
-        assert !((String) matches.get(0)).isEmpty() : "No suitable drush command found in the system";
-        String majorVersion = (String) matches.get(0);
-        if (Integer.valueOf(majorVersion) < 8) {
+        if(DrushCommand.majorVersion == null) {
+            List<Object> matches = execute(version);
+            DrushCommand.majorVersion = (String) matches.get(0);
+            DrushCommand.minorVersion = (String) matches.get(1);
+            DrushCommand.patchLevel = (String) matches.get(2);
+        }
+        if(DrushCommand.majorVersion.isEmpty()) {
+            throw new RuntimeException("No suitable drush command found in the system");
+        }
+        if (Integer.valueOf(DrushCommand.majorVersion) < 8) {
             throw new RuntimeException("drush version >= 8 required");
         }
+    }
 
+    public String drushVersion() {
+        return DrushCommand.majorVersion + "." + DrushCommand.minorVersion + "." + DrushCommand.patchLevel;
     }
 
     /**
@@ -131,8 +135,10 @@ public class DrushExecuter {
      *             if an I/O error occurs in the ProcessBuilder
      * @throws InterruptedException
      *             if the Process was interrupted
+     * @throws DrushExecutionFailure
+     *              if the drush command execution fails with an error code
      */
-    public List<Object> execute(DrushCommand cmd, String... value) throws IOException, InterruptedException {
+    public List<Object> execute(DrushCommand cmd, String... value) throws IOException, InterruptedException, DrushExecutionFailure {
 
         List<String> executableWithArgs = new ArrayList<>();
 
@@ -186,7 +192,11 @@ public class DrushExecuter {
                 logger.error(error);
             }
         } else {
-            throw new RuntimeException(IOUtils.toString(process.getErrorStream()));
+            throw new DrushExecutionFailure(
+                    executableWithArgs,
+                    IOUtils.toString(process.getInputStream()),
+                    IOUtils.toString(process.getErrorStream())
+                    );
         }
         return matches;
     }
@@ -200,20 +210,18 @@ public class DrushExecuter {
                 if (out == null) {
                     break;
                 }
-                if (out != null) {
-                    Matcher m = regex.matcher(out);
-                    int patternMatchCount = 0;
-                    while (m.find()) {
-                        patternMatchCount++;
-                        if (m.groupCount() > 0) {
-                            for (int g = 1; g <= m.groupCount(); g++) {
-                                matches.add(m.group(g));
-                                logger.debug("match[" + patternMatchCount + "." + g + "]: " + m.group(g));
-                            }
-                        } else {
-                            matches.add(m.group(0));
-                            logger.debug("entire pattern match[" + patternMatchCount + ".0]: " + m.group(0));
+                Matcher m = regex.matcher(out);
+                int patternMatchCount = 0;
+                while (m.find()) {
+                    patternMatchCount++;
+                    if (m.groupCount() > 0) {
+                        for (int g = 1; g <= m.groupCount(); g++) {
+                            matches.add(m.group(g));
+                            logger.debug("match[" + patternMatchCount + "." + g + "]: " + m.group(g));
                         }
+                    } else {
+                        matches.add(m.group(0));
+                        logger.debug("entire pattern match[" + patternMatchCount + ".0]: " + m.group(0));
                     }
                 }
             }
@@ -227,8 +235,6 @@ public class DrushExecuter {
     }
 
     /**
-     * @param matches
-     * @param stream
      * @return depending on the drupal variable type different return types are possible:
      *  <ul>
      *  <li>Object</li>
@@ -238,8 +244,6 @@ public class DrushExecuter {
      *  <li>Double</li>
      *  <li>Integer</li>
      *  </ul>
-     *
-     * @throws IOException
      */
     protected String readExecutionResponse(List<Object> matches, InputStream stream) throws IOException {
         String out = IOUtils.toString(stream);
@@ -265,11 +269,31 @@ public class DrushExecuter {
 
     public static class DrushCommand {
 
+        private static String majorVersion;
+        private static String minorVersion;
+        private static String patchLevel;
         Pattern outRegex;
         Pattern errRegex;
         boolean jsonResult = false;
+        boolean failOnError = false;
         List<String> args = new ArrayList<>();
 
+        /**
+         * For drush commands not supporting output formatting.
+         *
+         * @param args
+         *            the command arguments
+         * @param outRegex
+         *            Regular expression to parse the error stream, capture
+         *            groups will be put into the <code>List</code> of strings
+         *            returned by
+         *            {@link DrushExecuter#execute(DrushCommand, String...)}
+         * @param errRegex
+         *            Regular expression to parse the error stream, capture
+         *            groups will be put into the <code>List</code> of strings
+         *            returned by
+         *            {@link DrushExecuter#execute(DrushCommand, String...)}
+         */
         public DrushCommand(List<String> args, String outRegex, String errRegex) {
             this.args = args;
             if (outRegex != null) {
@@ -281,13 +305,21 @@ public class DrushExecuter {
         }
 
         /**
-         * For drush commands suopporting the {@code --format=json} option.
+         * For drush commands which don't require return value parsing by regex or
+         * which support the {@code --format=json} option to return structured data.
+         *
          * @param args
+         *            the command arguments
          */
-        public DrushCommand(List<String> args) {
+        public DrushCommand(List<String> args, boolean jsonResult) {
             this.args = args;
-            this.jsonResult = true;
+            this.jsonResult = jsonResult;
         }
+
+        public String commandLineString() {
+            return args.stream().collect(Collectors.joining(" "));
+        }
+
     }
 
     /**
@@ -295,8 +327,11 @@ public class DrushExecuter {
      * it too much dependent from the local environment. Once the
      * <code>DrushExecuter</code> is being used in the selenium test suite will
      * be tested implicitly anyway.
+     *
+     * @throws DrushExecutionFailure
+     *              if the drush command execution fails with an error code
      */
-    public static void main(String[] args) throws URISyntaxException {
+    public static void main(String[] args) throws URISyntaxException, DrushExecutionFailure {
         DrushExecuter.logger.setLevel(Level.DEBUG);
         try {
             DrushExecuter dex = new DrushExecuter();
@@ -307,15 +342,22 @@ public class DrushExecuter {
 //            dex.execute(help);
             results = dex.execute(variableSet, "cdm_webservice_url",
                     "http://api.cybertaxonomy.org/cyprus/");
-            if (!results.get(0).equals("http://api.cybertaxonomy.org/cyprus/")) {
-                throw new RuntimeException("unexpected result item 0: " + results.get(0));
-            }
-            if (!results.get(1).equals("success")) {
-                throw new RuntimeException("unexpected result item 1: " + results.get(0));
-            }
             results = dex.execute(variableGet, "cdm_webservice_url");
             if (!results.get(0).equals("http://api.cybertaxonomy.org/cyprus/")) {
                 throw new RuntimeException("unexpected result item 0: " + results.get(0));
+            }
+            // test for command failure:
+            DrushExecutionFailure expectedFailure = null;
+            try {
+                dex.setDrupalRoot(new File("/home/andreas/workspaces/www/invalid-folder"));
+                results = dex.execute(variableGet, "cdm_webservice_url");
+            } catch(DrushExecutionFailure e) {
+                expectedFailure = e;
+            }
+            if(expectedFailure == null) {
+                throw new AssertionError("DrushExecutionFailure expected due to command failure");
+            } else {
+                logger.debug("invalid command has failed as expected");
             }
             // testing remote execution via ssh
             dex.sshHost = "edit-int";

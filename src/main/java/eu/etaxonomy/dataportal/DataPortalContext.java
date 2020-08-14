@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import eu.etaxonomy.drush.DrushExecuter;
+import eu.etaxonomy.drush.DrushExecutionFailure;
 
 /**
  *
@@ -55,7 +56,7 @@ public class DataPortalContext {
         return pageHeader + " | " + getSiteName();
     }
 
-    public DrushExecuter drushExecuter() throws IOException, InterruptedException {
+    public DrushExecuter drushExecuter() throws IOException, InterruptedException, DrushExecutionFailure {
         DrushExecuter dex = new DrushExecuter();
         dex.setDrupalRoot(drupalRoot);
         dex.setSiteURI(siteUri);
