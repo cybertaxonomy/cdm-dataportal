@@ -2838,7 +2838,9 @@ function cdm_dynabox($dynabox_id, $label, $content_url, $theme, $link_alt_text,
   $dynabox_id = preg_replace('/[^a-zA-Z0-9\-]/', '', $dynabox_id);
 
   if(!array_key_exists('class', $attributes)) {
-    $attributes['class'] = array();
+    $attributes['class'] = ["dynabox"];
+  } else {
+    $attributes['class'] = array_merge($attributes['class'], ["dynabox"]);
   }
   $attributes['id'][] = 'dynabox-' . $dynabox_id;
   $dynabox_attributes = drupal_attributes($attributes);

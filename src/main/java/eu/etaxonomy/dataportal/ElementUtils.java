@@ -11,6 +11,7 @@ package eu.etaxonomy.dataportal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -115,6 +116,29 @@ public class ElementUtils {
                 By.xpath("./ul[contains(@class,'footnotes')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
         );
         return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
+    }
+
+    /**
+     * Intended for loggin purposes.
+     * <p>
+     * Creates incomplete markup of the WebElement with the attributes id and class like:
+     * {@code <tagName id="the-id" class="">
+     *
+     * @param we the WebElement
+     * @return the markup
+     */
+    public static String webElementTagToMarkup(WebElement we) {
+        String markup = "<" + we.getTagName();
+        String idAttr = we.getAttribute("id");
+        String classAttr = we.getAttribute("class");
+        if(StringUtils.isNotEmpty(idAttr)) {
+            markup += " id=\""+ classAttr + "\"";
+        }
+        if(StringUtils.isNotEmpty(classAttr)) {
+            markup += " class=\""+ classAttr + "\"";
+        }
+        markup += " >";
+        return markup;
     }
 
 
