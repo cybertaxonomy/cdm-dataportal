@@ -1587,7 +1587,7 @@ function compose_description_elements_distribution($description_elements){
     );
 
 
-    $status = distribution_status_label_and_markup([$description_element]);
+    $status = distribution_status_label_and_markup([$description_element->status]);
 
     $out = '';
     $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
@@ -1617,7 +1617,7 @@ function compose_description_elements_distribution($description_elements){
     $status_label = '';
 
     foreach($distribution_status as $status) {
-      $status_label .= (isset($status->representation_L10n) ? $status_glue : '') . $status->representation_L10n;
+      $status_label .= ($status_label ? $status_glue : '') . $status->representation_L10n ;
       $status_markup .=  '<span class="distributionStatus"> '
         . ($status_markup ? $status_glue : '')
         . '<span class="distributionStatus-' . $status->idInVocabulary . '">'
