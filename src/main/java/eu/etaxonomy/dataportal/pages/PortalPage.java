@@ -1,7 +1,6 @@
 package eu.etaxonomy.dataportal.pages;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -148,13 +147,10 @@ public abstract class PortalPage {
 
         takeScreenShot();
 
-
         // This call sets the WebElement fields.
         PageFactory.initElements(driver, this);
 
         pageHealthChecks();
-
-
 
     }
 
@@ -162,16 +158,7 @@ public abstract class PortalPage {
      *
      */
     protected void pageHealthChecks() {
-
-        try {
-            String ignore_error = "Expecting web service to return pager objects but received an array";
-            List<String> errors = getErrors().stream().filter(str -> str.startsWith(ignore_error)).collect(Collectors.toList());
-            assertTrue("The page must not show an error box", errors.size() == 0);
-        } catch (NoSuchElementException e) {
-            //IGNORE since this is expected!
-        }
         assertFalse("The default footnote list key PAGE_GLOBAL must not occur in the page.", driver.getPageSource().contains("member-of-footnotes-PAGE_GLOBAL"));
-
     }
 
 
