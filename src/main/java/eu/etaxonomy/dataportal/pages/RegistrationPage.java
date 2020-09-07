@@ -10,7 +10,7 @@ package eu.etaxonomy.dataportal.pages;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -36,6 +36,7 @@ public class RegistrationPage extends PortalPage {
 
     protected static String drupalPagePathBase = "cdm_dataportal/registration";
 
+
     @FindBy(id = "registration")
     @CacheLookup
     private WebElement registrationElement;
@@ -53,7 +54,7 @@ public class RegistrationPage extends PortalPage {
 
 
     public RegistrationPage(WebDriver driver, DataPortalContext context, String httpID) throws MalformedURLException, UnsupportedEncodingException {
-        super(driver, context, URLEncoder.encode(URLEncoder.encode(httpID, "UTF-8")));
+        super(driver, context, null, Collections.singletonMap("identifier", httpID));
     }
 
     /**

@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,6 +119,7 @@ public abstract class PortalPage {
         return isZenTheme.booleanValue();
     }
 
+
     /**
      * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
      * implementing the method {@link #getDrupalPageBase()}. The constructor argument <code>pagePathSuffix</code>
@@ -125,10 +128,10 @@ public abstract class PortalPage {
      * <li>{@link #getDrupalPageBase()} returns <code>/cdm_dataportal/taxon</code></li>
      * <li><code>pagePathSuffix</code> gives <code>7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code></li>
      * </ol>
-     * Both are combined to form the URL pathelement <code>/cdm_dataportal/taxon/7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code>
+     * Both are combined to form the URL path element <code>/cdm_dataportal/taxon/7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code>
      *
      */
-    public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix) throws MalformedURLException {
+    public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix, Map<String, String> queryParameters) throws MalformedURLException {
 
         this.driver = driver;
 
@@ -138,7 +141,13 @@ public abstract class PortalPage {
 
         this.initialDrupalPagePath = getDrupalPageBase() + (pagePathSuffix != null ? "/" + pagePathSuffix: "");
 
-        this.pageUrl = new URL(context.getSiteUri().toString() + "?" + DRUPAL_PAGE_QUERY + initialDrupalPagePath);
+        StringBuilder queryStringB = new StringBuilder();
+        if(queryParameters != null && !queryParameters.isEmpty()) {
+            for(Entry<String, String> entry : queryParameters.entrySet()) {
+                queryStringB.append("&").append(entry.getKey()).append("=").append(entry.getValue());
+            }
+        }
+        this.pageUrl = new URL(context.getSiteUri().toString() + "?" + DRUPAL_PAGE_QUERY + initialDrupalPagePath + queryStringB.toString());
 
         // tell browser to navigate to the page
         logger.info("loading " + pageUrl);
@@ -151,7 +160,21 @@ public abstract class PortalPage {
         PageFactory.initElements(driver, this);
 
         pageHealthChecks();
+    }
 
+    /**
+     * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
+     * implementing the method {@link #getDrupalPageBase()}. The constructor argument <code>pagePathSuffix</code>
+     * specifies the specific page to navigate to. For example:
+     * <ol>
+     * <li>{@link #getDrupalPageBase()} returns <code>/cdm_dataportal/taxon</code></li>
+     * <li><code>pagePathSuffix</code> gives <code>7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code></li>
+     * </ol>
+     * Both are combined to form the URL path element <code>/cdm_dataportal/taxon/7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code>
+     *
+     */
+    public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix) throws MalformedURLException {
+        this(driver, context, pagePathSuffix, null);
     }
 
     /**

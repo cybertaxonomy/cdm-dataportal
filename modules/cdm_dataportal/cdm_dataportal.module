@@ -2149,26 +2149,25 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
 /**
  * Returns a registration page as a Drupal node to be rendered by Drupal.
  *
- * @param string  $registration_identifier_encoded
+ * @param string  $registration_identifie
  *   The persistent identifier of the registration urlencoded.
  * @return mixed
  *   The formatted registration page as node.
  */
-function cdm_dataportal_registration_page_view($registration_identifier_encoded) {
+function cdm_dataportal_registration_page_view() {
 
-  cdm_check_valid_portal_page("/\/cdm_dataportal\/registration\/.*$/");
-  $registration_page = cdm_dataportal_registration_view($registration_identifier_encoded);
+  cdm_check_valid_portal_page("/\/cdm_dataportal\/registration/");
+  $registration_identifier = $_REQUEST['identifier'];
+  $registration_page = cdm_dataportal_registration_view($registration_identifier);
   return cdm_node_show_simulate($registration_page);
 }
 
 /**
- * @param $registration_identifier_encoded
+ * @param $registration_identifier
  * @return array
  *   The drupal render array for the registration view.
  */
-function cdm_dataportal_registration_view($registration_identifier_encoded) {
-
-  $registration_identifier = urldecode($registration_identifier_encoded); // FIXME remove
+function cdm_dataportal_registration_view($registration_identifier) {
 
   RenderHints::pushToRenderStack('registration_page');
   RenderHints::setFootnoteListKey('registration_page');
