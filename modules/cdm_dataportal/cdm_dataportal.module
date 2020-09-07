@@ -2168,20 +2168,20 @@ function cdm_dataportal_registration_page_view($registration_identifier_encoded)
  */
 function cdm_dataportal_registration_view($registration_identifier_encoded) {
 
-  $registration_identifier = urldecode($registration_identifier_encoded);
+  $registration_identifier = urldecode($registration_identifier_encoded); // FIXME remove
 
   RenderHints::pushToRenderStack('registration_page');
   RenderHints::setFootnoteListKey('registration_page');
 
   $render_array = array();
-  $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER . $registration_identifier_encoded);
+  $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO, null, 'identifier=' . $registration_identifier);
   if($registration_dto){
 
     drupal_set_title(t('Registration Id:') . ' ' . $registration_identifier, PASS_THROUGH);
     $render_array = compose_registration_dto_full($registration_dto, true);
 
   } else {
-    $status_text = cdm_ws_get(CDM_WS_REGISTRATION_STATUS_BY_IDENTIFIER, array($registration_identifier));
+    $status_text = cdm_ws_get(CDM_WS_REGISTRATION_STATUS, null, 'identifier=' . $registration_identifier);
     if(isset($status_text->String)) {
       $status_text = strtolower($status_text->String);
       if($status_text == 'preparation' || $status_text == 'curation'){
