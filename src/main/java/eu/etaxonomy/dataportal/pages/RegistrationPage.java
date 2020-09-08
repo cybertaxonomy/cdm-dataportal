@@ -11,7 +11,6 @@ package eu.etaxonomy.dataportal.pages;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.Collections;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -31,8 +30,6 @@ public class RegistrationPage extends PortalPage {
 
 
     public static final Logger logger = Logger.getLogger(TaxonProfilePage.class);
-
-    private UUID registrationUuid;
 
     protected static String drupalPagePathBase = "cdm_dataportal/registration";
 
