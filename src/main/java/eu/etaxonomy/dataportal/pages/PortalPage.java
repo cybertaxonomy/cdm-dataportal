@@ -1,6 +1,7 @@
 package eu.etaxonomy.dataportal.pages;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -181,6 +182,13 @@ public abstract class PortalPage {
      *
      */
     protected void pageHealthChecks() {
+        try {
+            String ignore_error = null;
+            List<String> errors = getErrors().stream().filter(str -> ignore_error != null && str.startsWith(ignore_error)).collect(Collectors.toList());
+            assertTrue("The page must not show an error box", errors.size() == 0);
+        } catch (NoSuchElementException e) {
+            //IGNORE since this is expected!
+        }
         assertFalse("The default footnote list key PAGE_GLOBAL must not occur in the page.", driver.getPageSource().contains("member-of-footnotes-PAGE_GLOBAL"));
     }
 
