@@ -60,9 +60,9 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         List<WebElement> summaryRows = specimensTable.findElements(By.cssSelector("tr.summary_row"));
         List<WebElement> detailRows = specimensTable.findElements(By.cssSelector("tr.detail_row"));
         assertEquals(3, summaryRows.size());
-        assertEquals("Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047.", summaryRows.get(0).getText());
-        assertEquals("Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047.", summaryRows.get(1).getText());
-        assertEquals("Germany, Berlin, 2.4.1835.", summaryRows.get(2).getText());
+        assertEquals("Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047.", summaryRows.get(0).getText());
+        assertEquals("Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047.", summaryRows.get(1).getText());
+        assertEquals("Germany, Berlin, 2 Apr 1835.", summaryRows.get(2).getText());
 
 
         // Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047.
