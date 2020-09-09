@@ -79,7 +79,8 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Germany", dl1.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl1.joinedDescriptionElementText("Locality:"));
         BaseElement descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(3, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        assertEquals(4, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        // TODO one of the links is a footnote key for which the footnote is missing
         LinkElement link1 = descriptionListContainer.getLinksInElement().get(0);
         assertEquals("Detail page", link1.getText());
         assertTrue(link1.getUrl().endsWith("/cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
@@ -90,13 +91,14 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("2017E68", dl2.joinedDescriptionElementText("Accession number:"));
         assertEquals("\nCode:\nCEDiT", dl2.joinedDescriptionElementText("Collection"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
-        assertEquals("Epitype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (CEDiT 2017E68).",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171): Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (CEDiT 2017E68).",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         DescriptionElement specimenTypeDesignation_dd = dl2.getDescriptionGroups().get("Specimen type designations:").get(0);
         List<LinkElement> specimenTypeDesignationLinks = specimenTypeDesignation_dd.getDescriptionElementContent().getLinksInElement();
-        assertEquals(1, specimenTypeDesignationLinks.size());
-        assertEquals("CEDiT 2017E68", specimenTypeDesignationLinks.get(0).getText());
-        assertTrue(specimenTypeDesignationLinks.get(0).getUrl().endsWith("cdm_dataportal/occurrence/8585081c-b73b-440b-b349-582845cf3fb4"));
+        assertEquals(2, specimenTypeDesignationLinks.size());
+        // TODO one of the links is a footnote key for which the footnote is missing
+        assertEquals("CEDiT 2017E68", specimenTypeDesignationLinks.get(1).getText());
+        assertTrue(specimenTypeDesignationLinks.get(1).getUrl().endsWith("cdm_dataportal/occurrence/8585081c-b73b-440b-b349-582845cf3fb4"));
 
         // Germany, Berlin, 52°31'1.2"N, 13°21'E, 28.3.2016, D047.
         summaryRows.get(1).click(); // make the row visible
@@ -110,7 +112,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Germany", dl1.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl1.joinedDescriptionElementText("Locality:"));
         descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(5, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        assertEquals(6, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
         link1 = descriptionListContainer.getLinksInElement().get(0);
         assertEquals("Detail page", link1.getText());
         assertTrue(link1.getUrl().endsWith("/cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
@@ -121,14 +123,14 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("M-0289351", dl2.joinedDescriptionElementText("Accession number:"));
         assertEquals("\nCode:\nM", dl2.joinedDescriptionElementText("Collection"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
-        assertEquals("Isolectotype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
+        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172): Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         specimenTypeDesignationLinks = dl2.getDescriptionGroups().get("Specimen type designations:").get(0).getDescriptionElementContent().getLinksInElement();
-        assertEquals(2, specimenTypeDesignationLinks.size());
-        assertEquals("M M-0289351", specimenTypeDesignationLinks.get(0).getText());
-        assertTrue(specimenTypeDesignationLinks.get(0).getUrl().endsWith("cdm_dataportal/occurrence/e86c5acd-de55-44af-99f7-484207657264"));
-        assertEquals("http://herbarium.bgbm.org/object/B400042045", specimenTypeDesignationLinks.get(1).getText());
-        assertEquals("http://herbarium.bgbm.org/object/B400042045", specimenTypeDesignationLinks.get(1).getUrl().toString());
+        assertEquals(3, specimenTypeDesignationLinks.size());
+        assertEquals("M M-0289351", specimenTypeDesignationLinks.get(1).getText());
+        assertTrue(specimenTypeDesignationLinks.get(1).getUrl().endsWith("cdm_dataportal/occurrence/e86c5acd-de55-44af-99f7-484207657264"));
+        assertEquals("http://herbarium.bgbm.org/object/B400042045", specimenTypeDesignationLinks.get(2).getText());
+        assertEquals("http://herbarium.bgbm.org/object/B400042045", specimenTypeDesignationLinks.get(2).getUrl().toString());
 
     }
 
