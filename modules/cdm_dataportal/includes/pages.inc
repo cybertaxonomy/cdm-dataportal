@@ -38,7 +38,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
     RenderHints::pushToRenderStack('taxon_page_specimens');
 
     $fieldUnitDTOs = null;
-    $specimensOrObservations = null;
+    $specimensOrObservations = array();
     if (variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
       // get fieldUnitDTOs
       $fieldUnitDTOs = cdm_ws_get(CDM_WS_TAXON_FIELDUNIT_DTOS, array( $taxon->uuid));
@@ -56,7 +56,6 @@ function compose_cdm_taxon_page_specimens($taxon) {
         null,
         $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
       );
-      $specimensOrObservations = array();
       if (isset($pager->records[0])) {
         $specimensOrObservations = $pager->records;
       }
