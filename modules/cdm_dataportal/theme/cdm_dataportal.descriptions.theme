@@ -146,8 +146,11 @@ function theme_cdm_polytomousKey($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Theme function for creating a linked style representation for a polytomous key.
+ * <p>
+ * The linked style is the only kind of representations implemented so far.
+ *
+ * @ingroup theme
  */
 function theme_cdm_polytomousKey_linkedStyle_subgraph($variables) {
   $polytomousKeyNode = $variables['polytomousKeyNode'];

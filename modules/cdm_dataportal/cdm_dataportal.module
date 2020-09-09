@@ -1337,17 +1337,6 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _load_taxonBase(&$taxonBase) {
-  if (isset($taxonBase->uuid)) {
-    $taxonBase->name = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxonBase->uuid, "name"));
-    $taxonBase->name->nomenclaturalSource = cdm_ws_get(CDM_WS_NAME, array($taxonBase->name->uuid, "nomenclaturalSource"));
-  }
-}
-
-/**
  * Loads the media associated to the given taxon from the cdm server.
  * The aggregation settings regarding taxon relathionships and
  * taxonnomic childen are taken into account.
@@ -1596,7 +1585,7 @@ function _load_polytomousKeySubGraph(&$polytomousKeyNode) {
     return;
   }
 
-  $polytomousKeyNode = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, $polytomousKeyNode->uuid);
+  $polytomousKeyNode = cdm_ws_get(CDM_WS_PORTAL_POLYTOMOUSKEY_NODE, $polytomousKeyNode->uuid);
 
   if (!$polytomousKeyNode) {
     // drupal_set_message("_load_polytomousKeyChildNodes() : could not load polytomousKeyNode", "error");
@@ -1607,13 +1596,6 @@ function _load_polytomousKeySubGraph(&$polytomousKeyNode) {
   foreach ($polytomousKeyNode->children as &$childNode) {
     _load_polytomousKeySubGraph($childNode);
   }
-
-  // Load subkey.
-  $polytomousKeyNode->subkey = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, array($polytomousKeyNode->uuid, "subkey"));
-
-  // Load taxon.
-  $polytomousKeyNode->taxon = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, array($polytomousKeyNode->uuid, "taxon"));
-  _load_taxonBase($polytomousKeyNode->taxon);
   return;
 }
 
