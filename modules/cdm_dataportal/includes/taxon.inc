@@ -380,8 +380,8 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   // Now rendering starts ..
   RenderHints::pushToRenderStack('related_taxon');
 
-  if (isset($taxon->name->nomenclaturalReference)) {
-    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+  if (isset($taxon->name->nomenclaturalSource->citation)) {
+    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
   }
   $taxonUri = '';
   if ($doLinkTaxon) {
@@ -464,8 +464,8 @@ function cdm_accepted_for($accepted_for_uuid) {
     $out .= '<span class="acceptedFor">';
     $out .= t('is accepted for ');
     $referenceUri = null;
-    if (isset($synonym->name->nomenclaturalReference)) {
-      $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
+    if (isset($synonym->name->nomenclaturalSource->citation)) {
+      $referenceUri = url(path_to_reference($synonym->name->nomenclaturalSource->citation->uuid));
     }
     $out .= render_taxon_or_name($synonym->name, NULL, $referenceUri);
     $annotations_and_sources = handle_annotations_and_sources(
@@ -576,8 +576,8 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
 
           $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
           $referenceUri = '';
-          if (isset($acceptedTaxon->name->nomenclaturalReference)) {
-            $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
+          if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
+            $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
           }
           $taxon_or_name = $is_synonym ? $taxon->name : $taxon;
           // $taxon_or_name this is a trick to suppress the sec reference for synonyms
@@ -615,8 +615,8 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       // Its a Taxon.
       $taxonUri = url(path_to_taxon($taxon->uuid));
       $referenceUri = '';
-      if (isset($taxon->name->nomenclaturalReference)) {
-        $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+      if (isset($taxon->name->nomenclaturalSource->citation)) {
+        $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
       }
       $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri);
       if ($show_classification) {

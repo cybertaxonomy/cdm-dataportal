@@ -251,27 +251,26 @@ function get_partDefinition($taxonNameType) {
  * part_definitions and render_templates (see get_partDefinition() and
  * get_nameRenderTemplate())
  *
- * @param $taxonName
- *    cdm TaxonName instance
+ * @param $taxon_name_or_taxon_base
+ *    A cdm TaxonBase or TaxonName entity
  * @param $name_link
- *    URI to the taxon, @see path_to_taxon(), must be processed by url() before passing to this method
- * @param $reference_link
- *    URI to the reference, @see path_to_reference(), must be processed by url() before passing to this method
- * @param $show_annotations
+ *    URI to the taxon, @param $reference_link
+ *    URI to the reference, @param bool $show_annotations
  *    turns the display of annotations on
- * @param $is_type_designation
+ * @param bool $is_type_designation
  *    To indicate that the supplied taxon name is a name type designation.
- * @param $skiptags
+ * @param array $skiptags
  *    an array of name elements tags like 'name', 'rank' to skip. The name part
  *          'authors' will not ber affected by this filter. This part is managed though the render template
  *          mechanism.
- * @param $is_invalid
+ * @param bool $is_invalid
  *   Indicates that this taxon is invalid. In this case the name part will be shown in double quotes.
  *   This is useful when rendering taxon relation ships.
  *
  * @return string
  *  The markup for a taxon name.
- *
+ * @see path_to_taxon(), must be processed by url() before passing to this method
+ * @see path_to_reference(), must be processed by url() before passing to this method
  */
 function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $reference_link = NULL,
   $show_annotations = true, $is_type_designation = false, $skiptags = array(), $is_invalid = false) {
@@ -413,12 +412,12 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
     if (isset($renderTemplate['referencePart']['reference'])) {
       $microreference = NULL;
-      if (isset($renderTemplate['referencePart']['microreference'])&& isset($taxonName->nomenclaturalMicroReference)) {
-        $microreference = $taxonName->nomenclaturalMicroReference;
+      if (isset($renderTemplate['referencePart']['microreference'])&& isset($taxonName->nomenclaturalSource->citationMicroReference)) {
+        $microreference = $taxonName->nomenclaturalSource->citationMicroReference;
       }
-      if(count($nomref_tagged_text) == 0 && isset($taxonName->nomenclaturalReference)){
+      if(count($nomref_tagged_text) == 0 && isset($taxonName->nomenclaturalSource->citation)){
         // TODO is this case still relevant? The tagged text should already contain all information!
-        $citation = cdm_ws_getNomenclaturalReference($taxonName->nomenclaturalReference->uuid, $microreference);
+        $citation = cdm_ws_getNomenclaturalReference($taxonName->nomenclaturalSource->citation->uuid, $microreference);
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
         if (str_beginsWith($citation, ", in")) {
@@ -460,8 +459,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
   $is_reference_year = false;
   if (isset($renderTemplate['referenceYearPart']['reference.year'])) {
-    if(isset($taxonName->nomenclaturalReference->datePublished)){
-      $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxonName->nomenclaturalReference->datePublished) . '</span>';
+    if(isset($taxonName->nomenclaturalSource->citation->datePublished)){
+      $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxonName->nomenclaturalSource->citation->datePublished) . '</span>';
       array_setr('reference.year', $referenceArray, $renderTemplate);
       $is_reference_year = true;
     }
@@ -935,8 +934,8 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
 
         }
         $referenceUri = '';
-        if (isset($name_type_designation->typeName->nomenclaturalReference)) {
-          $referenceUri = url(path_to_reference($name_type_designation->typeName->nomenclaturalReference->uuid));
+        if (isset($name_type_designation->typeName->nomenclaturalSource->citation)) {
+          $referenceUri = url(path_to_reference($name_type_designation->typeName->nomenclaturalSource->citation->uuid));
         }
         $out .= ': ' . render_taxon_or_name($name_type_designation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
       }

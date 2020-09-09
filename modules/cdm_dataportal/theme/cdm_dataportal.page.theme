@@ -32,8 +32,8 @@ function theme_cdm_taxon_page_title($variables) {
   RenderHints::pushToRenderStack('taxon_page_title');
   $referenceUri = '';
   $out = '';
-  if (isset($taxon->name->nomenclaturalReference)) {
-    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+  if (isset($taxon->name->nomenclaturalSource->citation)) {
+    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
   }
 
   $out .= render_taxon_or_name($taxon, NULL, $referenceUri, FALSE);
@@ -192,8 +192,8 @@ function theme_cdm_name_page_title($variables) {
   RenderHints::pushToRenderStack('name_page_title');
 
   $referenceUri = NULL;
-  if (isset($taxon_name->nomenclaturalReference)) {
-    $referenceUri = url(path_to_reference($taxon_name->nomenclaturalReference->uuid));
+  if (isset($taxon_name->nomenclaturalSource->citation)) {
+    $referenceUri = url(path_to_reference($taxon_name->nomenclaturalSource->citation->uuid));
   }
 
   $out = '<span class="' . html_class_attribute_ref($taxon_name) . '">'

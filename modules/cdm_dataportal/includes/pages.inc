@@ -700,8 +700,8 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
       $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
       $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon->sec->titleCache . '</div>';
     }
-    if (isset($taxon->name->nomenclaturalReference)) {
-      $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+    if (isset($taxon->name->nomenclaturalSource->citation)) {
+      $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
     }
 
     $accepted_name .= '<div class="accepted-name">';

@@ -1342,9 +1342,8 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
  */
 function _load_taxonBase(&$taxonBase) {
   if (isset($taxonBase->uuid)) {
-    $taxonBase->name = cdm_ws_get(CDM_WS_TAXON, array($taxonBase->uuid, "name"));
-    $taxonBase->name->taggedName = cdm_ws_get(CDM_WS_NAME, array($taxonBase->name->uuid, "taggedName"));
-    $taxonBase->name->nomenclaturalReference = cdm_ws_get(CDM_WS_NAME, array($taxonBase->name->uuid, "nomenclaturalReference"));
+    $taxonBase->name = cdm_ws_get(CDM_WS_PORTAL_TAXON, array($taxonBase->uuid, "name"));
+    $taxonBase->name->nomenclaturalSource = cdm_ws_get(CDM_WS_NAME, array($taxonBase->name->uuid, "nomenclaturalSource"));
   }
 }
 
