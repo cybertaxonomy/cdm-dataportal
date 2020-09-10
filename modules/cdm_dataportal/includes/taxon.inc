@@ -470,7 +470,7 @@ function cdm_accepted_for($accepted_for_uuid) {
     $out .= render_taxon_or_name($synonym->name, NULL, $referenceUri);
     $annotations_and_sources = handle_annotations_and_sources(
       $synonym,
-      annotations_and_source_config(),
+      synonymy_annotations_and_source_config(),
       '',
       RenderHints::getFootnoteListKey());
     $out .= $annotations_and_sources['foot_note_keys'];
