@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,9 +50,6 @@ import eu.etaxonomy.dataportal.selenium.UrlLoaded;
  */
 public abstract class PortalPage {
 
-    /**
-     *
-     */
     public static final int WAIT_SECONDS = 25;
 
     public static final Logger logger = Logger.getLogger(PortalPage.class);
@@ -71,6 +69,21 @@ public abstract class PortalPage {
     public WebDriverWait getWait() {
         return wait;
     }
+
+    public static enum HealthChecks {
+        NO_ERROR, NO_WARNING;
+    }
+
+    public EnumSet<HealthChecks> getAciveHealthChecks() {
+        return aciveHealthChecks;
+    }
+
+
+    public void setAciveHealthChecks(EnumSet<HealthChecks> aciveHealthChecks) {
+        this.aciveHealthChecks = aciveHealthChecks;
+    }
+
+    private EnumSet<HealthChecks> aciveHealthChecks = EnumSet.allOf(HealthChecks.class);
 
 
     /**
@@ -183,9 +196,16 @@ public abstract class PortalPage {
      */
     protected void pageHealthChecks() {
         try {
-            String ignore_error = null;
-            List<String> errors = getErrors().stream().filter(str -> ignore_error != null && str.startsWith(ignore_error)).collect(Collectors.toList());
-            assertTrue("The page must not show an error box", errors.size() == 0);
+            if(getAciveHealthChecks().contains(HealthChecks.NO_ERROR)) {
+                String ignore_error = null;
+                List<String> errors = getErrors().stream().filter(str -> ignore_error != null && str.startsWith(ignore_error)).collect(Collectors.toList());
+                assertTrue("The page must not show an error box", errors.size() == 0);
+            }
+            if(getAciveHealthChecks().contains(HealthChecks.NO_WARNING)) {
+                String ignore_warning = null;
+                List<String> warnings = getErrors().stream().filter(str -> ignore_warning != null && str.startsWith(ignore_warning)).collect(Collectors.toList());
+                assertTrue("The page must not show an warning box", warnings.size() == 0);
+            }
         } catch (NoSuchElementException e) {
             //IGNORE since this is expected!
         }
