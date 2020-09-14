@@ -106,7 +106,8 @@ define('EXTENSION_TYPES_VISIBLE_DEFAULT', serialize([]));
    */
   define('EDIT_MAPSERVER_URI', serialize(
       array(
-        'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)'
+        'http://edit.africamuseum.be'=>'Primary (http://edit.africamuseum.be)',
+        'http://geocatalogue.africamuseum.be'=>'Temporary for migration (http://geocatalogue.africamuseum.be)'
       )
     )
   );
