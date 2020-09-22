@@ -227,6 +227,7 @@
       /* this is usually the <div id="openlayers"> element */
       var mapContainerElement = mapElement.parent();
 
+      var errorMessageCtl;
       var defaultControls = [
          new OpenLayers.Control.PanZoom(),
          new OpenLayers.Control.Navigation(
@@ -237,7 +238,6 @@
            }
          )
       ];
-
 
       var layerByNameMap = {
               tdwg1: 'topp:tdwg_level_1',
@@ -281,6 +281,15 @@
             jQuery(map.div).parent().remove();
         }
 
+        function reportAjaxError(textStatus, requestUrl, errorThrown) {
+            if (!textStatus) {
+                textStatus = "error";
+            }
+            log(textStatus + " requesting  " + requestUrl + " filed after timeout " + errorThrown, true);
+            errorMessageCtl.show();
+            errorMessageCtl.add(textStatus + ":" + errorThrown);
+        }
+
         /**
          *
          */
@@ -317,7 +326,7 @@
               distributionQuery = mergeQueryStrings(distributionQuery, 'bbox=' + boundingBox);
             }
 
-            distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
+            // distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
             var legendFormatQuery = mapElement.attr('data-legendFormatQuery');
             if(legendFormatQuery !== undefined){
               legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
@@ -328,11 +337,15 @@
             LAYER_DATA_CNT++;
             jQuery.ajax({
               url: mapServiceRequest,
-              dataType: "jsonp",
+              dataType: "json",
+                timeout: 5000,
               success: function(data){
                   var layers = createDataLayer(data, "AREA");
                   addLayers(layers);
                 // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
+              },
+              error: function(jqXHR, textStatus, errorThrown){
+                  reportAjaxError(textStatus, mapServiceRequest, errorThrown);
               }
             });
           }
@@ -360,12 +373,15 @@
             LAYER_DATA_CNT++;
             jQuery.ajax({
               url: mapServiceRequest,
-              dataType: "jsonp",
+              dataType: "json",
               success: function(data){
                   var layers = createDataLayer(data, "POINT");
                   addLayers(layers);
                   // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
-              }
+              },
+                error: function(jqXHR, textStatus, errorThrown){
+                    reportAjaxError(textStatus, mapServiceRequest, errorThrown);
+                }
             });
           }
 
@@ -391,6 +407,7 @@
                 kmlLayer.events.on({
                     "featureselected": onKmlFeatureSelect,
                     "featureunselected": onKmlFeatureUnselect,
+                    "reportError": true,
                     'loadend': function(event) {
                         if(opts.hideEmptyMap && kmlLayer.features.length == 0){
                             log("No feature in KML layer, removing map ...")
@@ -603,8 +620,12 @@
           if(opts.showLayerSwitcher === true){
               defaultControls.push(new OpenLayers.Control.LayerSwitcher({'ascending':false}));
           }
+          errorMessageCtl = errorMessageControl();
+          errorMessageCtl.deactivate(); // initially inactive
+          defaultControls.push(errorMessageCtl);
 
           defaultControls.unshift(layerLoadingControl()); // as first control, needs to be below all others!
+
 
 //          var maxExtentByAspectRatio = cropBoundsToAspectRatio(defaultBaseLayer.maxExtent, getWidth/getHeight);
           var maxResolution = null;
@@ -857,8 +878,7 @@
 
             jQuery.ajax({
               url: opts.wfsRootUrl + "?" + jQuery.param(parameters),
-              dataType: 'jsonp',
-              jsonpCallback: 'getJson',
+              dataType: 'json',
               success: function(data, textStatus, jqXHR){
                 if(data.crs && data.crs.type && data.crs.properties.code){
                   var projectionName = data.crs.type + "_" + data.crs.properties.code;
@@ -1256,6 +1276,9 @@
 
         LAYERS_LOADING: 0,
 
+        type: 'LayerLoading',
+        title: 'Layer loading',
+
         updateState: function () {
           if(this.div != null){
             if (this.LAYERS_LOADING > 0) {
@@ -1271,6 +1294,7 @@
           this.div.style.height = this.map.size.h  + "px";
           this.div.style.textAlign = "center";
           this.div.style.lineHeight = this.map.size.h  + "px";
+          this.div.style.backgroundColor= 'rgba(255, 255, 255, 0.3)';
         },
 
         counterIncrease: function (layer) {
@@ -1322,6 +1346,79 @@
 
       return control;
     }
+
+    var errorMessageControl = function() {
+
+            var control = new OpenLayers.Control();
+
+            OpenLayers.Util.extend(control, {
+
+                messageText: "The map is currently broken due to problems with the map server.",
+
+                type: 'ErrorMessages',
+                title: 'Error messages',
+
+                errorDetails: null,
+
+                updateState: function () {
+                    if(this.div != null){
+                        if (this.LAYERS_LOADING > 0) {
+                            this.div.style.display = "block";
+                        } else {
+                            this.div.style.display = "none";
+                        }
+                    }
+                },
+
+                updateSize: function () {
+                    this.div.style.width = this.map.size.w + "px";
+                    this.div.style.height = this.map.size.h  + "px";
+                },
+
+                addErrorMessage: function(errorText){
+                    var li1 = document.createElement("li");
+                    li1.appendChild(document.createTextNode(errorText));
+                    this.errorDetails.appendChild(li1);
+                },
+                hide: function(){
+                    this.div.style.display = 'none';
+                },
+                show: function(){
+                    this.div.style.display = 'flex';
+                },
+
+                draw: function () {
+
+                    // call the default draw function to initialize this.div
+                    OpenLayers.Control.prototype.draw.apply(this, arguments);
+
+                    this.map.events.register('updatesize', this, function(e){
+                            this.updateSize();
+                        }
+                    );
+
+                    // using flexbox here!
+                    //see this.show();
+                    this.div.style.justifyContent = "center";
+                    this.div.style.alignItems = "center";
+
+                    this.errorDetails = document.createElement("ul");
+                    this.errorDetails.setAttribute('style', 'font-size:80%');
+
+                    var contentDiv = document.createElement("div");
+                    contentDiv.appendChild(document.createTextNode(this.messageText));
+
+                    contentDiv.appendChild(this.errorDetails);
+                    this.div.setAttribute('style', 'background-color: rgba(200, 200, 200, 0.3);');
+                    this.div.appendChild(contentDiv);
+
+                    this.updateSize();
+                    this.hide();
+                    return this.div;
+                },
+            });
+            return control;
+        }
 
     }; // end of CdmOpenLayers.Map
 })();
