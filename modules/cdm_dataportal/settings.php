@@ -123,7 +123,7 @@ define('EXTENSION_TYPES_VISIBLE_DEFAULT', serialize([]));
 //        'v1.2_dev' => 'v1.2_dev',// no longer recommended
         'v1.2' => 'v1.2',
         'v1.3_dev' => 'v1.3_dev (not recommended)',
-        'v1.4_dev' => 'v1.4_dev (experimental features)'
+        'v1.4_dev' => 'v1.4_dev (latest features)'
       )
     )
   );
