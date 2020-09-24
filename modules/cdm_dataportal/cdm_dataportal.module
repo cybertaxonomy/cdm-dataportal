@@ -2996,4 +2996,27 @@ function diff_viewer($text_a, $text_b) {
   return $diff_viewer_markup;
 }
 
+/**
+ * ====== EXPERIMENTAL only used by Euro+Med ===============
+ */
+
+
+/**
+ * See
+ *  - https://dev.e-taxonomy.eu/redmine/issues/9233
+ *  - https://www.drupal.org/project/feedback_simple
+ *  - https://www.drupal.org/node/1299158
+ * Implements hook_preprocess_feedback_simple().
+ *
+ * TODO: move into separate module
+ */
+function cdm_dataportal_preprocess_feedback_simple(&$variables) {
+  // Add modal_forms classes.
+  $variables['class'][] = 'ctools-use-modal';
+  // Uncomment either small, medium or large.
+  $variables['class'][] = 'ctools-modal-modal-popup-small';
+  // $variables['class'][] = 'ctools-modal-modal-popup-medium';
+  // $variables['class'][] = 'ctools-modal-modal-popup-large';
+}
+
 
