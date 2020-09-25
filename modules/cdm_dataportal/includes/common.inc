@@ -940,6 +940,20 @@ function annotations_and_sources_config_occurrences() {
   return $annotations_and_sources_config;
 }
 
+function annotation_and_source_config_taxon_node() {
+  static $conf = null;
+  if(!$conf){
+    $bibliography_settings = get_bibliography_settings();
+    $conf = [
+      'sources_as_content' => false,
+      'link_to_name_used_in_source' => false,
+      'link_to_reference' => true,
+      'add_footnote_keys' => true,
+      'bibliography_aware' => $bibliography_settings['enabled'] == 1
+  ];
+  }
+  return $conf;
+}
 
 /**
  * Creates a handle_annotations_and_sources configuration array from feature_block_settings.

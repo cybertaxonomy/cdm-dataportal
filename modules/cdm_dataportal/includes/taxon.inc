@@ -427,15 +427,11 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 function render_taxon_and_name_footnotes($taxon) {
   $annotations_and_sources_taxon = handle_annotations_and_sources(
     $taxon,
-    synonymy_annotations_and_source_config(),
-    '',
-    RenderHints::getFootnoteListKey()
+    synonymy_annotations_and_source_config()
   );
   $annotations_and_sources_name = handle_annotations_and_sources(
     $taxon->name,
-    synonymy_annotations_and_source_config(),
-    '',
-    RenderHints::getFootnoteListKey()
+    synonymy_annotations_and_source_config()
   );
   $footnotes = $annotations_and_sources_taxon['foot_note_keys'] .
     ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ',' : '') .
@@ -470,9 +466,8 @@ function cdm_accepted_for($accepted_for_uuid) {
     $out .= render_taxon_or_name($synonym->name, NULL, $referenceUri);
     $annotations_and_sources = handle_annotations_and_sources(
       $synonym,
-      synonymy_annotations_and_source_config(),
-      '',
-      RenderHints::getFootnoteListKey());
+      synonymy_annotations_and_source_config()
+    );
     $out .= $annotations_and_sources['foot_note_keys'];
     $out .= '</span>';
   }

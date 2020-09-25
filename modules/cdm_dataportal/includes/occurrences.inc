@@ -542,9 +542,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 'link_to_name_used_in_source' => 1,
                                 'link_to_reference' => 0,
                                 'add_footnote_keys' => 0
-                            ),
-                            NULL,
-                            RenderHints::getFootnoteListKey()
+                            )
                         );
                         if (!empty($annotations_and_sources['source_references'])) {
                             @_description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources['source_references']), '', 12);

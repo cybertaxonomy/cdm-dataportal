@@ -946,9 +946,8 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
       }
       $annotations_and_sources = handle_annotations_and_sources(
         $name_type_designation,
-        annotations_and_sources_config_typedesignations(),
-        '',
-        RenderHints::getFootnoteListKey());
+        annotations_and_sources_config_typedesignations()
+      );
       $out .= $annotations_and_sources['foot_note_keys'];
     }
   } // END NameTypeDesignation
@@ -1014,9 +1013,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         }
         $annotations_and_sources = handle_annotations_and_sources(
           $derivedUnitFacadeInstance,
-          annotations_and_sources_config_typedesignations(),
-          '',
-          RenderHints::getFootnoteListKey()
+          annotations_and_sources_config_typedesignations()
         );
         $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
           . $specimen_markup
@@ -1044,9 +1041,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           'link_to_reference' => true,
           'add_footnote_keys' => true,
           'bibliography_aware' => false
-        ),
-        '',
-        RenderHints::getFootnoteListKey() // passing a defined key to avoid a separate annotation footnote key see https://dev.e-taxonomy.eu/redmine/issues/8543
+        )
       );
       $encasement =  $textual_type_designation->verbatim ? '"' : '';
       $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
@@ -1129,9 +1124,7 @@ function compose_name_type_designations($type_entity_refs_by_status){
       // annotations and sources for the $derived_unit_facade_dto
       $annotations_and_sources = handle_annotations_and_sources(
         $name_type_entity_ref,
-        annotations_and_sources_config_typedesignations(),
-        '',
-        RenderHints::getFootnoteListKey()
+        annotations_and_sources_config_typedesignations()
       );
 
       $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  . '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
@@ -1184,9 +1177,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
       // annotations and sources for the $derived_unit_facade_dto
       $annotations_and_sources = handle_annotations_and_sources(
         $derived_unit_facade_dto,
-        annotations_and_sources_config_typedesignations(),
-        '',
-        RenderHints::getFootnoteListKey()
+        annotations_and_sources_config_typedesignations()
       );
       $source_citations = $annotations_and_sources['source_references'];
       $foot_note_keys = $annotations_and_sources['foot_note_keys'];
@@ -1217,9 +1208,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
         // citation and detail for the media specimen
         $annotations_and_sources = handle_annotations_and_sources(
           $mediaSpecimen,
-          annotations_and_sources_config_typedesignations(),
-          '',
-          RenderHints::getFootnoteListKey()
+          annotations_and_sources_config_typedesignations()
         );
         if(is_array( $annotations_and_sources['source_references'])){
           $source_citations = array_merge($source_citations, $annotations_and_sources['source_references']);
