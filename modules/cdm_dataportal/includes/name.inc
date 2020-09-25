@@ -255,7 +255,8 @@ function get_partDefinition($taxonNameType) {
  *    A cdm TaxonBase or TaxonName entity
  * @param $name_link
  *    URI to the taxon, @param $reference_link
- *    URI to the reference, @param bool $show_annotations
+ *    URI to the reference,
+ * @param bool $show_annotations
  *    turns the display of annotations on
  * @param bool $is_type_designation
  *    To indicate that the supplied taxon name is a name type designation.
@@ -579,7 +580,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
   $out .= '</span>';
   if ($show_annotations) {
-    // $out .= render_entities_annotations_as_footnote_keys([$taxonName]);
+      $annotations_and_sources = handle_annotations_and_sources(
+      $taxonName,
+      typedesignations_annotations_and_sources_config() /* FIXME use right config! */
+    );
+    $out .= $annotations_and_sources['foot_note_keys'];
   }
   return $out;
 }
@@ -1251,52 +1256,6 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
     $render_array['map'] = array();
   }
   return $render_array;
-}
-
-/**
- * Provides the default configuration for typedesignations which
- * are passed to the handle_annotations_and_sources()
- * function:
- * - 'sources_as_content' => TRUE,
- * - 'link_to_name_used_in_source' => FALSE,
- * - 'link_to_reference' => TRUE,
- * - 'add_footnote_keys' => FALSE,
- * - 'bibliography_aware' => FALSE
- *
- * @return array
- */
-function typedesignations_annotations_and_sources_config() {
-  static $annotations_and_sources_config = [
-    'sources_as_content' => TRUE,
-    'link_to_name_used_in_source' => FALSE,
-    'link_to_reference' => TRUE,
-    'add_footnote_keys' => FALSE,
-    'bibliography_aware' => FALSE
-  ];
-  return $annotations_and_sources_config;
-}
-
-/**
- * Provides the default configuration for occurrences which
- * are passed to the handle_annotations_and_sources()
- * function:
- * - 'sources_as_content' => TRUE,
- * - 'link_to_name_used_in_source' => TRUE,
- * - 'link_to_reference' => FALSE,
- * - 'add_footnote_keys' => FALSE,
- * - 'bibliography_aware' => FALSE
- *
- * @return array
- */
-function occurrences_annotations_and_sources_config() {
-  static $annotations_and_sources_config = [
-    'sources_as_content' => TRUE,
-    'link_to_name_used_in_source' => TRUE,
-    'link_to_reference' => FALSE,
-    'add_footnote_keys' => FALSE,
-    'bibliography_aware' => FALSE
-  ];
-  return $annotations_and_sources_config;
 }
 
 /**

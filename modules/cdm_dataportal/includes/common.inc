@@ -892,6 +892,82 @@ function icon_link($path, $fragment = '') {
   return $iconlink;
 }
 
+/* ============ annotations_and_sources handling =================== */
+
+/**
+ * Provides a consistent way to create the associative array to configure
+ * the display of the annotations and sources.
+ * The array has the following keys
+ *   - sources_as_content
+ *   - link_to_name_used_in_source
+ *   - link_to_reference
+ *   - add_footnote_keys
+ *   - bibliography_aware
+ *
+ * @param $sources_as_content
+ * @param $link_to_name_used_in_source
+ * @param $link_to_reference
+ * @param $add_footnote_keys
+ * @param $bibliography_aware
+ *
+ * @return array
+ */
+function annotations_and_sources_config($sources_as_content, $link_to_name_used_in_source,
+                                        $link_to_reference, $add_footnote_keys,
+                                        $bibliography_aware){
+  return $annotations_and_sources_config = [
+    'sources_as_content' => $sources_as_content,
+    'link_to_name_used_in_source' => $link_to_name_used_in_source,
+    'link_to_reference' => $link_to_reference,
+    'add_footnote_keys' => $add_footnote_keys,
+    'bibliography_aware' => $bibliography_aware
+  ];
+}
+/**
+ * Provides the default configuration for typedesignations which
+ * are passed to the handle_annotations_and_sources()
+ * function:
+ * - 'sources_as_content' => TRUE,
+ * - 'link_to_name_used_in_source' => FALSE,
+ * - 'link_to_reference' => TRUE,
+ * - 'add_footnote_keys' => FALSE,
+ * - 'bibliography_aware' => FALSE
+ *
+ * @return array
+ */
+function typedesignations_annotations_and_sources_config() {
+  static $annotations_and_sources_config = [
+    'sources_as_content' => TRUE,
+    'link_to_name_used_in_source' => FALSE,
+    'link_to_reference' => TRUE,
+    'add_footnote_keys' => FALSE,
+    'bibliography_aware' => FALSE
+  ];
+  return $annotations_and_sources_config;
+}
+
+/**
+ * Provides the default configuration for occurrences which
+ * are passed to the handle_annotations_and_sources()
+ * function:
+ * - 'sources_as_content' => TRUE,
+ * - 'link_to_name_used_in_source' => TRUE,
+ * - 'link_to_reference' => FALSE,
+ * - 'add_footnote_keys' => FALSE,
+ * - 'bibliography_aware' => FALSE
+ *
+ * @return array
+ */
+function occurrences_annotations_and_sources_config() {
+  static $annotations_and_sources_config = [
+    'sources_as_content' => TRUE,
+    'link_to_name_used_in_source' => TRUE,
+    'link_to_reference' => FALSE,
+    'add_footnote_keys' => FALSE,
+    'bibliography_aware' => FALSE
+  ];
+  return $annotations_and_sources_config;
+}
 
 /**
  * @param $entity
@@ -970,7 +1046,7 @@ function handle_annotations_and_sources($entity, $config, $inline_text_prefix = 
   } // END of references inline
 
   // footnotes for sources and annotations or put into into bibliography if requested ...
-  if ($config['add_footnote_keys'] == 1) {
+  if ($config['add_footnote_keys']) {
     $annotations_and_sources['foot_note_keys'] = render_entity_footnotes(
       $entity, ',',
       $footnote_list_key_suggestion,
