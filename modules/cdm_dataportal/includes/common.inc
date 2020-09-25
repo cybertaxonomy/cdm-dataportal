@@ -909,10 +909,9 @@ function icon_link($path, $fragment = '') {
  *   brackets or not when displayed inline. This text will not be included into
  *   the response.
  * @param $footnote_list_key_suggestion string
- *    optional parameter. If this paramter is left empty (null, 0, "") the
+ *   Optional parameter. If this parameter is left empty (null, 0, "") the
  *   footnote key will be determined by the nested method calls by calling
- *   RenderHints::getFootnoteListKey(). NOTE: the footnore key for annotations
- *   will be set to RenderHints::getFootnoteListKey().FOOTNOTE_KEY_SUFFIX_ANNOTATIONS.
+ *   RenderHints::getFootnoteListKey().
  * @return array
  * an associative array with the following elements:
  *   - foot_note_keys: all footnote keys as markup
@@ -922,7 +921,7 @@ function icon_link($path, $fragment = '') {
  *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
  *
  */
-function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $footnote_list_key_suggestion) {
+function handle_annotations_and_sources($entity, $config, $inline_text_prefix = null, $footnote_list_key_suggestion = null) {
 
   $annotations_and_sources = array(
     'foot_note_keys' => NULL,
@@ -933,13 +932,13 @@ function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $
   // some entity types only have single sources:
   $sources = cdm_entity_sources_sorted($entity);
 
-  if ($config['sources_as_content'] == 1) {
+  if ($config['sources_as_content']) {
     foreach ($sources as $source) {
       if (_is_original_source_type($source)) {
         $reference_citation = render_original_source(
           $source,
-          $config['link_to_reference'] == 1,
-          $config['link_to_name_used_in_source'] == 1
+          $config['link_to_reference'],
+          $config['link_to_name_used_in_source']
         );
 
         if ($reference_citation) {
@@ -954,7 +953,7 @@ function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $
         // still required to be available separately in some contexts.
         $name_in_source_render_array = compose_name_in_source(
           $source,
-          $config['link_to_name_used_in_source'] == 1
+          $config['link_to_name_used_in_source']
         );
 
         if (!empty($name_in_source_render_array)) {
@@ -975,9 +974,9 @@ function handle_annotations_and_sources($entity, $config, $inline_text_prefix, $
     $annotations_and_sources['foot_note_keys'] = render_entity_footnotes(
       $entity, ',',
       $footnote_list_key_suggestion,
-      $config['link_to_reference'] == 1,
-      $config['link_to_name_used_in_source'] == 1,
-      !empty($config['bibliography_aware'])
+      $config['link_to_reference'],
+      $config['link_to_name_used_in_source'],
+      (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE)
     );
   }
 

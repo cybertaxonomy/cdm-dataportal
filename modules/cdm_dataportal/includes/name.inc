@@ -1277,7 +1277,32 @@ function typedesignations_annotations_and_sources_config() {
 }
 
 /**
- * @param $name_rel
+ * Provides the default configuration for occurrences which
+ * are passed to the handle_annotations_and_sources()
+ * function:
+ * - 'sources_as_content' => TRUE,
+ * - 'link_to_name_used_in_source' => TRUE,
+ * - 'link_to_reference' => FALSE,
+ * - 'add_footnote_keys' => FALSE,
+ * - 'bibliography_aware' => FALSE
+ *
+ * @return array
+ */
+function occurrences_annotations_and_sources_config() {
+  static $annotations_and_sources_config = [
+    'sources_as_content' => TRUE,
+    'link_to_name_used_in_source' => TRUE,
+    'link_to_reference' => FALSE,
+    'add_footnote_keys' => FALSE,
+    'bibliography_aware' => FALSE
+  ];
+  return $annotations_and_sources_config;
+}
+
+/**
+ * Creates the markup for the given name relationship
+ *
+ * @param $name_rel the CDM NameRelationship entity
  * @param $current_name_uuid
  * @param $current_taxon_uuid
  * @param $suppress_if_current_name_is_source // FIXME UNUSED !!!!

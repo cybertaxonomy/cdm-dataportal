@@ -58,7 +58,7 @@ const MEMBER_OF_FOOTNOTES = ' member-of-footnotes-';
 function render_entity_footnotes(
   $cdm_entity,
   $separator = ',',
-  $footnote_list_key = null,
+  $footnote_list_key = NULL,
   $do_link_to_reference = FALSE,
   $do_link_to_name_used_in_source = FALSE,
   $is_bibliography_aware = FALSE
