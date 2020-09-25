@@ -954,14 +954,16 @@ function annotations_and_sources_config_occurrences() {
  */
 function handle_annotations_and_sources_config($feature_block_settings){
 
-  $config = $feature_block_settings;
-  unset($config['sources_as_content_to_bibliography']);
-  $config['add_footnote_keys'] = 0;
-  if($feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1) {
-    $config['add_footnote_keys'] = 1;
-  }
-  $config['bibliography_aware'] = 1;
-
+  $config = [
+    'sources_as_content' => $feature_block_settings['sources_as_content'] == 1,
+    'link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1,
+    'link_to_reference' => $feature_block_settings['link_to_reference'] == 1,
+    'add_footnote_keys' => (
+      $feature_block_settings['sources_as_content'] !== 1 ||
+      $feature_block_settings['sources_as_content_to_bibliography'] == 1
+    ),
+    'bibliography_aware' => TRUE // FIXME shouldn't this be retrieved from the settings?
+  ];
   return $config;
 }
 
