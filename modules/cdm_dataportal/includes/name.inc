@@ -580,11 +580,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
   $out .= '</span>';
   if ($show_annotations) {
-      $annotations_and_sources = handle_annotations_and_sources(
-      $taxonName,
-      typedesignations_annotations_and_sources_config() /* FIXME use right config! */
-    );
-    $out .= $annotations_and_sources['foot_note_keys'];
+//      $annotations_and_sources = handle_annotations_and_sources(
+//      $taxonName,
+//      annotations_and_sources_config_typedesignations() /* FIXME use right config! */
+//    );
+//    $out .= $annotations_and_sources['foot_note_keys'];
   }
   return $out;
 }
@@ -946,7 +946,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
       }
       $annotations_and_sources = handle_annotations_and_sources(
         $name_type_designation,
-        typedesignations_annotations_and_sources_config(),
+        annotations_and_sources_config_typedesignations(),
         '',
         RenderHints::getFootnoteListKey());
       $out .= $annotations_and_sources['foot_note_keys'];
@@ -1014,7 +1014,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         }
         $annotations_and_sources = handle_annotations_and_sources(
           $derivedUnitFacadeInstance,
-          typedesignations_annotations_and_sources_config(),
+          annotations_and_sources_config_typedesignations(),
           '',
           RenderHints::getFootnoteListKey()
         );
@@ -1037,7 +1037,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
       $annotations_and_sources = handle_annotations_and_sources(
         $textual_type_designation,
         array(
-          // these settings differ from those provided by typedesignations_annotations_and_sources_config()
+          // these settings differ from those provided by annotations_and_sources_config_typedesignations()
           // TODO is this by purpose? please document the reason for the difference
           'sources_as_content' => false, // as footnotes
           'link_to_name_used_in_source' => false,
@@ -1129,7 +1129,7 @@ function compose_name_type_designations($type_entity_refs_by_status){
       // annotations and sources for the $derived_unit_facade_dto
       $annotations_and_sources = handle_annotations_and_sources(
         $name_type_entity_ref,
-        typedesignations_annotations_and_sources_config(),
+        annotations_and_sources_config_typedesignations(),
         '',
         RenderHints::getFootnoteListKey()
       );
@@ -1184,7 +1184,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
       // annotations and sources for the $derived_unit_facade_dto
       $annotations_and_sources = handle_annotations_and_sources(
         $derived_unit_facade_dto,
-        typedesignations_annotations_and_sources_config(),
+        annotations_and_sources_config_typedesignations(),
         '',
         RenderHints::getFootnoteListKey()
       );
@@ -1217,7 +1217,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
         // citation and detail for the media specimen
         $annotations_and_sources = handle_annotations_and_sources(
           $mediaSpecimen,
-          typedesignations_annotations_and_sources_config(),
+          annotations_and_sources_config_typedesignations(),
           '',
           RenderHints::getFootnoteListKey()
         );

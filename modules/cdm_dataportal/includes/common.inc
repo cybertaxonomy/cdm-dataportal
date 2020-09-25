@@ -895,35 +895,6 @@ function icon_link($path, $fragment = '') {
 /* ============ annotations_and_sources handling =================== */
 
 /**
- * Provides a consistent way to create the associative array to configure
- * the display of the annotations and sources.
- * The array has the following keys
- *   - sources_as_content
- *   - link_to_name_used_in_source
- *   - link_to_reference
- *   - add_footnote_keys
- *   - bibliography_aware
- *
- * @param $sources_as_content
- * @param $link_to_name_used_in_source
- * @param $link_to_reference
- * @param $add_footnote_keys
- * @param $bibliography_aware
- *
- * @return array
- */
-function annotations_and_sources_config($sources_as_content, $link_to_name_used_in_source,
-                                        $link_to_reference, $add_footnote_keys,
-                                        $bibliography_aware){
-  return $annotations_and_sources_config = [
-    'sources_as_content' => $sources_as_content,
-    'link_to_name_used_in_source' => $link_to_name_used_in_source,
-    'link_to_reference' => $link_to_reference,
-    'add_footnote_keys' => $add_footnote_keys,
-    'bibliography_aware' => $bibliography_aware
-  ];
-}
-/**
  * Provides the default configuration for typedesignations which
  * are passed to the handle_annotations_and_sources()
  * function:
@@ -935,7 +906,7 @@ function annotations_and_sources_config($sources_as_content, $link_to_name_used_
  *
  * @return array
  */
-function typedesignations_annotations_and_sources_config() {
+function annotations_and_sources_config_typedesignations() {
   static $annotations_and_sources_config = [
     'sources_as_content' => TRUE,
     'link_to_name_used_in_source' => FALSE,
@@ -958,7 +929,7 @@ function typedesignations_annotations_and_sources_config() {
  *
  * @return array
  */
-function occurrences_annotations_and_sources_config() {
+function annotations_and_sources_config_occurrences() {
   static $annotations_and_sources_config = [
     'sources_as_content' => TRUE,
     'link_to_name_used_in_source' => TRUE,
