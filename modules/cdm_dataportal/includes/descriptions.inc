@@ -430,30 +430,6 @@ function compose_description_element($element, $feature_block_settings, $element
 }
 
 /**
- * Creates a handle_annotations_and_sources configuration array from feature_block_settings.
- *
- * The handle_annotations_and_sources configuration array is meant to be used for the
- * method handle_annotations_and_sources().
- *
- * @param $feature_block_settings array
- *
- * @return array
- *   The configuration array for handle_annotations_and_sources()
- */
-function handle_annotations_and_sources_config($feature_block_settings){
-
-  $config = $feature_block_settings;
-  unset($config['sources_as_content_to_bibliography']);
-  $config['add_footnote_keys'] = 0;
-  if($feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1) {
-    $config['add_footnote_keys'] = 1;
-  }
-  $config['bibliography_aware'] = 1;
-
-  return $config;
-}
-
-/**
  * Provides the according tag name for the description element markup which
  * fits the  $feature_block_settings['as_list'] value
  *
