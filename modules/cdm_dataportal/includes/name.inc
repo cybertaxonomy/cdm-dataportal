@@ -580,11 +580,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
   $out .= '</span>';
   if ($show_annotations) {
-//      $annotations_and_sources = handle_annotations_and_sources(
-//      $taxonName,
-//      annotations_and_sources_config_typedesignations() /* FIXME use right config! */
-//    );
-//    $out .= $annotations_and_sources['foot_note_keys'];
+      $annotations_and_sources = handle_annotations_and_sources(
+      $taxonName,
+      annotations_and_sources_config_typedesignations() /* FIXME use right config! */
+    );
+    $out .= $annotations_and_sources['foot_note_keys'];
   }
   return $out;
 }
