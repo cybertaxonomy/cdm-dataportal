@@ -392,16 +392,11 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
     $referenceUri = FALSE;
   }
   $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_tags, $is_invalid);
-
-  // must come before the rendering the relationships so that the footnote key
-  // numbers are in correct order
-  $taxon_and_name_footnotes = render_taxon_and_name_footnotes($taxon);
-
   $name_relations = cdm_name_relationships_for_taxon($taxon);
   $name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
 
   $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>'
-    . $out_taxon_part . $taxon_and_name_footnotes;
+    . $out_taxon_part;
   if(isset($name_relations_render_array['list']['items'][0])){
     $out .= ' '  . drupal_render($name_relations_render_array);
   }

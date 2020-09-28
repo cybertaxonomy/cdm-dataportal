@@ -712,7 +712,6 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     if(isset($name_relationships['list']['items'][0])){
       $accepted_name .= ' ' . drupal_render($name_relationships);
     }
-    $accepted_name .= render_taxon_and_name_footnotes($taxon);
     $accepted_name .= '</div>';
     RenderHints::popFromRenderStack();
   }
