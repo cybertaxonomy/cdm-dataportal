@@ -262,8 +262,8 @@ function get_partDefinition($taxonNameType) {
  *    To indicate that the supplied taxon name is a name type designation.
  * @param array $skiptags
  *    an array of name elements tags like 'name', 'rank' to skip. The name part
- *          'authors' will not ber affected by this filter. This part is managed though the render template
- *          mechanism.
+ *          'authors' will not be affected by this filter. This part is managed
+ *          though the render template mechanism.
  * @param bool $is_invalid
  *   Indicates that this taxon is invalid. In this case the name part will be shown in double quotes.
  *   This is useful when rendering taxon relation ships.
