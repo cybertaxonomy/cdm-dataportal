@@ -34,10 +34,8 @@ function compose_taxon_node_status(array $taxon_nodes){
     $status_markup_tokens = [];
     foreach ($taxon_nodes as $taxon_node){
 
-      $annotations_and_sources = handle_annotations_and_sources(
-        $taxon_node,
-        annotation_and_source_config_taxon_node()
-      );
+      RenderHints::setAnnotationsAndSourceConfig(annotation_and_source_config_taxon_node());
+      $annotations_and_sources = handle_annotations_and_sources($taxon_node);
 
       if(isset($taxon_node->status)){
         $state_label = strtolower($taxon_node->status->message_L10n);

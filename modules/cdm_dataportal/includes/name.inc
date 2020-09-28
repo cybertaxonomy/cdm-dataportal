@@ -580,10 +580,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
   $out .= '</span>';
   if ($show_annotations) {
-      $annotations_and_sources = handle_annotations_and_sources(
-      $taxonName,
-      annotations_and_sources_config_typedesignations() /* FIXME use right config! */
-    );
+    $annotations_and_sources = handle_annotations_and_sources($taxonName);
     $out .= $annotations_and_sources['foot_note_keys'];
   }
   return $out;
@@ -957,10 +954,8 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         }
         $out .= ': ' . render_taxon_or_name($name_type_designation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
       }
-      $annotations_and_sources = handle_annotations_and_sources(
-        $name_type_designation,
-        annotations_and_sources_config_typedesignations()
-      );
+      RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+      $annotations_and_sources = handle_annotations_and_sources($name_type_designation);
       $out .= $annotations_and_sources['foot_note_keys'];
     }
   } // END NameTypeDesignation
@@ -1024,10 +1019,8 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
           $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($specimen_type_designation->typeSpecimen->uuid)), $specimen_markup);
         }
-        $annotations_and_sources = handle_annotations_and_sources(
-          $derivedUnitFacadeInstance,
-          annotations_and_sources_config_typedesignations()
-        );
+        RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+        $annotations_and_sources = handle_annotations_and_sources($derivedUnitFacadeInstance);
         $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
           . $specimen_markup
           . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
@@ -1043,10 +1036,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
   // TextualTypeDesignation .........................
   usort($textual_type_designations, 'compare_textual_type_designation');
   if(!empty($textual_type_designations)) {
-    foreach ($textual_type_designations as $textual_type_designation) {
-      $annotations_and_sources = handle_annotations_and_sources(
-        $textual_type_designation,
-        array(
+      RenderHints::setAnnotationsAndSourceConfig([
           // these settings differ from those provided by annotations_and_sources_config_typedesignations()
           // TODO is this by purpose? please document the reason for the difference
           'sources_as_content' => false, // as footnotes
@@ -1054,8 +1044,10 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           'link_to_reference' => true,
           'add_footnote_keys' => true,
           'bibliography_aware' => false
-        )
+        ]
       );
+    foreach ($textual_type_designations as $textual_type_designation) {
+      $annotations_and_sources = handle_annotations_and_sources($textual_type_designation);
       $encasement =  $textual_type_designation->verbatim ? '"' : '';
       $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
         . ': ' .  $encasement . trim($textual_type_designation->text_L10n->text) . $encasement .  $annotations_and_sources['foot_note_keys'] .'</' . $element_tag . '>';
@@ -1135,10 +1127,8 @@ function compose_name_type_designations($type_entity_refs_by_status){
         $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
       }
       // annotations and sources for the $derived_unit_facade_dto
-      $annotations_and_sources = handle_annotations_and_sources(
-        $name_type_entity_ref,
-        annotations_and_sources_config_typedesignations()
-      );
+      RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+      $annotations_and_sources = handle_annotations_and_sources($name_type_entity_ref);
 
       $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  . '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
         . $name_type_entity_ref->label
@@ -1188,10 +1178,8 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
       $media = '';
 
       // annotations and sources for the $derived_unit_facade_dto
-      $annotations_and_sources = handle_annotations_and_sources(
-        $derived_unit_facade_dto,
-        annotations_and_sources_config_typedesignations()
-      );
+      RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+      $annotations_and_sources = handle_annotations_and_sources($derived_unit_facade_dto);
       $source_citations = $annotations_and_sources['source_references'];
       $foot_note_keys = $annotations_and_sources['foot_note_keys'];
 
@@ -1219,10 +1207,8 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
           ));
         }
         // citation and detail for the media specimen
-        $annotations_and_sources = handle_annotations_and_sources(
-          $mediaSpecimen,
-          annotations_and_sources_config_typedesignations()
-        );
+        RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+        $annotations_and_sources = handle_annotations_and_sources($mediaSpecimen);
         if(is_array( $annotations_and_sources['source_references'])){
           $source_citations = array_merge($source_citations, $annotations_and_sources['source_references']);
         }

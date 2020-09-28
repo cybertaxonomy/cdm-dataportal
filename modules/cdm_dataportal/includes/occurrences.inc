@@ -535,15 +535,14 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
 
                         break;
                     case 'sources':
-                        $annotations_and_sources = handle_annotations_and_sources(
-                            $specimen_or_observation,
-                            array(
-                                'sources_as_content' => true,
-                                'link_to_name_used_in_source' => 1,
-                                'link_to_reference' => 0,
-                                'add_footnote_keys' => 0
-                            )
-                        );
+                        RenderHints::setAnnotationsAndSourceConfig([
+                          'sources_as_content' => TRUE,
+                          'link_to_name_used_in_source' => TRUE,
+                          'link_to_reference' => FALSE,
+                          'add_footnote_keys' => FALSE,
+                          'bibliography_aware' => FALSE
+                        ]);
+                        $annotations_and_sources = handle_annotations_and_sources($specimen_or_observation);
                         if (!empty($annotations_and_sources['source_references'])) {
                             @_description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources['source_references']), '', 12);
                         }

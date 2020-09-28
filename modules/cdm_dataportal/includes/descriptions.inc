@@ -382,9 +382,9 @@ function compose_description_element($element, $feature_block_settings, $element
 
   );
 
+  RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
   $annotations_and_sources = handle_annotations_and_sources(
     $element,
-    handle_annotations_and_sources_config($feature_block_settings),
     $element_markup,
     $footnote_list_key_suggestion
   );
@@ -1555,13 +1555,12 @@ function compose_description_elements_distribution($description_elements){
   $enclosingTag = cdm_feature_block_element_tag_name($feature_block_settings);
 
   foreach ($description_elements as $description_element) {
+    RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
     $annotations_and_sources = handle_annotations_and_sources(
       $description_element,
-      handle_annotations_and_sources_config($feature_block_settings),
       $description_element->area->representation_L10n,
       UUID_DISTRIBUTION
     );
-
 
     $status = distribution_status_label_and_markup([$description_element->status]);
 
@@ -1823,13 +1822,12 @@ function compose_description_elements_distribution($description_elements){
 
       $annotations_and_sources =  null;
       if($distribution_aggregate) {
+        RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
         $annotations_and_sources = handle_annotations_and_sources(
           $distribution_aggregate,
-          handle_annotations_and_sources_config($feature_block_settings),
           $label,
           UUID_DISTRIBUTION
         );
-
         $status = distribution_status_label_and_markup($distribution_aggregate->status, $level_style['status_glue']);
       }
 

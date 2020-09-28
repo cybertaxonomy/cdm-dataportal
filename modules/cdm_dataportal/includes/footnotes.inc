@@ -463,7 +463,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
  *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
  *
  */
-function handle_annotations_and_sources($entity, $config, $inline_text_prefix = null, $footnote_list_key_suggestion = null) {
+function handle_annotations_and_sources($entity, $inline_text_prefix = null, $footnote_list_key_suggestion = null) {
 
   $annotations_and_sources = array(
     'foot_note_keys' => NULL,
@@ -473,6 +473,8 @@ function handle_annotations_and_sources($entity, $config, $inline_text_prefix = 
 
   // some entity types only have single sources:
   $sources = cdm_entity_sources_sorted($entity);
+
+  $config = RenderHints::getAnnotationsAndSourceConfig();
 
   if ($config['sources_as_content']) {
     foreach ($sources as $source) {
