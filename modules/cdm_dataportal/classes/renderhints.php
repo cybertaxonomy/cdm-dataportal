@@ -175,6 +175,8 @@ class RenderHints {
    *
    * @see html_class_attribute_ref()
    *
+   * TODO: check, only used in theme_cdm_polytomousKey_linkedStyle_subgraph()
+   *
    */
   public static function getHtmlElementID($cdmBase) {
     return 'id="' . RenderHints::getRenderPath() . '(' . $cdmBase->class . ':' . $cdmBase->uuid . ')"';

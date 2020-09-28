@@ -704,7 +704,7 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     }
 
     $accepted_name .= '<div class="accepted-name">';
-    $accepted_name .= render_taxon_or_name($taxon, NULL, $referenceUri) . '#';
+    $accepted_name .= render_taxon_or_name($taxon, NULL, $referenceUri);
 
     $name_relations = cdm_name_relationships_for_taxon($taxon);
     $name_relationships = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
