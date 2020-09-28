@@ -44,9 +44,7 @@ abstract public class RegistrationItem extends BaseElement {
     protected WebElement typifiedNameElement;
     protected WebElement summaryElement;
 
-    /**"
-     * @param element
-     */
+
     protected RegistrationItem(WebElement containerElement) {
         super(containerElement);
 
@@ -77,7 +75,7 @@ abstract public class RegistrationItem extends BaseElement {
                 }
             } catch (Exception e) { /* IGNORE */}
             try{
-                List<WebElement> std = containerElement.findElements(By.cssSelector(".footnotes-registration_page .footnote"));
+                List<WebElement> std = containerElement.findElements(By.cssSelector(".footnotes-nomenclatural_act .footnote"));
                 registrationFootnotes = new ArrayList<BaseElement>(std.size());
                 for(WebElement we : std){
                     registrationFootnotes.add(new BaseElement(we));
