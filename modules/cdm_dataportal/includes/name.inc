@@ -277,20 +277,21 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   $show_annotations = true, $is_type_designation = false, $skiptags = array(), $is_invalid = false) {
 
   $is_doubtful = false;
-
+  $taxon_base = null;
   if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
+    $taxon_base = $taxon_name_or_taxon_base;
     if(isset($taxon_name_or_taxon_base->name)){
-      $taxonName = $taxon_name_or_taxon_base->name;
+      $taxon_name = $taxon_name_or_taxon_base->name;
     } else {
-      $taxonName = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base->uuid));
+      $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base->uuid));
     }
     $is_doubtful = $taxon_name_or_taxon_base->doubtful;
     // use the TaxonBase.tagged_title so we have the secRef
     $tagged_title = $taxon_name_or_taxon_base->taggedTitle;
   } else {
     // assuming this is a TaxonName
-    $taxonName = $taxon_name_or_taxon_base;
-    if(isset($taxonName->taggedFullTitle)){
+    $taxon_name = $taxon_name_or_taxon_base;
+    if(isset($taxon_name->taggedFullTitle)){
       $tagged_title = $taxon_name_or_taxon_base->taggedFullTitle;
     } else {
       $tagged_title = $taxon_name_or_taxon_base->taggedName;
@@ -299,7 +300,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
 
   $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
-  $partDefinition = get_partDefinition($taxonName->nameType);
+  $partDefinition = get_partDefinition($taxon_name->nameType);
 
   // Apply definitions to template.
   foreach ($renderTemplate as $part => $uri) {
@@ -377,11 +378,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $taggedName = $taggedNameNew;
       unset($taggedNameNew);
     }
-    $name = '<span class="' . $taxonName->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName, $skiptags) . $name_encasement . '</span>';
+    $name = '<span class="' . $taxon_name->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName, $skiptags) . $name_encasement . '</span>';
   }
   else {
     // use titleCache instead
-    $name = '<span class="' . $taxonName->class . '_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
+    $name = '<span class="' . $taxon_name->class . '_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxon_name->titleCache . $name_encasement . '</span>';
   }
 
 
@@ -403,7 +404,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   // Fill with reference.
   if (isset($renderTemplate['referencePart']) && !$is_type_designation) {
 
-    $registrations = cdm_ws_get(CDM_WS_NAME, array($taxonName->uuid, "registrations"));
+    $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
     $registration_markup = render_registrations($registrations);
 
     // default separator
@@ -413,12 +414,12 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
     if (isset($renderTemplate['referencePart']['reference'])) {
       $microreference = NULL;
-      if (isset($renderTemplate['referencePart']['microreference'])&& isset($taxonName->nomenclaturalSource->citationMicroReference)) {
-        $microreference = $taxonName->nomenclaturalSource->citationMicroReference;
+      if (isset($renderTemplate['referencePart']['microreference'])&& isset($taxon_name->nomenclaturalSource->citationMicroReference)) {
+        $microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
       }
-      if(count($nomref_tagged_text) == 0 && isset($taxonName->nomenclaturalSource->citation)){
+      if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation)){
         // TODO is this case still relevant? The tagged text should already contain all information!
-        $citation = cdm_ws_getNomenclaturalReference($taxonName->nomenclaturalSource->citation->uuid, $microreference);
+        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->citation->uuid, $microreference);
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
         if (str_beginsWith($citation, ", in")) {
@@ -451,7 +452,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $citation = '';
       if (!isset($renderTemplate['referencePart']['reference']) && isset($renderTemplate['referencePart']['microreference'])) {
         $separator = ": ";
-        $citation = $taxonName->nomenclaturalMicroReference;
+        $citation = $taxon_name->nomenclaturalMicroReference;
       }
       $referenceArray['#html'] = ' <span class="reference">' . $lastAuthorElementString . $separator . $citation . '</span>';
       array_setr('authors', $referenceArray, $renderTemplate);
@@ -460,8 +461,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
   $is_reference_year = false;
   if (isset($renderTemplate['referenceYearPart']['reference.year'])) {
-    if(isset($taxonName->nomenclaturalSource->citation->datePublished)){
-      $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxonName->nomenclaturalSource->citation->datePublished) . '</span>';
+    if(isset($taxon_name->nomenclaturalSource->citation->datePublished)){
+      $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxon_name->nomenclaturalSource->citation->datePublished) . '</span>';
       array_setr('reference.year', $referenceArray, $renderTemplate);
       $is_reference_year = true;
     }
@@ -503,7 +504,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   // Fill with protologues etc...
   $descriptionHtml = '';
   if (array_setr('description', TRUE, $renderTemplate)) {
-    $descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxonName->uuid);
+    $descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxon_name->uuid);
     if($descriptions){
       foreach ($descriptions as $description) {
         if (!empty($description)) {
@@ -543,7 +544,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
   }
   $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base)
-    . '" data-cdm-ref="/name/' . $taxonName->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
+    . '" data-cdm-ref="/name/' . $taxon_name->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
 
   foreach ($renderTemplate as $partName => $part) {
     $separator = '';
@@ -580,8 +581,14 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
   $out .= '</span>';
   if ($show_annotations) {
-    $annotations_and_sources = handle_annotations_and_sources($taxonName);
-    $out .= $annotations_and_sources['foot_note_keys'];
+    if($taxon_base){
+      $annotations_and_sources_taxon = handle_annotations_and_sources($taxon_base);
+    }
+    $annotations_and_sources_name = handle_annotations_and_sources($taxon_name);
+    $footnote_keys = $annotations_and_sources_taxon['foot_note_keys'] .
+      ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ',' : '') .
+      $annotations_and_sources_name['foot_note_keys'];
+    $out .= $footnote_keys;
   }
   return $out;
 }

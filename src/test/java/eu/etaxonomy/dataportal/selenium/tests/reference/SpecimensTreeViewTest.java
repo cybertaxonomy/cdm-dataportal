@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -54,6 +55,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     }
 
     @Test
+    @Ignore // see #9234
     public void test1() throws MalformedURLException {
         TaxonPage p = new TaxonPage(driver, getContext(), glenodinium_apiculatum_t, "specimens");
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#specimens table.derivate_tree"));

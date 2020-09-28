@@ -437,15 +437,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
 
 /**
  * @param $entity
- * @param $config array
- *   An associative array to configure the display of the annotations and
- *   sources. The array has the following keys
- *   - sources_as_content
- *   - link_to_name_used_in_source
- *   - link_to_reference
- *   - add_footnote_keys
- *   - bibliography_aware
- *   Valid values are 1 or 0.
+ *    The cdm entity for which the annotations and sources are to be handled.
  * @param $inline_text_prefix
  *   Only used to decide if the source references should be enclosed in
  *   brackets or not when displayed inline. This text will not be included into
@@ -539,6 +531,7 @@ function handle_annotations_and_sources($entity, $inline_text_prefix = null, $fo
  * @see synonymy_annotations_and_source_config()
  */
 function render_taxon_and_name_footnotes($taxon) {
+  /*
   $annotations_and_sources_taxon = handle_annotations_and_sources(
     $taxon,
     synonymy_annotations_and_source_config()
@@ -550,7 +543,8 @@ function render_taxon_and_name_footnotes($taxon) {
   $footnotes = $annotations_and_sources_taxon['foot_note_keys'] .
     ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ',' : '') .
     $annotations_and_sources_name['foot_note_keys'];
-  return $footnotes;
+  */
+  return ''; // $footnotes;
 }
 
 /**
