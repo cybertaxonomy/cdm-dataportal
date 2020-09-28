@@ -16,12 +16,10 @@ import org.openqa.selenium.WebElement;
 
 public class RegistrationItemFull extends RegistrationItem{
 
-    /**
-     * @param containerElement
-     */
+
     public RegistrationItemFull(WebElement containerElement) {
         super(containerElement);
-        if(style != style.FULL){
+        if(style != Style.FULL){
             throw new NoSuchElementException("RegistrationItem has not the expected style, expected : FULL, but was " + Objects.toString(style, "NULL"));
         }
     }
