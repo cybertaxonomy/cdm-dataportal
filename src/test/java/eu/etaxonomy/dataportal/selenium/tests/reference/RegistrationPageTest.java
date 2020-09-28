@@ -68,7 +68,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012",
+                "Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 20121",
                 regItem.getNameElement().getText());
         assertEquals(
                 "published in: Novis, P. M., Braidwood, J. & Kilroy, C., Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species in Phytotaxa 64: 11-45. 2012",
@@ -76,6 +76,11 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals(
                 "Registration on 2019-02-06 14:21:52",
                 regItem.getMetadata().getText());
+        List<LinkElement> fkeys = regItem.getFootNoteKeys();
+        assertEquals("1", fkeys.get(0).getText());
+        List<BaseElement> fns = regItem.getFootNotes();
+        assertEquals(1, fns.size());
+        assertEquals("1. Please check reference detail", fns.get(0).getText());
     }
 
     @Test
@@ -89,9 +94,12 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals(
                 "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B 40 0040871).1",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
+        BaseElement typifiedNameElement = new BaseElement(regItem.getTypifiedNameElement());
         assertEquals(
-                "for Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012",
-                regItem.getTypifiedNameElement().getText());
+                "for Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 20122",
+                typifiedNameElement.getText());
+        assertEquals("2", typifiedNameElement.getFootNoteKeys().get(0).getText());
+        assertEquals("2. Please check reference detail", p.getDataPortalContent().getFootNoteForKey(typifiedNameElement.getFootNoteKeys().get(0)).getText());
         assertEquals(
                 "published in: Jahn, R., Abarca, N., Gemeinholzer, B. & al., Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum in Diatom Research 32: 75-107. 2017",
                 regItem.getCitation().getText());

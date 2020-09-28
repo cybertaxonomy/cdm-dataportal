@@ -629,6 +629,10 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     '#suffix' => '</div>'
   );
 
+  $typified_name = null;
+
+  // Nomenclatural act block element
+  $last_footnote_listkey = RenderHints::setFootnoteListKey("nomenclatural_act");
   // name
   $name_relations = null;
   if($registration_dto->nameRef){
@@ -639,8 +643,9 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     // need to create the name relationships later, so that the foot notes are in correct order, see section // name relations
   } else {
     // in this case the registration must have a
-    $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->typifiedNameRef->uuid);
-    $render_array['typified_name'] = markup_to_render_array('<p class="typified-name">for ' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</p>', 40);
+    // typified name will be rendered later
+    $typified_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->typifiedNameRef->uuid);
+
   }
 
   // typedesignation in detail
@@ -707,6 +712,13 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
 
   $render_array['nomenclatural_act']['footnotes'] = markup_to_render_array(render_footnotes(),100);
 
+  // END of nomenclatural act block
+  RenderHints::setFootnoteListKey($last_footnote_listkey );
+
+  if($typified_name){
+    $render_array['typified_name'] = markup_to_render_array('<p class="typified-name">for ' . render_taxon_or_name($typified_name, url(path_to_name($typified_name->uuid))) . '</p>', 40);
+  }
+
   // registration date and office
   $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto);
   if($registration_date_insitute_markup){
@@ -715,6 +727,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
       100);
   }
 
+  $render_array['page_footnotes'] = markup_to_render_array(render_footnotes(), 110);
 
   return $render_array;
 }

@@ -59,17 +59,30 @@ class RenderHints {
   }
 
   /**
-   * @todo document this function.
+   * Set the new FootnoteList key.
+   * The key which is replaced by the new value is returned.
+   *
+   * @param $key
+   *  The new FootnoteListKey to set
+   * @retrun
+   *  The last FootnoteListKey or NULL
    */
   public static function setFootnoteListKey($key) {
+    $lastFnListKey = self::$footnoteListKey;
     self::$footnoteListKey = $key;
+    return $lastFnListKey;
   }
 
   /**
    * Reset the FootnoteListKey to the default value = 'PAGE_GLOBAL'
+   * An existing key which is cleared will be returned returned.
+   * @retrun
+   *  The last FootnoteListKey or NULL
    */
   public static function clearFootnoteListKey() {
+    $lastFnListKey = self::$footnoteListKey;
     self::$footnoteListKey = self::$footnoteListKeyDefault;
+    return $lastFnListKey;
   }
 
   /**

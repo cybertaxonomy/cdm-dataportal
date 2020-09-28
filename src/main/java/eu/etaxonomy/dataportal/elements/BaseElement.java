@@ -111,6 +111,20 @@ public class BaseElement {
                 );
     }
 
+
+    public BaseElement getFootNoteForKey(LinkElement footNoteKey){
+        String key = footNoteKey.getText();
+        List<BaseElement> matchingFootnotes = ElementUtils.baseElementsFromFootNoteListElements(
+                // NOTE: the training space character in 'footnote ' is important. Without it would also match the footnote-anchor!
+                getElement().findElements(By.cssSelector("span.footnotes span.footnote-" + key)
+                        )
+                );
+        assert matchingFootnotes.size() == 1;
+        return matchingFootnotes.get(0);
+
+    }
+
+
     /**
      *
      * @param driver the currently used  WebDriver instance
