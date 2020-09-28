@@ -32,6 +32,7 @@ class RenderHints {
   private static $renderStack = array();
   private static $footnoteListKey = '';
   private static $footnoteListKeyDefault = 'PAGE_GLOBAL';
+  private static $annotationsAndSourceConfig = [];
 
   /**
    * Private constructor.
@@ -97,6 +98,35 @@ class RenderHints {
    */
   public static function popFromRenderStack() {
     return array_pop(self::$renderStack);
+  }
+
+  /**
+   * @return array
+   */
+  public static function getAnnotationsAndSourceConfig() {
+    return self::$annotationsAndSourceConfig;
+  }
+
+  /**
+   * Set the configuration for handling annotations and sources in the
+   * current section of the page.
+   *
+   * This configuration is being used in handle_annotations_and_sources():
+   *
+   * @param array $annotationsAndSourceConfig
+   *    The associative configuration array with the keys and boolean values:
+   *      - 'sources_as_content' => TRUE|FALSE,
+   *      - 'link_to_name_used_in_source' => TRUE|FALSE,
+   *      - 'link_to_reference' => TRUE|FALSE,
+   *      - 'add_footnote_keys' => TRUE|FALSE,
+   *      - 'bibliography_aware' => TRUE|FALSE
+   * @return array
+   * the configuration array which has been set before.
+   */
+  public static function setAnnotationsAndSourceConfig($annotationsAndSourceConfig) {
+    $lastConfig = self::$annotationsAndSourceConfig;
+    self::$annotationsAndSourceConfig = $annotationsAndSourceConfig;
+    return $lastConfig;
   }
 
   /**
