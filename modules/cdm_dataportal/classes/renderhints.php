@@ -14,12 +14,12 @@
  */
 
 /**
- * A Singleton class wich holds and manages information on the render path in the
+ * A Singleton class which holds and manages information on the render path in the
  * page element hierarchy and also stored the current FootnoteListKey.
  *
  * RenderPath:
  * The render path is manages as a stack.
- * Usually you will push a new element to this stack at the begining of a theme
+ * Usually you will push a new element to this stack at the beginning of a theme
  * method: RenderHints::pushToRenderStack('mypageElement');
  * After the output is generated you again pop the current path element from the stack:
  * RenderHints::popFromRenderStack()
@@ -65,7 +65,7 @@ class RenderHints {
    *
    * @param $key
    *  The new FootnoteListKey to set
-   * @retrun
+   * @return string
    *  The last FootnoteListKey or NULL
    */
   public static function setFootnoteListKey($key) {
@@ -77,7 +77,7 @@ class RenderHints {
   /**
    * Reset the FootnoteListKey to the default value = 'PAGE_GLOBAL'
    * An existing key which is cleared will be returned returned.
-   * @retrun
+   * @return string
    *  The last FootnoteListKey or NULL
    */
   public static function clearFootnoteListKey() {
@@ -87,14 +87,24 @@ class RenderHints {
   }
 
   /**
-   * @todo document this function.
+   * Put the $pathelement onto the stack render hint
+   * path elements to add a new named hierarchy level
+   * in which the following render actions are taking
+   * place.
+   *
+   * @param string $pathelement
+   *    The element to put onto the stack of render elements.
    */
   public static function pushToRenderStack($pathelement) {
     array_push(self::$renderStack, $pathelement);
   }
 
   /**
-   * @todo document this function.
+   * Removes and returns the last element from the
+   * render stack.
+   *
+   * @return string
+   *      The element which has just been removed from the render stack.
    */
   public static function popFromRenderStack() {
     return array_pop(self::$renderStack);
@@ -130,21 +140,41 @@ class RenderHints {
   }
 
   /**
-   * @todo document this function.
+   * Provides access to the size of the render stack.
+   *
+   * @return int
+   *   The size of the render stack.
    */
-  public static function sizeof() {
+  public static function renderStackSize() {
     return sizeof(self::$renderStack);
   }
 
   /**
-   * @todo document this function.
+   * Composes and returns the render path from the
+   * elements on the stack.
+   * The render path elements will be concatenated with the
+   * dot '.' character.
+   *
+   * @return string
+   *   The current render path.
    */
   public static function getRenderPath() {
     return join('.', array_reverse(self::$renderStack));
   }
 
   /**
-   * @todo document this function.
+   * Function to produce html id attribute values consistently for
+   * the current render path and the passed cdm entity.
+   *
+   * @param $cdmBase
+   *   The cdm entity.
+   *
+   * @return string
+   *  The value for the DOM element id attribute composed from the current
+   * render path and cdm entity class and uuid.
+   *
+   * @see html_class_attribute_ref()
+   *
    */
   public static function getHtmlElementID($cdmBase) {
     return 'id="' . RenderHints::getRenderPath() . '(' . $cdmBase->class . ':' . $cdmBase->uuid . ')"';
