@@ -581,14 +581,16 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
   $out .= '</span>';
   if ($show_annotations) {
+    $footnote_keys = [];
     if($taxon_base){
       $annotations_and_sources_taxon = handle_annotations_and_sources($taxon_base);
+      $footnote_keys[] = $annotations_and_sources_taxon['foot_note_keys'];
     }
     $annotations_and_sources_name = handle_annotations_and_sources($taxon_name);
-    $footnote_keys = $annotations_and_sources_taxon['foot_note_keys'] .
-      ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ',' : '') .
-      $annotations_and_sources_name['foot_note_keys'];
-    $out .= $footnote_keys;
+    $footnote_keys[] = $annotations_and_sources_name['foot_note_keys'];
+    // FIXME the glue should be inside of the <span class="footnote-key ... DOM
+    // element, see render_footnote_key()
+    $out .= implode(',', array_filter($footnote_keys, 'strlen'));
   }
   return $out;
 }

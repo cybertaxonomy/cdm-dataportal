@@ -348,6 +348,35 @@ function handle_nomenclatural_reference_as_footnote($name)
 
 /* ============ annotations_and_sources handling =================== */
 
+const ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT = [
+  'sources_as_content' => FALSE,
+  'link_to_name_used_in_source' => TRUE,
+  'link_to_reference' => TRUE,
+  'add_footnote_keys' => TRUE,
+  'bibliography_aware' => FALSE
+];
+
+  /**
+ * Provides the default configuration for handle_annotations_and_sources() in the
+ * synonymy.
+ *
+ * @return bool[]
+ */
+function synonymy_annotations_and_source_config() {
+  static $annotations_and_sources_config = null;
+  if(!$annotations_and_sources_config){
+    $bibliography_settings = get_bibliography_settings();
+    $annotations_and_sources_config = [
+      'sources_as_content' => FALSE,
+      'link_to_name_used_in_source' => TRUE,
+      'link_to_reference' => TRUE,
+      'add_footnote_keys' => TRUE,
+      'bibliography_aware' => $bibliography_settings['enabled'] == 1
+    ];
+  }
+  return $annotations_and_sources_config;
+}
+
 /**
  * Provides the default configuration for typedesignations which
  * are passed to the handle_annotations_and_sources()

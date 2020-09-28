@@ -32,7 +32,7 @@ class RenderHints {
   private static $renderStack = array();
   private static $footnoteListKey = '';
   private static $footnoteListKeyDefault = 'PAGE_GLOBAL';
-  private static $annotationsAndSourceConfig = [];
+  private static $annotationsAndSourceConfig = ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT;
 
   /**
    * Private constructor.
