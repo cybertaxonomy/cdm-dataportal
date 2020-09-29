@@ -59,7 +59,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.12",
+                "Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2",
                 regItem.getNameElement().getText());
         assertEquals(
                 "published in: Lem, Nonsens species of the developers Vol1. 2001",
@@ -115,7 +115,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensensia_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.12 [non Nodosilinea sensensia3 "
+        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2 [non Nodosilinea sensensia3 "
                 + "nec Nodosilinea sensensia4 nec Nodosilinea blockensis5 orth. var.6 Nodosilinea sensensi7,8]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
