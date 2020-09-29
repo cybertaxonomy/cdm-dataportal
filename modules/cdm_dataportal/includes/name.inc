@@ -1267,7 +1267,6 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
  * @param $name_rel the CDM NameRelationship entity
  * @param $current_name_uuid
  * @param $current_taxon_uuid
- * @param $suppress_if_current_name_is_source // FIXME UNUSED !!!!
  * @param $show_name_cache_only
  *    The nameCache will be shown instead of the titleCache if this parameter is true.
  * @return null|string
@@ -1298,6 +1297,8 @@ function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_
       path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
       array('html' => true)
     );
+    $annotations_and_sources = handle_annotations_and_sources($name);
+    $relationship_markup .= $annotations_and_sources['foot_note_keys'];
   }
 
   return $relationship_markup;
