@@ -62,20 +62,25 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertNotNull(regItem);
 
         List<LinkElement> footnoteKeys = regItem.getFootNoteKeys();
-        assertEquals(3, footnoteKeys.size());
+        assertEquals(5, footnoteKeys.size());
         // check footnote keys are in right order
         assertEquals("1", footnoteKeys.get(0).getText());
         assertEquals("2", footnoteKeys.get(1).getText());
         assertEquals("3", footnoteKeys.get(2).getText());
+        assertEquals("4", footnoteKeys.get(3).getText());
+        assertEquals("5", footnoteKeys.get(4).getText());
 
         // check content of footnotes
         List<BaseElement> footnotes = regItem.getFootNotes();
-        assertEquals(3, footnotes.size());
-        assertEquals("1. editorial note on the fieldunit", footnotes.get(0).getText());
-        assertEquals("2. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
-                footnotes.get(1).getText());
-        assertEquals("3. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+        assertEquals(5, footnotes.size());
+        assertEquals("1. Editorial note on Nodosilinea radiophila", footnotes.get(0).getText());
+        assertEquals("2. editorial note on the fieldunit", footnotes.get(1).getText());
+        assertEquals("3. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
                 footnotes.get(2).getText());
+        assertEquals("4. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+                footnotes.get(3).getText());
+        assertEquals("5. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
+                footnotes.get(4).getText());
     }
 
     @Test
@@ -88,30 +93,36 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertNotNull(pageContent);
 
         List<LinkElement> footnoteKeys = pageContent.getFootNoteKeys();
-        assertEquals(4, footnoteKeys.size());
+        assertEquals(6, footnoteKeys.size());
         // check footnote keys are in right order
         assertEquals("1", footnoteKeys.get(0).getText());
         assertEquals("2", footnoteKeys.get(1).getText());
         assertEquals("3", footnoteKeys.get(2).getText());
         assertEquals("4", footnoteKeys.get(3).getText());
+        assertEquals("5", footnoteKeys.get(4).getText());
+        assertEquals("6", footnoteKeys.get(5).getText());
 
         // check content of footnotes
         List<BaseElement> footnotes = pageContent.getFootNotes();
-        assertEquals(4, footnotes.size());
-        assertEquals("1. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
+        assertEquals(6, footnotes.size());
+        assertEquals("1. Editorial note on Nodosilinea radiophila",
                 footnotes.get(0).getText());
-        assertEquals("2. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+        assertEquals("2. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
                 footnotes.get(1).getText());
-        BaseElement footnote3 = footnotes.get(2);
-        assertEquals("3. Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018 Registration: http://testbank.org/100004, 2019-02-06",
-                        footnote3.getText());
-        List<LinkElement> linksInFootnote3 = footnote3.getLinksInElement();
-        assertEquals(2, linksInFootnote3.size());
-        assertTrue(linksInFootnote3.get(0).getUrl().endsWith("/cdm_dataportal/reference/f2e43411-2564-42c7-816e-7e6046adbefa"));
-        assertEquals("", linksInFootnote3.get(0).getText());
-        assertEquals("http://testbank.org/100004", linksInFootnote3.get(1).getText());
-        assertTrue(linksInFootnote3.get(1).getUrl().endsWith("cdm_dataportal/registration/http%253A%252F%252Ftestbank.org%252F100004"));
-        assertEquals("4. editorial note on the fieldunit", footnotes.get(3).getText());
+        assertEquals("3. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+                footnotes.get(2).getText());
+        assertEquals("4. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
+                        footnotes.get(3).getText());
+        BaseElement footnote5 = footnotes.get(4);
+        assertEquals("5. Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018 Registration: http://testbank.org/100004, 2019-02-06",
+                        footnote5.getText());
+        List<LinkElement> linksInFootnote5 = footnote5.getLinksInElement();
+        assertEquals(2, linksInFootnote5.size());
+        assertTrue(linksInFootnote5.get(0).getUrl().endsWith("/cdm_dataportal/reference/f2e43411-2564-42c7-816e-7e6046adbefa"));
+        assertEquals("", linksInFootnote5.get(0).getText());
+        assertEquals("http://testbank.org/100004", linksInFootnote5.get(1).getText());
+        assertTrue(linksInFootnote5.get(1).getUrl().endsWith("cdm_dataportal/registration/http%253A%252F%252Ftestbank.org%252F100004"));
+        assertEquals("6. editorial note on the fieldunit", footnotes.get(5).getText());
     }
 
     @Test
