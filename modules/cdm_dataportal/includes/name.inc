@@ -1542,7 +1542,8 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
-        $relationship_markup = $symbol_markup . $relationship_markup . $nomref_footnote_key_markup;
+        $relationship_markup_has_footnote_key = strpos($relationship_markup, 'footnote-key footnote-key-') > 0;
+        $relationship_markup = $symbol_markup . $relationship_markup . ($relationship_markup_has_footnote_key ? ',' : '') . $nomref_footnote_key_markup;
       }
       if (isset($relationship_markup) && $relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
