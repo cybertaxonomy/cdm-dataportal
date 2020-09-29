@@ -329,7 +329,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   // 'taxonRelationships';
   $footnoteListKey = NULL;
 
-  $skip_tags = array();
+  $skip_render_template_keys = array();
 
   $is_invalid = false;
 
@@ -347,7 +347,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 
       case UUID_MISAPPLIED_NAME_FOR:
       case UUID_INVALID_DESIGNATION_FOR:
-        $skip_tags[] = 'authors';
+        $skip_render_template_keys[] = 'nameAuthorPart';
         $is_invalid = true;
         $relsign = $relsign_invalid;
 
@@ -391,7 +391,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   if (!isset($referenceUri)) {
     $referenceUri = FALSE;
   }
-  $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_tags, $is_invalid);
+  $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
   $name_relations = cdm_name_relationships_for_taxon($taxon);
   $name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
 
@@ -461,8 +461,6 @@ function cdm_accepted_for($accepted_for_uuid) {
  */
 function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $show_classification = false) {
 
-  $unclassified_snippet = '<span class="unclassified">' . t('unclassified') . '</span>';
-
   RenderHints::pushToRenderStack('list_of_taxa');
 
   $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
@@ -523,6 +521,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   $itemCnt = -1;
   foreach ($taxon_list as $taxon) {
     $itemCnt++;
+
     if (isset($table_of_accepted[$taxon->uuid])) {
       // Its a synonym or misapplied name.
       $is_synonym = isset($synonym_uuids[$taxon->uuid]); //TODO better use the $taxon->class attribute?
@@ -542,10 +541,10 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
           if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
             $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
           }
-          $taxon_or_name = $is_synonym ? $taxon->name : $taxon;
+          $skip_render_template_parts = $is_synonym ? ['secReferencePart'] : [];
           // $taxon_or_name this is a trick to suppress the sec reference for synonyms
           // supplying the name will cause render_taxon_or_name() to not show the sec reference
-          $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon_or_name, $taxonUri, $referenceUri);
+          $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon, $taxonUri, $referenceUri, true, false, $skip_render_template_parts);
           if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && is_object($taxon->sec)){
             if(isset($taxon->sec->authorship)){
               $authorship = $taxon->sec->authorship->titleCache;
@@ -555,19 +554,8 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
             $out .=  ' sensu ' . $authorship;
           }
           if ($show_classification) {
-            $classifications = get_classifications_for_taxon($taxon);
-            $classification_titles = array();
-            foreach ($classifications as $classification) {
-              if (isset($classification->titleCache)) {
-                $classification_titles[] = $classification->titleCache;
-              }
-            }
-            if (count($classification_titles) == 0) {
-              $classification_titles[] = $unclassified_snippet;
-            }
-            $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
+            $out .= render_classifications_for_taxon($taxon);
           }
-          $out .= render_taxon_and_name_footnotes($taxon);
           if ($showMedia_synonyms) {
             $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
           }
@@ -583,20 +571,8 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       }
       $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri);
       if ($show_classification) {
-        $classifications = get_classifications_for_taxon($taxon);
-        $classification_titles = array();
-        foreach ($classifications as $classification) {
-          if (isset($classification->titleCache)) {
-            $classification_titles[] = $classification->titleCache;
-          }
-        }
-        if(count($classification_titles) == 0){
-          $classification_titles[] = $unclassified_snippet;
-        }
-        $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
+        $out .= render_classifications_for_taxon($taxon);
       }
-      $out .= render_taxon_and_name_footnotes($taxon);
-
       if ($showMedia_taxa) {
         $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
       }
@@ -635,6 +611,21 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   return markup_to_render_array($out); // TODO create render array of all list items in function
 }
 
+
+function render_classifications_for_taxon($taxon) {
+  $unclassified_snippet = '<span class="unclassified">' . t('unclassified') . '</span>';
+  $classifications = get_classifications_for_taxon($taxon);
+  $classification_titles = array();
+  foreach ($classifications as $classification) {
+    if (isset($classification->titleCache)) {
+      $classification_titles[] = $classification->titleCache;
+    }
+  }
+  if (count($classification_titles) == 0) {
+    $classification_titles[] = $unclassified_snippet;
+  }
+  return '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
+}
 
 /**
  * Compose function for the taxonomic children

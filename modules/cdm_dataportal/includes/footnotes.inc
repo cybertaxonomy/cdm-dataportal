@@ -544,36 +544,7 @@ function handle_annotations_and_sources($entity, $inline_text_prefix = null, $fo
       (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE)
     );
   }
-
   return $annotations_and_sources;
-}
-
-/**
- * Convenience function to create footnotes of annotations and sources for a
- * taxon and name at the same time. Calls handle_annotations_and_sources()
- * internally twice and combines the resulting footnote markup
- *
- * @param $taxon
- *
- * @return string
- *
- * @see synonymy_annotations_and_source_config()
- */
-function render_taxon_and_name_footnotes($taxon) {
-  /*
-  $annotations_and_sources_taxon = handle_annotations_and_sources(
-    $taxon,
-    synonymy_annotations_and_source_config()
-  );
-  $annotations_and_sources_name = handle_annotations_and_sources(
-    $taxon->name,
-    synonymy_annotations_and_source_config()
-  );
-  $footnotes = $annotations_and_sources_taxon['foot_note_keys'] .
-    ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ',' : '') .
-    $annotations_and_sources_name['foot_note_keys'];
-  */
-  return ''; // $footnotes;
 }
 
 /**

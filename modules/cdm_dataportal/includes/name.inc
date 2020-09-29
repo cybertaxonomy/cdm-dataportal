@@ -257,16 +257,18 @@ function get_partDefinition($taxonNameType) {
  *    URI to the taxon, @param $reference_link
  *    URI to the reference,
  * @param bool $show_annotations
- *    turns the display of annotations on
+ *    turns the display of annotations on (default: true)
  * @param bool $is_type_designation
  *    To indicate that the supplied taxon name is a name type designation.
- * @param array $skiptags
- *    an array of name elements tags like 'name', 'rank' to skip. The name part
- *          'authors' will not be affected by this filter. This part is managed
- *          though the render template mechanism.
+ *    (default: false)
+ * @param array $skip_render_template_parts
+ *    The render template elements matching these part names will bes skipped.
+ *    This parameter should only be used in rare cases like for suppressing
+ *    the sec reference of synonyms. Normally the configuration of the
+ *    name appearance should only be done via the render templates themselves. (default: [])
  * @param bool $is_invalid
  *   Indicates that this taxon is invalid. In this case the name part will be shown in double quotes.
- *   This is useful when rendering taxon relation ships.
+ *   This is useful when rendering taxon relation ships. (default: false)
  *
  * @return string
  *  The markup for a taxon name.
@@ -274,7 +276,7 @@ function get_partDefinition($taxonNameType) {
  * @see path_to_reference(), must be processed by url() before passing to this method
  */
 function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $reference_link = NULL,
-  $show_annotations = true, $is_type_designation = false, $skiptags = array(), $is_invalid = false) {
+  $show_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
 
   $is_doubtful = false;
   $taxon_base = null;
@@ -311,6 +313,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     if (is_array($uri) && isset($uri['#uri'])) {
       $renderTemplate[$part]['#uri'] = $uri['#uri'];
     }
+  }
+
+  foreach($skip_render_template_parts as $part){
+    unset($renderTemplate[$part]);
   }
 
   $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_title);
@@ -378,7 +384,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $taggedName = $taggedNameNew;
       unset($taggedNameNew);
     }
-    $name = '<span class="' . $taxon_name->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName, $skiptags) . $name_encasement . '</span>';
+    $name = '<span class="' . $taxon_name->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
   }
   else {
     // use titleCache instead
@@ -557,7 +563,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $uri = $part['#uri'];
       unset($part['#uri']);
     }
-    foreach ($part as $key => $content) {
+    foreach ($part as $part => $content) {
       $html = '';
       if (is_array($content)) {
         $html = $content['#html'];
@@ -568,7 +574,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       elseif (is_string($content)) {
         $html = $content;
       }
-      $partHtml .= '<span class="' . $key . '">' . $html . '</span>';
+      $partHtml .= '<span class="' . $part . '">' . $html . '</span>';
     }
     if ($uri) {
       // cannot use l() here since the #uri aleady should have been processed through uri() at this point

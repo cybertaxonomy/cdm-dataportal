@@ -92,7 +92,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
     }
 
     @Test
-    public void testNodosilinea_sensensia_SynonymPage() throws MalformedURLException, UnsupportedEncodingException {
+    public void testNodosilinea_sensensia_SynonymPage() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensensia_uuid);
 
@@ -115,12 +115,9 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
     /**
      * Test for https://dev.e-taxonomy.eu/redmine/issues/5697
-     *
-     * @throws MalformedURLException
-     * @throws UnsupportedEncodingException
      */
     @Test
-    public void testIssue5697() throws MalformedURLException, UnsupportedEncodingException {
+    public void testIssue5697() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_bulbostylis_pauciflora_uuid);
 
@@ -133,7 +130,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
      * Test for https://dev.e-taxonomy.eu/redmine/issues/6523
      */
     @Test
-    public void testIssue6523() throws MalformedURLException, UnsupportedEncodingException {
+    public void testIssue6523() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nepenthes_gracilis_uuid);
 
