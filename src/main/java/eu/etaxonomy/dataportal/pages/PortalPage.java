@@ -75,15 +75,15 @@ public abstract class PortalPage {
     }
 
     public EnumSet<HealthChecks> getAciveHealthChecks() {
-        return aciveHealthChecks;
+        return activeHealthChecks;
     }
 
 
-    public void setAciveHealthChecks(EnumSet<HealthChecks> aciveHealthChecks) {
-        this.aciveHealthChecks = aciveHealthChecks;
+    public void setAciveHealthChecks(EnumSet<HealthChecks> activeHealthChecks) {
+        this.activeHealthChecks = activeHealthChecks;
     }
 
-    private EnumSet<HealthChecks> aciveHealthChecks = EnumSet.allOf(HealthChecks.class);
+    private EnumSet<HealthChecks> activeHealthChecks = EnumSet.allOf(HealthChecks.class);
 
 
     /**
@@ -198,12 +198,12 @@ public abstract class PortalPage {
         try {
             if(getAciveHealthChecks().contains(HealthChecks.NO_ERROR)) {
                 String ignore_error = null;
-                List<String> errors = getErrors().stream().filter(str -> ignore_error != null && str.startsWith(ignore_error)).collect(Collectors.toList());
+                List<String> errors = getErrors().stream().filter(str -> ignore_error == null || !str.startsWith(ignore_error)).collect(Collectors.toList());
                 assertTrue("The page must not show an error box", errors.size() == 0);
             }
             if(getAciveHealthChecks().contains(HealthChecks.NO_WARNING)) {
                 String ignore_warning = null;
-                List<String> warnings = getErrors().stream().filter(str -> ignore_warning != null && str.startsWith(ignore_warning)).collect(Collectors.toList());
+                List<String> warnings = getWarnings().stream().filter(str -> ignore_warning == null || !str.startsWith(ignore_warning)).collect(Collectors.toList());
                 assertTrue("The page must not show an warning box", warnings.size() == 0);
             }
         } catch (NoSuchElementException e) {
@@ -348,8 +348,11 @@ public abstract class PortalPage {
         if(messages != null){
             for(WebElement m : messages){
                 if(m.getAttribute("class").contains(messageType.name())){
+                    // need to check for two optional layouts
+                    // 1. multiple messages in a list
                     List<WebElement> messageItems = m.findElements(By.cssSelector("ul.messages__list li"));
                     if(messageItems.size() == 0 && !m.getText().isEmpty()) {
+                        // 2. one message only
                         // we have only one item which is not shown as list.
                         messageItems.add(m);
 
