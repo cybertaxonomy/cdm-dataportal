@@ -13,5 +13,6 @@ files[] = classes/TypedEntityReference.php
 files[] = classes/ItemComposeHandler.php
 files[] = classes/RegistrationDtoComposeHandler.php
 files[] = classes/AgentComposeHandler.php
+files[] = classes/AnnotationsAndSources.php
 
 configure = admin/config/cdm_dataportal/settings

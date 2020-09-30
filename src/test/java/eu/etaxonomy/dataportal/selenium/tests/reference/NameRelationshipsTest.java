@@ -72,11 +72,11 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals("is validating3 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.4", nameRelationshipElements.get(2).getText());
         assertEquals("non Nodosilinea blockensis, New Species in the solar system5 nec Nodosilinea sensensia, Plantas vasculares de Oz6 nec Nodosilinea sensensia, Species solaris7", nameRelationshipElements.get(3).getText());
         BaseElement orthVarElement = nameRelationshipElements.get(4);
-        assertEquals("orth. var.8 Nodosilinea sensensi9,10", orthVarElement.getText());
+        assertEquals("orth. var.8 Nodosilinea sensensi9", orthVarElement.getText());
         assertEquals("has orthographic variant", orthVarElement.getElement().findElement(By.className("symbol")).getAttribute("title"));
 
         List<BaseElement> footnotes = regItem.getRegistrationFootnotes();
-        assertEquals(10, footnotes.size());
+        assertEquals(9, footnotes.size());
         assertEquals(
                 "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes .get(0).getText());
@@ -104,9 +104,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals(
                 "9. Editorial annotation on Nodosilinea sensensi",
                 footnotes .get(8).getText());
-        assertEquals(
-                "10. Lem, Nonsens species of the developers Vol1. 2001",
-                footnotes .get(9).getText());
+
     }
 
     @Test
@@ -116,10 +114,10 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
         WebElement accName = p.getAcceptedName();
         assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2 [non Nodosilinea sensensia3 "
-                + "nec Nodosilinea sensensia4 nec Nodosilinea blockensis5 orth. var.6 Nodosilinea sensensi7,8]", accName.getText());
+                + "nec Nodosilinea sensensia4 nec Nodosilinea blockensis5 orth. var.6 Nodosilinea sensensi7]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
-        assertEquals(8, footnotes.size());
+        assertEquals(7, footnotes.size());
         assertEquals(
                 "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes .get(0).getText());
@@ -141,9 +139,6 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals(
                 "7. Editorial annotation on Nodosilinea sensensi",
                 footnotes.get(6).getText());
-        assertEquals(
-                "8. Lem, Nonsens species of the developers Vol1. 2001",
-                footnotes.get(7).getText());
 
     }
 

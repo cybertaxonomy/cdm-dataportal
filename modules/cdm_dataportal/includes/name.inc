@@ -256,8 +256,9 @@ function get_partDefinition($taxonNameType) {
  * @param $name_link
  *    URI to the taxon, @param $reference_link
  *    URI to the reference,
- * @param bool $show_annotations
- *    turns the display of annotations on (default: true)
+ * @param bool $show_taxon_name_annotations
+ *    Enable the display of footnotes for annotations on the taxon and name
+ *    (default: true)
  * @param bool $is_type_designation
  *    To indicate that the supplied taxon name is a name type designation.
  *    (default: false)
@@ -276,10 +277,11 @@ function get_partDefinition($taxonNameType) {
  * @see path_to_reference(), must be processed by url() before passing to this method
  */
 function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $reference_link = NULL,
-  $show_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
+  $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
 
   $is_doubtful = false;
   $taxon_base = null;
+  $nom_status_fkey = null; // FootNoteKey
   if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
     $taxon_base = $taxon_name_or_taxon_base;
     if(isset($taxon_name_or_taxon_base->name)){
@@ -416,7 +418,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // default separator
     $separator = '';
 
-    // [Eckhard]:"Komma nach dem Taxonnamen ist grunsätzlich falsch,
+    // [Eckhard]:"Komma nach dem Taxonnamen ist grundsätzlich falsch,
     // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
     if (isset($renderTemplate['referencePart']['reference'])) {
       $microreference = NULL;
@@ -482,7 +484,6 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
          if($tt->type == 'nomStatus'&& isset($tt->entityReference)) {
            $nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
            $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
-           $tt->text .= $nom_status_fkey;
            $tt_to_markup_options['html'] = true;
          }
         }
@@ -577,7 +578,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $partHtml .= '<span class="' . $part . '">' . $html . '</span>';
     }
     if ($uri) {
-      // cannot use l() here since the #uri aleady should have been processed through uri() at this point
+      // cannot use l() here since the #uri already should have been processed through uri() at this point
       $out .= $separator . '<a href="' . $uri . '" class="' . $partName . '">' . $partHtml . '</a>';
 
     }
@@ -586,18 +587,21 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     }
   }
   $out .= '</span>';
-  if ($show_annotations) {
-    $footnote_keys = [];
-    if($taxon_base){
-      $annotations_and_sources_taxon = handle_annotations_and_sources($taxon_base);
-      $footnote_keys[] = $annotations_and_sources_taxon['foot_note_keys'];
-    }
-    $annotations_and_sources_name = handle_annotations_and_sources($taxon_name);
-    $footnote_keys[] = $annotations_and_sources_name['foot_note_keys'];
-    // FIXME the glue should be inside of the <span class="footnote-key ... DOM
-    // element, see render_footnote_key()
-    $out .= implode(',', array_filter($footnote_keys, 'strlen'));
+
+  $annotations_and_sources = new AnnotationsAndSources();
+  if($nom_status_fkey){
+    // the nomenclatural status footnote key refers to the source citation
+    $annotations_and_sources->addFootNoteKey($nom_status_fkey);
   }
+  if ($show_taxon_name_annotations) {
+    if($taxon_base){
+      $annotations_and_sources = handle_annotations_and_sources($taxon_base,
+        null, null, $annotations_and_sources);
+    }
+    $annotations_and_sources = handle_annotations_and_sources($taxon_name,
+      null, null, $annotations_and_sources);
+  }
+  $out .= $annotations_and_sources->footNoteKeysMarkup();
   return $out;
 }
 
@@ -971,7 +975,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
       }
       RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
       $annotations_and_sources = handle_annotations_and_sources($name_type_designation);
-      $out .= $annotations_and_sources['foot_note_keys'];
+      $out .= $annotations_and_sources->footNoteKeysMarkup();
     }
   } // END NameTypeDesignation
 
@@ -1042,7 +1046,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
           $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
         }
-        $out .= $annotations_and_sources['foot_note_keys'];
+        $out .= $annotations_and_sources->footNoteKeysMarkup();
       }
       $out .= '</'. $element_tag .'>';
     }
@@ -1065,9 +1069,9 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
       $annotations_and_sources = handle_annotations_and_sources($textual_type_designation);
       $encasement =  $textual_type_designation->verbatim ? '"' : '';
       $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
-        . ': ' .  $encasement . trim($textual_type_designation->text_L10n->text) . $encasement .  $annotations_and_sources['foot_note_keys'] .'</' . $element_tag . '>';
-//      if(is_array( $annotations_and_sources['source_references'])){
-//        $citation_markup = join(', ', $annotations_and_sources['source_references']);
+        . ': ' .  $encasement . trim($textual_type_designation->text_L10n->text) . $encasement .  $annotations_and_sources->footNoteKeysMarkup() .'</' . $element_tag . '>';
+//      if($annotations_and_sources->hasSourceReferences())){
+//        $citation_markup = join(', ', getSourceReferences());
 //      }
 //      $out .= $citation_markup;
     }
@@ -1145,10 +1149,11 @@ function compose_name_type_designations($type_entity_refs_by_status){
       RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
       $annotations_and_sources = handle_annotations_and_sources($name_type_entity_ref);
 
-      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  . '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
+      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  .
+        '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
         . $name_type_entity_ref->label
         . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
-        . $annotations_and_sources['foot_note_keys']
+        . $annotations_and_sources->footNoteKeysMarkup()
         . '</div>');
       }
   }
@@ -1195,8 +1200,8 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
       // annotations and sources for the $derived_unit_facade_dto
       RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
       $annotations_and_sources = handle_annotations_and_sources($derived_unit_facade_dto);
-      $source_citations = $annotations_and_sources['source_references'];
-      $foot_note_keys = $annotations_and_sources['foot_note_keys'];
+      $source_citations = $annotations_and_sources->getSourceReferences();
+      $foot_note_keys = $annotations_and_sources->footNoteKeysMarkup();
 
       // preferredStableUri
       if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
@@ -1224,11 +1229,11 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
         // citation and detail for the media specimen
         RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
         $annotations_and_sources = handle_annotations_and_sources($mediaSpecimen);
-        if(is_array( $annotations_and_sources['source_references'])){
-          $source_citations = array_merge($source_citations, $annotations_and_sources['source_references']);
+        if($annotations_and_sources->hasSourceReferences()){
+          $source_citations = array_merge($source_citations, $annotations_and_sources->getSourceReferences());
         }
-        if($annotations_and_sources['foot_note_keys']){
-          $foot_note_keys .= ', ' . $annotations_and_sources['foot_note_keys'];
+        if($annotations_and_sources->hasFootnoteKeys()){
+          $foot_note_keys .= ', ' . $annotations_and_sources->footNoteKeysMarkup();
         }
       }
 
@@ -1262,46 +1267,67 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
 }
 
 /**
- * Creates the markup for the given name relationship
+ * Creates the markup for the given name relationship.
  *
- * @param $name_rel the CDM NameRelationship entity
- * @param $current_name_uuid
+ * For the footnotes see handle_annotations_and_sources().
+ *
+ * @param $other_name
+ *      The other name from the NameRelationship see get_other_name()
  * @param $current_taxon_uuid
  * @param $show_name_cache_only
  *    The nameCache will be shown instead of the titleCache if this parameter is true.
  * @return null|string
  *    The markup or null
+ *
+ * @see \get_other_name
  */
-function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $show_name_cache_only = false){
+function name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_uuid, $show_name_cache_only = false){
 
   $relationship_markup = null;
 
-  $current_name_is_toName = $current_name_uuid == $name_rel->toName->uuid;
+  $other_name = get_other_name($current_name_uuid, $name_rel);
 
-  if($current_name_is_toName){
-    $name = $name_rel->fromName;
-  } else {
-    $name = $name_rel->toName;
-  }
+  cdm_load_tagged_full_title($other_name);
 
-  cdm_load_tagged_full_title($name);
-
-  $highlited_synonym_uuid = isset ($name->taxonBases[0]->uuid) ? $name->taxonBases[0]->uuid : '';
-  if(!$show_name_cache_only){
-    $relationship_markup = render_taxon_or_name($name,
-      url(path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
-    );
-  } else {
+  $highlited_synonym_uuid = isset ($other_name->taxonBases[0]->uuid) ? $other_name->taxonBases[0]->uuid : '';
+  if($show_name_cache_only){
     $relationship_markup = l(
-      '<span class="' . html_class_attribute_ref($name) . '"">' . $name->nameCache . '</span>',
-      path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
+      '<span class="' . html_class_attribute_ref($other_name) . '"">' . $other_name->nameCache . '</span>',
+      path_to_name($other_name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
       array('html' => true)
     );
-    $annotations_and_sources = handle_annotations_and_sources($name);
-    $relationship_markup .= $annotations_and_sources['foot_note_keys'];
+    $annotations_and_sources = handle_annotations_and_sources($other_name);
+    $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
+  } else {
+    $relationship_markup = render_taxon_or_name($other_name,
+      url(path_to_name($other_name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
+    );
   }
 
   return $relationship_markup;
+}
+
+/**
+ * Determined the other name which is contained in the NameRelationship entity.
+ *
+ * @param $current_name_uuid
+ *   The uuid of this name.
+ * @param $name_rel
+ *   The cdm NameRelationship entity
+ *
+ * @return object
+ *   The other cdm Name entity.
+ */
+function get_other_name($current_name_uuid, $name_rel) {
+  $current_name_is_toName = $current_name_uuid == $name_rel->toName->uuid;
+
+  if ($current_name_is_toName) {
+    $name = $name_rel->fromName;
+  }
+  else {
+    $name = $name_rel->toName;
+  }
+  return $name;
 }
 
 
@@ -1492,14 +1518,14 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
     usort($name_relations, 'compare_name_relations_by_term_order_index');
 
     // compose
+    $show_name_cache_only = FALSE;
     foreach ($name_relations as $name_rel) {
 
       $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-
-      $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
-      $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
-
+      $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+      $relationship_markup = name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_uuid, $show_name_cache_only);
       $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
+
       $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
       $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup . ' ';
       $relationship_markup = $symbol_markup . $relationship_markup;
@@ -1514,11 +1540,14 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
     // name relationships to be displayed as non nec
     if (count($non_nec_name_rels) > 0) {
       $non_nec_markup = '';
+      $show_name_cache_only = FALSE;
       foreach ($non_nec_name_rels as $name_rel) {
+
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-        $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
-        $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
+        $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+        $relationship_markup = name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_uuid, $show_name_cache_only);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
+
         $symbol = $non_nec_markup ? ' nec ' : 'non';
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
         $non_nec_markup .= $symbol_markup . $relationship_markup;
@@ -1533,17 +1562,16 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
     // orthographic variants
     if (count($orthographic_variants) > 0) {
+      $show_name_cache_only = TRUE;
       foreach ($orthographic_variants as $name_rel) {
 
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-        $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
-        $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, TRUE);
-        $nomref_footnote_key_markup = handle_nomenclatural_reference_as_footnote($name_rel->toName);
+        $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+        $relationship_markup = name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_uuid, $show_name_cache_only);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
-        $relationship_markup_has_footnote_key = strpos($relationship_markup, 'footnote-key footnote-key-') > 0;
-        $relationship_markup = $symbol_markup . $relationship_markup . ($relationship_markup_has_footnote_key ? ',' : '') . $nomref_footnote_key_markup;
+        $relationship_markup = $symbol_markup . $relationship_markup;
       }
       if (isset($relationship_markup) && $relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,

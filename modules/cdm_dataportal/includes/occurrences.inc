@@ -543,8 +543,8 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                           'bibliography_aware' => FALSE
                         ]);
                         $annotations_and_sources = handle_annotations_and_sources($specimen_or_observation);
-                        if (!empty($annotations_and_sources['source_references'])) {
-                            @_description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources['source_references']), '', 12);
+                        if ($annotations_and_sources->hasSourceReferences()) {
+                            @_description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources->getSourceReferences()), '', 12);
                         }
                         break;
 

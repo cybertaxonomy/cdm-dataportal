@@ -384,9 +384,7 @@ function compose_description_element($element, $feature_block_settings, $element
 
   RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
   $annotations_and_sources = handle_annotations_and_sources(
-    $element,
-    $element_markup,
-    $footnote_list_key_suggestion
+    $element, $element_markup, $footnote_list_key_suggestion
   );
 
   $timescope_markup = '';
@@ -397,19 +395,19 @@ function compose_description_element($element, $feature_block_settings, $element
   // handle the special case were the TextData is used as container for original source with name
   // used in source information without any text stored in it.
   $names_used_in_source_markup = '';
-  if (!empty($annotations_and_sources['names_used_in_source']) && empty($element_markup)) {
-    $names_used_in_source_markup = join(', ', $annotations_and_sources['names_used_in_source']) . ': ';
+  if ($annotations_and_sources->hasNameUsedInSource() && empty($element_markup)) {
+    $names_used_in_source_markup = join(', ', $annotations_and_sources->getNameUsedInSource()) . ': ';
     // remove all <span class="nameUsedInSource">...</span> from all source_references
     // these are expected to be at the end of the strings
     $pattern = '/ <span class="nameUsedInSource">.*$/';
-    foreach( $annotations_and_sources['source_references'] as &$source_reference){
+    foreach( $annotations_and_sources->getSourceReferences() as &$source_reference){
       $source_reference = preg_replace($pattern , '', $source_reference);
     }
   }
 
   $source_references_markup = '';
-  if (!empty($annotations_and_sources['source_references'])) {
-    $source_references_markup = '<span class="sources">' . join(' ', $annotations_and_sources['source_references']) . '<span>';
+  if ($annotations_and_sources->hasSourceReferences()) {
+    $source_references_markup = '<span class="sources">' . join(' ', $annotations_and_sources->getSourceReferences()) . '<span>';
   }
 
   $feature_label = '';
@@ -425,7 +423,7 @@ function compose_description_element($element, $feature_block_settings, $element
   }
 
     $render_array['#value'] = $feature_label . $content_markup;
-    $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
+    $render_array['#value_suffix'] = $annotations_and_sources->footNoteKeysMarkup();
   return $render_array;
 }
 
@@ -1557,9 +1555,7 @@ function compose_description_elements_distribution($description_elements){
   foreach ($description_elements as $description_element) {
     RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
     $annotations_and_sources = handle_annotations_and_sources(
-      $description_element,
-      $description_element->area->representation_L10n,
-      UUID_DISTRIBUTION
+      $description_element, $description_element->area->representation_L10n, UUID_DISTRIBUTION
     );
 
     $status = distribution_status_label_and_markup([$description_element->status]);
@@ -1569,10 +1565,10 @@ function compose_description_elements_distribution($description_elements){
       . ' " title="' . $status['label']. '">'
       . $description_element->area->representation_L10n
       . $status['markup'];
-    if(!empty($annotations_and_sources['source_references'])){
-      $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+    if($annotations_and_sources->hasSourceReferences()){
+      $out .= ' ' . join(' ', $annotations_and_sources->getSourceReferences());
     }
-    $out .= $annotations_and_sources['foot_note_keys']   . '</' . $enclosingTag . '>';
+    $out .= $annotations_and_sources->footNoteKeysMarkup() . '</' . $enclosingTag . '>';
     $markup_array[] = $out;
   }
 
@@ -1824,9 +1820,7 @@ function compose_description_elements_distribution($description_elements){
       if($distribution_aggregate) {
         RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
         $annotations_and_sources = handle_annotations_and_sources(
-          $distribution_aggregate,
-          $label,
-          UUID_DISTRIBUTION
+          $distribution_aggregate, $label, UUID_DISTRIBUTION
         );
         $status = distribution_status_label_and_markup($distribution_aggregate->status, $level_style['status_glue']);
       }
@@ -1841,11 +1835,11 @@ function compose_description_elements_distribution($description_elements){
       ;
 
       if(isset($annotations_and_sources)){
-        if(!empty($annotations_and_sources['source_references'])){
-          $per_node_markup[$node_index] .= ' ' . join(', ' , $annotations_and_sources['source_references']);
+        if($annotations_and_sources->hasSourceReferences()){
+          $per_node_markup[$node_index] .= ' ' . join(', ' , $annotations_and_sources->getSourceReferences());
         }
-        if($annotations_and_sources['foot_note_keys']) {
-          $per_node_markup[$node_index] .= $annotations_and_sources['foot_note_keys'];
+        if($annotations_and_sources->hasFootnoteKeys()) {
+          $per_node_markup[$node_index] .= $annotations_and_sources->footNoteKeysMarkup();
         }
       }
 
