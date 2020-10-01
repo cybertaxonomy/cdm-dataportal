@@ -2504,7 +2504,7 @@ function path_to_key($keyType, $keyUuid) {
   if (!$keyUuid || !$keyType) {
     return FALSE;
   }
-  $keyType{0} = strtolower($keyType{0});
+  $keyType[0] = strtolower($keyType[0]);
   return "cdm_dataportal/" . $keyType . "/$keyUuid";
 }
 
@@ -2525,21 +2525,24 @@ function path_to_reference($uuid) {
 }
 
 /**
- * Composes the drupal path to the reference identified by the uuid.
- *
- * @param string $identifier
+ * @param string $registration_identifier
  *  The persistent identifier of the registration entity (Registration.identifier).
+ *
  * @return string
- *  The drupal path
+ *  the markup for a HTML link
  */
-function path_to_registration($identifier) {
+function render_link_to_registration($registration_identifier) {
 
   if(variable_get(CDM_REGISTRATION_PRESISTENT_IDENTIFIER_AS_LINK)){
-    return $identifier;
+    $path = $registration_identifier;
+    $query = [];
   } else {
-    return 'cdm_dataportal/registration/' . urlencode($identifier);
+    $path = 'cdm_dataportal/registration';
+    $query = ['identifier' => $registration_identifier];
   }
+  return l($registration_identifier, $path, array('attributes' => array('class' => array('identifier')), 'query' => $query));
 }
+
 
 /**
  * Creates the path to a cdm_dataportal taxon name page.

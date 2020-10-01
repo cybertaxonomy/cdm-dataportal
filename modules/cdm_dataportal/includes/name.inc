@@ -775,8 +775,8 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
     return $render_array;
   }
 
-  $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto, 'span');
-  $itentifier_markup = l($registration_dto->identifier, path_to_registration($registration_dto->identifier), array('attributes' => array('class' => array('identifier'))));
+  $registration_date_institute_markup = render_registration_date_and_institute($registration_dto, 'span');
+  $identifier_markup = render_link_to_registration($registration_dto->identifier);
 
   $tagged_text_options = array();
   if(isset($registration_dto->nameRef)){
@@ -809,15 +809,14 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
     $registation_markup = str_replace($media_url_key, $link, $registation_markup);
   }
   if($style == 'citation') {
-    $registation_markup = $registation_markup . ' ' . $itentifier_markup . ' ' . $registration_date_insitute_markup;
+    $registation_markup = $registation_markup . ' ' . $identifier_markup . ' ' . $registration_date_institute_markup;
   } else {
-    $render_array['registration-metadata'] = markup_to_render_array('<div class="registration-metadata">' . $itentifier_markup . ' ' . $registration_date_insitute_markup. "</div>", -10);
+    $render_array['registration-metadata'] = markup_to_render_array('<div class="registration-metadata">' . $identifier_markup . ' ' . $registration_date_institute_markup. "</div>", -10);
   }
   $render_array['summary'] = markup_to_render_array('<' . $tag_enclosing_summary . ' class="registration-summary">' . $registation_markup . '</' . $tag_enclosing_summary . '>', 0);
 
   return $render_array;
 }
-
 
 /**
  * Renders the registrationDate and institutionTitleCache of the $registration_dto as markup.
@@ -881,7 +880,7 @@ function render_registration($registration){
     if(isset($registration->institution->titleCache)){
       $office_class_attribute = registration_intitute_class_attribute($registration);
     }
-    $markup = "<span class=\"registration $office_class_attribute\">" . l($registration->identifier, path_to_registration($registration->identifier)) . ', '
+    $markup = "<span class=\"registration $office_class_attribute\">" . render_link_to_registration($registration->identifier) . ', '
       .  preg_replace('/^([^T]*)(.*)$/', '${1}', $registration->registrationDate)
       . '</span>';
   }
