@@ -294,7 +294,7 @@ function theme_cdm_media_caption($variables) {
   }
 
   if($annotations_and_sources->hasSourceReferences()){
-    $sources_label = count(count($annotations_and_sources->getSourceReferences())) > 1 ? t('Sources') : t('Source');
+    $sources_label = count($annotations_and_sources->getSourceReferences()) > 1 ? t('Sources') : t('Source');
     _description_list_group_add($groups, $sources_label . ':', markup_to_render_array(join('; ', $annotations_and_sources->getSourceReferences())) );
   }
 
