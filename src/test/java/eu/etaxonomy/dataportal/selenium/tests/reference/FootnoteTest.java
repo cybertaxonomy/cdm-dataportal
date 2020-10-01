@@ -121,7 +121,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertTrue(linksInFootnote5.get(0).getUrl().endsWith("/cdm_dataportal/reference/f2e43411-2564-42c7-816e-7e6046adbefa"));
         assertEquals("", linksInFootnote5.get(0).getText());
         assertEquals("http://testbank.org/100004", linksInFootnote5.get(1).getText());
-        assertTrue(linksInFootnote5.get(1).getUrl().endsWith("cdm_dataportal/registration/http%253A%252F%252Ftestbank.org%252F100004"));
+        assertTrue("unexpected url in footnote: " + linksInFootnote5.get(1).getUrl(), linksInFootnote5.get(1).getUrl().endsWith("cdm_dataportal/registration?identifier=http%3A//testbank.org/100004"));
         assertEquals("6. editorial note on the fieldunit", footnotes.get(5).getText());
     }
 
