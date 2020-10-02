@@ -40,7 +40,12 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
     /**
      *
      */
-    private static final String STEP_DONE_IMAGE = "modules/cdm_dataportal/images/step_done.gif";
+    private static final String DETAIL_IMAGE_DERIVATE_ICON = "cdm_dataportal/images/detail_image_derivate-16x16-32.png";
+
+    /**
+     *
+     */
+    private static final String STEP_DONE_ICON = "modules/cdm_dataportal/images/step_done.gif";
 
     public static final Logger logger = Logger.getLogger(DrushExecuter.class);
 
@@ -129,9 +134,12 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Ehrenberg, C.G. D047", cells.get(3).getText());
         assertEquals("CEDiT, M", cells.get(4).getText());
         assertTrue(cells.get(5).findElement(By.tagName("img")).getAttribute("src")
-                .endsWith(STEP_DONE_IMAGE));
+                .endsWith(STEP_DONE_ICON));
         assertTrue(cells.get(6).findElement(By.tagName("img")).getAttribute("src")
-                .endsWith(STEP_DONE_IMAGE));
+                .endsWith(STEP_DONE_ICON));
+        assertTrue(cells.get(7).findElement(By.tagName("img")).getAttribute("src")
+                .endsWith(DETAIL_IMAGE_DERIVATE_ICON));
+
 
         // details row 1
         rowId = 4;
@@ -142,13 +150,14 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         cells = rows.get(rowId).findElements(By.tagName("td"));
         detailsText = cells.get(1).getText();
         detailsLines = StringUtils.split(detailsText, "\n");
-        assertEquals(6, detailsLines.length);
+        assertEquals(7, detailsLines.length);
         assertEquals("Citation: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047. (M M-0289351, CEDiT 2017E68)", detailsLines[0]);
         assertEquals("Specimen summary: M (M-0289351)", detailsLines[1]);
         assertEquals("Preferred stable URI: http://herbarium.bgbm.org/object/B400042045", detailsLines[2]);
         assertEquals("Isolectotype of Glenodinium apiculatum Ehrenb.", detailsLines[3]);
         assertEquals("Specimen summary: CEDiT (2017E68)", detailsLines[4]);
         assertEquals("Epitype of Glenodinium apiculatum Ehrenb. Specimen Scans: CEDiT (2017E68)", detailsLines[5]);
+        assertEquals("Detail Images: masks_2x.png", detailsLines[6]);
     }
 
 }
