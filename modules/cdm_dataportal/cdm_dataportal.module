@@ -1820,9 +1820,7 @@ function specimen_by_accession_number_view($accession_number = null) {
     }
     $specimenpage = new stdClass();
 
-    $specimenpage->title = theme('theme_cdm_specimen_dto_page_title', array(
-      'specimen' => $field_unit_dto
-    ));
+    $specimenpage->title = render_cdm_specimen_dto_page_title($field_unit_dto);
 
      $render_array['markup'] = $specimen_table;
      $specimenpage->content = drupal_render($render_array);
@@ -1843,17 +1841,17 @@ function specimen_by_accession_number_view($accession_number = null) {
  */
 function cdm_dataportal_specimen_view($uuid) {
     //TODO: get the derivateDTO and don't call the webservice a second time in compose_cdm_specimen_page
-    $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, $uuid);
-    if (empty($specimen)) {
+    $occurrence = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, $uuid);
+    if (empty($occurrence)) {
         drupal_set_title(t('Specimen does not exist'), PASS_THROUGH);
         return FALSE;
     }
     $specimenpage = new stdClass();
 
-    $specimenpage->title = specimen_page_title($specimen);
+    $specimenpage->title = render_specimen_page_title($occurrence);
 
     // Render the specimen page.
-    $render_array = compose_cdm_specimen_page($specimen);
+    $render_array = compose_cdm_specimen_page($occurrence);
     $specimenpage->content = drupal_render($render_array);
 
     return $specimenpage;
