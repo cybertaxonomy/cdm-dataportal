@@ -16,7 +16,6 @@ import java.util.UUID;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -55,7 +54,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     }
 
     @Test
-    @Ignore // see #9234
+    //@Ignore
     public void test1() throws MalformedURLException {
         TaxonPage p = new TaxonPage(driver, getContext(), glenodinium_apiculatum_t, "specimens");
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#specimens table.derivate_tree"));
@@ -93,6 +92,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("2017E68", dl2.joinedDescriptionElementText("Accession number:"));
         assertEquals("\nCode:\nCEDiT", dl2.joinedDescriptionElementText("Collection"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
+        assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
         assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171): Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (CEDiT 2017E68).",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         DescriptionElement specimenTypeDesignation_dd = dl2.getDescriptionGroups().get("Specimen type designations:").get(0);
@@ -125,6 +125,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("M-0289351", dl2.joinedDescriptionElementText("Accession number:"));
         assertEquals("\nCode:\nM", dl2.joinedDescriptionElementText("Collection"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
+        assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
         assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172): Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         specimenTypeDesignationLinks = dl2.getDescriptionGroups().get("Specimen type designations:").get(0).getDescriptionElementContent().getLinksInElement();

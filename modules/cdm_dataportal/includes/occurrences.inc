@@ -1324,7 +1324,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
                     /* ---- SpecimenOrObservationBase --- */
                     case 'derivationEvent':
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 1);
+                        @_description_list_group_add($groups, 'Gathering type:', ucfirst($value->derivationEventType), NULL, 1);
                         break;
                     case 'kindOfUnit':
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 1);
@@ -1332,12 +1332,9 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                     case 'accessionNumber':
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 0);
                         break;
-
                     case 'preferredStableUri':
-
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(array('#markup' => cdm_external_uri($value, false))));
                         break;
-
                     case 'specimenTypeDesignations':
                         @_description_list_group_add(
                             $groups,
