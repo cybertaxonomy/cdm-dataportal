@@ -1404,3 +1404,110 @@ function cdm_taxonpage_tab_label($tabname) {
   }
   return $tabname;
 }
+
+/**
+ *  Returns HTML for the default title of a specimen page.
+ *  The returned title is a the identifier of the specimen.
+ *
+ * @param object $occurrence
+ *  The CDM SpecimenOrObservation instance
+ *     being formatted for the title.
+ *
+ * @return string
+ *  Markup for the title of a specimen page
+ */
+function render_specimen_page_title($occurrence)
+{
+  RenderHints::pushToRenderStack('render_specimen_page_title');
+  $out = '';
+  list($specimenID, $collection) = specimen_id_and_collection_for($occurrence);
+  if ($occurrence->class == 'FieldUnit'){
+    $out .= '<span class="type-label">Field unit: </span>';
+  }else{
+    $out .= '<span class="type-label">Specimen:  </span>';
+  }
+
+  if($collection){
+    $out .= $collection." ";
+  }
+  $out .= $specimenID;
+
+  RenderHints::popFromRenderStack();
+
+  return '<span class="' . $occurrence->class . '">' . $out . '</span>';
+}
+
+/**
+ * Returns HTML for the default title of a specimen page.
+ * The returned title is a the identifier of the specimen.
+ *
+ * @param object $occurrence_dto
+ *   An dto for a cdm SpecimenOrObservation entity
+ *
+ * @return string
+ *  Markup for the title of a specimen page
+ *
+ */
+function render_cdm_specimen_dto_page_title($occurrence_dto)
+{
+  RenderHints::pushToRenderStack('render_specimen_page_title');
+  $out = '';
+  list($specimenID, $collection) = specimen_id_and_collection_for($occurrence_dto);
+  if ($occurrence_dto->class == 'FieldUnit'){
+    $out .= "FieldUnit ";
+  }else{
+    $out .= "Specimen ";
+  }
+  if($collection){
+    $out .= $collection." ";
+  }
+  $out .= $specimenID;
+
+  RenderHints::popFromRenderStack();
+  return '<span class="' . $occurrence_dto->class . '">' . $out . '</span>';
+}
+
+/**
+ * @param $specimen
+ *
+ * @return array
+ */
+function specimen_id_and_collection_for($specimen) {
+  $specimenID = '';
+  $collection = NULL;
+  if (!($specimen->class == 'FieldUnit')) {
+    if ($specimen->collection) {
+      if ($specimen->collection->code) {
+        $collection = $specimen->collection->code;
+      }
+      elseif ($specimen->collection->name) {
+        $collection = $specimen->collection->name;
+      }
+    }
+    if ($specimen->accessionNumber) {
+      $specimenID = $specimen->accessionNumber;
+    }
+    elseif ($specimen->barcode) {
+      $specimenID = $specimen->barcode;
+    }
+    elseif ($specimen->catalogNumber) {
+      $specimenID = $specimen->catalogNumber;
+    }
+    elseif ($specimen->titleCache) {
+      $specimenID = $specimen->titleCache;
+    }
+    if (!isset($specimenID) and !isset($collection)) {
+      $specimenID = $specimen->uuid;
+    }
+  }
+  else {
+    if ($specimen->titleCache) {
+      $specimenID = $specimen->titleCache;
+    }
+    if (!isset($specimenID) and !isset($collection)) {
+      $specimenID = $specimen->uuid;
+    }
+  }
+  return [$specimenID, $collection];
+}
+
