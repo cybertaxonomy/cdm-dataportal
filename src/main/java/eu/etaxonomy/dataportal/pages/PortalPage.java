@@ -13,6 +13,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -414,6 +415,17 @@ public abstract class PortalPage {
         }
 
         return tabs;
+    }
+
+    /**
+     * @return the active primary tab
+     */
+    public Optional<LinkElement> getActivePrimaryTab() {
+        List<LinkElement> primaryTabs = getPrimaryTabs();
+        return primaryTabs.stream()
+                .filter(we -> we.getClassAttributes().stream().anyMatch(ca -> ca.equals("active")))
+                .findFirst();
+
     }
 
     /**

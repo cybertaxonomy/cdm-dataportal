@@ -1014,7 +1014,7 @@ function specimen_render_array_items(array $fieldunit_dtos){
 }
 
 /**
- * Creates the drupal render array for the table showing all derivatives which
+ * Composes a compressed derivate table showing all derivatives which
  * stem from a common gathering event.
  *
  * @param $field_unit_uuids array
@@ -1022,6 +1022,8 @@ function specimen_render_array_items(array $fieldunit_dtos){
  *
  * @return array
  *  A drupal render array for a table
+ *
+ * @see CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE
  *
  * @ingroup compose
  */
@@ -1624,7 +1626,9 @@ function compose_table_of_blast_result(array $data){
 
 
 /**
- * Composes a BOTTOM-UP-SPECIMEN-TABLE
+ * Composes a BOTTOM-UP-SPECIMEN-TABLE for the view mode
+ * CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE
+ *
  * @param $specimensOrObservations
  * @return array
  *  A drupal render array with the following keys:
@@ -1632,6 +1636,7 @@ function compose_table_of_blast_result(array $data){
  *   - 'pager'
  *
  * @ingroup Compose
+ * @see CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE
  */
 function compose_specimens_table_bottom_up($specimensOrObservations)
 {

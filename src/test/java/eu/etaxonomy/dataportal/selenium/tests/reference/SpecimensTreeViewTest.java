@@ -54,7 +54,6 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     }
 
     @Test
-    //@Ignore
     public void test1() throws MalformedURLException {
         TaxonPage p = new TaxonPage(driver, getContext(), glenodinium_apiculatum_t, "specimens");
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#specimens table.derivate_tree"));
