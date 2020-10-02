@@ -224,7 +224,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         // type designations in defined order
         // 1. Epitype
         assertEquals(
-                "Epitype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (CEDiT 2017E68).",
+                "Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (CEDiT 2017E68).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
 
         // 2. Lectotype
@@ -244,7 +244,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
 
         // 3. Isolectotype
         assertEquals(
-                "Isolectotype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
+                "Isolectotype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 regItem.getSpecimenTypeDesignations().get(2).getText());
         assertEquals(
                 "M M-0289351",

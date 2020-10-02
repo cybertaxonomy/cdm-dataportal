@@ -60,8 +60,8 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         List<WebElement> summaryRows = specimensTable.findElements(By.cssSelector("tr.summary_row"));
         List<WebElement> detailRows = specimensTable.findElements(By.cssSelector("tr.detail_row"));
         assertEquals(3, summaryRows.size());
-        assertEquals("Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047.", summaryRows.get(0).getText());
-        assertEquals("Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047.", summaryRows.get(1).getText());
+        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", summaryRows.get(0).getText());
+        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", summaryRows.get(1).getText());
         assertEquals("Germany, Berlin, 2 Apr 1835.", summaryRows.get(2).getText());
 
 
@@ -92,7 +92,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("\nCode:\nCEDiT", dl2.joinedDescriptionElementText("Collection"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171): Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (CEDiT 2017E68).",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171): Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (CEDiT 2017E68).",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         DescriptionElement specimenTypeDesignation_dd = dl2.getDescriptionGroups().get("Specimen type designations:").get(0);
         List<LinkElement> specimenTypeDesignationLinks = specimenTypeDesignation_dd.getDescriptionElementContent().getLinksInElement();
@@ -125,7 +125,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("\nCode:\nM", dl2.joinedDescriptionElementText("Collection"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
-        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172): Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28 Mar 2016, D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
+        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172): Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         specimenTypeDesignationLinks = dl2.getDescriptionGroups().get("Specimen type designations:").get(0).getDescriptionElementContent().getLinksInElement();
         assertEquals(3, specimenTypeDesignationLinks.size());
