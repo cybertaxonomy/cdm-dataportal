@@ -285,7 +285,8 @@
             if (!textStatus) {
                 textStatus = "error";
             }
-            log(textStatus + " requesting  " + requestUrl + " filed after timeout " + errorThrown, true);
+            var errorMessage = errorThrown != undefined ? errorThrown : 'unspecified error';
+            log(textStatus + " requesting  " + requestUrl + " failed due to " + errorMessage, true);
             errorMessageCtl.show();
             errorMessageCtl.add(textStatus + ":" + errorThrown);
         }
@@ -345,7 +346,7 @@
                 // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
               },
               error: function(jqXHR, textStatus, errorThrown){
-                  reportAjaxError(textStatus, mapServiceRequest, errorThrown);
+                  reportAjaxError("Distribution Layer: " +textStatus, mapServiceRequest, errorThrown);
               }
             });
           }
@@ -380,7 +381,7 @@
                   // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
               },
                 error: function(jqXHR, textStatus, errorThrown){
-                    reportAjaxError(textStatus, mapServiceRequest, errorThrown);
+                    reportAjaxError("Occurrence Layer: " + textStatus, mapServiceRequest, errorThrown);
                 }
             });
           }
@@ -1136,7 +1137,7 @@
         var timestamp = '';
         if(addTimeStamp === true){
           var time = new Date();
-          timestamp = time.getSeconds() + '.' + time.getMilliseconds() + 's';
+          timestamp = '[' + time.getSeconds() + '.' + time.getMilliseconds() + ' s] ';
         }
         console.log(timestamp + message);
       };
