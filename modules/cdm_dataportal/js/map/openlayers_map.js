@@ -345,7 +345,8 @@
               success: function(data){
                   var layers = createDataLayer(data, "AREA");
                   addLayers(layers);
-                // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
+                // layerDataLoaded(); will be called after reading the projection from the WFS
+                // for the data layer, see readProjection()
               },
               error: function(jqXHR, textStatus, errorThrown){
                   reportAjaxError("Distribution Layer: " +textStatus, mapServiceRequest, errorThrown);
@@ -693,28 +694,28 @@
           layers.forEach(function(layer){
             // layer.setVisibility(false);
           });
-
           map.addLayers(layers);
         };
 
         /**
          * add a distribution or occurrence layer
          *
-         * @param mapResponseObj
-         *   The reponse object returned by the edit map service
+         * @param mapResponseArray
+         *   The map service returns the mapResponseObj in an array with one element.
          * @param dataType
          *   either "AREA" or "POINT"
          */
-        var createDataLayer = function(mapResponseObj, dataType){
+        var createDataLayer = function(mapResponseArray, dataType){
 
           console.log("createDataLayer() : creating data layer of type " + dataType);
 
-          dataLayerOptions = makeWMSLayerOptions();
+          var dataLayerOptions = makeWMSLayerOptions();
           dataLayerOptions.displayOutsideMaxExtent = true; // move into makeWMSLayerOptions?
 
           var layers = [];
           // add additional layers, get them from the mapResponseObj
-          if(mapResponseObj !== undefined){
+          if(mapResponseArray !== undefined){
+             var mapResponseObj = mapResponseArray[0];
             if(dataType === "POINT" && mapResponseObj.points_sld !== undefined){
               var pointLayer;
               // it is a response for an point map
@@ -859,7 +860,6 @@
           if(!projection) {
             projection = layerProjections[layer.name];
           }
-
 
           if(projection) {
             callback(projection);
