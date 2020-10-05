@@ -37,9 +37,10 @@
     defaultBaseLayerName: 'open_topomap',
     maxZoom: 15,
     minZoom: 0,
-      // hide the map when the data layer has no features
-      hideEmptyMap: true,
+    // hide the map when the data layer has no features
+    hideEmptyMap: true,
     debug: true,
+    layerLoadingTimeout: 1000, // ms
     /**
      * allows the map to display parts of the layers which are outside
      * the maxExtent if the aspect ratio of the map and of the baselayer
@@ -80,6 +81,7 @@
       specimenLinkText: 'Open unit'
   };
 })(jQuery);
+
 
 /**************************************************************************
  *                          CdmOpenLayers
@@ -339,7 +341,7 @@
             jQuery.ajax({
               url: mapServiceRequest,
               dataType: "json",
-                timeout: 5000,
+                // timeout: layerLoadingTimeout,
               success: function(data){
                   var layers = createDataLayer(data, "AREA");
                   addLayers(layers);

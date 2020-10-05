@@ -152,12 +152,15 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         detailsLines = StringUtils.split(detailsText, "\n");
         assertEquals(7, detailsLines.length);
         assertEquals("Citation: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047. (M M-0289351, CEDiT 2017E68)", detailsLines[0]);
-        assertEquals("Specimen summary: M (M-0289351)", detailsLines[1]);
-        assertEquals("Preferred stable URI: http://herbarium.bgbm.org/object/B400042045", detailsLines[2]);
-        assertEquals("Isolectotype of Glenodinium apiculatum Ehrenb.", detailsLines[3]);
-        assertEquals("Specimen summary: CEDiT (2017E68)", detailsLines[4]);
-        assertEquals("Epitype of Glenodinium apiculatum Ehrenb. Specimen Scans: CEDiT (2017E68)", detailsLines[5]);
-        assertEquals("Detail Images: masks_2x.png", detailsLines[6]);
+
+        assertEquals("Specimen summary: CEDiT (2017E68)", detailsLines[1]);
+        assertEquals("Epitype of Glenodinium apiculatum Ehrenb. Specimen Scans: CEDiT (2017E68)", detailsLines[2]);
+        assertEquals("Detail Images: masks_2x.png", detailsLines[3]);
+
+        assertEquals("Specimen summary: M (M-0289351)", detailsLines[4]);
+        assertEquals("Preferred stable URI: http://herbarium.bgbm.org/object/B400042045", detailsLines[5]);
+        assertEquals("Isolectotype of Glenodinium apiculatum Ehrenb.", detailsLines[6]);
+
     }
 
 }
