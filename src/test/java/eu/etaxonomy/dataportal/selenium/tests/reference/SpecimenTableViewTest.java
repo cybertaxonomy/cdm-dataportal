@@ -66,7 +66,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals(getContext().prepareTitle("Glenodinium apiculatum"), p.getTitle());
     }
 
-    @Test
+    // @Test no point testing for the tab, the reference portal is set up being tab-less
     public void testPageTab()  {
         Optional<LinkElement> activeTab = p.getActivePrimaryTab();
         assertTrue(activeTab.isPresent());
