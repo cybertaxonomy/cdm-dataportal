@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -93,7 +94,16 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
         FeatureBlock featureBlockDistribution = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
 
         assertEquals(featureLabel, featureBlockDistribution.getTitle().getText());
+
+
         String distributionContentText = featureBlockDistribution.getContentText().trim();
+        WebElement openLayersErrorMessages = null;
+        try {
+            openLayersErrorMessages = featureBlockDistribution.getElement().findElement(By.id("OpenLayers_Control_ErrorMessages"));
+            distributionContentText = distributionContentText.replace(openLayersErrorMessages.getText(), "").trim();  // remove error text
+        } catch(NoSuchElementException e) {
+            // IGNORE
+        }
         assertEquals(blockTextFull, distributionContentText);
 
         featureBlockDistribution.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);

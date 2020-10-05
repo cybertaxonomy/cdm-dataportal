@@ -1355,7 +1355,7 @@
             OpenLayers.Util.extend(control, {
 
                 messageText: "The map is currently broken due to problems with the map server.",
-
+                id: 'OpenLayers_Control_ErrorMessages',
                 type: 'ErrorMessages',
                 title: 'Error messages',
 
