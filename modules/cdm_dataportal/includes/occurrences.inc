@@ -107,7 +107,6 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
         $detail_html .= "<strong>Specimen summary: $specimenPageLink</strong><br>";
     }
 
-
     if($is_specimen_page) {
         if($specimen->citation){
             $detail_html .= "<br>".$specimen->citation."<br>";
@@ -1108,7 +1107,12 @@ function compose_compressed_specimen_derivate_table($field_unit_uuids) {
       }
       //assemble specimen details
       if ($derivateHierarchy->derivates) {
+        $derivates_orderd = [];
         foreach ($derivateHierarchy->derivates as $preservedSpecimenDTO) {
+          $derivates_orderd[$preservedSpecimenDTO->accessionNumber] = $preservedSpecimenDTO;
+        }
+        ksort($derivates_orderd);
+        foreach ($derivates_orderd as $preservedSpecimenDTO) {
           $detail_html .= "<br>";
           $detail_html .= render_cdm_specimenDTO_page($preservedSpecimenDTO);
         }
