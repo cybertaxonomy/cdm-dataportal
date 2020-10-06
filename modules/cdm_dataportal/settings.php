@@ -358,12 +358,7 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
       /* no sec ref in this case, misapplied names are
        * de-duplicated and the sec ref is shown as footnote */
     ),
-    'homonym'=> array(
-        'nameAuthorPart' => array('#uri' => TRUE),
-        'referenceYearPart' => TRUE,
-        'statusPart' => TRUE
-    ),
-    'acceptedFor,typedesignations,list_of_taxa' => array(
+    'acceptedFor,typedesignations,list_of_taxa,homonym' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
         'statusPart' => TRUE
