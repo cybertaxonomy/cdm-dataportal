@@ -129,7 +129,12 @@ class NameRenderConfiguration {
         /* no sec ref in this case, misapplied names are
          * de-duplicated and the sec ref is shown as footnote */
       ),
-      'acceptedFor,typedesignations,list_of_taxa,homonym' => array(
+      'homonym'=> array(
+        'nameAuthorPart' => array('#uri' => TRUE),
+        'referenceYearPart' => TRUE,
+        'statusPart' => TRUE
+      ),
+      'acceptedFor,typedesignations,list_of_taxa' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
         'statusPart' => TRUE
