@@ -361,15 +361,17 @@ define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
     'homonym'=> array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referenceYearPart' => TRUE,
-        'statusPart' => TRUE,
+        'statusPart' => TRUE
     ),
     'acceptedFor,typedesignations,list_of_taxa' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
+        'statusPart' => TRUE
       ),
     '#DEFAULT' => array(
         'nameAuthorPart' => array('#uri' => TRUE),
         'referencePart' => TRUE,
+        'statusPart' => TRUE
      )
   )
 ));
