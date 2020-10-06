@@ -234,168 +234,6 @@ function get_taxon_options_list() {
 
 }
 
-define('CDM_PART_DEFINITIONS', 'cdm-part-definitions');
-define('CDM_PART_DEFINITIONS_DEFAULT', serialize(
-    array(
-      'ZoologicalName' => array(
-        'namePart' => array('name' => TRUE),
-        'nameAuthorPart' => array('name' => TRUE),
-        'referencePart' => array('authors' => TRUE),
-        'microreferencePart' => array('microreference' => TRUE),
-        'secReferencePart' => array('secReference' => TRUE,),
-        'statusPart' => array('status' => TRUE),
-        'descriptionPart' => array('description' => TRUE),
-      ),
-      'BotanicalName'=> array(
-        'namePart' => array('name' => TRUE),
-        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
-        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
-        'secReferencePart' => array('secReference' => TRUE,),
-        'referenceYearPart' => array('reference.year' => TRUE),
-        'statusPart' => array('status' => TRUE),
-        'descriptionPart' => array('description' => TRUE),
-      ),
-     '#DEFAULT' => array(
-        'namePart' => array(
-            'name' => TRUE
-        ),
-        'nameAuthorPart' => array(
-            'name' => TRUE,
-            'authors' => TRUE
-        ),
-       'referencePart' => array(
-         'reference' => TRUE
-        ),
-       'secReferencePart' => array(
-         'secReference' => TRUE,
-       ),
-       'microreferencePart' => array(
-          'microreference' => TRUE,
-        ),
-       'statusPart' => array(
-          'status' => TRUE,
-        ),
-       'descriptionPart' => array(
-          'description' => TRUE,
-        ),
-      )
-    )
-  )
-);
-define('CDM_PART_DEFINITIONS_DEFAULT_PRE_380', serialize(
-    array(
-      'ZoologicalName' => array(
-        'namePart' => array('name' => TRUE),
-        'nameAuthorPart' => array('name' => TRUE),
-        'referencePart' => array('authors' => TRUE),
-        'microreferencePart' => array('microreference' => TRUE),
-        'statusPart' => array('status' => TRUE),
-        'descriptionPart' => array('description' => TRUE),
-      ),
-      'BotanicalName'=> array(
-        'namePart' => array('name' => TRUE),
-        'nameAuthorPart' => array('name' => TRUE, 'authors' => TRUE),
-        'referencePart' => array('reference' => TRUE, 'microreference' => TRUE),
-        'referenceYearPart' => array('reference.year' => TRUE),
-        'statusPart' => array('status' => TRUE),
-        'descriptionPart' => array('description' => TRUE),
-      ),
-      '#DEFAULT' => array(
-        'namePart' => array(
-          'name' => TRUE
-        ),
-        'nameAuthorPart' => array(
-          'name' => TRUE,
-          'authors' => TRUE
-        ),
-        'referencePart' => array(
-          'reference' => TRUE
-        ),
-        'microreferencePart' => array(
-          'microreference' => TRUE,
-        ),
-        'statusPart' => array(
-          'status' => TRUE,
-        ),
-        'descriptionPart' => array(
-          'description' => TRUE,
-        ),
-      )
-    )
-  )
-  );
-
-define('CDM_NAME_RENDER_TEMPLATES', 'cdm-name-render-templates');
-define('CDM_NAME_RENDER_TEMPLATES_DEFAULT', serialize(
-  array (
-    'taxon_page_title,polytomousKey'=> array(
-        'namePart' => array('#uri' => TRUE),
-      ),
-    'not_in_current_classification' => array(
-     'nameAuthorPart' => TRUE,
-     'referencePart' => TRUE,
-     'statusPart' => TRUE,
-     'secReferencePart' => TRUE,
-    ),
-    'taxon_page_synonymy,accepted_taxon.taxon_page_synonymy,name_page,registration_page'=> array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-      'descriptionPart' => TRUE,
-      'statusPart' => TRUE,
-    ),
-    'related_taxon.other_taxon_relationship.taxon_relationships.taxon_page_synonymy'=> array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-      'descriptionPart' => TRUE,
-      'statusPart' => TRUE,
-      'secReferencePart' => TRUE,
-    ),
-    'related_taxon.misapplied_name_for.taxon_relationships.taxon_page_synonymy' => array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-      'descriptionPart' => TRUE,
-      'statusPart' => TRUE,
-      /* no sec ref in this case, misapplied names are
-       * de-duplicated and the sec ref is shown as footnote */
-    ),
-    'acceptedFor,typedesignations,list_of_taxa,homonym' => array(
-        'nameAuthorPart' => array('#uri' => TRUE),
-        'referencePart' => TRUE,
-        'statusPart' => TRUE
-      ),
-    '#DEFAULT' => array(
-        'nameAuthorPart' => array('#uri' => TRUE),
-        'referencePart' => TRUE,
-        'statusPart' => TRUE
-     )
-  )
-));
-define('CDM_NAME_RENDER_TEMPLATES_DEFAULT_PRE_380', serialize(
-  array (
-    'taxon_page_title,polytomousKey'=> array(
-      'namePart' => array('#uri' => TRUE),
-    ),
-    'taxon_page_synonymy,related_taxon'=> array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-      'statusPart' => TRUE,
-      'descriptionPart' => TRUE,
-    ),
-    'homonym'=> array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referenceYearPart' => TRUE,
-    ),
-    'acceptedFor,typedesignations,list_of_taxa' => array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-    ),
-    '#DEFAULT' => array(
-      'nameAuthorPart' => array('#uri' => TRUE),
-      'referencePart' => TRUE,
-    )
-  )
-));
-
 define('CDM_SEARCH_TAXA_MODE','cdm_search_taxa_mode');
 define('CDM_SEARCH_TAXA_MODE_DEFAULT', serialize(
     // to unset a default enntry set the value to 0
@@ -461,7 +299,6 @@ define('CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT', serialize(
 );
 
 define('CDM_NAME_RELATIONSHIP_LIST_TYPES', 'cdm_name_relationship_list_types');
-
 
 /**
  * The drupal variable for the configuration of the information aggregation along
@@ -1674,22 +1511,24 @@ function cdm_settings_layout() {
           The name parts are defined in the <stong>part definitions</strong>'),
   );
 
-  $default_part_definitions = unserialize(CDM_PART_DEFINITIONS_DEFAULT);
-  $default_part_definitions_pre_380_json = json_encode(unserialize(CDM_PART_DEFINITIONS_DEFAULT_PRE_380), JSON_PRETTY_PRINT);
-  $default_part_definition_json = json_encode($default_part_definitions, JSON_PRETTY_PRINT);
-  $current_part_definition_json = json_encode(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions), JSON_PRETTY_PRINT);
+  $nameRenderConfiguration = new NameRenderConfiguration();
 
-  $is_custom_part_definition = $default_part_definition_json != $current_part_definition_json;
-  if($default_part_definitions_pre_380_json == $current_part_definition_json){
-    $which_version_message = '(These are the old default part definition from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)';
-  } else if($is_custom_part_definition){
+  $partDefinitionConfigStatus = $nameRenderConfiguration->partDefinitionConfigurationStatus();
+  switch($partDefinitionConfigStatus){
+    case NameRenderConfiguration::PRE380_CONFIGURATION:
+      $which_version_message = '(These are the old default part definition from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)';
+      break;
+    case NameRenderConfiguration::CUSTOM_CONFIGURATION:
       $which_version_message = '(This are custom part definitions, clearing the text area and and submitting the form will reset it to the default)';
-  } else  {
-    $which_version_message = '(These are the default part definition.)';
+      break;
+    case NameRenderConfiguration::DEFAULT_CONFIGURATION:
+    default:
+      $which_version_message = '(These are the default part definition.)';
   }
-
+  $current_part_definition_json = $nameRenderConfiguration->getCurrentPartDefinitionJson();
+  $default_part_definition_json = $nameRenderConfiguration->getDefaultPartDefinitionJson();
   $diff_viewer_markup = '';
-  if($is_custom_part_definition){
+  if($partDefinitionConfigStatus == NameRenderConfiguration::CUSTOM_CONFIGURATION){
     $diff_viewer_markup = diff_viewer($default_part_definition_json, $current_part_definition_json);
   }
 
@@ -1698,7 +1537,7 @@ function cdm_settings_layout() {
     . '</div>'
     . $diff_viewer_markup;
 
-  $form['taxon_name'][CDM_PART_DEFINITIONS] = array(
+  $form['taxon_name'][NameRenderConfiguration::CDM_PART_DEFINITIONS] = array(
       '#type' => 'textarea',
       '#title' => t('Part definitions'),
       '#element_validate' => array('form_element_validate_json'),
@@ -1746,63 +1585,27 @@ function cdm_settings_layout() {
           </ul>
            An example:
           <pre>
-           {
-            "ZoologicalName": {
-              "namePart": {
-                "name": true
-              },
-              "referencePart": {
-                "authors": true
-              },
-              "microreferencePart": {
-                "microreference": true
-              },
-              "statusPart": {
-                "status": true
-              },
-              "descriptionPart": {
-                "description": true
-              }
-            },
-            "BotanicalName": {
-              "namePart": {
-                "name": true,
-                "authors": true
-              },
-              "referencePart": {
-                "reference": true,
-                "microreference": true
-              },
-              "secReferencePart": {
-                "secReference": true
-              },
-              "statusPart": {
-                "status": true
-              },
-              "descriptionPart": {
-                "description": true
-              }
-            }
-          }
+           ' . $default_part_definition_json . '
            </pre>',
   );
 
-  $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
-  $default_render_templates_pre_380_json = json_encode(unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT_PRE_380), JSON_PRETTY_PRINT);
-  $default_render_templates_json = json_encode($default_render_templates, JSON_PRETTY_PRINT);
-  $current_render_templates_json = json_encode(variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates), JSON_PRETTY_PRINT);
-  $is_custom_render_template = $default_render_templates_json != $current_render_templates_json;
+  $nameRenderTemplateConfStatus = $nameRenderConfiguration->nameRenderTemplateConfigurationStatus();
 
-  if($default_render_templates_pre_380_json == $current_render_templates_json){
-    $which_version_message = '(These are the old default render templates from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)';
-  } else if($is_custom_render_template){
-    $which_version_message = '(These are custom render templates, clearing the text area and and submitting the form will reset it to the default)';
-  } else {
-    $which_version_message = '(These are the default render templates.)';
+  switch($nameRenderTemplateConfStatus){
+    case NameRenderConfiguration::PRE380_CONFIGURATION:
+      $which_version_message = '(These are the old default render templates from before EDIT platform release 3.8.0, you may want to reset these by clearing the text area and and submitting the form.)';
+      break;
+    case NameRenderConfiguration::CUSTOM_CONFIGURATION:
+      $which_version_message = '(These are custom render templates, clearing the text area and and submitting the form will reset it to the default)';
+      break;
+    case NameRenderConfiguration::DEFAULT_CONFIGURATION:
+    default:
+      $which_version_message = '(These are the default render templates.)';
   }
-
+  $default_render_templates_json = $nameRenderConfiguration->getDefaultRenderTemplatesJson();
+  $current_render_templates_json = $nameRenderConfiguration->getCurrentRenderTemplatesJson();
   $diff_viewer_markup = '';
-  if($is_custom_render_template){
+  if($nameRenderTemplateConfStatus == NameRenderConfiguration::CUSTOM_CONFIGURATION){
     $diff_viewer_markup = diff_viewer($default_render_templates_json, $current_render_templates_json);
   }
 
@@ -1811,7 +1614,7 @@ function cdm_settings_layout() {
     . '</div>'
     . $diff_viewer_markup;
 
-  $form['taxon_name'][CDM_NAME_RENDER_TEMPLATES] = array(
+  $form['taxon_name'][NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES] = array(
       '#type' => 'textarea',
       '#title' => t('Name render templates'),
       '#element_validate' => array('form_element_validate_json'),
@@ -1860,7 +1663,7 @@ function cdm_settings_layout() {
 
   $form['#submit'] = array('submit_json_as_php_array');
   // #json_elements especially defined for submit_json_as_php_array()
-  $form['#json_elements'] = array(CDM_NAME_RENDER_TEMPLATES, CDM_PART_DEFINITIONS);
+  $form['#json_elements'] = array(NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES, NameRenderConfiguration::CDM_PART_DEFINITIONS);
   return system_settings_form($form);
 }
 

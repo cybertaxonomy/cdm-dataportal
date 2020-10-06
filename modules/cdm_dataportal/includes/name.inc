@@ -72,15 +72,10 @@
  */
 function get_nameRenderTemplate($render_path, $nameLink = NULL, $referenceLink = NULL) {
 
-  static $default_render_templates = NULL;
   static $split_render_templates = NULL;
 
-
-  if (!isset($default_render_templates)) {
-    $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
-  }
   if($split_render_templates == NULL) {
-    $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
+    $render_templates = variable_get(NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES, NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES_DEFAULT);
     // needs to be converted to an array
     $render_templates = (object_to_array($render_templates));
 
@@ -222,14 +217,9 @@ function get_nameRenderTemplate($render_path, $nameLink = NULL, $referenceLink =
  */
 function get_partDefinition($taxonNameType) {
 
-  static $default_part_definitions = null;
-  if (!isset($default_part_definitions)) {
-    $default_part_definitions= unserialize(CDM_PART_DEFINITIONS_DEFAULT);
-  }
-
   static $part_definitions = null;
   if (!isset($part_definitions)) {
-    $part_definitions = object_to_array(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
+    $part_definitions = object_to_array(variable_get(NameRenderConfiguration::CDM_PART_DEFINITIONS, NameRenderConfiguration::CDM_PART_DEFINITIONS_DEFAULT));
   }
 
   $dtype = nameTypeToDTYPE($taxonNameType);
@@ -1368,7 +1358,7 @@ function get_other_name($current_name_uuid, $name_rel) {
 function compose_name_relationships_inline($name_relations, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source = true) {
 
   RenderHints::pushToRenderStack('homonym');
-  // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
+  // the render stack element homonyms is being used in the default render templates !!!, see NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, unserialize(CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT));
   $name_rel_type_filter = array('direct' => array(), 'inverse' => array());
