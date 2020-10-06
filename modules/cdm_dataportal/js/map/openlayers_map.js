@@ -37,9 +37,10 @@
     defaultBaseLayerName: 'open_topomap',
     maxZoom: 15,
     minZoom: 0,
-      // hide the map when the data layer has no features
-      hideEmptyMap: true,
+    // hide the map when the data layer has no features
+    hideEmptyMap: true,
     debug: true,
+    layerLoadingTimeout: 1000, // ms
     /**
      * allows the map to display parts of the layers which are outside
      * the maxExtent if the aspect ratio of the map and of the baselayer
@@ -80,6 +81,7 @@
       specimenLinkText: 'Open unit'
   };
 })(jQuery);
+
 
 /**************************************************************************
  *                          CdmOpenLayers
@@ -285,7 +287,8 @@
             if (!textStatus) {
                 textStatus = "error";
             }
-            log(textStatus + " requesting  " + requestUrl + " filed after timeout " + errorThrown, true);
+            var errorMessage = errorThrown != undefined ? errorThrown : 'unspecified error';
+            log(textStatus + " requesting  " + requestUrl + " failed due to " + errorMessage, true);
             errorMessageCtl.show();
             errorMessageCtl.add(textStatus + ":" + errorThrown);
         }
@@ -338,14 +341,15 @@
             jQuery.ajax({
               url: mapServiceRequest,
               dataType: "json",
-                timeout: 5000,
+                // timeout: layerLoadingTimeout,
               success: function(data){
                   var layers = createDataLayer(data, "AREA");
                   addLayers(layers);
-                // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
+                // layerDataLoaded(); will be called after reading the projection from the WFS
+                // for the data layer, see readProjection()
               },
               error: function(jqXHR, textStatus, errorThrown){
-                  reportAjaxError(textStatus, mapServiceRequest, errorThrown);
+                  reportAjaxError("Distribution Layer: " +textStatus, mapServiceRequest, errorThrown);
               }
             });
           }
@@ -380,7 +384,7 @@
                   // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
               },
                 error: function(jqXHR, textStatus, errorThrown){
-                    reportAjaxError(textStatus, mapServiceRequest, errorThrown);
+                    reportAjaxError("Occurrence Layer: " + textStatus, mapServiceRequest, errorThrown);
                 }
             });
           }
@@ -690,28 +694,28 @@
           layers.forEach(function(layer){
             // layer.setVisibility(false);
           });
-
           map.addLayers(layers);
         };
 
         /**
          * add a distribution or occurrence layer
          *
-         * @param mapResponseObj
-         *   The reponse object returned by the edit map service
+         * @param mapResponseArray
+         *   The map service returns the mapResponseObj in an array with one element.
          * @param dataType
          *   either "AREA" or "POINT"
          */
-        var createDataLayer = function(mapResponseObj, dataType){
+        var createDataLayer = function(mapResponseArray, dataType){
 
           console.log("createDataLayer() : creating data layer of type " + dataType);
 
-          dataLayerOptions = makeWMSLayerOptions();
+          var dataLayerOptions = makeWMSLayerOptions();
           dataLayerOptions.displayOutsideMaxExtent = true; // move into makeWMSLayerOptions?
 
           var layers = [];
           // add additional layers, get them from the mapResponseObj
-          if(mapResponseObj !== undefined){
+          if(mapResponseArray !== undefined){
+             var mapResponseObj = mapResponseArray[0];
             if(dataType === "POINT" && mapResponseObj.points_sld !== undefined){
               var pointLayer;
               // it is a response for an point map
@@ -856,7 +860,6 @@
           if(!projection) {
             projection = layerProjections[layer.name];
           }
-
 
           if(projection) {
             callback(projection);
@@ -1136,7 +1139,7 @@
         var timestamp = '';
         if(addTimeStamp === true){
           var time = new Date();
-          timestamp = time.getSeconds() + '.' + time.getMilliseconds() + 's';
+          timestamp = '[' + time.getSeconds() + '.' + time.getMilliseconds() + ' s] ';
         }
         console.log(timestamp + message);
       };
@@ -1354,7 +1357,7 @@
             OpenLayers.Util.extend(control, {
 
                 messageText: "The map is currently broken due to problems with the map server.",
-
+                id: 'OpenLayers_Control_ErrorMessages',
                 type: 'ErrorMessages',
                 title: 'Error messages',
 
