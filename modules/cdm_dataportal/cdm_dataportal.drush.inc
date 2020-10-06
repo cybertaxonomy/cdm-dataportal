@@ -1,6 +1,7 @@
 <?php
 
 require_once("lib/class.Diff.php");
+require_once("classes/NameRenderConfiguration.php");
 
 /**
  * @file
