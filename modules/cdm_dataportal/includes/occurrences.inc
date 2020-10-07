@@ -303,9 +303,10 @@ function create_label($label)
  *
  * compose_hook() implementation
  *
- * @param object $specimenOrObservation
+ * @param object $specimen_or_observation
  *   the CDM instance of type SpecimenOrObservation to compose
  *   the render array for
+ * @param bool $isSpecimen_page
  * @param array $derivatives
  *   the render array which contains the compositions of the derivatives
  *   of the supplied $specimenOrObservation
@@ -314,6 +315,7 @@ function create_label($label)
  *   the supplied render array $derivatives to which the composition of the supplied
  *   $specimenOrObservation has been added to
  *
+ * @throws \Exception
  * @ingroup compose
  */
 
@@ -338,7 +340,6 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
         $exclude_occurrence_fields[] = 'derivationEvents';
     }
 
-
     // only show uuid it the user is logged in
  //   if(user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE ) {
   //      unset($exclude_occurrence_fields[$a_idx]);
@@ -347,11 +348,8 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
     if (!isset($derivatives)) {
         $derivatives = array();
     }
-
     $descriptions = null;
     $derivedFrom = null;
-
-
 
     if (is_object($specimen_or_observation)) {
 
