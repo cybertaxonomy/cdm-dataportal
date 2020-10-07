@@ -332,7 +332,7 @@
             // distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
             var legendFormatQuery = mapElement.attr('data-legendFormatQuery');
             if(legendFormatQuery !== undefined){
-              legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
+              legendImgSrc = mergeQueryStrings('/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic ', legendFormatQuery);
             }
 
             mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + distributionQuery;
