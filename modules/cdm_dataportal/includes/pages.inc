@@ -37,9 +37,10 @@ function compose_cdm_taxon_page_specimens($taxon) {
     $render_array = array();
     RenderHints::pushToRenderStack('taxon_page_specimens');
 
-    $fieldUnitDTOs = null;
-    $specimensOrObservations = array();
-    if (variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
+  $fieldUnitDTOs = null;
+  $specimensOrObservations = array();
+  $current_view_mode = variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT);
+  if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
       // get fieldUnitDTOs
       $fieldUnitDTOs = cdm_ws_get(CDM_WS_TAXON_FIELDUNIT_DTOS, array( $taxon->uuid));
       $fieldUnitDTOs = order_fieldUnitDtos_by_date_and_type($fieldUnitDTOs);
@@ -89,7 +90,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
     // -------------------------------------------------------
 
-    if((variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE)){
+    if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE)){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
         $pager_field_units = cdm_ws_page(
@@ -119,7 +120,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
             10 // weight
         );
     }
-    else if((variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE)){ // FIXME this seems to be wrong
+    else if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE)){ // FIXME this seems to be wrong
       $render_array['specimen_list'] = compose_specimen_table_top_down($fieldUnitDTOs);
       $render_array['specimen_list']['#weight'] = 2;
     } else {

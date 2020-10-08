@@ -376,8 +376,8 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
         if (isset($specimen_or_observation->specimenTypeDesignations)) {
             $type_status = array();
             foreach ($specimen_or_observation->specimenTypeDesignations as $typeDesignation) {
-                if (isset($typeDesignation->typeStatus->representation_L10n)) {
-                    $type_status[] = $typeDesignation->typeStatus->representation_L10n;
+                if (isset($typeDesignation->typeStatus_L10n)) {
+                    $type_status[] = $typeDesignation->typeStatus_L10n;
                 }
             }
             if (count($type_status) > 0) {
@@ -980,11 +980,13 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
 }
 
 /**
- * Crates an array which can be used in render arrays to be passed to the
- * theme_table() and theme_list().
+ * Creates render array items for FieldUnitDTO or DerivateDTO.
  *
  * @param array $fieldunit_dtos
  *     list of FieldUnitDTOs
+ * @return array
+ *    An array which can be used in render arrays to be passed to the
+ * theme_table() and theme_list().
  */
 function specimen_render_array_items(array $fieldunit_dtos){
 
@@ -993,7 +995,6 @@ function specimen_render_array_items(array $fieldunit_dtos){
 
   //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
   foreach ($fieldunit_dtos as &$fieldunit_dto) {
-
     $items['data'] = $fieldunit_dto->listLabel ;
     $specimen = compose_cdm_specimen_or_observation_tree_entry($fieldunit_dto);
     $children = array();
@@ -1247,26 +1248,22 @@ function compose_specimen_table_top_down(array $fieldunit_dtos){
 
 
 /**
- * Compose an render array from a CDM DerivedUnitFacade object.
+ * Renders a FieldUnitDTO or DerivateDTO
  *
- * compose_hook() implementation
- *
- * @param object $specimenOrObservation
- *   the CDM instance of type SpecimenOrObservation to compose
+ * @param object $specimen_or_observation_dto
+ *   A FieldUnitDTO or DerivateDTO object
  *   the render array for
- * @param array $derivatives
- *   the render array which contains the compositions of the derivatives
- *   of the supplied $specimenOrObservation
  *
- * @return array
- *   the supplied render array $derivatives to which the composition of the supplied
+ * @return string
+ *   the supplied render array $derivatives to which the composition of the
+ *   supplied
  *   $specimenOrObservation has been added to
  *
  * @ingroup compose
+ *
+ * @throws \Exception
  */
-
-function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation)
-{
+function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation_dto) {
     $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
     if (!isset($exclude_occurrence_fields)) {
         $exclude_occurrence_fields = array(
@@ -1282,25 +1279,23 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
             'collection'
         );
     }
-    $items = array();
 
     // only show uuid it the user is logged in
     if (user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE) {
       //  unset($exclude_occurrence_fields[$a_idx]);
     }
 
+    if (is_object($specimen_or_observation_dto)) {
 
-    if (is_object($specimen_or_observation)) {
-
-        $type_label = $specimen_or_observation->recordBase;
-        RenderHints::setFootnoteListKey($type_label . '-' . $specimen_or_observation->uuid);
+        $type_label = $specimen_or_observation_dto->recordBase;
+        RenderHints::setFootnoteListKey($type_label . '-' . $specimen_or_observation_dto->uuid);
 
         // collect typeStatus as label
-        if (isset($specimen_or_observation->specimenTypeDesignations)) {
+        if (isset($specimen_or_observation_dto->specimenTypeDesignations)) {
             $type_status = array();
-            foreach ($specimen_or_observation->specimenTypeDesignations as $typeDesignation) {
-                if (isset($typeDesignation->typeStatus->representation_L10n)) {
-                    $type_status[] = $typeDesignation->typeStatus->representation_L10n;
+            foreach ($specimen_or_observation_dto->specimenTypeDesignations as $typeDesignation) {
+                if (isset($typeDesignation->typeStatus_L10n)) {
+                    $type_status[] = $typeDesignation->typeStatus_L10n;
                 }
             }
             if (count($type_status) > 0) {
@@ -1314,13 +1309,10 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
             $title = $type_label;
         }
 
-        $items['data'] = $title;
-
         $groups = array();
-        $items['children'] = $groups;
         $children_items = array();
         // --- add initialized fields
-        foreach (get_object_vars($specimen_or_observation) as $field => $value) {
+        foreach (get_object_vars($specimen_or_observation_dto) as $field => $value) {
             $child_item = array();
 
             if (!in_array($field, $exclude_occurrence_fields) && ($value && (!is_object($value) || isset($value->class)))) {
@@ -1344,12 +1336,10 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                             $groups,
                             cdm_occurrence_field_name_label($field),
                             array(
-                                '#markup' => render_type_designations($value),
+                                '#markup' => render_specimen_typedesignation_dto($value),
                             )
                         );
                         break;
-
-
 
                     case 'listOfMedia':
                         $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
@@ -1360,7 +1350,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                         );
                         $gallery_html = compose_cdm_media_gallerie(array(
                             'mediaList' => $value,
-                            'galleryName' => $specimen_or_observation->uuid,
+                            'galleryName' => $specimen_or_observation_dto->uuid,
                             'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
                             'cols' => $gallery_settings['cdm_dataportal_media_cols'],
                             'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
@@ -1374,10 +1364,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                          //@_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
                          break;
 
-
-
                     /* ---- DerivedUnitBase --- */
-
 
                     case 'collectionDTO':
 
@@ -1395,11 +1382,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                                 array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
                             )
                         );
-
                         break;
-
-
-
 
                     /* ---- Specimen --- */
                     case 'sequences':
@@ -1413,7 +1396,6 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
                     // TODO preservation
                     // TODO exsiccatum
-
 
                     /* ---- FieldObservation --- */
                     case 'gatheringEvent':
@@ -1470,7 +1452,6 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                                 );
                             }
                         }
-
                         break;
 
                     /* ---- DerivationEvent --- */
@@ -1490,7 +1471,6 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                         }
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label("Identification(s)"), $dd_elements,'', 100);
                         break;
-
 
                     default:
                         if (is_object($value) || is_array($value)) {
@@ -1512,13 +1492,13 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
            // '#title' => $title,
             '#theme' => 'description_list',
             '#groups' => $groups,
-            '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation)),
+            '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation_dto)),
         );
         $output = drupal_render($occurrence_elements);
         if (isset($gallery_html)){
             $output .= $gallery_html;
         }
-        $pathToSpecimen = path_to_specimen($specimen_or_observation->uuid);
+        $pathToSpecimen = path_to_specimen($specimen_or_observation_dto->uuid);
         $output .=  l("Detail page", $pathToSpecimen);
     } // END of $specimenOrObservation exists
 
@@ -1763,25 +1743,28 @@ function compose_specimens_table_bottom_up($specimensOrObservations)
 /**
  * Orders occurrences by date but types should be on top of the list.
  *
- * @param $specimensOrObservations_or_fieldUnitDTO
+ * @param array $specimens_or_observations
+ *  Array of SpecimenOrObservation or fieldUnitDTOs
  *
  * @return array
  */
-function order_specimens_or_observations_by_date_and_type($specimensOrObservations)
+function order_specimens_or_observations_by_date_and_type($specimens_or_observations)
 {
 // order occurrences by date but types should be on top of the list
   $type_specimens = array();
   $other_occurrences = array();
-  foreach ($specimensOrObservations as &$occurrence) {
-    $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
-    if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
-      $type_specimens[] = $occurrence;
-    } else {
-      $other_occurrences[] = $occurrence;
+  if(is_array($specimens_or_observations)){
+    foreach ($specimens_or_observations as &$occurrence) {
+      $typeDesignationsPager = cdm_ws_get(CDM_WS_OCCURRENCE . '/$0/specimenTypeDesignations', $occurrence->uuid);
+      if (isset($typeDesignationsPager->count) && $typeDesignationsPager->count > 0) {
+        $type_specimens[] = $occurrence;
+      } else {
+        $other_occurrences[] = $occurrence;
+      }
     }
   }
-  $specimensOrObservations = array_merge($type_specimens, $other_occurrences);
-  return $specimensOrObservations;
+  $specimens_or_observations = array_merge($type_specimens, $other_occurrences);
+  return $specimens_or_observations;
 }
 
 /**
@@ -1789,7 +1772,7 @@ function order_specimens_or_observations_by_date_and_type($specimensOrObservatio
  *
  * Delegates internally to order_specimens_or_observations_by_date_and_type()
  *
- * @param $fieldUnitDTOs
+ * @param array $fieldUnitDTOs
  *
  * @return array
  */

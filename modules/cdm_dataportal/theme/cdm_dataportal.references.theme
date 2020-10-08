@@ -22,21 +22,19 @@
  * - cdm_reference_pager
  * - cdm_taxonRelationships
  *
- * @param array $variables
- *   An associative array containing:
- *   - reference
- *   - microReference
- *   - doTextLink:
+ *   @param reference
+ *      The entity to be rendered
+ *  @param string $microReference
+ *      The citation detail like page number
+ *  @param boolean doTextLink
  *      Show the citation string as link to the reference page. This option does not affect links to the reference URI or DOI.
  *      These links are always created when this data is available
- *   - doIconLink:
+ *  @param boolean doIconLink
  *      Append an icon to the citation string which links to the reference page, links to the reference URI or DOI are always
  *      created when this data is available
  *
  * @return string
  *    the markup for the reference
- *
- * @ingroup themeable
  */
 function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = FALSE, $doIconLink = FALSE) {
 
@@ -78,6 +76,31 @@ function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = 
   }
 
   return $out;
+}
+
+/**
+ * Creates a HTML representations for a CDM ReferenceDTO object
+ *
+ * In terms of rendering the entity and dto are interchangeable,
+ * therefore this method simply delegates to the according entity method.
+ *
+ *  @param $reference_dto
+ *      The dto to be rendered
+ *  @param string $microReference
+ *      The citation detail like page number
+ *  @param boolean doTextLink
+ *      Show the citation string as link to the reference page. This option does not affect links to the reference URI or DOI.
+ *      These links are always created when this data is available
+ *  @param boolean doIconLink
+ *      Append an icon to the citation string which links to the reference page, links to the reference URI or DOI are always
+ *      created when this data is available
+ *
+ * @return string
+ *    the markup for the referenceDTO
+ *
+ */
+function cdm_reference_dto_markup($reference_dto, $microReference = NULL, $doTextLink = FALSE, $doIconLink = FALSE) {
+  return cdm_reference_markup($reference_dto, $microReference, $doTextLink, $doIconLink);
 }
 
 /**

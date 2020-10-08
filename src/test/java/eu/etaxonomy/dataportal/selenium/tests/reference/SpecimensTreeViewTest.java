@@ -64,8 +64,8 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", summaryRows.get(1).getText());
         assertEquals("Germany, Berlin, 2 Apr 1835.", summaryRows.get(2).getText());
 
-
-        // Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047.
+        // -------------------------------------------------------------------------------------------
+        // Germany, Berlin, alt. 165 m, 52°31'1.2"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.
         summaryRows.get(0).click(); // make the row visible
 
         WebElement descriptionListContainerElement = detailRows.get(0).findElement(By.cssSelector("div.description_list"));
@@ -76,6 +76,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals(3, dls.size());
         DescriptionList dl1 = new DescriptionList(dls.get(0).findElement(By.tagName("dl")));
         assertEquals("Field Unit", dl1.joinedDescriptionElementText("Record base:"));
+        assertEquals("Ehrenberg, C.G.", dl1.joinedDescriptionElementText("Collector:"));
         assertEquals("Germany", dl1.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl1.joinedDescriptionElementText("Locality:"));
         BaseElement descriptionListContainer = new BaseElement(derivateTreeContainer);
@@ -101,7 +102,9 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("CEDiT 2017E68", specimenTypeDesignationLinks.get(1).getText());
         assertTrue(specimenTypeDesignationLinks.get(1).getUrl().endsWith("cdm_dataportal/occurrence/8585081c-b73b-440b-b349-582845cf3fb4"));
 
-        // Germany, Berlin, 52°31'1.2"N, 13°21'E, 28.3.2016, D047.
+
+        // -------------------------------------------------------------------------------------------
+        // Germany, Berlin, alt. 165 m, 52°31'1.2"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.
         summaryRows.get(1).click(); // make the row visible
         descriptionListContainerElement = detailRows.get(1).findElement(By.cssSelector("div.description_list"));
         derivateTreeContainer = descriptionListContainerElement.findElement(By.xpath("./parent::li"));

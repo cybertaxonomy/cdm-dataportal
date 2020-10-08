@@ -641,7 +641,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   $last_footnote_listkey = RenderHints::setFootnoteListKey("nomenclatural_act");
   // name
   $name_relations = null;
-  if($registration_dto->nameRef){
+  if(isset($registration_dto->nameRef) && $registration_dto->nameRef){
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
     cdm_load_tagged_full_title($name);
     $render_array['nomenclatural_act']['published_name'] = markup_to_render_array('<div class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</div>', 0);
@@ -868,7 +868,7 @@ function render_registration($registration){
   if(isset($registration->identifier) && $registration->status == 'PUBLISHED'){
     $office_class_attribute = '';
     if(isset($registration->institution->titleCache)){
-      $office_class_attribute = registration_intitute_class_attribute($registration);
+      $office_class_attribute = registration_institution_class_attribute($registration);
     }
     $markup = "<span class=\"registration $office_class_attribute\">" . render_link_to_registration($registration->identifier) . ', '
       .  preg_replace('/^([^T]*)(.*)$/', '${1}', $registration->registrationDate)
@@ -881,7 +881,7 @@ function render_registration($registration){
  * @param $registration
  * @return string
  */
-function registration_intitute_class_attribute($registration_dto)
+function registration_institution_class_attribute($registration_dto)
 {
   if(isset($registration_dto->institutionTitleCache)){
     $institutionTitleCache = $registration_dto->institutionTitleCache;
@@ -1078,6 +1078,95 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
 
   RenderHints::popFromRenderStack();
 
+  return $out;
+}
+
+/**
+ * Creates markup for a list of SpecimenTypedesignationDTO
+ *
+ * @param array $specimen_typedesignation_dtos
+ *  The SpecimenTypedesignationDTOs to be rendered
+ *
+ * @return string
+ *   The markup.
+ */
+function render_specimen_typedesignation_dto($specimen_typedesignation_dtos,  $enclosing_tag = 'ul', $element_tag =  'li', $link_to_specimen_page = true){
+
+  // need to add element to render path since type designations
+  // need other name render template
+  RenderHints::pushToRenderStack('typedesignations');
+
+  $out = '<' . $enclosing_tag .' class="typeDesignations">';
+  $separator = ',';
+
+  if (!empty($specimen_typedesignation_dtos)) {
+    // usort($specimen_type_designations, "compare_specimen_type_designation"); // FIXME create compare function for SpecimenTypedesignationDTO
+    foreach ($specimen_typedesignation_dtos as $std_dto) {
+      $type_citation_markup = '';
+
+      if (!empty($std_dto->source->citation)) {
+
+        $citation_footnote_str = cdm_reference_markup($std_dto->source->citation, null, false, true);
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std_dto->source->citation->uuid);
+
+        if (!empty($author_team->titleCache)) {
+          $year = @timePeriodToString($std_dto->source->citation->datePublished, true, 'YYYY');
+          $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
+          if ($authorteam_str == $std_dto->source->citation->titleCache) {
+            $citation_footnote_str = '';
+          }
+        } else {
+          $authorteam_str = $citation_footnote_str;
+          // no need for a footnote in case in case it is used as replacement for missing author teams
+          $citation_footnote_str = '';
+        }
+
+        // for being registered a typedesignation MUST HAVE a citation, so it is save to handle the
+        // Registration output in the conditional block which has been checked that the citation is present
+        $registration_markup = render_registrations($std_dto->registrations);
+        $citation_footnote_str .= ($citation_footnote_str ? ' ' : '') . $registration_markup;
+
+        $footnote_key_markup = '';
+        if ($citation_footnote_str) {
+          // footnotes should be rendered in the parent element so we
+          // are relying on the FootnoteListKey set there
+          $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $citation_footnote_str);
+          $footnote_key_markup = render_footnote_key($_fkey2, $separator, TRUE);
+        }
+
+        $type_citation_markup .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">' . $authorteam_str . '</span>';
+        if (!empty($std_dto->source->citationMicroReference)) {
+          $type_citation_markup .= ': ' . trim($std_dto->source->citationMicroReference);
+        }
+        $type_citation_markup .= $footnote_key_markup . ')';
+      }
+
+      $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($std_dto) . '">';
+      $out .= type_designation_dto_status_label_markup($std_dto) . $type_citation_markup;
+
+      $derivedUnitFacadeInstance = null;
+      if (isset($std_dto->typeSpecimen)) {
+        $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std_dto->typeSpecimen->uuid);
+      }
+
+      if (!empty($derivedUnitFacadeInstance->titleCache)) {
+        $specimen_markup = $derivedUnitFacadeInstance->titleCache;
+        if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
+          $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($std_dto->typeSpecimen->uuid)), $specimen_markup);
+        }
+        RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+        $annotations_and_sources = handle_annotations_and_sources($derivedUnitFacadeInstance);
+        $out .= ': <span class="' . html_class_attribute_ref($std_dto->typeSpecimen) . '">'
+          . $specimen_markup
+          . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
+        if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
+          $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
+        }
+        $out .= $annotations_and_sources->footNoteKeysMarkup();
+      }
+      $out .= '</'. $element_tag .'>';
+    }
+  }
   return $out;
 }
 
@@ -1748,7 +1837,7 @@ function registration_types($registration_dto){
  *    in the $synonymy_group and must therefor passed in this second parameter.
  *
  * @return array
- *    The type designations
+ *    The CDM TypeDesignation entities
  */
 function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_name_uuid = null)
 {
@@ -1952,5 +2041,19 @@ function type_designation_status_label_markup($type_designation)
 {
   return '<span class="type-status">'
     . ((isset($type_designation->typeStatus->representation_L10n)) ? ucfirst($type_designation->typeStatus->representation_L10n) : t('Type')) . '</span>'
+    ;
+}
+
+/**
+ * Creates markup for the status of a type designation DTO.
+ * In case the status or its representation is missing the label will be set to "Type"
+ *
+ * @param $type_designation
+ * @return string
+ */
+function type_designation_dto_status_label_markup($type_designation)
+{
+  return '<span class="type-status">'
+    . ((isset($type_designation->typeStatus_L10n)) ? ucfirst($type_designation->typeStatus_L10n) : t('Type')) . '</span>'
     ;
 }
