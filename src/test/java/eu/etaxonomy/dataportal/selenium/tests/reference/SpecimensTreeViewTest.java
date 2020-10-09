@@ -80,7 +80,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Germany", dl1.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl1.joinedDescriptionElementText("Locality:"));
         BaseElement descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(4, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        assertEquals(7, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
         // TODO one of the links is a footnote key for which the footnote is missing
         LinkElement link1 = descriptionListContainer.getLinksInElement().get(0);
         assertEquals("Detail page", link1.getText());
@@ -93,11 +93,11 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("\nCode:\nCEDiT", dl2.joinedDescriptionElementText("Collection"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171): Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (CEDiT 2017E68).",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171): Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT 2017E68). http://testid.org/2017E68",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         DescriptionElement specimenTypeDesignation_dd = dl2.getDescriptionGroups().get("Specimen type designations:").get(0);
         List<LinkElement> specimenTypeDesignationLinks = specimenTypeDesignation_dd.getDescriptionElementContent().getLinksInElement();
-        assertEquals(2, specimenTypeDesignationLinks.size());
+        assertEquals(3, specimenTypeDesignationLinks.size());
         // TODO one of the links is a footnote key for which the footnote is missing
         assertEquals("CEDiT 2017E68", specimenTypeDesignationLinks.get(1).getText());
         assertTrue(specimenTypeDesignationLinks.get(1).getUrl().endsWith("cdm_dataportal/occurrence/8585081c-b73b-440b-b349-582845cf3fb4"));

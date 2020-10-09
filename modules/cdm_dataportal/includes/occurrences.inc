@@ -732,6 +732,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
 
         // Extensions
         // TODO: filter by using visible_extensions_sorted()
+        // TODO: treat as top level element, see https://dev.e-taxonomy.eu/redmine/issues/2985#note-23
         $extensions = cdm_ws_fetch_all(CDM_WS_PORTAL_OCCURRENCE . '/'  . $specimen_or_observation->uuid . '/extensions', array($specimen_or_observation->uuid));
         if ($extensions && count($extensions)) {
 
