@@ -1771,3 +1771,88 @@ function order_fieldUnitDtos_by_date_and_type($fieldUnitDTOs)
   return order_specimens_or_observations_by_date_and_type($fieldUnitDTOs);
 }
 
+/**
+ * @param $specimen
+ *
+ * @return array
+ */
+function specimen_id_and_collection_for($specimen) {
+  $specimenID = '';
+  $collection = NULL;
+  if (!($specimen->class == 'FieldUnit')) {
+    if ($specimen->collection) {
+      if ($specimen->collection->code) {
+        $collection = $specimen->collection->code;
+      }
+      elseif ($specimen->collection->name) {
+        $collection = $specimen->collection->name;
+      }
+    }
+    if ($specimen->accessionNumber) {
+      $specimenID = $specimen->accessionNumber;
+    }
+    elseif ($specimen->barcode) {
+      $specimenID = $specimen->barcode;
+    }
+    elseif ($specimen->catalogNumber) {
+      $specimenID = $specimen->catalogNumber;
+    }
+    elseif ($specimen->titleCache) {
+      $specimenID = $specimen->titleCache;
+    }
+    if (!isset($specimenID) and !isset($collection)) {
+      $specimenID = $specimen->uuid;
+    }
+  }
+  else {
+    if ($specimen->titleCache) {
+      $specimenID = $specimen->titleCache;
+    }
+    if (!isset($specimenID) and !isset($collection)) {
+      $specimenID = $specimen->uuid;
+    }
+  }
+  return [$specimenID, $collection];
+}
+
+/**
+ * Renders a cdm collection entity as html markup.
+ *
+ * institute and super-collections
+ *
+ * @param $collection
+ *   The CDM Collection entity
+ * @param bool $do_link
+ *   Append a link to the collection page as clickable icon (default = true).
+ *
+ * @return string
+ *  The markup for the collection,
+ */
+function render_collection($collection, $do_link = false /* to be made true, see #9250 */ ){
+  if(!is_object($collection)){
+    return '';
+  }
+  $collection_str_list = [];
+  $super_collection = $collection;
+  while($super_collection){
+    $collection_str = $super_collection->titleCache;
+    if(is_object($super_collection->institute) && $super_collection->institute->titleCache){
+      $collection_str .= ' at ' . $super_collection->institute->titleCache;
+    }
+    $collection_str_list[] = $collection_str;
+    if(isset($super_collection->superCollection)){
+      $super_collection = $super_collection->superCollection;
+    } else {
+      $super_collection = null;
+    }
+  }
+  $markup = join(' in ', $collection_str_list);
+  if($markup){
+    if($do_link){
+      $markup .= ' ' . cdm_internal_link(path_to_collection($collection->uuid));
+    }
+    $markup = '<span class="' . html_class_attribute_ref($collection) . '">' . $markup . '</span>';
+  }
+  return $markup;
+}
+
