@@ -592,20 +592,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         break;
 
                     case 'collection':
-                        $sub_dl_groups = array();
-                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, NULL, 1);
-                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('codeStandard'), $value->codeStandard, NULL, 2);
-                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('institute'), $value->institute, NULL, 3);
-                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('townOrLocation'), $value->townOrLocation, NULL, 4);
-                        // TODO "superCollection"
-                        // TODO may have media
-
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
-                            array(
-                                array('#markup' => $value->titleCache),
-                                array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
-                            )
-                        );
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), render_collection($value));
                         break;
 
                     case 'storedUnder':
