@@ -2456,6 +2456,20 @@ function path_to_named_area($uuid) {
 }
 
 /**
+ * @param $uuid
+ *
+ * @return string
+ */
+function path_to_collection($uuid) {
+  if (!$uuid) {
+    return '';
+  }
+  else {
+    return 'cdm_dataportal/collection/' . $uuid;
+  }
+}
+
+/**
  * Creates a URL to show a synonmy in the according taxon page.
  *
  * The URL will point to the synonymy tab of the taxon page of the accepted taxon given as parameter $acceptedUuid.

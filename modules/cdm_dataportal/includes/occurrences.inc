@@ -592,7 +592,9 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         break;
 
                     case 'collection':
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), render_collection($value));
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(
+                          array('#markup' => render_collection($value))
+                        ));
                         break;
 
                     case 'storedUnder':

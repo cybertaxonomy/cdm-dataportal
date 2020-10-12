@@ -169,7 +169,7 @@ function theme_description_list($variables) {
  * which can be trimmed to an empty string. The $group array will be associative in order to
  * ease alphabetical ordering of the entries.
  *
- * NOTE: To be used only for themable description_list as proposed in
+ * NOTE: To be used only for themeable description_list as proposed in
  * http://drupal.org/node/54898 see includes/pre-drupal8.inc
  *
  * @param array $groups

@@ -24,26 +24,26 @@
  *
  *   @param reference
  *      The entity to be rendered
- *  @param string $microReference
+ *  @param string $citation_detail
  *      The citation detail like page number
- *  @param boolean doTextLink
+ *  @param boolean do_text_link
  *      Show the citation string as link to the reference page. This option does not affect links to the reference URI or DOI.
  *      These links are always created when this data is available
- *  @param boolean doIconLink
+ *  @param boolean do_icon_link
  *      Append an icon to the citation string which links to the reference page, links to the reference URI or DOI are always
  *      created when this data is available
  *
  * @return string
  *    the markup for the reference
  */
-function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = FALSE, $doIconLink = FALSE) {
+function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link = FALSE, $do_icon_link = FALSE) {
 
   $citation = trim($reference->titleCache);
-  $iconlink = "";
-  if((isset($doIconLink) && $doIconLink === TRUE)) {
-    $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), path_to_reference($reference->uuid), array('html' => true));
+  $icon_link = "";
+  if((isset($do_icon_link) && $do_icon_link === TRUE)) {
+    $icon_link = cdm_internal_link(path_to_reference($reference->uuid));
   }
-  if (isset($doTextLink) && $doTextLink === TRUE) {
+  if (isset($do_text_link) && $do_text_link === TRUE) {
     $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
       'attributes' => array(
@@ -52,14 +52,14 @@ function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = 
       'absolute' => TRUE,
       'html' => TRUE,
     ));
-    $out .= $iconlink . '</span>';
+    $out .= $icon_link . '</span>';
   }
   else {
-    $out = '<span class="reference">' . $citation . $iconlink . '</span>';
+    $out = '<span class="reference">' . $citation . $icon_link . '</span>';
   }
 
-  if (!empty($microReference)) {
-    $out .= ": " . $microReference;
+  if (!empty($citation_detail)) {
+    $out .= ": " . $citation_detail;
   }
 
   if(isset($reference->doi)){
@@ -76,6 +76,15 @@ function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = 
   }
 
   return $out;
+}
+
+/**
+ * @param $path
+ *
+ * @return string
+ */
+function cdm_internal_link($path) {
+  return l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), $path, array('html' => true));
 }
 
 /**

@@ -1515,14 +1515,17 @@ function specimen_id_and_collection_for($specimen) {
 /**
  * Renders a cdm collection entity as html markup.
  *
- * institute and subcollection
+ * institute and super-collections
  *
  * @param $collection
+ *   The CDM Collection entity
+ * @param bool $do_link
+ *   Append a link to the collection page as clickable icon (default = true).
  *
  * @return string
  *  The markup for the collection,
  */
-function render_collection($collection, $do_link = true){
+function render_collection($collection, $do_link = false /* to be made true, see #9250 */ ){
    if(!is_object($collection)){
      return '';
    }
@@ -1542,6 +1545,9 @@ function render_collection($collection, $do_link = true){
    }
    $markup = join(' in ', $collection_str_list);
    if($markup){
+     if($do_link){
+       $markup .= ' ' . cdm_internal_link(path_to_collection($collection->uuid));
+     }
      $markup = '<span class="' . html_class_attribute_ref($collection) . '">' . $markup . '</span>';
    }
    return $markup;
