@@ -561,4 +561,33 @@ function cdm_entity_sources_sorted($entity) {
   return $sources;
 }
 
+/**
+ * Compare two different footnotes objects.
+ *
+ * The comparison is based on the footnote key. The one which is
+ * displayed as footnote number.
+ *
+ * @param mixed $a
+ *   Footnote object $a.
+ * @param mixed $b
+ *   Footnote object $b.
+ *
+ * @return int
+ *
+ * @deprecated seems to be unused: TODO remove!
+ */
+function footnotes_key_compare($a, $b) {
+  $res = 0;
+  if (empty($a) || empty($b)) {
+    return $res;
+  }
+  if ($a->keyStr < $b->keyStr) {
+    $res = -1;
+  }
+  elseif ($a->keyStr > $b->keyStr) {
+    $res = 1;
+  }
+  return $res;
+}
+
 
