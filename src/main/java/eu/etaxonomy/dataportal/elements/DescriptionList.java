@@ -83,22 +83,16 @@ public class DescriptionList extends BaseElement {
         return joinedText;
     }
 
-    public static class DescriptionElement {
+    public static class DescriptionElement extends BaseElement {
 
         private DescriptionList subList = null;
-        private BaseElement descriptionElementContent = null;
-        private String descriptionElementText = null;
 
         DescriptionElement(WebElement descriptionElement){
+            super(descriptionElement);
             try {
                 subList = new DescriptionList(descriptionElement.findElement(By.tagName("dl")));
-                descriptionElementContent = subList;
             } catch (NoSuchElementException e1) {
-                try {
-                    descriptionElementContent = new BaseElement(descriptionElement.findElement(By.xpath("./child::*")));
-                } catch (NoSuchElementException e2) {
-                    descriptionElementText = descriptionElement.getText();
-                }
+                // IGNORE
             }
         }
 
@@ -109,19 +103,9 @@ public class DescriptionList extends BaseElement {
             return subList;
         }
 
-        /**
-         * @return the descriptionElementContent
-         */
-        public BaseElement getDescriptionElementContent() {
-            return descriptionElementContent;
-        }
 
         public String getDescriptionElementText() {
-            if(descriptionElementContent != null) {
-                return descriptionElementContent.getText();
-            } else {
-                return descriptionElementText;
-            }
+            return this.getText();
         }
     }
 

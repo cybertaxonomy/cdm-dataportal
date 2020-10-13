@@ -73,16 +73,18 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         logger.debug("derivateTreeContainer: " + ElementUtils.webElementTagToMarkup(derivateTreeContainer));
 
         List<WebElement> dls = detailRows.get(0).findElements(By.cssSelector("div.description_list"));
-        assertEquals(3, dls.size());
+        assertEquals(2, dls.size());
         DescriptionList dl1 = new DescriptionList(dls.get(0).findElement(By.tagName("dl")));
         assertEquals("Field Unit", dl1.joinedDescriptionElementText("Record base:"));
         assertEquals("Ehrenberg, C.G.", dl1.joinedDescriptionElementText("Collector:"));
         assertEquals("Germany", dl1.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl1.joinedDescriptionElementText("Locality:"));
+        assertEquals("52°31'1.2\"N, 13°21'E +/-20 m", dl1.joinedDescriptionElementText("Exact location:"));
+        // TODO test Exact location link
         BaseElement descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(7, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        assertEquals(8, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
         // TODO one of the links is a footnote key for which the footnote is missing
-        LinkElement link1 = descriptionListContainer.getLinksInElement().get(0);
+        LinkElement link1 = descriptionListContainer.getLinksInElement().get(1);
         assertEquals("Detail page", link1.getText());
         assertTrue(link1.getUrl().endsWith("/cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
 
@@ -90,13 +92,13 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         assertEquals("Preserved Specimen", dl2.joinedDescriptionElementText("Record base:"));
         assertEquals("2017E68", dl2.joinedDescriptionElementText("Accession number:"));
-        assertEquals("\nCode:\nCEDiT", dl2.joinedDescriptionElementText("Collection"));
+        assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", dl2.joinedDescriptionElementText("Collection:"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
         assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171): Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT 2017E68). http://testid.org/2017E68",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         DescriptionElement specimenTypeDesignation_dd = dl2.getDescriptionGroups().get("Specimen type designations:").get(0);
-        List<LinkElement> specimenTypeDesignationLinks = specimenTypeDesignation_dd.getDescriptionElementContent().getLinksInElement();
+        List<LinkElement> specimenTypeDesignationLinks = specimenTypeDesignation_dd.getLinksInElement();
         assertEquals(3, specimenTypeDesignationLinks.size());
         // TODO one of the links is a footnote key for which the footnote is missing
         assertEquals("CEDiT 2017E68", specimenTypeDesignationLinks.get(1).getText());
@@ -110,14 +112,14 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         derivateTreeContainer = descriptionListContainerElement.findElement(By.xpath("./parent::li"));
 
         dls = detailRows.get(1).findElements(By.cssSelector("div.description_list"));
-        assertEquals(3, dls.size());
+        assertEquals(2, dls.size());
         dl1 = new DescriptionList(dls.get(0).findElement(By.tagName("dl")));
         assertEquals("Field Unit", dl1.joinedDescriptionElementText("Record base:"));
         assertEquals("Germany", dl1.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl1.joinedDescriptionElementText("Locality:"));
         descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(6, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
-        link1 = descriptionListContainer.getLinksInElement().get(0);
+        assertEquals(7, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        link1 = descriptionListContainer.getLinksInElement().get(1);
         assertEquals("Detail page", link1.getText());
         assertTrue(link1.getUrl().endsWith("/cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
 
@@ -125,12 +127,12 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         assertEquals("Preserved Specimen", dl2.joinedDescriptionElementText("Record base:"));
         assertEquals("M-0289351", dl2.joinedDescriptionElementText("Accession number:"));
-        assertEquals("\nCode:\nM", dl2.joinedDescriptionElementText("Collection"));
+        assertEquals("M", dl2.joinedDescriptionElementText("Collection:"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
         assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172): Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
-        specimenTypeDesignationLinks = dl2.getDescriptionGroups().get("Specimen type designations:").get(0).getDescriptionElementContent().getLinksInElement();
+        specimenTypeDesignationLinks = dl2.getDescriptionGroups().get("Specimen type designations:").get(0).getLinksInElement();
         assertEquals(3, specimenTypeDesignationLinks.size());
         assertEquals("M M-0289351", specimenTypeDesignationLinks.get(1).getText());
         assertTrue(specimenTypeDesignationLinks.get(1).getUrl().endsWith("cdm_dataportal/occurrence/e86c5acd-de55-44af-99f7-484207657264"));

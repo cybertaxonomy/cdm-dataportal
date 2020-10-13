@@ -79,18 +79,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         assertEquals("2016-03-28", dl3.joinedDescriptionElementText("Gathering date"));
         assertEquals("Germany", dl3.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl3.joinedDescriptionElementText("Locality:"));
-        assertEquals("52°31'1.2\"N, 13°21'E (WGS84)\n"
-                + "Error radius:\n" +
-                "20 m\n" +
-                "Longitude:\n" +
-                "13.35°\n" +
-                "Latitude:\n" +
-                "52.517°\n"
-                + "Reference system:\n"
-                + "WGS84",
-                dl3.joinedDescriptionElementText("Exact location:"));
-
-
+        assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", dl3.joinedDescriptionElementText("Exact location:"));
 
 
     }

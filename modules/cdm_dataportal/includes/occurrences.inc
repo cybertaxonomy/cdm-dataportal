@@ -365,7 +365,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
             'updated',
             'class',
             'uuid',
-            ''
+            'collectionCode'
         );
     }
     if ((variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE) || !$isSpecimen_page){
@@ -714,22 +714,11 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 ),'',9
                             );
                         }
-                        if (isset($value->exactLocation) && $value->exactLocation->sexagesimalString) {
-                            $sub_dl_groups = array();
-                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('errorRadius'), $value->exactLocation->errorRadius, ' m', 1);
-                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('longitude'), round($value->exactLocation->longitude, 7), '°', 2);
-                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('latitude'), round($value->exactLocation->latitude, 7), '°', 3);
-                            if (isset($value->exactLocation->referenceSystem)) {
-                                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('referenceSystem'), $value->exactLocation->referenceSystem->representation_L10n, '', 4);
-                            }
-
+                        if ($value->exactLocation->sexagesimalString) {
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('exactLocation'),
                                 array(
-                                    array('#markup' => $value->exactLocation->sexagesimalString),
-                                    array(
-                                        '#theme' => 'description_list',
-                                        '#groups' => $sub_dl_groups
-                                    ),
+                                    array('#markup' => render_point($value->exactLocation)),
+
                                 ),'',11
                             );
                         }
@@ -853,7 +842,7 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
 
     $groups = array();
 
-    // -- retrieve additional data if neesscary
+    // -- retrieve additional data if necessary
     // TODO below call disabled since sequences are not yet supported,
     //      see  #3347 (services and REST service controller for molecular classes implemented)
     //
@@ -1098,7 +1087,7 @@ function compose_compressed_specimen_derivate_table($field_unit_uuids) {
             'class' => array('summary_row_cell')
           ),
           @array(
-            'data' => $derivateHierarchy->collection,
+            'data' => $derivateHierarchy->collectionStatistics,
             'class' => array('summary_row_cell')
           ),
           array(
@@ -1298,7 +1287,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
             'class',
             'uuid',
             'derivates',
-            'collection'
+            'collectionCode'
         );
     }
 
@@ -1388,23 +1377,11 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
                     /* ---- DerivedUnitBase --- */
 
-                    case 'collectionDTO':
-
-                        $sub_dl_groups = array();
-                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('code'), $value->code, NULL, 1);
-                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('codeStandard'), $value->codeStandard, NULL, 2);
-                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('institute'), $value->institute, NULL, 3);
-                        @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('townOrLocation'), $value->townOrLocation, NULL, 4);
-                        // TODO "superCollection"
-                        // TODO may have media
-
-                        @_description_list_group_add($groups, 'Collection',
-                            array(
-                                array('#markup' => $value->titleCache),
-                                array('#theme' => 'description_list', '#groups' => $sub_dl_groups)
-                            )
-                        );
-                        break;
+                    case 'collection':
+                      @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(
+                        array('#markup' => render_collection_dto($value))
+                      ));
+                      break;
 
                     /* ---- Specimen --- */
                     case 'sequences':
@@ -1455,24 +1432,11 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                                 );
                         }
                         if (isset($value->exactLocation)  ) {
-                            $sub_dl_groups = array();
-                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('errorRadius'), $value->exactLocation->errorRadius, ' m', 1);
-                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('longitude'), round($value->exactLocation->longitude, 7), '°', 2);
-                            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('latitude'), round($value->exactLocation->latitude, 7), '°', 3);
-                            if (isset($value->exactLocation->referenceSystem)) {
-                                @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('referenceSystem'), $value->exactLocation->referenceSystem->representation_L10n, '', 4);
-                            }
-                            if ( isSet($value->exactLocation->sexagesimalString)){
-                                @_description_list_group_add($groups, cdm_occurrence_field_name_label('exactLocation'),
-                                    array(
-                                        array('#markup' => $value->exactLocation->sexagesimalString),
-                                        array(
-                                            '#theme' => 'description_list',
-                                            '#groups' => $sub_dl_groups
-                                        ),
-                                    ), '', 11
-                                );
-                            }
+                          @_description_list_group_add($groups, cdm_occurrence_field_name_label('exactLocation'),
+                            array(
+                              array('#markup' => render_point($value->exactLocation)),
+                            ),'',11
+                          );
                         }
                         break;
 
@@ -1852,8 +1816,23 @@ function specimen_id_and_collection_for($specimen) {
  *
  * institute and super-collections
  *
+ * @param $collection_dto
+ *   The CollectionDTO
+
+ * @return string
+ *  The markup for the collection,
+ */
+function render_collection_dto($collection_dto){
+  return render_collection($collection_dto);
+}
+
+/**
+ * Renders a cdm collection entity as html markup.
+ *
+ * institute and super-collections
+ *
  * @param $collection
- *   The CDM Collection entity
+ *   The CDM Collection entity or CollectionDTO
  * @param bool $do_link
  *   Append a link to the collection page as clickable icon (default = true).
  *
@@ -1864,12 +1843,16 @@ function render_collection($collection, $do_link = false /* to be made true, see
   if(!is_object($collection)){
     return '';
   }
+  $is_dto = $collection->class == 'CollectionDTO';
   $collection_str_list = [];
   $super_collection = $collection;
   while($super_collection){
-    $collection_str = $super_collection->titleCache;
-    if(is_object($super_collection->institute) && $super_collection->institute->titleCache){
-      $collection_str .= ' at ' . $super_collection->institute->titleCache;
+    $collection_str = $is_dto ? $super_collection->label : $super_collection->titleCache;
+    if(
+      (isset($super_collection->institute) && $super_collection->institute->titleCache) ||
+      ($is_dto && $super_collection->institute)
+    ){
+      $collection_str .= ' at ' . ($is_dto ? $super_collection->institute : $super_collection->institute->titleCache);
     }
     $collection_str_list[] = $collection_str;
     if(isset($super_collection->superCollection)){
