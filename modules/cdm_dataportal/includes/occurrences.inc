@@ -299,6 +299,38 @@ function create_label($label)
 }
 
 /**
+ * Provides a humane representation for an occurrence or observation field name.
+ * @param string $field
+ *    The field name.
+ * @return string
+ *    The label for the fieldname.
+ */
+function cdm_occurrence_field_name_label($field){
+
+  static $field_labels = array(
+    'class' => 'Basis of Record',
+    'fieldNumber' => 'Collecting number',
+    'absoluteElevation' => 'Altitude',
+    'absoluteElevationMinimum' => 'Altitude maximum',
+    'absoluteElevationMaximum' => 'Altitude minimum',
+    'getGatheringPeriod' => 'Gathering period',
+  );
+
+  if (isset($field_labels[$field])) {
+    $field = $field_labels[$field];
+  }
+
+  $field = preg_replace_callback(
+    '/([a-z])([A-Z])/',
+    function ($m) {
+      return $m[1] . ' ' . strtolower ($m[2]);
+    },
+    $field);
+
+  return t('@field-name:', array('@field-name' => ucfirst($field)));
+}
+
+/**
  * Compose an render array from a CDM DerivedUnitFacade object.
  *
  * compose_hook() implementation
