@@ -331,13 +331,13 @@ function cdm_occurrence_field_name_label($field){
 }
 
 /**
- * Compose an render array from a CDM DerivedUnitFacade object.
+ * Compose an render array from a CDD SpecimenOrObservation entity.
  *
  * compose_hook() implementation
  *
  * @param object $specimen_or_observation
- *   the CDM instance of type SpecimenOrObservation to compose
- *   the render array for
+ *   the CDM FieldUnit or DerivedUnit to compose
+ *   the render array for.
  * @param bool $isSpecimen_page
  * @param array $derivatives
  *   the render array which contains the compositions of the derivatives
@@ -356,7 +356,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
     $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
     if (!isset($exclude_occurrence_fields)) {
         $exclude_occurrence_fields = array(
-
+            'uuid',
             'titleCache',
             'protectedTitleCache',
             'derivedUnitMedia',
@@ -364,18 +364,12 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
             'publish',
             'updated',
             'class',
-            'uuid',
             'collectionCode'
         );
     }
     if ((variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT) == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE) || !$isSpecimen_page){
         $exclude_occurrence_fields[] = 'derivationEvents';
     }
-
-    // only show uuid it the user is logged in
- //   if(user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE ) {
-  //      unset($exclude_occurrence_fields[$a_idx]);
-  //  }
 
     if (!isset($derivatives)) {
         $derivatives = array();
@@ -1278,22 +1272,17 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
     $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
     if (!isset($exclude_occurrence_fields)) {
         $exclude_occurrence_fields = array(
+            'uuid',
+            'titleCache',
+            'protectedTitleCache',
+            'label',
+            'listLabel',
+            'class',
             'type',
             'taxonRelatedDerivedUnits',
-            'label',
-            'titleCache',
-            'listLabel',
-            'protectedTitleCache',
-            'class',
-            'uuid',
             'derivates',
             'collectionCode'
         );
-    }
-
-    // only show uuid it the user is logged in
-    if (user_is_logged_in() && ($a_idx = array_search('uuid', $exclude_occurrence_fields)) !== FALSE) {
-      //  unset($exclude_occurrence_fields[$a_idx]);
     }
 
     if (is_object($specimen_or_observation_dto)) {
@@ -1372,16 +1361,27 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                             'showCaption' => true
                         ));
 
-                         //@_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
+                         //FIXME re-enable: // @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
                          break;
 
-                    /* ---- DerivedUnitBase --- */
+                         // TODO
+                        case 'sex':
+                        case 'lifeStage':
+                        case 'kindOfUnit':
+                          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->representation_L10n);
+                          break;
 
-                    case 'collection':
-                      @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(
-                        array('#markup' => render_collection_dto($value))
-                      ));
-                      break;
+                        case 'definition':
+                          // TODO
+                          break;
+
+                        /* ---- DerivedUnitBase --- */
+
+                        case 'collection':
+                          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(
+                            array('#markup' => render_collection_dto($value))
+                          ));
+                          break;
 
                     /* ---- Specimen --- */
                     case 'sequences':
