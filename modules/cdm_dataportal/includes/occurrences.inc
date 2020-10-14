@@ -985,7 +985,7 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
 }
 
 /**
- * Creates render array items for FieldUnitDTO or DerivateDTO.
+ * Creates render array items for FieldUnitDTO or DerivedUnitDTO.
  *
  * @param array $fieldunit_dtos
  *     list of FieldUnitDTOs
@@ -1112,13 +1112,13 @@ function compose_compressed_specimen_derivate_table($field_unit_uuids) {
       //assemble specimen details
       if ($derivateHierarchy->derivates) {
         $derivates_orderd = [];
-        foreach ($derivateHierarchy->derivates as $preservedSpecimenDTO) {
-          $derivates_orderd[$preservedSpecimenDTO->accessionNumber] = $preservedSpecimenDTO;
+        foreach ($derivateHierarchy->derivates as $derivedUnitDTO) {
+          $derivates_orderd[$derivedUnitDTO->accessionNumber] = $derivedUnitDTO;
         }
         ksort($derivates_orderd);
-        foreach ($derivates_orderd as $preservedSpecimenDTO) {
+        foreach ($derivates_orderd as $derivedUnitDTO) {
           $detail_html .= "<br>";
-          $detail_html .= render_cdm_specimenDTO_page($preservedSpecimenDTO);
+          $detail_html .= render_cdm_specimenDTO_page($derivedUnitDTO);
         }
       }
       $detail_html .= "<br>";
@@ -1253,10 +1253,10 @@ function compose_specimen_table_top_down(array $fieldunit_dtos){
 
 
 /**
- * Renders a FieldUnitDTO or DerivateDTO
+ * Renders a FieldUnitDTO or DerivedUnitDTO
  *
  * @param object $specimen_or_observation_dto
- *   A FieldUnitDTO or DerivateDTO object
+ *   A FieldUnitDTO or DerivedUnitDTO object
  *   the render array for
  *
  * @return string
