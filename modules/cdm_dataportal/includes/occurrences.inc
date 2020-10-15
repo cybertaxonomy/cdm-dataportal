@@ -1269,23 +1269,29 @@ function compose_specimen_table_top_down(array $fieldunit_dtos){
  * @throws \Exception
  */
 function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation_dto) {
-    $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
-    if (!isset($exclude_occurrence_fields)) {
-        $exclude_occurrence_fields = array(
-            'uuid',
-            'titleCache',
-            'protectedTitleCache',
-            'label',
-            'listLabel',
-            'class',
-            'type',
-            'taxonRelatedDerivedUnits',
-            'derivates',
-            'collectionCode'
-        );
-    }
+  $exclude_occurrence_fields = &drupal_static(__FUNCTION__);
+  if (!isset($exclude_occurrence_fields)) {
+    $exclude_occurrence_fields = [
+      'uuid',
+      'titleCache',
+      'protectedTitleCache',
+      'label',
+      'listLabel',
+      'class',
+      'type',
+      'taxonRelatedDerivedUnits',
+      'derivates',
+      'hasDetailImage',
+      'hasType',
+      'hasSpecimenScan',
+      'collectionCode',
+      'collectingString',
+      'derivateDataDTO' //TODO enable?
 
-    if (is_object($specimen_or_observation_dto)) {
+    ];
+  }
+
+  if (is_object($specimen_or_observation_dto)) {
 
         $type_label = $specimen_or_observation_dto->recordBase;
         RenderHints::setFootnoteListKey($type_label . '-' . $specimen_or_observation_dto->uuid);
@@ -1460,7 +1466,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
                     default:
                         if (is_object($value) || is_array($value)) {
-                            drupal_set_message("Unhandled type in compose_cdm_specimenOrObservation() for field " . $field, "warning");
+                            drupal_set_message("Unhandled type in compose_cdm_specimen_or_observation_tree_entry() for field " . $field, "warning");
                         } else {
                             if ($field == 'recordBase' && $value == 'Dna Sample'){
                                 _description_list_group_add($groups, cdm_occurrence_field_name_label($field), 'DNA Sample');
