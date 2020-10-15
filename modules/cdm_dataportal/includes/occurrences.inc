@@ -1280,14 +1280,17 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
       'class',
       'type',
       'taxonRelatedDerivedUnits',
+      'collectionCode',
       'derivates',
+      'derivateDataDTO',
+      // -----
+      // needed later on?
       'hasDetailImage',
       'hasType',
       'hasSpecimenScan',
-      'collectionCode',
-      'collectingString',
-      'derivateDataDTO' //TODO enable?
-
+      'collectionStatistics',
+      'collectingString'
+      // ----
     ];
   }
 
