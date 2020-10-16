@@ -316,6 +316,9 @@ function cdm_occurrence_field_name_label($field){
     'getGatheringPeriod' => 'Gathering period',
   );
 
+  if(str_endsWith($field,'_L10n')){
+    $field = str_replace('_L10n', '', $field );
+  }
   if (isset($field_labels[$field])) {
     $field = $field_labels[$field];
   }
@@ -1333,7 +1336,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                     case 'derivationEvent':
                         @_description_list_group_add($groups, 'Gathering type:', ucfirst($value->derivationEventType), NULL, 1);
                         break;
-                    case 'kindOfUnit':
+                    case 'kindOfUnit_L10n':
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 1);
                         break;
                     case 'accessionNumber':
