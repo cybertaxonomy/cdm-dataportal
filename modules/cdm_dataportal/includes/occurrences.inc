@@ -1113,7 +1113,7 @@ function compose_compressed_specimen_derivate_table($field_unit_uuids) {
       if ($derivateHierarchy->derivates) {
         $derivates_orderd = [];
         foreach ($derivateHierarchy->derivates as $derivedUnitDTO) {
-          $derivates_orderd[$derivedUnitDTO->accessionNumber] = $derivedUnitDTO;
+          $derivates_orderd[$derivedUnitDTO->specimenIdentifier] = $derivedUnitDTO;
         }
         ksort($derivates_orderd);
         foreach ($derivates_orderd as $derivedUnitDTO) {
@@ -1283,6 +1283,8 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
       'collectionCode',
       'derivates',
       'derivateDataDTO',
+      'citation',
+       'specimenIdentifier', // combination like  collection code + accession number
       // -----
       // needed later on?
       'hasDetailImage',
