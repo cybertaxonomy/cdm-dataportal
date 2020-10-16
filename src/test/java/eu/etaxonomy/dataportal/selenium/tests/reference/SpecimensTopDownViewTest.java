@@ -55,7 +55,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         assertEquals(3, rows.size());
         assertEquals("Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT 2017E68).", rows.get(0).getText());
         assertEquals("Isolectotype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M M-0289351).", rows.get(1).getText());
-        assertEquals("Lectotype: -title cache generation not implemented-", rows.get(2).getText());
+        assertEquals("Lectotype: Germany, Berlin, 2 Apr 1835 (BHUPM 671).", rows.get(2).getText());
 
         Dynabox dynabox1 = new Dynabox(rows.get(0).findElement(By.className("dynabox")), driver);
         BaseElement dynaboxContent = dynabox1.click();

@@ -103,7 +103,7 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
     //link to specimen page
     $pathToSpecimen = path_to_specimen($specimen->uuid);
     if (!$is_specimen_page) {
-        $specimenPageLink = l($specimen->accessionNumber, $pathToSpecimen);
+        $specimenPageLink = l($specimen->specimenIdentifier, $pathToSpecimen);
         $detail_html .= "<strong>Specimen summary: $specimenPageLink</strong><br>";
     }
 
@@ -148,8 +148,8 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
                 }
             } else {
                 $types .= $typeStatus . " ";
-
             }
+           $detail_html .= '<br>';
         }
     }
     $derivateDataDTO = $specimen->derivateDataDTO;

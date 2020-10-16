@@ -162,14 +162,15 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Preferred stable URI: http://testid.org/2017E68", detailsLines[2]);
         assertEquals("http://testid.org/2017E68" ,linksInDetails.get(1).getText());
         assertEquals("http://testid.org/2017E68", linksInDetails.get(1).getUrl());
-        assertEquals("Epitype of Glenodinium apiculatum Ehrenb. Specimen Scans: CEDiT (2017E68)", detailsLines[3]);
-        assertEquals("Detail Images: Masks", detailsLines[4]);
+        assertEquals("Epitype of Glenodinium apiculatum Ehrenb.", detailsLines[3]);
+        assertEquals("Specimen Scans: CEDiT (2017E68)", detailsLines[4]);
+        assertEquals("Detail Images: Masks", detailsLines[5]);
         assertEquals("Masks" ,linksInDetails.get(3).getText());
         assertEquals("https://imgs.xkcd.com/comics/masks_2x.png", linksInDetails.get(3).getUrl());
 
-        assertEquals("Specimen summary: M (M-0289351)", detailsLines[5]);
-        assertEquals("Preferred stable URI: http://herbarium.bgbm.org/object/B400042045", detailsLines[6]);
-        assertEquals("Isolectotype of Glenodinium apiculatum Ehrenb.", detailsLines[7]);
+        assertEquals("Specimen summary: M (M-0289351)", detailsLines[6]);
+        assertEquals("Preferred stable URI: http://herbarium.bgbm.org/object/B400042045", detailsLines[7]);
+        assertEquals("Isolectotype of Glenodinium apiculatum Ehrenb.", detailsLines[8]);
         assertEquals(6, linksInDetails.size());
 
     }
