@@ -153,7 +153,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         detailsLines = StringUtils.split(detailsText, "\n");
         BaseElement detailsCell = new BaseElement(cells.get(1));
         List<LinkElement> linksInDetails = detailsCell.getLinksInElement();
-        assertEquals(8, detailsLines.length);
+        assertEquals(9, detailsLines.length);
         assertEquals("Citation: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047. (M M-0289351, CEDiT 2017E68)", detailsLines[0]);
 
         assertEquals("Specimen summary: CEDiT (2017E68)", detailsLines[1]);
