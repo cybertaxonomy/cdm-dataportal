@@ -149,7 +149,6 @@
           opts.customWMSBaseLayerData.max_extent = null;
       }
 
-
       var legendImgSrc = null;
 
       var map = null;

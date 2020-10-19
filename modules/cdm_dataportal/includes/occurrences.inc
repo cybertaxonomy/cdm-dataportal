@@ -1009,7 +1009,7 @@ function specimen_render_array_items(array $fieldunit_dtos){
     $specimen = compose_cdm_specimen_or_observation_tree_entry($fieldunit_dto);
     $children = array();
     $child = array();
-    $child['data'] =$specimen;
+    $child['data'] = $specimen;
     // $children[] = create_specimen_array($specimenOrObservation->derivates);
     if (isset($fieldunit_dto->derivates) && sizeof($fieldunit_dto->derivates) > 0){
       usort($fieldunit_dto->derivates, 'compare_specimen_or_observation_dtos');
@@ -1305,10 +1305,10 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
   if (is_object($specimen_or_observation_dto)) {
 
-        $type_label = $specimen_or_observation_dto->recordBase;
-        RenderHints::setFootnoteListKey($type_label . '-' . $specimen_or_observation_dto->uuid);
+        $title = isset($specimen_or_observation_dto->specimenIdentifier) ? $specimen_or_observation_dto->specimenIdentifier : '';
 
         // collect typeStatus as label
+        $type_label = '';
         if (isset($specimen_or_observation_dto->specimenTypeDesignations)) {
             $type_status = array();
             foreach ($specimen_or_observation_dto->specimenTypeDesignations as $typeDesignation) {
@@ -1316,19 +1316,10 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                     $type_status[] = $typeDesignation->typeStatus_L10n;
                 }
             }
-            if (count($type_status) > 0) {
-                $type_label = implode(', ', $type_status);
-          }
-        }
-
-        if (isset($typeDesignation->typifiedNames)){
-            $title = $type_label . ' for: ' . $typeDesignation->typifiedNames;
-        }else{
-            $title = $type_label;
+           $type_label = implode(', ', $type_status);
         }
 
         $groups = array();
-        $children_items = array();
         // --- add initialized fields
         foreach (get_object_vars($specimen_or_observation_dto) as $field => $value) {
             $child_item = array();
@@ -1468,7 +1459,9 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                           $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $name->uuid); // TODO why not ->uuid here?
                           $dd_elements[] = render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid));
                         }
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label("Identification(s)"), $dd_elements,'', 100);
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label("Identification(s)"),
+                          ['#markup' => join("<br/>",  $dd_elements)],
+                          '', 100);
                         break;
 
                     default:
@@ -1487,12 +1480,17 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
         // template_preprocess_description_list() is not worting by weight so we do it right here
         uasort($groups, 'element_sort');
-        $occurrence_elements = array(
-           // '#title' => $title,
-            '#theme' => 'description_list',
-            '#groups' => $groups,
-            '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation_dto)),
-        );
+        $occurrence_elements = [
+            '#header' => [
+              'data' => [
+                'data' => ['#markup' => $title],
+                'colspan' => 2,
+              ],
+            ],
+            '#theme' => 'table',
+            '#rows' => dl_groups_to_table_rows($groups),
+            '#attributes' => ['class' => [html_class_attribute_ref($specimen_or_observation_dto)]],
+        ];
         $output = drupal_render($occurrence_elements);
         if (isset($gallery_html)){
             $output .= $gallery_html;
@@ -1502,6 +1500,24 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
     } // END of $specimenOrObservation exists
 
     return $output;
+}
+
+function dl_groups_to_table_rows($groups){
+  $rows = [];
+  foreach ($groups as $key => $data){
+    if(is_array($data['description'])){
+      $row_data = ['data' => $data['description']];
+    } else {
+      $row_data = $data['description'];
+    }
+    $rows[] = [
+      'data' => [
+        $data['term'],
+        $row_data
+      ]
+    ];
+  }
+  return $rows;
 }
 
 function compose_table_of_blast_result(array $data){
