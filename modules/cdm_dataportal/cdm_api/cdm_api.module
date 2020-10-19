@@ -1037,7 +1037,7 @@ function cdm_ws_base_uri($cdm_type_simple)
     case 'MediaKey':
     case 'MultiAccessKey':
       $ws_base_uri = $cdm_type_simple;
-      $ws_base_uri{0} = strtolower($ws_base_uri{0});
+      $ws_base_uri[0] = strtolower($ws_base_uri[0]);
       break;
 
     case 'TextualTypeDesignation':
