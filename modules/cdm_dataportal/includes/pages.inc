@@ -42,7 +42,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
   $current_view_mode = variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT);
   if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
       // get fieldUnitDTOs
-      $fieldUnitDTOs = cdm_ws_get(CDM_WS_TAXON_FIELDUNIT_DTOS, array( $taxon->uuid));
+      $fieldUnitDTOs = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIELDUNIT_DTOS, array( $taxon->uuid));
       $fieldUnitDTOs = order_fieldUnitDtos_by_date_and_type($fieldUnitDTOs);
     } else {
       // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));

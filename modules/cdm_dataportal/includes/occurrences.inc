@@ -627,7 +627,9 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         break;
 
                     case 'storedUnder':
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), render_taxon_or_name($value));
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), array(
+                          array('#markup' => render_taxon_or_name($value))
+                        ));
                         break;
                     case 'dnaQuality':
                         $sub_dl_groups = array();
@@ -1336,9 +1338,6 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                     case 'derivationEvent':
                         @_description_list_group_add($groups, 'Gathering type:', ucfirst($value->derivationEventType), NULL, 1);
                         break;
-                    case 'kindOfUnit_L10n':
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 1);
-                        break;
                     case 'accessionNumber':
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 0);
                         break;
@@ -1378,11 +1377,10 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                          //FIXME re-enable: // @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $gallery_html);
                          break;
 
-                         // TODO
                         case 'sex':
                         case 'lifeStage':
                         case 'kindOfUnit':
-                          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value->representation_L10n);
+                          @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), cdm_term_representation($value));
                           break;
 
                         case 'definition':
@@ -1390,7 +1388,6 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                           break;
 
                         /* ---- DerivedUnitBase --- */
-
                         case 'collection':
                           @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(
                             array('#markup' => render_collection_dto($value))
@@ -1408,7 +1405,12 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                         break;
 
                     // TODO preservation
-                    // TODO exsiccatum
+                    case 'storedUnder':
+                      $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($value->uuid));
+                      @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), array(
+                        array('#markup' => render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid)))
+                      ));
+                    break;
 
                     /* ---- FieldObservation --- */
                     case 'gatheringEvent':
@@ -1461,13 +1463,8 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                     case 'determinedNames':
                         $dd_elements = array();
                         foreach ($value as $name) {
-                            $taxon_name = cdm_ws_get(CDM_WS_NAME, $name->key);
-                            $taxon_name->taggedName = cdm_ws_get(CDM_WS_NAME, array($name->key, "taggedName"));
-                            $name_link = path_to_name($name->key);
-
-                            //$taxon_html = render_taxon_or_name($taxon_name, $name_link);
-                            $taxon_html = l($taxon_name->titleCache, $name_link);
-                            $dd_elements[] = $taxon_html;
+                          $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $name->uuid); // TODO why not ->uuid here?
+                          $dd_elements[] = render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid));
                         }
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label("Identification(s)"), $dd_elements,'', 100);
                         break;

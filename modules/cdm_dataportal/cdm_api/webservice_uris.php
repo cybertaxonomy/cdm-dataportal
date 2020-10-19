@@ -34,7 +34,7 @@ define('CDM_WS_PORTAL_TYPEDESIGNATION', 'portal/typedesignation/$0');
 
 define('CDM_WS_TAXON', 'taxon');
 
-define('CDM_WS_TAXON_FIELDUNIT_DTOS', 'taxon/$0/fieldUnitDTOs');
+define('CDM_WS_PORTAL_TAXON_FIELDUNIT_DTOS', 'portal/taxon/$0/fieldUnitDTOs');
 
 define('CDM_WS_TAXON_CLASSIFICATIONS', 'taxon/$0/classifications');
 define('CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'taxon/findByDescriptionElementFullText');
