@@ -1087,10 +1087,15 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
  * @param array $specimen_typedesignation_dtos
  *  The SpecimenTypedesignationDTOs to be rendered
  *
+ * @param bool $show_type_specimen
+ *
+ * @param string $enclosing_tag
+ * @param string $element_tag
+ *
  * @return string
  *   The markup.
  */
-function render_specimen_typedesignation_dto($specimen_typedesignation_dtos,  $enclosing_tag = 'ul', $element_tag =  'li', $link_to_specimen_page = true){
+function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $show_type_specimen = FALSE, $enclosing_tag = 'ul', $element_tag = 'li'){
 
   // need to add element to render path since type designations
   // need other name render template
@@ -1144,26 +1149,29 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos,  $e
       $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($std_dto) . '">';
       $out .= type_designation_dto_status_label_markup($std_dto) . $type_citation_markup;
 
-      $derivedUnitFacadeInstance = null;
-      if (isset($std_dto->typeSpecimen)) {
-        $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std_dto->typeSpecimen->uuid);
+      if($show_type_specimen){
+        $derivedUnitFacadeInstance = null;
+        if (isset($std_dto->typeSpecimen)) {
+          $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std_dto->typeSpecimen->uuid);
+        }
+
+        if (!empty($derivedUnitFacadeInstance->titleCache)) {
+          $specimen_markup = $derivedUnitFacadeInstance->titleCache;
+          if(isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
+            $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($std_dto->typeSpecimen->uuid)), $specimen_markup);
+          }
+          RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+          $annotations_and_sources = handle_annotations_and_sources($derivedUnitFacadeInstance);
+          $out .= ': <span class="' . html_class_attribute_ref($std_dto->typeSpecimen) . '">'
+            . $specimen_markup
+            . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
+          if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
+            $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
+          }
+          $out .= $annotations_and_sources->footNoteKeysMarkup();
+        }
       }
 
-      if (!empty($derivedUnitFacadeInstance->titleCache)) {
-        $specimen_markup = $derivedUnitFacadeInstance->titleCache;
-        if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
-          $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($std_dto->typeSpecimen->uuid)), $specimen_markup);
-        }
-        RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
-        $annotations_and_sources = handle_annotations_and_sources($derivedUnitFacadeInstance);
-        $out .= ': <span class="' . html_class_attribute_ref($std_dto->typeSpecimen) . '">'
-          . $specimen_markup
-          . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
-        if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
-          $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
-        }
-        $out .= $annotations_and_sources->footNoteKeysMarkup();
-      }
       $out .= '</'. $element_tag .'>';
     }
   }
