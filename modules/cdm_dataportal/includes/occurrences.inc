@@ -126,7 +126,7 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
                 $detail_html .= "<br>";
             }
             foreach ($specimen->associatedTaxa as $associatedTaxon) {
-                $detail_html .= l($associatedTaxon->value, path_to_taxon($associatedTaxon->key, "specimens"));//$associatedTaxon->second."<br>";
+                $detail_html .= l($associatedTaxon->label, path_to_taxon($associatedTaxon->uuid, "specimens"));//$associatedTaxon->second."<br>";
             }
             $detail_html .= "<br>";
         }
