@@ -159,7 +159,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", dl1.joinedDescriptionElementText("Exact location:"));
         // TODO test Exact location link
         descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(9, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        assertEquals(10, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
         // TODO one of the links is a footnote key for which the footnote is missing
         link1 = descriptionListContainer.getLinksInElement().get(1);
         assertEquals("Detail page", link1.getText());
