@@ -99,7 +99,7 @@ class NameRenderConfiguration {
 
   const CDM_NAME_RENDER_TEMPLATES_DEFAULT =
     array (
-      'taxon_page_title,polytomousKey'=> array(
+      'taxon_page_title,polytomousKey,taxon_page_specimens'=> array(
         'namePart' => array('#uri' => TRUE),
       ),
       'not_in_current_classification' => array(

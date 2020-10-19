@@ -1174,6 +1174,7 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
 
       $out .= '</'. $element_tag .'>';
     }
+    RenderHints::popFromRenderStack();
   }
   return $out;
 }
