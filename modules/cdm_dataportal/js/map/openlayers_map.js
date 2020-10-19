@@ -763,7 +763,8 @@
                   {
                       layers: fixLayerName(layerData),
                       transparent:"true",
-                      format:"image/png"
+                      format:"image/png",
+                      untiled: true
                   },
                   dataLayerOptions
                   );
@@ -1174,7 +1175,7 @@
           wmsOptions.units = units;
         }
 
-        if (untiled) {
+        if (true || untiled) {
           wmsOptions.singleTile = true;
           wmsOptions.ratio = 1;
         }
