@@ -1012,6 +1012,7 @@ function specimen_render_array_items(array $fieldunit_dtos){
     $child['data'] =$specimen;
     // $children[] = create_specimen_array($specimenOrObservation->derivates);
     if (isset($fieldunit_dto->derivates) && sizeof($fieldunit_dto->derivates) > 0){
+      usort($fieldunit_dto->derivates, 'compare_specimen_or_observation_dtos');
       $child['children']= specimen_render_array_items($fieldunit_dto->derivates);
     }
     $children[]=$child;
@@ -1883,3 +1884,17 @@ function render_collection($collection, $do_link = false /* to be made true, see
   return $markup;
 }
 
+/**
+ * Compares two SpecimenTypeDesignations
+ *
+ * @param object $a
+ *   A SpecimenOrObservationDTO.
+ * @param object $b
+ *   The SpecimenOrObservationDTO.
+ */
+function compare_specimen_or_observation_dtos($a, $b) {
+    // Sort alphabetically.
+    $a_text =  isset($a->specimenIdentifier) ? $a->specimenIdentifier : $a->label;
+    $b_text =  isset($b->specimenIdentifier) ? $b->specimenIdentifier : $b->label;
+    return strcasecmp($a_text, $b_text);
+}
