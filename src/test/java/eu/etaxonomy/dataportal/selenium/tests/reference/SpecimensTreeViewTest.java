@@ -133,7 +133,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         WebElement descriptionListContainerElement;
         WebElement derivateTreeContainer;
-        DescriptionList dl1, dl2, dl3;
+        DescriptionList dl1, dl3, dl2;
         List<WebElement> dls;
         DescriptionElement specimenTypeDesignation_dd;
         BaseElement descriptionListContainer;
@@ -166,32 +166,32 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Detail page", link1.getText());
         assertTrue(link1.getUrl().endsWith("/cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
 
-
         dl2 = new DescriptionList(dls.get(1).findElement(By.tagName("dl")));
 
         assertEquals("Preserved Specimen", dl2.joinedDescriptionElementText("Record base:"));
-        assertEquals("M-0289351", dl2.joinedDescriptionElementText("Accession number:"));
-        assertEquals("M", dl2.joinedDescriptionElementText("Collection:"));
+        assertEquals("2017E68", dl2.joinedDescriptionElementText("Accession number:"));
+        assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", dl2.joinedDescriptionElementText("Collection:"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
-        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172)",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172)",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
-        specimenTypeDesignationLinks = dl2.getDescriptionGroups().get("Specimen type designations:").get(0).getLinksInElement();
+        specimenTypeDesignation_dd = dl2.getDescriptionGroups().get("Specimen type designations:").get(0);
+        specimenTypeDesignationLinks = specimenTypeDesignation_dd.getLinksInElement();
         assertEquals("expecting one footnote key link", 1, specimenTypeDesignationLinks.size());
-
 
         dl3 = new DescriptionList(dls.get(2).findElement(By.tagName("dl")));
 
         assertEquals("Preserved Specimen", dl3.joinedDescriptionElementText("Record base:"));
-        assertEquals("2017E68", dl3.joinedDescriptionElementText("Accession number:"));
-        assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", dl3.joinedDescriptionElementText("Collection:"));
+        assertEquals("M-0289351", dl3.joinedDescriptionElementText("Accession number:"));
+        assertEquals("M", dl3.joinedDescriptionElementText("Collection:"));
         assertEquals("Specimen", dl3.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl3.joinedDescriptionElementText("Gathering type:"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20173)",
+        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20173)",
                 dl3.joinedDescriptionElementText("Specimen type designations:"));
-        specimenTypeDesignation_dd = dl3.getDescriptionGroups().get("Specimen type designations:").get(0);
-        specimenTypeDesignationLinks = specimenTypeDesignation_dd.getLinksInElement();
+        specimenTypeDesignationLinks = dl3.getDescriptionGroups().get("Specimen type designations:").get(0).getLinksInElement();
         assertEquals("expecting one footnote key link", 1, specimenTypeDesignationLinks.size());
+
+
 
 
 
