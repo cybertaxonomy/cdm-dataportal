@@ -1305,7 +1305,15 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
   if (is_object($specimen_or_observation_dto)) {
 
-        $title = isset($specimen_or_observation_dto->specimenIdentifier) ? $specimen_or_observation_dto->specimenIdentifier : '';
+    if($specimen_or_observation_dto->class == 'FieldUnitDTO'){
+      $item_label = $specimen_or_observation_dto->label;
+    } else {
+      $item_label = isset($specimen_or_observation_dto->specimenIdentifier) ? $specimen_or_observation_dto->specimenIdentifier : '';
+    }
+
+    $specimen_link = cdm_internal_link(path_to_specimen($specimen_or_observation_dto->uuid));
+
+    $title = $item_label . $specimen_link;
 
         // collect typeStatus as label
         $type_label = '';
@@ -1495,8 +1503,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
         if (isset($gallery_html)){
             $output .= $gallery_html;
         }
-        $pathToSpecimen = path_to_specimen($specimen_or_observation_dto->uuid);
-        $output .=  l("Detail page", $pathToSpecimen);
+
     } // END of $specimenOrObservation exists
 
     return $output;
