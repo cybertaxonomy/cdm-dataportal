@@ -1174,9 +1174,9 @@
           wmsOptions.units = units;
         }
 
-        if (untiled) {
+        if (true || untiled) {
           wmsOptions.singleTile = true;
-          wmsOptions.ratio = 1;
+          wmsOptions.ratio = opts.aspectRatio;
         }
 
         return wmsOptions;
