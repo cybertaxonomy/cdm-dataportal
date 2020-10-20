@@ -51,9 +51,10 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         Logger.getLogger(DrushExecuter.class).setLevel(Level.DEBUG);
         setDrupalVar(DrupalVars.CDM_DATAPORTAL_TAXONPAGE_TABS, "1");
         setDrupalVar(DrupalVars.CDM_SPECIMEN_LIST_VIEW_MODE, "derivate_tree");
+        loadPage();
     }
 
-    @Before
+    // must be called after setting the drupal vars
     public void loadPage() throws MalformedURLException {
         p = new TaxonPage(driver, getContext(), glenodinium_apiculatum_t, "specimens");
     }
@@ -109,7 +110,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("BHUPM", dl2.joinedDescriptionElementText("Collection:"));
         assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
         assertEquals("Unpublished image", dl2.joinedDescriptionElementText("Kind of unit:"));
-        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172)",
+        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         specimenTypeDesignation_dd = dl2.getDescriptionGroups().get("Specimen type designations:").get(0);
         specimenTypeDesignationLinks = specimenTypeDesignation_dd.getLinksInElement();
@@ -173,7 +174,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("M", dl2.joinedDescriptionElementText("Collection:"));
         assertEquals("Specimen", dl2.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl2.joinedDescriptionElementText("Gathering type:"));
-        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20173)",
+        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172)",
                 dl2.joinedDescriptionElementText("Specimen type designations:"));
         specimenTypeDesignationLinks = dl2.getDescriptionGroups().get("Specimen type designations:").get(0).getLinksInElement();
         assertEquals("expecting one footnote key link", 1, specimenTypeDesignationLinks.size());
@@ -186,7 +187,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", dl3.joinedDescriptionElementText("Collection:"));
         assertEquals("Specimen", dl3.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("Gathering in-situ", dl3.joinedDescriptionElementText("Gathering type:"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20174)",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20173)",
                 dl3.joinedDescriptionElementText("Specimen type designations:"));
         specimenTypeDesignation_dd = dl3.getDescriptionGroups().get("Specimen type designations:").get(0);
         specimenTypeDesignationLinks = specimenTypeDesignation_dd.getLinksInElement();
