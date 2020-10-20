@@ -780,20 +780,28 @@
             if(layers.length > 0) {
               // calculate zoomBounds using the first layer
               if(mapResponseObj.bbox !== undefined){
-                var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
+                var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox);
                 var projection;
-                if(dataType === "POINT"){
+                if(dataType === "POINT" || dataType === "AREA"){
                   projection = CdmOpenLayers.projections.epsg_4326;
-                  // mapResponseObj.bbox are bounds  are always returned in EPSG:4326 since the point service does not know about the projection
+                  // mapResponseObj.bbox bounds are always returned in EPSG:4326 since the point service does not know about the projection
                   // console.log("createDataLayer() POINT: referenceProjection()=" + referenceProjection() + ", map.getProjectionObject()=" + map.getProjectionObject() );
                   processDataBounds(projection, newBounds, dataType, layerDataLoaded);
                 } else {
-                  // Type == AREA
-                  // the bounds are in the projection of the data layer
-                  // here we expect that all data layers are in the same projection and will use the first data layer as reference
-                  // the edit map service is most probably working the same and is not expected to be able to handle multiple data layers
-                  // with different projections
-                  readProjection(layers[0], function(projection) {
+                    // IMPORTANT!!!!!!!
+                    // with the latest upgrade of Geoserver the bbox value as returned by area.php has changed.
+                    // Formerly areas.php did return the bbox in the projection of the layer now it seems to be
+                    // always in EPSG:4326, which is a progress in some sense. Now the point.php and area.php
+                    // behave consistently. (2020-10-20)
+                    //
+                    // the below code is kept anyway just in case something changes again.
+                    // --------------------------------------
+                    // dataType == AREA
+                    // the bounds are in the projection of the data layer
+                    // here we expect that all data layers are in the same projection and will use the first data layer as reference
+                    // the edit map service is most probably working the same and is not expected to be able to handle multiple data layers
+                    // with different projections
+                    readProjection(baseLayers[0], function(projection) {
                     processDataBounds(projection, newBounds, dataType, layerDataLoaded);
                   })
                 }
