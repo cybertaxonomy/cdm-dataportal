@@ -114,7 +114,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("", cells.get(3).getText());
         // all other empty, TODO check if this is correct or if some data is being missed here
 
-        // details row 1
+        // details row 2
         rowId = 2;
         assertTrue(rows.get(rowId).getAttribute("class").contains("detail_row"));
         assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
@@ -126,7 +126,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals(1, detailsLines.length);
         assertEquals("Citation: Germany, Berlin, 2 Apr 1835. (BHUPM 671)", detailsLines[0]);
 
-        // summary row 1
+        // summary row 4
         rowId = 3;
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
@@ -142,7 +142,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
                 .endsWith(DETAIL_IMAGE_DERIVATE_ICON));
 
 
-        // details row 1
+        // details row 4
         rowId = 4;
         assertTrue(rows.get(rowId).getAttribute("class").contains("detail_row"));
         assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
