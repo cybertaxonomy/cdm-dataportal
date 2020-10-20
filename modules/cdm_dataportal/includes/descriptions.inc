@@ -1416,10 +1416,10 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
         // common name without a language or area, should not happen but is possible
         $language_area_key = '';
         if (isset($element->language->representation_L10n)) {
-          $language_area_key .= $element->language->representation_L10n ;
+          $language_area_key .= $element->language->representation_L10n;
         }
-        if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
-          $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->titleCache . ')';
+        if(isset($element->area->representation_L10n) && strlen($element->area->representation_L10n) > 0){
+          $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->representation_L10n . ')';
         }
         if($language_area_key){
           $language_area_key = '<span class="language-area-label">' . $language_area_key . '<span class="separator">: </span></span>';
