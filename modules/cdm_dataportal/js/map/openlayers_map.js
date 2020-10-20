@@ -314,7 +314,7 @@
           var boundingBoxEPSG4326 = null;
           if(opts.boundingBox){
             boundingBox = OpenLayers.Bounds.fromString(opts.boundingBox);
-            boundingBoxEPSG4326 = boundingBox.transform(wmsBaseLayer.projection, projections.epsg_4326);
+            boundingBoxEPSG4326 = boundingBox.transform(wmsBaseLayer.projection, CdmOpenLayers.projections.epsg_4326);
           }
 
           // -- Distribution Layer --
@@ -374,6 +374,8 @@
             }
 
             mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + occurrenceQuery;
+            log(mapServiceRequest);
+            return;
 
             LAYER_DATA_CNT++;
             jQuery.ajax({
