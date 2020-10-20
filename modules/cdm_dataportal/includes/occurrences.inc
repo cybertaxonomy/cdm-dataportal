@@ -1289,7 +1289,8 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
       'derivates',
       'derivateDataDTO',
       'citation',
-       'specimenIdentifier', // combination like  collection code + accession number
+      'specimenIdentifier', // combination like  collection code + accession number
+      'mostSignificantIdentifier',
       // -----
       // needed later on?
       'hasDetailImage',
