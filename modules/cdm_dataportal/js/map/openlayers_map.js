@@ -311,9 +311,10 @@
 
           initMap();
 
-
+          var boundingBoxEPSG4326 = null;
           if(opts.boundingBox){
             boundingBox = OpenLayers.Bounds.fromString(opts.boundingBox);
+            boundingBoxEPSG4326 = boundingBox.transform(wmsBaseLayer.projection, projections.epsg_4326);
           }
 
           // -- Distribution Layer --
@@ -325,8 +326,8 @@
             if(typeof legendPosition === 'number'){
               distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + opts.legendPosition);
             }
-            if(opts.boundingBox){
-              distributionQuery = mergeQueryStrings(distributionQuery, 'bbox=' + boundingBox);
+            if(boundingBoxEPSG4326){
+              distributionQuery = mergeQueryStrings(distributionQuery, 'bbox=' + boundingBoxEPSG4326);
             }
 
             // distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
@@ -368,8 +369,8 @@
 //              if(legendFormatQuery !== undefined){
 //              legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
 //              }
-            if(opts.boundingBox){
-              occurrenceQuery = mergeQueryStrings(occurrenceQuery, 'bbox=' + boundingBox);
+            if(boundingBoxEPSG4326){
+              occurrenceQuery = mergeQueryStrings(occurrenceQuery, 'bbox=' + boundingBoxEPSG4326);
             }
 
             mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + occurrenceQuery;
