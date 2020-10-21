@@ -314,7 +314,8 @@
           var boundingBoxEPSG4326 = null;
           if(opts.boundingBox){
             boundingBox = OpenLayers.Bounds.fromString(opts.boundingBox);
-            boundingBoxEPSG4326 = boundingBox.transform(wmsBaseLayer.projection, CdmOpenLayers.projections.epsg_4326);
+            // no need to use readProjection(), for base layers the projection should always be in the layer data
+            boundingBoxEPSG4326 = boundingBox.transform(baseLayers[0].projection, CdmOpenLayers.projections.epsg_4326);
           }
 
           // -- Distribution Layer --
