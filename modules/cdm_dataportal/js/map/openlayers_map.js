@@ -314,7 +314,9 @@
           var boundingBoxEPSG4326 = null;
           if(opts.boundingBox){
             boundingBox = OpenLayers.Bounds.fromString(opts.boundingBox);
-            boundingBoxEPSG4326 = boundingBox.transform(wmsBaseLayer.projection, CdmOpenLayers.projections.epsg_4326);
+            readProjection(baseLayers[0].projection, function(projection) {
+                boundingBoxEPSG4326 = boundingBox.transform(projection, CdmOpenLayers.projections.epsg_4326);
+            });
           }
 
           // -- Distribution Layer --
