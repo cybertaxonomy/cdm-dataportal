@@ -285,8 +285,10 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   if(variable_get(CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES, 1) && ( $page_part == 'description' || $page_part == 'synonymy' || $page_part == 'all')){
     $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, array($taxon->uuid));
-    $render_array['taxon_node_status'] = compose_taxon_node_status($taxon_nodes);
-    $render_array['taxon_node_status']['#weight'] = -100;
+    if(is_array($taxon_nodes)){
+      $render_array['taxon_node_status'] = compose_taxon_node_status($taxon_nodes);
+      $render_array['taxon_node_status']['#weight'] = -100;
+    }
   }
 
   if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR) && isset($_REQUEST['acceptedFor'])) {
