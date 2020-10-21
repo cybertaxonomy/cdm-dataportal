@@ -809,7 +809,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
           if (!$isFirst) {
             $condensed_distribution_markup .= ' ';
           }
-          $condensed_distribution_markup .= '<span class="status_' . $cdItem->status->titleCache . '">'
+          $condensed_distribution_markup .= '<span class="status_' . $cdItem->status->representation_L10n . '">'
             . $cdItem->areaStatusLabel . '</span>';
           $isFirst = false;
         }
