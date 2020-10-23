@@ -734,6 +734,9 @@ table.cdm\:Reference {
 /*
  * ======= specimens =======
  */
+
+/* -------- compressed specimen table view  -------- */
+
 #specimens table.specimens {
     width: 100%;
 }
@@ -752,7 +755,6 @@ table.cdm\:Reference {
 #specimens ul.footnotes {
     padding: 0;
 }
-
 
 #specimens .item-list ul{
     list-style-type: none;
@@ -793,6 +795,41 @@ table.cdm\:Reference {
 .specimen_table_label{
     font-weight: bold;
 }
+
+/* -------- derivation tree view  -------- */
+
+table.derivate_tree {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+table.derivate_tree .icon_cell {
+    width: 15px;
+}
+
+table.derivate_tree thead th {
+    height: 2em;
+}
+
+/* EXPERIMENTAL
+table.derivate_tree tr.derivative_row {
+    background-color-XXX: #0e758b;
+}
+
+table.derivate_tree td.derivative_cell .table_wrapper {
+    border: dashed 1px red;
+    position: relative;
+    left: -10px;
+    top: 10px;
+}
+
+table.derivate_tree td.derivative_cell table.derivate_tree {
+    left: 20px;
+    position: relative;
+    top: -35px;
+}
+
+*/
 
 
 /*

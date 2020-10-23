@@ -1,4 +1,4 @@
-/**
+ /**
  * Adds the functionality to toggle (hide/show) every second row by clicking on the first.
  * All first rows must belong to the class "summary_row"
  * and the second rows to the class "detail_row".

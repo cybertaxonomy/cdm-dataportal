@@ -75,18 +75,21 @@
     , 'inline');
   }
 
-  /**
-   */
-  function drupal_add_js_rowToggle($tableId){
+  function _add_js_table_row_toggle($tableId){
 
-      drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/table_modification.js');
+      drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/table_row_toggle.js');
       drupal_add_js('jQuery(document).ready(function(){
           addRowToggle("' . $tableId . '");
       });
       ', array('type' => 'inline'));
   }
 
-  /**
+  function _add_js_table_body_collapse(){
+    // the table_body_collapse plugin aill autoattach to all tables with class attribute 'table_body_collapse'
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/table_body_collapse.js');
+  }
+
+/**
    * @param unknown_type $link_element_selector
    * @param unknown_type $progress_element_selector
    */
@@ -438,26 +441,26 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
   );
 }
 
-  /**
-   * Provides the markup for an font awesome icon.
-   *
-   * The icons is created in default size without any extra features.
-   *
-   * The available icons are listed here http://fontawesome.io/cheatsheet/
-   * fontawesome icons have much more features than implemented here in this function,
-   * for spinning icons, fixed width icons, rotation, etc please checkout the
-   * examples at http://fontawesome.io/examples/
-   *
-   * @parameter $icon_name
-   *  The name of the icon which starts with 'fa-'
-   *
-   * @return String
-   *    the markup for the icon in an <i> tag
-   *
-   */
+/**
+ * Provides the markup for an font awesome icon.
+ *
+ * The icons is created in default size without any extra features.
+ *
+ * The available icons are listed here http://fontawesome.io/cheatsheet/
+ * fontawesome icons have much more features than implemented here in this function,
+ * for spinning icons, fixed width icons, rotation, etc please checkout the
+ * examples at http://fontawesome.io/examples/
+ *
+ * @param $icon_name
+ *  The name of the icon which starts with 'fa-'
+ *
+ * @param array $attributes
+ *
+ * @return String
+ *    the markup for the icon in an <i> tag
+ */
   function font_awesome_icon_markup($icon_name = NULL, $attributes = array()){
     _add_font_awesome_font();
-
 
     if($icon_name){
       if(!isset($attributes['class'])){
@@ -1788,18 +1791,7 @@ function specimen_by_accession_number_view($accession_number = null) {
 
   // Display the page for the specimen defined by $uuid.
   if (isset($field_unit_dto)){
-    $dto_array = array($field_unit_dto);
-    $specimen_array = specimen_render_array_items($dto_array);
-    $specimen_table = array(
-      '#theme' => 'table',
-      '#weight' => 2,
-      // prefix attributes and rows with '#' to let it pass toF the theme function,
-      // otherwise it is handled as child render array
-      '#attributes' => array('class' => 'specimens'),
-      '#rows' => array(),
-      '#prefix' => '<div id="specimens">',
-      '#suffix' => '</div>',
-    );
+    $specimen_array = compose_cdm_specimen_or_observation_tree_entry($field_unit_dto);
     foreach($specimen_array as $value){
       $renderArray = array(
         '#theme' => 'item_list',
