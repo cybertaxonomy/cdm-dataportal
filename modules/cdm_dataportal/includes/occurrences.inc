@@ -140,7 +140,7 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
                 if(empty($typeStatus) || $typeStatus == "_empty_"|| $typeStatus == ""){
                     $detail_html .= "<i>Type for:</i> ";
                 } else {
-                    $detail_html .= "<i>".$typeStatus."</i> of ";
+                    $detail_html .= "<i>".ucfirst($typeStatus)."</i> of ";
                 }
                 foreach($typedTaxa as $typedTaxon){
                     $detail_html .= $typedTaxon." ";
@@ -1656,7 +1656,7 @@ function compose_specimens_table_bottom_up($specimensOrObservations)
         }
         $type_label = implode(', ', $type_status);
         if ($type_label) {
-          $type_label .= ': ';
+          $type_label = ucfirst($type_label) . ': ';
         }
       }
 
