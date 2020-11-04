@@ -1010,10 +1010,10 @@ function specimen_render_array_items(array $fieldunit_dtos){
     $children = array();
     $child = array();
     $child['data'] =$specimen;
-    // $children[] = create_specimen_array($specimenOrObservation->derivates);
-    if (isset($fieldunit_dto->derivates) && sizeof($fieldunit_dto->derivates) > 0){
-      usort($fieldunit_dto->derivates, 'compare_specimen_or_observation_dtos');
-      $child['children']= specimen_render_array_items($fieldunit_dto->derivates);
+    // $children[] = create_specimen_array($specimenOrObservation->derivatives);
+    if (isset($fieldunit_dto->derivatives) && sizeof($fieldunit_dto->derivatives) > 0){
+      usort($fieldunit_dto->derivatives, 'compare_specimen_or_observation_dtos');
+      $child['children']= specimen_render_array_items($fieldunit_dto->derivatives);
     }
     $children[]=$child;
     $items['children'] = $children;
@@ -1116,9 +1116,9 @@ function compose_compressed_specimen_derivate_table($field_unit_uuids) {
         $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
       }
       //assemble specimen details
-      if ($derivateHierarchy->derivates) {
+      if ($derivateHierarchy->derivatives) {
         $derivates_orderd = [];
-        foreach ($derivateHierarchy->derivates as $derivedUnitDTO) {
+        foreach ($derivateHierarchy->derivatives as $derivedUnitDTO) {
           $derivates_orderd[$derivedUnitDTO->specimenIdentifier] = $derivedUnitDTO;
         }
         ksort($derivates_orderd);
