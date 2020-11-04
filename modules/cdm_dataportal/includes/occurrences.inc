@@ -1305,7 +1305,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
   if (is_object($specimen_or_observation_dto)) {
 
-        $type_label = $specimen_or_observation_dto->recordBase;
+        $type_label = $specimen_or_observation_dto->recordBase->message_L10n;
         RenderHints::setFootnoteListKey($type_label . '-' . $specimen_or_observation_dto->uuid);
 
         // collect typeStatus as label
