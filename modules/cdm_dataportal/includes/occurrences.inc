@@ -1005,7 +1005,7 @@ function specimen_render_array_items(array $fieldunit_dtos){
 
   //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
   foreach ($fieldunit_dtos as &$fieldunit_dto) {
-    $items['data'] = $fieldunit_dto->listLabel ;
+    $items['data'] = $fieldunit_dto->label;
     $specimen = compose_cdm_specimen_or_observation_tree_entry($fieldunit_dto);
     $children = array();
     $child = array();
@@ -1282,7 +1282,6 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
       'titleCache',
       'protectedTitleCache',
       'label',
-      'listLabel',
       'class',
       'type',
       'taxonRelatedDerivedUnits',
