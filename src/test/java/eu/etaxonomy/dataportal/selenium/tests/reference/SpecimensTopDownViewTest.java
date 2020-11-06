@@ -63,7 +63,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         assertEquals(3, contentElements.size());
         // 1
         DescriptionList dl1 = new DescriptionList(contentElements.get(0).findElement(By.tagName("dl")));
-        assertEquals("PreservedSpecimen", dl1.joinedDescriptionElementText("Record basis:"));
+        assertEquals("Preserved Specimen", dl1.joinedDescriptionElementText("Record basis:"));
         assertEquals("Specimen", dl1.joinedDescriptionElementText("Kind of unit:"));
         assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", dl1.joinedDescriptionElementText("Collection:"));
         assertEquals("2017E68", dl1.joinedDescriptionElementText("Most significant identifier:"));
@@ -74,7 +74,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         assertEquals("gathering in-situ from:", contentElements.get(1).getText());
         // 3
         DescriptionList dl3 = new DescriptionList(contentElements.get(2).findElement(By.tagName("dl")));
-        assertEquals("FieldUnit", dl3.joinedDescriptionElementText("Record basis:"));
+        assertEquals("Field Unit", dl3.joinedDescriptionElementText("Record basis:"));
         assertEquals("D047", dl3.joinedDescriptionElementText("Collecting number:"));
         assertEquals("2016-03-28", dl3.joinedDescriptionElementText("Gathering date"));
         assertEquals("Germany", dl3.joinedDescriptionElementText("Country:"));
