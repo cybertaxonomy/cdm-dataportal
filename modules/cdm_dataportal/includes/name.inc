@@ -1974,7 +1974,13 @@ function compare_type_designation_status_labels($a, $b) {
 }
 
 /**
+ * Preliminary implementation of a preset to define a sort order for
+ * type designation status.
+ *
+ * TODO this is only preliminary and may break in future,
+ *      see https://dev.e-taxonomy.eu/redmine/issues/8402?issue_count=96&issue_position=4&next_issue_id=8351&prev_issue_id=7966#note-4
  * @return array
+ *   The array of orderd type labels
  */
 function type_status_order()
 {
@@ -1986,8 +1992,7 @@ function type_status_order()
     for comparison. This array has to be filled with the cdm- TypeDesignation
     states and the order should be parameterisable inside the dataportal.
     */
-  // Make that static for now.
-  $type_status_order = array(
+  static $type_status_order = array(
     'Epitype',
     'Holotype',
     'Isotype',
