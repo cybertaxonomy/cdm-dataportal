@@ -1967,8 +1967,8 @@ function compare_type_designation_status_labels($a, $b) {
   $aQuantifier = FALSE;
   $bQuantifier = FALSE;
   if (isset($a) && isset($b)) {
-    $aQuantifier = array_search($a, $type_status_order);
-    $bQuantifier = array_search($b, $type_status_order);
+    $aQuantifier = array_search(ucfirst($a), $type_status_order);
+    $bQuantifier = array_search(ucfirst($b), $type_status_order);
   }
   return ($aQuantifier < $bQuantifier) ? -1 : 1;
 }
