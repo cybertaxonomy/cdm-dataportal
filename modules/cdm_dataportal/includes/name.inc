@@ -783,8 +783,9 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
     );
   }
   cdm_tagged_text_add_options($registration_dto->summaryTaggedText, $tagged_text_options);
-  $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
-  foreach ($taggged_text_expanded  as $tagged_text){
+  tagged_text_extract_reference($registration_dto->summaryTaggedText);
+  $tagged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
+  foreach ($tagged_text_expanded  as $tagged_text){
     if(isset($tagged_text->entityReference->type) && $tagged_text->entityReference->type == 'SpecimenTypeDesignation') {
       $mediaDTOs = cdm_ws_get('typedesignation/$0/media', array($tagged_text->entityReference->uuid));
       if(isset($mediaDTOs[0]->uri)){
@@ -794,7 +795,7 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
       }
     }
   }
-  $registation_markup = cdm_tagged_text_to_markup($taggged_text_expanded);
+  $registation_markup = cdm_tagged_text_to_markup($tagged_text_expanded);
   foreach($media_link_map as $media_url_key => $link){
     $registation_markup = str_replace($media_url_key, $link, $registation_markup);
   }
