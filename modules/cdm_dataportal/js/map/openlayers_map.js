@@ -1350,6 +1350,7 @@
           var fa_class = document.createAttribute("class");
           fa_class.value = "fa fa-refresh fa-spin fa-sync-alt fa-5x";
           loadingIcon.attributes.setNamedItem(fa_class);
+          loadingIcon.style.color = "#3f3f3f"; // same gray as the other OL controls
 
           this.updateSize();
 
