@@ -106,7 +106,11 @@ function theme_cdm_search_taxa_results($variables)
     $taxa = array();
     // $highlightedFragments = array();
     foreach ($pager->records as $searchResult) {
-      $taxa[] = &$searchResult->entity;
+      if($searchResult->entity != null){
+        $taxa[] = &$searchResult->entity;
+      } else {
+        drupal_set_message("NULL entry in search results: The search index may not be up to date with the data base.", 'error');
+      }
       /*
        if(!isset($searchResult->fieldHighlightMap)){
       $searchResult->fieldHighlightMap = NULL;
