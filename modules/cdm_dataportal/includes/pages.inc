@@ -525,11 +525,14 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
           $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
           $url = file_create_url($profile_image_file->uri);
           $image_info = image_get_info($profile_image_file->uri);
-          $representationPart->width = $image_info['width'];
-          $representationPart->height = $image_info['height'];
-          $representationPart->uri = $url;
+          if($image_info){
+            $representationPart->width = $image_info['width'];
+            $representationPart->height = $image_info['height'];
+            $representationPart->uri = $url;
+          }
         }
-        else {
+        if(!isset($representationPart->width)){
+          // either no custom placeholder defined or $image_info could not be loaded
           // use the hard coded default
           $representationPart->width = 184;
           $representationPart->height = 144;
