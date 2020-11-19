@@ -290,7 +290,13 @@
             var errorMessage = errorThrown != undefined ? errorThrown : 'unspecified error';
             log(textStatus + " requesting  " + requestUrl + " failed due to " + errorMessage, true);
             errorMessageCtl.show();
-            errorMessageCtl.add(textStatus + ":" + errorThrown);
+            errorMessageCtl.addErrorMessage(textStatus + ":" + errorThrown);
+        }
+
+        function reportWMSError(layer) {
+            log('Loading of WMS layer ' + layer.name + ' failed.', true);
+            errorMessageCtl.show();
+            errorMessageCtl.addErrorMessage('Loading of WMS layer ' + layer.name + ' failed');
         }
 
         /**
@@ -338,6 +344,7 @@
             }
 
             mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + distributionQuery;
+            log("area data map service request:" + mapServiceRequest);
 
             LAYER_DATA_CNT++;
             jQuery.ajax({
@@ -345,7 +352,7 @@
               dataType: "json",
                 // timeout: layerLoadingTimeout,
               success: function(data){
-                  var layers = createDataLayer(data, "AREA");
+                  var layers = createDataLayers(data, "AREA");
                   addLayers(layers);
                 // layerDataLoaded(); will be called after reading the projection from the WFS
                 // for the data layer, see readProjection()
@@ -375,15 +382,14 @@
             }
 
             mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + occurrenceQuery;
-            log(mapServiceRequest);
-            return;
+            log("Point data map service request:" + mapServiceRequest);
 
             LAYER_DATA_CNT++;
             jQuery.ajax({
               url: mapServiceRequest,
               dataType: "json",
               success: function(data){
-                  var layers = createDataLayer(data, "POINT");
+                  var layers = createDataLayers(data, "POINT");
                   addLayers(layers);
                   // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
               },
@@ -709,9 +715,9 @@
          * @param dataType
          *   either "AREA" or "POINT"
          */
-        var createDataLayer = function(mapResponseArray, dataType){
+        var createDataLayers = function(mapResponseArray, dataType){
 
-          console.log("createDataLayer() : creating data layer of type " + dataType);
+          console.log("createDataLayers() : creating data layer of type " + dataType);
 
           var dataLayerOptions = makeWMSLayerOptions();
           dataLayerOptions.displayOutsideMaxExtent = true; // move into makeWMSLayerOptions?
@@ -719,7 +725,8 @@
           var layers = [];
           // add additional layers, get them from the mapResponseObj
           if(mapResponseArray !== undefined){
-             var mapResponseObj = mapResponseArray[0];
+              var mapResponseObj = mapResponseArray[0];
+             // ----------- POINT  -----------
             if(dataType === "POINT" && mapResponseObj.points_sld !== undefined){
               var pointLayer;
               // it is a response for an point map
@@ -754,16 +761,15 @@
 
               layers.push(pointLayer);
             } else {
-              // it is a response from for a distribution map
-              console.log("createDataLayer() : start with adding distribution layers :");
+                // ----------- AREA  -----------
+                // it is a response from for a distribution map
               for ( var i in mapResponseObj.layers) {
                 var layerData = mapResponseObj.layers[i];
-
                 var layerName = fixLayerName(layerData);
-                console.log(" " + i +" -> " +layerName);
+                console.log(" " + i +" -> " + layerName);
                 var layer = new OpenLayers.Layer.WMS(
                   layerName,
-                  mapResponseObj.geoserver + "/wms",
+                  mapResponseObj.geoserver,
                   {
                       layers: fixLayerName(layerData),
                       transparent:"true",
@@ -773,7 +779,6 @@
                   );
                 layer.params.SLD = layerData.sld;
                 layer.setOpacity(opts.distributionOpacity);
-
                 layers.push(layer);
               }
             }
@@ -1158,8 +1163,15 @@
 
       var makeWMSLayerOptions = function(projection, proj4js_def, maxExtent, units, untiled) {
         var wmsOptions = {
-          isBaseLayer: false,
-          displayInLayerSwitcher: true
+            isBaseLayer: false,
+            displayInLayerSwitcher: true,
+            tileOptions: {
+                eventListeners: {
+                    'loaderror': function (evt) {
+                        reportWMSError(evt.object.layer);
+                    }
+                }
+            }
         };
 
         if (projection) {
@@ -1400,6 +1412,8 @@
                 },
                 show: function(){
                     this.div.style.display = 'flex';
+                    this.div.style.position = 'relative';
+                    this.div.style.padding = '10px 20px 20px 70px';
                 },
 
                 draw: function () {
