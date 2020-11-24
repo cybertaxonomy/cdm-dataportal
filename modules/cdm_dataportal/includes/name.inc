@@ -499,39 +499,17 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
 
   // Fill with protologues etc...
-  $descriptionHtml = '';
+  $protologue_links = [];
   if (array_setr('description', TRUE, $renderTemplate)) {
-    $descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxon_name->uuid);
-    if($descriptions){
-      foreach ($descriptions as $description) {
-        if (!empty($description)) {
-          foreach ($description->elements as $description_element) {
-            $second_citation = '';
-            if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
-              if(isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION){
-                $prefix =  '& ';
-              } else {
-                $prefix = '';
-              }
-              $second_citation = ' [' . $prefix . $description_element->multilanguageText_L10n->text . '].';
-            }
-            $descriptionHtml .= $second_citation;
-            $descriptionHtml .= cdm_description_element_media(
-                $description_element,
-                array(
-                  'application/pdf',
-                  'image/png',
-                  'image/jpeg',
-                  'image/gif',
-                  'text/html',
-                )
-            );
-
+    $external_links = cdm_ws_get(CDM_WS_NAME_PROTOLOGUE_LINKS, $taxon_name->uuid);
+    if($external_links){
+      foreach ($external_links as $link) {
+        if (!empty($link->uri)) {
+          $protologue_links[] = ' ' . l(font_awesome_icon_markup('fa-book'), $link->uri, ['html' => true]);
           }
         }
       }
-    }
-    array_setr('description', $descriptionHtml, $renderTemplate);
+    array_setr('description', join(', ', $protologue_links), $renderTemplate);
   }
 
   // Render.

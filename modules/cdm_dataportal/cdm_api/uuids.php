@@ -93,7 +93,6 @@
   define('UUID_PHENOLOGY', 'a7786d3e-7c58-4141-8416-346d4c80c4a2');
   define('UUID_OCCURRENCE', '5deff505-1a32-4817-9a74-50e6936fd630');
   define('UUID_CITATION', '99b2842f-9aa7-42fa-bd5f-7285311e0101');
-  define('UUID_ADDITIONAL_PUBLICATION', 'cb2eab09-6d9d-4e43-8ad2-873f23400930');
   define('UUID_USES', 'e5374d39-b210-47c7-bec1-bee05b5f1cb6');
   define('UUID_USE_SUMMARY', 'e6bd0bb0-7b1a-11e0-819a-0800200c9a66');
   define('UUID_USE', '6acb0348-c070-4512-a37c-67bcac016279');

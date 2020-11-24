@@ -60,7 +60,7 @@ function getimagesize_remote($image_url) {
  * @param $descriptionElement
  *    the DescriptionElement instance
  * @param $mimeTypePreference array
- *    An array of mime type strings. the order of the mimetpes is the oerder of preference.
+ *    An array of mime type strings. the order of the mimetypes is the order of preference.
  *    E.g.: array('application/pdf','image/jpeg')
  *
  * @return string

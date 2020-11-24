@@ -12,7 +12,13 @@ define('CDM_WS_AGENT', 'agent');
 define('CDM_WS_PORTAL_AGENT', 'portal/agent');
 define('CDM_WS_REFERENCE', 'reference');
 define('CDM_WS_REFERENCE_AUTHORTEAM', 'reference/$0/authorship');
-define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation');
+/**
+ * Parameter $0 : the reference uuid
+ *
+ * Provides the protologue and original publication links of the name
+ */
+define('CDM_WS_NAME_PROTOLOGUE_LINKS', 'name/$0/protologueLinks');
+define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'name/$0/nomenclaturalCitation');
 
 define('CDM_WS_NAME', 'name');
 define('CDM_WS_NAME_NAMECAHE', 'name/$0/nameCache');
