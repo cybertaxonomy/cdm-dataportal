@@ -505,6 +505,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     if($external_links){
       foreach ($external_links as $link) {
         if (!empty($link->uri)) {
+          // for the link see also cdm_external_uri()
           $protologue_links[] = ' ' . l(font_awesome_icon_markup('fa-book'), $link->uri, ['html' => true]);
           }
         }
