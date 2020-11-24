@@ -655,11 +655,11 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   }
 
   // typedesignation in detail
-  if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
+  if(is_object($registration_dto->orderedTypeDesignationWorkingSets)) {
     $field_unit_uuids = array();
     $specimen_type_designation_refs = array();
     $name_type_designation_refs = array();
-    foreach ((array)$registration_dto->orderdTypeDesignationWorkingSets as $workingset_ref => $obj) {
+    foreach ((array)$registration_dto->orderedTypeDesignationWorkingSets as $workingset_ref => $obj) {
       $tokens = explode("#", $workingset_ref);
       $types_in_fieldunit = get_object_vars($obj); // convert into associative array
 
@@ -1830,7 +1830,7 @@ function registration_types($registration_dto){
       unset($reg_type_labels["taxon"]);
     }
   }
-  if(isset($registration_dto->orderdTypeDesignationWorkingSets)){
+  if(isset($registration_dto->orderedTypeDesignationWorkingSets)){
     $reg_type_labels[] = t("new nomenclatural type");
   }
   return $reg_type_labels;
