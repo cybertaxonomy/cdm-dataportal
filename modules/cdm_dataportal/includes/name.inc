@@ -547,7 +547,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       elseif (is_string($content)) {
         $html = $content;
       }
-      $partHtml .= '<span class="' . $part . '">' . $html . '</span>';
+      if($html){ // skip empty elements
+        $partHtml .= '<span class="' . $part . '">' . $html . '</span>';
+      }
     }
     if ($uri) {
       // cannot use l() here since the #uri already should have been processed through uri() at this point
