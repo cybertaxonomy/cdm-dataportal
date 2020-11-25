@@ -415,9 +415,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       if (isset($renderTemplate['referencePart']['microreference'])&& isset($taxon_name->nomenclaturalSource->citationMicroReference)) {
         $microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
       }
-      if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation)){
-        // TODO is this case still relevant? The tagged text should already contain all information!
-        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->citation->uuid, $microreference);
+      if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation->title)){
+        $citation = $taxon_name->nomenclaturalSource->citation->title; // using only the title here since the authors are already addded to the string
+        if(isset($taxon_name->nomenclaturalSource->citationMicroReference) && $taxon_name->nomenclaturalSource->citationMicroReference){
+          $citation .= ': ' . $taxon_name->nomenclaturalSource->citationMicroReference;
+        }
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
         if (str_beginsWith($citation, ", in")) {
