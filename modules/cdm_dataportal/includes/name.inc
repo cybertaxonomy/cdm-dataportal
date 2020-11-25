@@ -513,6 +513,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         }
       }
     array_setr('description', join(', ', $protologue_links), $renderTemplate);
+    array_replace_keyr('description', 'protologue', $renderTemplate); // in preparation for #9319
   }
 
   // Render.
@@ -1671,6 +1672,8 @@ function cdm_name_relationships_for_taxon($taxon)
 /**
  * Recursively searches the array for the $key and sets the given value.
  *
+ * Expects the key to be used only once in nested array structures.
+ *
  * @param mixed $key
  *   Key to search for.
  * @param mixed $value
@@ -1678,8 +1681,8 @@ function cdm_name_relationships_for_taxon($taxon)
  * @param array $array
  *   Array to search in.
  *
- * @return bool
- *   True if the key has been found.
+ * @return array
+ *   The array the key has been found.
  */
 function &array_setr($key, $value, array &$array) {
   $res = NULL;
@@ -1696,6 +1699,40 @@ function &array_setr($key, $value, array &$array) {
     }
   }
   return $res;
+}
+
+/**
+ * Recursively searches the array for the $key and sets is to $new_key
+ *
+ * Expects the key to be used only once in nested array structures.
+ *
+ * @param mixed $key
+ *   Key to search for.
+ * @param mixed $new_key
+ *   The new key to use
+ * @param array $array
+ *   Array to search in.
+ *
+ * @return bool
+ *   True if the key has been found.
+ */
+function array_replace_keyr($key, $new_key, array &$array) {
+  $res = NULL;
+  if(array_key_exists($key, $array)){
+    $value = $array[$key];
+    unset($array[$key]);
+    $array[$new_key] = $value;
+    return true;
+  } else {
+    // search in next level
+    foreach ($array as &$v) {
+        if (is_array($v)) {
+          array_replace_keyr($key, $new_key, $v);
+        }
+      }
+  }
+
+  return false;
 }
 
 /**
