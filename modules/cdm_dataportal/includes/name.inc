@@ -1215,7 +1215,7 @@ function compose_name_type_designations($type_entity_refs_by_status){
 
       $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  .
         '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
-        . $name_type_entity_ref->label
+        . cdm_tagged_text_to_markup($name_type_entity_ref->taggedText)
         . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
         . $annotations_and_sources->footNoteKeysMarkup()
         . '</div>');
