@@ -411,15 +411,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // [Eckhard]:"Komma nach dem Taxonnamen ist grundsätzlich falsch,
     // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
     if (isset($renderTemplate['referencePart']['reference'])) {
-      $microreference = NULL;
-      if (isset($renderTemplate['referencePart']['microreference'])&& isset($taxon_name->nomenclaturalSource->citationMicroReference)) {
-        $microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
-      }
-      if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation->title)){
-        $citation = $taxon_name->nomenclaturalSource->citation->title; // using only the title here since the authors are already addded to the string
-        if(isset($taxon_name->nomenclaturalSource->citationMicroReference) && $taxon_name->nomenclaturalSource->citationMicroReference){
-          $citation .= ': ' . $taxon_name->nomenclaturalSource->citationMicroReference;
-        }
+      if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->nomenclaturalCitation)){
+        $citation = $taxon_name->nomenclaturalSource->nomenclaturalCitation;
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
         if (str_beginsWith($citation, ", in")) {
@@ -434,10 +427,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         $referenceArray['#separator'] = $separator;
         $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
       } else {
-        // this ist the case for taxon names
+        // this is the case for taxon names
         $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text);
       }
-
 
       array_setr('reference', $referenceArray, $renderTemplate);
     }
