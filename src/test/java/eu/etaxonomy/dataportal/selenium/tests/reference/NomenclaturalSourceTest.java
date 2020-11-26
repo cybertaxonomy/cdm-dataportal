@@ -49,9 +49,9 @@ public class NomenclaturalSourceTest extends CdmDataPortalTestBase{
     public void testNomenclaturalReference() {
 
         WebElement acceptedName = p.getAcceptedName();
-        assertEquals("Nepenthes gracilis Korth., Verh. Nat. Gesch. Ned. Bezitt., Bot.: 22, t. 1 & 4", acceptedName.getText());
+        assertEquals("Nepenthes gracilis Korth., Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840", acceptedName.getText());
         WebElement referenceElement = acceptedName.findElement(By.cssSelector(".reference"));
-        assertEquals("Verh. Nat. Gesch. Ned. Bezitt., Bot.: 22, t. 1 & 4", referenceElement.getText());
+        assertEquals("Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840", referenceElement.getText());
     }
 
     @Test
