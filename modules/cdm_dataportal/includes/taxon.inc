@@ -508,9 +508,11 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
     $taxonRelations = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, array(
       $relatedUuid,
     ));
-    foreach ($taxonRelations as $relation) {
-      if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_acceptedByCurrentView($relation->toTaxon)) {
-        $table_of_accepted[$relatedUuid][] = $relation->toTaxon;
+    if($taxonRelations){
+      foreach ($taxonRelations as $relation) {
+        if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_acceptedByCurrentView($relation->toTaxon)) {
+          $table_of_accepted[$relatedUuid][] = $relation->toTaxon;
+        }
       }
     }
   }

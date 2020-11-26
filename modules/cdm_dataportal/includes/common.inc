@@ -54,6 +54,8 @@ function html_class_attribute_ref($cdm_entity) {
   } elseif (isset($cdm_entity->class)) {
     switch ($cdm_entity->class){
       case 'TypedEntityReference':
+      case 'TaggedEntityReference':
+      case 'TypeDesignationDTO':
         $attributes =  "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
       break;
       case 'TaxonNodeDto':
