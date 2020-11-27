@@ -410,9 +410,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
     // [Eckhard]:"Komma nach dem Taxonnamen ist grundsätzlich falsch,
     // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
-    if (isset($renderTemplate['referencePart']['reference'])) {
-      if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->nomenclaturalCitation)){
-        $citation = $taxon_name->nomenclaturalSource->nomenclaturalCitation;
+    if (isset($renderTemplate['referencePart']['reference']) && isset($taxon_name->nomenclaturalSource)) {
+      $microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
       if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation)){
         // TODO is this case still relevant? The tagged text should already contain all information!
         $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->citation->uuid, $microreference);
