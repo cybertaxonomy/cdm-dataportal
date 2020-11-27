@@ -723,7 +723,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
  * @param $registration_dto
  * @param $style string
  *   The style of how to compose the 'identifier' and 'registration_date_and_institute' part with the summary
- *   - 'citation': Similar to the arrearance of nomenclatural acts in print media
+ *   - 'citation': Similar to the appearance of nomenclatural acts in print media
  *   - 'list-item' : style suitable for result lists etc
  *
  * @return array
