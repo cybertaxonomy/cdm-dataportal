@@ -2564,7 +2564,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE, $sho
     }
     // Do not add the DEFAULT_FEATURETREE again,
     if ($featureTree->uuid != UUID_DEFAULT_FEATURETREE) {
-      $options[$featureTree->uuid] = $featureTree->titleCache;
+      $options[$featureTree->uuid] = $featureTree->representation_L10n;
     }
 
     // Render the hierarchic tree structure
