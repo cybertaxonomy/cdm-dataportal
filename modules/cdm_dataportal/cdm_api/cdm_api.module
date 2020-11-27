@@ -1917,6 +1917,41 @@ function cdm_lazyload_array_field($cdm_base_type, $field_name, &$cdm_entity)
   }
 }
 
+
+/**
+ * Get a NomenclaturalReference string.
+ *
+ * Returns the NomenclaturalReference string with correctly placed
+ * microreference (= reference detail) e.g.
+ * in Phytotaxa 43: 1-48. 2012.
+ *
+ * @param string $referenceUuid
+ *   UUID of the reference.
+ * @param string $microreference
+ *   Reference detail.
+ *
+ * @return string
+ *   a NomenclaturalReference.
+ */
+function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
+
+  // TODO the below statement avoids error boxes due to #4644 remove it once this ticket is solved
+  if(is_array($microreference) || is_object($microreference)) {
+    return '';
+  }
+
+  $obj = cdm_ws_get(CDM_WS_NOMENCLATURAL_REFERENCE_CITATION, array(
+    $referenceUuid,
+  ), "microReference=" . urlencode($microreference));
+
+  if ($obj) {
+    return $obj->String;
+  }
+  else {
+    return NULL;
+  }
+}
+
 /**
  * finds and returns the FeatureNode denoted by the given $feature_uuid
  *
