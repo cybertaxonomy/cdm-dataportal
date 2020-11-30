@@ -530,7 +530,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
                 );
                 // FIXME handle annotations and sources
                 if (isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION) {
-                   $additional_citations[] = ' [&' . $description_element->multilanguageText_L10n->text . $element_media . ']';
+                   $additional_citations[] = ' [& ' . $description_element->multilanguageText_L10n->text . $element_media . ']';
                 } else {
                   $additional_data[] = ' [' . $description_element->multilanguageText_L10n->text . $element_media . ']';
                 }
