@@ -506,8 +506,47 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
           }
         }
       }
-    array_setr('description', join(', ', $protologue_links), $renderTemplate);
-    array_replace_keyr('description', 'protologue', $renderTemplate); // in preparation for #9319
+
+    // ---------------
+
+    $additional_pub_markup = '';
+      $descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxon_name->uuid);
+      if($descriptions) {
+        foreach ($descriptions as $description) {
+          if (!empty($description)) {
+            $additional_citations = [];
+            $additional_data = [];
+            foreach ($description->elements as $description_element) {
+              if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
+                $element_media = cdm_description_element_media(
+                  $description_element,
+                  [
+                    'application/pdf',
+                    'image/png',
+                    'image/jpeg',
+                    'image/gif',
+                    'text/html',
+                  ]
+                );
+                // FIXME handle annotations and sources
+                if (isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION) {
+                   $additional_citations[] = ' [&' . $description_element->multilanguageText_L10n->text . $element_media . ']';
+                } else {
+                  $additional_data[] = ' [' . $description_element->multilanguageText_L10n->text . $element_media . ']';
+                }
+              }
+            }
+            // merge
+            $additional_citations = array_merge($additional_citations, $additional_data);
+            $additional_pub_markup .= join(',', $additional_citations);
+          }
+        }
+      }
+      if($additional_pub_markup){
+        $additional_pub_markup = ' ' . $additional_pub_markup . '. '; // surround with space etc.
+      }
+      array_setr('description', $additional_pub_markup . join(', ', $protologue_links), $renderTemplate);
+      array_replace_keyr('description', 'protologue', $renderTemplate); // in preparation for #9319
   }
 
   // Render.
