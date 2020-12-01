@@ -164,7 +164,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nepenthes_gracilis_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Nepenthes gracilis Korth., Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840 [& (J. T. K.) Spock & Scotty in Bot. Jahrb. Sol. 211: 591. 2194], [some typification note].", accName.getText());
+        assertEquals("Nepenthes gracilis Korth., Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840 [& (J. T. K.) Spock & Scotty in Bot. Jahrb. Sol. 211: 591. 2194]1,2, [some typification note].", accName.getText());
 
         WebElement synonym1 = p.getHeterotypicalGroupSynonym(1, 1);
         assertEquals("=\nNepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858", synonym1.getText());

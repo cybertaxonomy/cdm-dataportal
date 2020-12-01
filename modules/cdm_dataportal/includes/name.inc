@@ -518,6 +518,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
             $additional_data = [];
             foreach ($description->elements as $description_element) {
               if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
+                RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
+                $annotations_and_sources = handle_annotations_and_sources($description_element);
+                // synonymy_annotations_and_source_config() has 'sources_as_content' => FALSE, so no need to handle inline sources here
                 $element_media = cdm_description_element_media(
                   $description_element,
                   [
@@ -528,11 +531,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
                     'text/html',
                   ]
                 );
-                // FIXME handle annotations and sources
                 if (isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION) {
-                   $additional_citations[] = ' [& ' . $description_element->multilanguageText_L10n->text . $element_media . ']';
+                   $additional_citations[] = ' [& ' . $description_element->multilanguageText_L10n->text . $element_media . ']' . $annotations_and_sources->footNoteKeysMarkup();
                 } else {
-                  $additional_data[] = ' [' . $description_element->multilanguageText_L10n->text . $element_media . ']';
+                  $additional_data[] = ' [' . $description_element->multilanguageText_L10n->text . $element_media . ']' . $annotations_and_sources->footNoteKeysMarkup();
                 }
               }
             }
