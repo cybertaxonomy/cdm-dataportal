@@ -55,12 +55,10 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
     UUID_PROPARTE_MISAPPLIEDNAME_FOR => 0,
     UUID_PARTIAL_MISAPPLIEDNAME_FOR => 0,
     //
-    UUID_INVALID_DESIGNATION_FOR  => 1,
+    UUID_MISAPPLIED_NAME_FOR  => 1,
     //
-    UUID_MISAPPLIED_NAME_FOR  => 2,
-    //
-    UUID_PROPARTE_SYNONYM_FOR  => 3,
-    UUID_PARTIAL_SYNONYM_FOR  => 3
+    UUID_PROPARTE_SYNONYM_FOR  => 2,
+    UUID_PARTIAL_SYNONYM_FOR  => 2
   ];
 
   if (!$taxonRelationshipsDTO || $taxonRelationshipsDTO->size < 1) {
@@ -69,7 +67,6 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
   static $dedup_rel_type_uuids = array(
     UUID_MISAPPLIED_NAME_FOR,
-    UUID_INVALID_DESIGNATION_FOR,
     UUID_PARTIAL_MISAPPLIEDNAME_FOR,
     UUID_PROPARTE_MISAPPLIEDNAME_FOR
   );
@@ -346,7 +343,6 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
         break;
 
       case UUID_MISAPPLIED_NAME_FOR:
-      case UUID_INVALID_DESIGNATION_FOR:
         $skip_render_template_keys[] = 'nameAuthorPart';
         $is_invalid = true;
         $relsign = $relsign_invalid;
