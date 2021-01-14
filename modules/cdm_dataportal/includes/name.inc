@@ -1029,9 +1029,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           $type_citation_markup .= ': ' . trim($specimen_type_designation->source->citationMicroReference);
         }
         $type_citation_markup .= $footnote_key_markup . ')';
-
       }
-
 
       $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($specimen_type_designation) . '">';
       $out .= type_designation_status_label_markup($specimen_type_designation) . $type_citation_markup;
