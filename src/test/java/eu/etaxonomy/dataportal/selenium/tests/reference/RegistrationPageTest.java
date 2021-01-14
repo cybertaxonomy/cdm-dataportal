@@ -161,7 +161,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1 Nov 2018",
                 regItem.getNameElement().getText());
         assertEquals(
-                "Orig. des.: Ramsaria avicennae Heidari & Hauer designated by Heidari & al. 2018: 1461",
+                "Orig. des.: Ramsaria avicennae Heidari & Hauer designated by Heidari & Hauer 2018: 1461",
                 regItem.getNameTypeDesignations().get(0).getText());
         assertEquals(
                 "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
