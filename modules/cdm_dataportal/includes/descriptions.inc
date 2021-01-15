@@ -1956,7 +1956,7 @@ function render_description_string($root_nodes, &$item_cnt = 0) {
       // remove last semicolon
       $description_strings[count($description_strings) - 1] = preg_replace('/;$/', '', $description_strings[count($description_strings) - 1]);
     }
-    $out  = join($description_strings,  ' ');
+    $out  = join(' ', $description_strings);
   }
   return $out;
 }
