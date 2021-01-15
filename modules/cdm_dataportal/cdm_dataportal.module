@@ -1135,6 +1135,8 @@ function cdm_taxonomictree_selector() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  *
+ * used by cdm_taxonomictree_selector()
+ *
  * @deprecated use compose_classification_selector instead
  */
 function cdm_taxonomictree_selector_form($form, &$form_state) {
@@ -1156,19 +1158,10 @@ function cdm_taxonomictree_selector_form($form, &$form_state) {
     '#type' => 'hidden',
     '#value' =>  $destination,
   );
-
-  $options = cdm_get_taxontrees_as_options();
-  $taxontree_includes = variable_get(CDM_TAXONTREE_INCLUDES, null);
-  if($taxontree_includes){
-    $filtered_options = array();
-    foreach($options as $uuid=>$label){
-      if(!empty($taxontree_includes[$uuid])){
-        $filtered_options[$uuid] = $label;
-      }
-    }
-    $options = $filtered_options;
-  }
-
+  $options = cdm_get_taxontrees_as_options(
+    FALSE,
+    variable_get(CDM_TAXONTREE_INCLUDES, [])
+  );
   $form['val'] = array(
     '#type' => 'select',
     '#title' => t('Available classifications'),
@@ -1190,34 +1183,33 @@ function compose_classification_selector() {
   $destination_array = drupal_get_destination();
   $destination = $destination_array['destination'];
 
-  $options = cdm_get_taxontrees_as_options();
+  $options = cdm_get_taxontrees_as_options(
+    FALSE,
+    variable_get(CDM_TAXONTREE_INCLUDES, [])
+  );
   $items = array();
-  $taxontree_includes = variable_get(CDM_TAXONTREE_INCLUDES, null);
 
   $current_classification_uuid = get_current_classification_uuid();
 
 
   foreach($options as $uuid=>$label){
-    if(!$taxontree_includes || !empty($taxontree_includes[$uuid])){
-
-      $class_attributes = '';
-      if($current_classification_uuid == $uuid){
-        $class_attributes  = array('focused');
-      }
-      $items[] = array(
-        'data' => l($label,
-          'cdm_api/setvalue/session',
-          array(
-            'query' => array(
-              'destination' => $destination,
-              'val' => $uuid,
-              'var' => '[cdm][taxonomictree_uuid]'
-            ),
-          )
-        ),
-        'class' => $class_attributes
-      );
+    $class_attributes = '';
+    if($current_classification_uuid == $uuid){
+      $class_attributes  = array('focused');
     }
+    $items[] = array(
+      'data' => l($label,
+        'cdm_api/setvalue/session',
+        array(
+          'query' => array(
+            'destination' => $destination,
+            'val' => $uuid,
+            'var' => '[cdm][taxonomictree_uuid]'
+          ),
+        )
+      ),
+      'class' => $class_attributes
+    );
   }
 
   $render_array = array(
@@ -1230,16 +1222,6 @@ function compose_classification_selector() {
 }
 
 
-/* UNREACHABLE since action of form directly links to view.
- function cdm_dataportal_search_taxon_form_submit($form_id, $form_values) {
-
- $_SESSION['cdm']['search'] = $form_values;
- //return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['vernacular']?'1':'0').'/'.$form_values['language'];
- return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['onlyAccepted']?'1':'0');
- //$paramstr = compose_url_prameterstr($form_values);
- //return url('/cdm_dataportal/search/taxon/', array('query' => $paramstr));
- }
- */
 /* ====================== menu callback functions ====================== */
 /**
  * @todo Please document this function.

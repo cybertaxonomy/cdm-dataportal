@@ -1153,7 +1153,8 @@ function cdm_settings_general() {
       '#title' => t('Included Classifications') . ':',
       '#default_value' => variable_get(CDM_TAXONTREE_INCLUDES, $taxontree_includes_default),
       '#options' => cdm_get_taxontrees_as_options(),
-      '#description' => t('Only the checked classifications will be available in the classification chooser.'),
+      '#description' => t('Only the checked classifications will be available 
+        in the classification selection element of the taxon tree browser and in search forms.'),
   );
 
   $form['distribution'] = array(

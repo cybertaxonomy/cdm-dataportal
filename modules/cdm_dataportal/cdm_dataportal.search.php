@@ -240,7 +240,9 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
         '#weight' => 1,
         '#type' => 'select',
         '#default_value' => $preset_classification_uuid,
-        '#options' => cdm_get_taxontrees_as_options(TRUE),
+        '#options' => cdm_get_taxontrees_as_options(
+          TRUE,
+          variable_get(CDM_TAXONTREE_INCLUDES, []) ),
         '#description' => t('A filter to limit the search to a specific classification. Choosing <em>--- ALL ---</em> will disable this filter.'),
       );
     }
@@ -761,6 +763,8 @@ function cdm_dataportal_search_request($search_endpoint)
     // $form_params['ignore_classification'] =  TRUE;
     unset($form_params['tree']);
   }
+
+
   // else {
   //   $form_params['ignore_classification'] =  NULL;
   // }

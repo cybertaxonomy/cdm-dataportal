@@ -96,7 +96,10 @@ function cdm_csv_export_my_form($form_state) {
         '#type' => 'select',
         '#title' => t('Classification').':',
         '#default_value' => $tree,
-        '#options' => cdm_get_taxontrees_as_options(FALSE),
+        '#options' =>   $options = cdm_get_taxontrees_as_options(
+            FALSE,
+            variable_get(CDM_TAXONTREE_INCLUDES, [])
+          ),
         '#attributes' => array(
             'name' => 'classificationUuid',
             'onchange' => 'return validateForm()'

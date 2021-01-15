@@ -2607,12 +2607,19 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE, $sho
  * blank line below.
  *
  * @param bool $add_none_option
- *   is true an addtional 'none' option will be added, optional parameter, defaults to FALSE
+ *   is true an additional 'none' option will be added if and only if there are
+ *   more than one options. Defaults to FALSE
+ *
+ * @param $include_uuids
+ *   The taxon tree uuids to be included, other taxon trees will be filtered out.
+ *   You may want to use here:
+ *   variable_get(CDM_TAXONTREE_INCLUDES, [])
+ *
  *
  * @return array
  *   classifications in an array as options for a form element that allows multiple choices.
  */
-function cdm_get_taxontrees_as_options($add_none_option = FALSE) {
+function cdm_get_taxontrees_as_options($add_none_option = FALSE, $include_uuids = []) {
 
   $taxonTrees = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXONOMY);
 
@@ -2626,6 +2633,9 @@ function cdm_get_taxontrees_as_options($add_none_option = FALSE) {
   }
   if ($taxonTrees) {
     foreach ($taxonTrees as $tree) {
+      if(is_array($include_uuids) && count($include_uuids) > 0 && array_search($tree->uuid, $include_uuids) === FALSE){
+        continue;
+      }
       if (!$default_classification_uuid || $default_classification_uuid != $tree->uuid) {
         $taxonomic_tree_options[$tree->uuid] = $tree->titleCache;
       } else {
@@ -2637,10 +2647,11 @@ function cdm_get_taxontrees_as_options($add_none_option = FALSE) {
   // oder alphabetically the space
   asort($taxonomic_tree_options);
 
-  // now set the labels
-  //   for none
-  if ($add_none_option) {
+  // now set the labels for none
+  if ($add_none_option && count($taxonomic_tree_options) > 2) {
     $taxonomic_tree_options['NONE'] =t('--- ALL ---');
+  } else {
+    unset($taxonomic_tree_options['NONE']);
   }
 
   //   for default_classification
