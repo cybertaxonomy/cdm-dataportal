@@ -94,7 +94,10 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
         if($base_uri == CDM_WS_NAME){
           $tagged_text_method = "/taggedName";
         }
-        $referenced_tt = cdm_ws_get($base_uri . "/" . $tt->entityReference->uuid . $tagged_text_method);
+        if(!str_endsWith($base_uri, '/')){
+          $base_uri .= '/';
+        }
+        $referenced_tt = cdm_ws_get($base_uri . $tt->entityReference->uuid . $tagged_text_method);
         if($referenced_tt){
           if(isset($tt->attributes)){
             foreach($referenced_tt as $reftt){
