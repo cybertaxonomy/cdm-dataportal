@@ -101,9 +101,9 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
 {
     $detail_html = "";
     //link to specimen page
-    $pathToSpecimen = path_to_specimen($specimen->uuid);
+    $path_to_specimen = path_to_specimen($specimen->uuid);
     if (!$is_specimen_page) {
-        $specimenPageLink = l($specimen->specimenIdentifier, $pathToSpecimen);
+        $specimenPageLink = l($specimen->specimenIdentifier, $path_to_specimen);
         $detail_html .= "<strong>Specimen summary: $specimenPageLink</strong><br>";
     }
 
@@ -227,9 +227,9 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
             foreach ($specimen->characterData as $characterStatePair) {
                 $detail_html .= "<i>" . $characterStatePair->first . "</i>:" . $characterStatePair->second;
                 $detail_html .= "<br>";
-            }
+        }
         } else {
-            $detail_html .= l("detail page", $pathToSpecimen);
+            $detail_html .= l("detail page", $path_to_specimen);
             $detail_html .= "<br>";
         }
     }
@@ -1363,6 +1363,9 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                 case 'preferredStableUri':
                     @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(array('#markup' => cdm_external_uri($value, false))));
                     break;
+                case 'characterData':
+                    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), array(array('#markup' => icon_link(path_to_specimen($specimen_or_observation_dto->uuid), '', FALSE), false)));
+                  break;
                 case 'specimenTypeDesignations':
                     @_description_list_group_add(
                         $groups,

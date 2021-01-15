@@ -892,11 +892,22 @@ function render_point($point, $do_link_to_geohack = true, $geohack_link_pagename
 
 /**
  * Creates an icon which links to the given path
+ *
  * @param $path
+ *
+ * @param string $fragment
+ *   The URL fragment to link to
+ * @param bool $superscript
+ *   If TRUE, the Icon will be be displayed in superscript position. Default is TRUE.
  *
  * @return string
  */
-function icon_link($path, $fragment = '') {
-  $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), $path, ['html' => TRUE, 'fragment' => $fragment] );
-  return $iconlink;
+function icon_link($path, $fragment = '', $superscript = FALSE) {
+  if($superscript){
+    $attributes = ['class' => ['superscript']];
+  } else {
+    $attributes = [];
+  }
+  $icon_link = l(custom_icon_font_markup('icon-interal-link-alt-solid', $attributes), $path, ['html' => TRUE, 'fragment' => $fragment] );
+  return $icon_link;
 }
