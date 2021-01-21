@@ -920,7 +920,7 @@ function registration_institution_class_attribute($registration_dto)
  *  - SpecimenTypeDesignation
  *  - TextualTypeDesignation
  *
- * @param object $type_designations an array of cdm TypeDesignation entities
+ * @param array $type_designations an array of cdm TypeDesignation entities
  *  to render
  * @param string $enclosing_tag the tag element type to enclose the whole list
  *  of type designation with. By default this DOM element is <ul>

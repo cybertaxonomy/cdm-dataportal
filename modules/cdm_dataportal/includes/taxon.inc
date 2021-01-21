@@ -312,7 +312,7 @@ function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misa
  *
  * @throws Exception
  */
-function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doubtful=false, $doLinkTaxon = FALSE) {
+function cdm_related_taxon($taxon, $reltype_uuid = NULL) {
   static $relsign_homo = '≡';
   static $relsign_hetero = '=';
   static $relsign_invalid = '&ndash;';
@@ -330,34 +330,28 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 
   $is_invalid = false;
 
-  if (!$relsign) {
 
-    switch ($reltype_uuid) {
-      case UUID_HETEROTYPIC_SYNONYM_OF:
-      case UUID_SYNONYM_OF:
-        $relsign = $relsign_hetero;
-        break;
+  switch ($reltype_uuid) {
+    case UUID_HETEROTYPIC_SYNONYM_OF:
+    case UUID_SYNONYM_OF:
+      $relsign = $relsign_hetero;
+      break;
 
-      case UUID_HOMOTYPIC_SYNONYM_OF:
-        $relsign = $relsign_homo;
-        break;
+    case UUID_HOMOTYPIC_SYNONYM_OF:
+      $relsign = $relsign_homo;
+      break;
 
-      case UUID_MISAPPLIED_NAME_FOR:
-        $skip_render_template_keys[] = 'nameAuthorPart';
-        $is_invalid = true;
-        $relsign = $relsign_invalid;
+    case UUID_MISAPPLIED_NAME_FOR:
+      $skip_render_template_keys[] = 'nameAuthorPart';
+      $is_invalid = true;
+      $relsign = $relsign_invalid;
 
-        break;
+      break;
 
-      default:
-        $relsign = $relsign_invalid;
-    }
-
+    default:
+      $relsign = $relsign_invalid;
   }
 
-  if($doubtful) {
-    $relsign = '?' . $relsign;
-  }
 
   /*
   Names with status invalid or nudum are to be displayed with the
@@ -380,9 +374,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
     $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
   }
   $taxonUri = '';
-  if ($doLinkTaxon) {
-    $taxonUri = url(path_to_taxon($taxon->uuid, "synonymy"));
-  }
+
   // Printing the taxonName and the handling the special case of annotations.
   if (!isset($referenceUri)) {
     $referenceUri = FALSE;
@@ -391,7 +383,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   $name_relations = cdm_name_relationships_for_taxon($taxon);
   $name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
 
-  $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>'
+  $out = '<span class="relation_sign">' . $relsign . '</span>'
     . $out_taxon_part;
   if(isset($name_relations_render_array['list']['items'][0])){
     $out .= ' '  . drupal_render($name_relations_render_array);
