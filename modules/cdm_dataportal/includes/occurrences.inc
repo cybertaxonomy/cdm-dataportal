@@ -90,42 +90,45 @@ function render_cdm_specimen_page($specimen)
 
 
 /**
- * Provides the HTML markup for a specimen page
+ * Renders a DerivedUnit either in a compact form or with full details.
  *
- * @param $specimen
+ * @param $derived_unit_dto
+ *  The DerivedUnitDTO
+ * @param $with_full_details
+ *  Wether to render the dertived unit data with full details, like for example for the specimen page
  *
  * @return string
  *  The markup for a specimen page
  */
-function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
+function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = false)
 {
     $detail_html = "";
     //link to specimen page
-    $path_to_specimen = path_to_specimen($specimen->uuid);
-    if (!$is_specimen_page) {
-        $specimenPageLink = l($specimen->specimenIdentifier, $path_to_specimen);
+    $path_to_specimen = path_to_specimen($derived_unit_dto->uuid);
+    if (!$with_full_details) {
+        $specimenPageLink = l($derived_unit_dto->specimenIdentifier, $path_to_specimen);
         $detail_html .= "<strong>Specimen summary: $specimenPageLink</strong><br>";
     }
 
-    if($is_specimen_page) {
-        if($specimen->citation){
-            $detail_html .= "<br>".$specimen->citation."<br>";
+    if($with_full_details) {
+        if($derived_unit_dto->citation){
+            $detail_html .= "<br>".$derived_unit_dto->citation."<br>";
 
         }
     }
-    if ($specimen->preferredStableUri) {
-        $stableIdentifierLink = l($specimen->preferredStableUri, $specimen->preferredStableUri);
+    if ($derived_unit_dto->preferredStableUri) {
+        $stableIdentifierLink = l($derived_unit_dto->preferredStableUri, $derived_unit_dto->preferredStableUri);
         $detail_html .= create_label("Preferred stable URI") . $stableIdentifierLink . "<br>";
     }
-    if ($is_specimen_page) {
+    if ($with_full_details) {
         // associated taxa
-        if ($specimen->associatedTaxa) {
+        if ($derived_unit_dto->associatedTaxa) {
             $detail_html .= "<br>";
             $detail_html .= create_label("Associated with");
-            if (sizeof($specimen->associatedTaxa) > 1) {
+            if (sizeof($derived_unit_dto->associatedTaxa) > 1) {
                 $detail_html .= "<br>";
             }
-            foreach ($specimen->associatedTaxa as $associatedTaxon) {
+            foreach ($derived_unit_dto->associatedTaxa as $associatedTaxon) {
                 $detail_html .= l($associatedTaxon->label, path_to_taxon($associatedTaxon->uuid, "specimens"));//$associatedTaxon->second."<br>";
             }
             $detail_html .= "<br>";
@@ -133,10 +136,10 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
     }
     // - type information
     $types = "";
-    if (isset($specimen->types)) {
+    if (isset($derived_unit_dto->types)) {
         //typed taxa
-        foreach ($specimen->types as $typeStatus => $typedTaxa) {
-            if($specimen->types){
+        foreach ($derived_unit_dto->types as $typeStatus => $typedTaxa) {
+            if($derived_unit_dto->types){
                 if(empty($typeStatus) || $typeStatus == "_empty_"|| $typeStatus == ""){
                     $detail_html .= "<i>Type for:</i> ";
                 } else {
@@ -152,7 +155,7 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
            $detail_html .= '<br>';
         }
     }
-    $derivateDataDTO = $specimen->derivateDataDTO;
+    $derivateDataDTO = $derived_unit_dto->derivateDataDTO;
     // - specimen scans
     $specimenScans = create_html_links($derivateDataDTO->specimenScans, true);
     // - molecular data
@@ -193,38 +196,38 @@ function render_cdm_specimenDTO_page($specimen, $is_specimen_page = false)
     $detailImages = create_html_links($derivateDataDTO->detailImages, true);
 
     if ($types) {
-        $detail_html .= $is_specimen_page ? "<br>" : "";
+        $detail_html .= $with_full_details ? "<br>" : "";
         $detail_html .= create_label("Type(s)") . $types . "<br>";
     }
-    if ($specimenScans and !$is_specimen_page) {
+    if ($specimenScans and !$with_full_details) {
         $detail_html .= create_label("Specimen Scans") . $specimenScans . "<br>";
     }
     //specimen scan image gallery
-    if ($is_specimen_page and isset($derivateDataDTO->specimenScanUuids) and !empty($derivateDataDTO->specimenScanUuids)) {
+    if ($with_full_details and isset($derivateDataDTO->specimenScanUuids) and !empty($derivateDataDTO->specimenScanUuids)) {
         $detail_html .= addImageGallery("Specimen scans", $derivateDataDTO->specimenScanUuids);
     }
 
     if ($molecularData) {
-        $detail_html .= $is_specimen_page ? "<br>" : "";
+        $detail_html .= $with_full_details ? "<br>" : "";
         $detail_html .= create_label("Molecular Data") . $molecularData . "<br>";
     }
 
-    if ($detailImages and !$is_specimen_page) {
+    if ($detailImages and !$with_full_details) {
         $detail_html .= create_label("Detail Images") . $detailImages . "<br>";
     }
 
     //detail image gallery
-    if ($is_specimen_page and isset($derivateDataDTO->detailImageUuids) and !empty($derivateDataDTO->detailImageUuids)) {
+    if ($with_full_details and isset($derivateDataDTO->detailImageUuids) and !empty($derivateDataDTO->detailImageUuids)) {
         $detail_html .= addImageGallery("Detail Images", $derivateDataDTO->detailImageUuids);
     }
 
     //character data
-    if ($specimen->characterData) {
-        $detail_html .= $is_specimen_page ? "<br>" : "";
+    if ($derived_unit_dto->characterData) {
+        $detail_html .= $with_full_details ? "<br>" : "";
         $detail_html .= create_label("Character Data");
-        if ($is_specimen_page) {
+        if ($with_full_details) {
             $detail_html .= "<br>";
-            foreach ($specimen->characterData as $characterStatePair) {
+            foreach ($derived_unit_dto->characterData as $characterStatePair) {
                 $detail_html .= "<i>" . $characterStatePair->first . "</i>:" . $characterStatePair->second;
                 $detail_html .= "<br>";
         }
@@ -1000,28 +1003,28 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
 /**
  * Creates render array items for FieldUnitDTO or DerivedUnitDTO.
  *
- * @param array $fieldunit_dtos
- *     list of FieldUnitDTOs
+ * @param array $root_unit_dtos
+ *     list of SpecimenOrObservationDTOs
  * @return array
  *    An array which can be used in render arrays to be passed to the
  * theme_table() and theme_list().
  */
-function specimen_render_array_items(array $fieldunit_dtos){
+function specimen_render_array_items(array $root_unit_dtos){
 
   $render_array_items = array();
   $items = array();
 
   //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
-  foreach ($fieldunit_dtos as &$fieldunit_dto) {
-    $items['data'] = $fieldunit_dto->label;
-    $specimen = compose_cdm_specimen_or_observation_tree_entry($fieldunit_dto);
+  foreach ($root_unit_dtos as &$sob_dto) {
+    $items['data'] = $sob_dto->label;
+    $specimen = compose_cdm_specimen_or_observation_tree_entry($sob_dto);
     $children = array();
     $child = array();
     $child['data'] =$specimen;
     // $children[] = create_specimen_array($specimenOrObservation->derivatives);
-    if (isset($fieldunit_dto->derivatives) && sizeof($fieldunit_dto->derivatives) > 0){
-      usort($fieldunit_dto->derivatives, 'compare_specimen_or_observation_dtos');
-      $child['children']= specimen_render_array_items($fieldunit_dto->derivatives);
+    if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0){
+      usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');
+      $child['children']= specimen_render_array_items($sob_dto->derivatives);
     }
     $children[]=$child;
     $items['children'] = $children;
@@ -1034,8 +1037,8 @@ function specimen_render_array_items(array $fieldunit_dtos){
  * Composes a compressed derivate table showing all derivatives which
  * stem from a common gathering event.
  *
- * @param $field_unit_uuids array
- *  An array of uuids for cdm FieldUnit entities.
+ * @param $root_unit_uuids array
+ *  An array of uuids for cdm root units of the derivation graphs.
  *
  * @return array
  *  A drupal render array for a table
@@ -1045,7 +1048,7 @@ function specimen_render_array_items(array $fieldunit_dtos){
  * @ingroup compose
  */
 
-function compose_compressed_specimen_derivate_table($field_unit_uuids) {
+function compose_compressed_specimen_derivate_table($root_unit_uuids) {
 
   // prepare font icons
   $expand_icon = font_awesome_icon_markup(
@@ -1070,69 +1073,85 @@ function compose_compressed_specimen_derivate_table($field_unit_uuids) {
   $rowcount = 0;
   $rows = array();
 
-  foreach ($field_unit_uuids as $field_unit_uuid) {
+  foreach ($root_unit_uuids as $root_unit_uuid) {
 
     //get derivate hierarchy for the FieldUnit
-    $derivateHierarchy = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, array($field_unit_uuid, 'derivateHierarchy'));
-    if ($derivateHierarchy) {
+    $sob_dto = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE_AS_DTO, array($root_unit_uuid));
+    if ($sob_dto) {
       //summary row
-      $rows[] = array(
-        'data' => array(
-          array(
-            'data' => $expand_icon . $collapse_icon,
-            'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+      if($sob_dto->class == "FieldUnitDTO"){
+        $rows[] = array(
+          'data' => array(
+            array(
+              'data' => $expand_icon . $collapse_icon,
+              'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+            ),
+            array(
+              'data' => $sob_dto->country,
+              'class' => array('summary_row_cell')
+            ),
+            array(
+              'data' => $sob_dto->date,
+              'class' => array('summary_row_cell')
+            ),
+            array(
+              'data' => $sob_dto->collectingString,
+              'class' => array('summary_row_cell')
+            ),
+            @array(
+              'data' => $sob_dto->collectionStatistics,
+              'class' => array('summary_row_cell')
+            ),
+            array(
+              'data' => $sob_dto->hasType ? $checked_box_icon : "",
+              'class' => array('summary_row_cell', 'summary_row_icon')
+            ),
+            array(
+              'data' => $sob_dto->hasSpecimenScan ? $checked_box_icon : "",
+              'class' => array('summary_row_cell', 'summary_row_icon')
+            ),
+            array(
+              'data' => ($sob_dto->hasDna ? $sequence_icon : "") . " "
+                . ($sob_dto->hasDetailImage ? $detail_image_icon : "") . " "
+                . ($sob_dto->hasCharacterData ? $character_data_icon : ""),
+              'class' => array('summary_row_cell', 'summary_row_icon')
+            )
           ),
-          array(
-            'data' => $derivateHierarchy->country,
-            'class' => array('summary_row_cell')
-          ),
-          array(
-            'data' => $derivateHierarchy->date,
-            'class' => array('summary_row_cell')
-          ),
-          array(
-            'data' => $derivateHierarchy->collectingString,
-            'class' => array('summary_row_cell')
-          ),
-          @array(
-            'data' => $derivateHierarchy->collectionStatistics,
-            'class' => array('summary_row_cell')
-          ),
-          array(
-            'data' => $derivateHierarchy->hasType ? $checked_box_icon : "",
-            'class' => array('summary_row_cell', 'summary_row_icon')
-          ),
-          array(
-            'data' => $derivateHierarchy->hasSpecimenScan ? $checked_box_icon : "",
-            'class' => array('summary_row_cell', 'summary_row_icon')
-          ),
-          array(
-            'data' => ($derivateHierarchy->hasDna ? $sequence_icon : "") . " "
-              . ($derivateHierarchy->hasDetailImage ? $detail_image_icon : "") . " "
-              . ($derivateHierarchy->hasCharacterData ? $character_data_icon : ""),
-            'class' => array('summary_row_cell', 'summary_row_icon')
+          'id' => 'derivate_summary' . $rowcount, // summary row id
+          'class' => array('summary_row'),
+        );
+      } else {
+        $rows[] = array(
+          'data' => array(
+            array(
+              'data' => $expand_icon . $collapse_icon,
+              'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+            ),
+            array(
+              'data' => $sob_dto->label,
+              'class' => array('summary_row_cell'),
+              'colspan' => 7
+            )
           )
-        ),
-        'id' => 'derivate_summary' . $rowcount, // summary row id
-        'class' => array('summary_row'),
-      );
+        );
+      }
 
       //assemble field unit details
       $detail_html = "";
       // - citation
-      if ($derivateHierarchy->citation) {
-        $detail_html .= create_label("Citation") . $derivateHierarchy->citation . "<br>";
+      if ($sob_dto->citation) {
+        $detail_html .= create_label("Citation") . $sob_dto->citation . "<br>";
       }
       //assemble specimen details
-      if ($derivateHierarchy->derivatives) {
+      if ($sob_dto->derivatives) {
         $derivatives_orderd = [];
-        foreach ($derivateHierarchy->derivatives as $derivedUnitDTO) {
-          $derivatives_orderd[$derivedUnitDTO->specimenIdentifier] = $derivedUnitDTO;
+        foreach ($sob_dto->derivatives as $derivative_dto) {
+          $derivatives_orderd[$derivative_dto->specimenIdentifier] = $derivative_dto;
         }
         ksort($derivatives_orderd);
-        foreach ($derivatives_orderd as $derivedUnitDTO) {
+        foreach ($derivatives_orderd as $derivative_dto) {
           $detail_html .= "<br>";
-          $detail_html .= render_cdm_specimenDTO_page($derivedUnitDTO);
+          $detail_html .= render_cdm_specimenDTO_page($derivative_dto);
         }
       }
       $detail_html .= "<br>";
@@ -1182,18 +1201,18 @@ function compose_compressed_specimen_derivate_table($field_unit_uuids) {
  * Composes the view on specimens and occurrences as derivate tree
  * starting from the field unit including all derivatives.
  *
- * @see DM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE
+ * @see CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE
  *
- * @param object $fieldunit_dtos
- *   list of FieldUnitDTOs
+ * @param array $root_unit_dtos
+ *   list of SpecimenOrObservationDTOs
  * @return array
  *   The Drupal render array
  *
  * @ingroup compose
  */
-function compose_specimen_table_top_down(array $fieldunit_dtos){
+function compose_specimen_table_top_down(array $root_unit_dtos){
 
-  $specimen_render_array_items = specimen_render_array_items($fieldunit_dtos);
+  $specimen_render_array_items = specimen_render_array_items($root_unit_dtos);
 
     // add icons
   $expand_icon = font_awesome_icon_markup(
@@ -1765,7 +1784,6 @@ function compose_specimens_table_bottom_up($specimensOrObservations)
  */
 function order_specimens_or_observations_by_date_and_type($specimens_or_observations)
 {
-// order occurrences by date but types should be on top of the list
   $type_specimens = array();
   $other_occurrences = array();
   if(is_array($specimens_or_observations)){
@@ -1793,7 +1811,20 @@ function order_specimens_or_observations_by_date_and_type($specimens_or_observat
  */
 function order_fieldUnitDtos_by_date_and_type($fieldUnitDTOs)
 {
-  return order_specimens_or_observations_by_date_and_type($fieldUnitDTOs);
+  $units_with_types = [];
+  $units_no_types = [];
+
+  foreach($fieldUnitDTOs as $dto){
+    if(isset($dto->specimenTypeDesignations[0])){
+      $units_with_types[] = $dto;
+    } else {
+      $units_no_types[] = $dto;
+    }
+  }
+  usort($units_with_types, 'compare_specimen_or_observation_dtos_by_date');
+  usort($units_no_types, 'compare_specimen_or_observation_dtos_by_date');
+
+  return array_merge($units_with_types, $units_no_types);
 }
 
 /**
@@ -1901,7 +1932,7 @@ function render_collection($collection, $do_link = false /* to be made true, see
 }
 
 /**
- * Compares two SpecimenTypeDesignations
+ * Compares two SpecimenTypeDesignations by identifier and label
  *
  * @param object $a
  *   A SpecimenOrObservationDTO.
@@ -1913,4 +1944,19 @@ function compare_specimen_or_observation_dtos($a, $b) {
     $a_text =  isset($a->specimenIdentifier) ? $a->specimenIdentifier : $a->label;
     $b_text =  isset($b->specimenIdentifier) ? $b->specimenIdentifier : $b->label;
     return strcasecmp($a_text, $b_text);
+}
+
+/**
+ * Compares two SpecimenTypeDesignations by date or label
+ *
+ * @param object $a
+ *   A SpecimenOrObservationDTO.
+ * @param object $b
+ *   The SpecimenOrObservationDTO.
+ */
+function compare_specimen_or_observation_dtos_by_date($a, $b) {
+  // Sort alphabetically.
+  $a_text =  isset($a->date) ? $a->date : $a->label;
+  $b_text =  isset($b->date) ? $b->date : $b->label;
+  return strcasecmp($a_text, $b_text);
 }

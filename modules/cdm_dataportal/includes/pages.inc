@@ -37,13 +37,13 @@ function compose_cdm_taxon_page_specimens($taxon) {
     $render_array = array();
     RenderHints::pushToRenderStack('taxon_page_specimens');
 
-  $fieldUnitDTOs = null;
+  $root_unit_dtos = null;
   $specimensOrObservations = array();
   $current_view_mode = variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT);
   if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
       // get fieldUnitDTOs
-      $fieldUnitDTOs = cdm_ws_get(CDM_WS_PORTAL_TAXON_FIELDUNIT_DTOS, array( $taxon->uuid));
-      $fieldUnitDTOs = order_fieldUnitDtos_by_date_and_type($fieldUnitDTOs);
+      $root_unit_dtos = cdm_ws_get(CDM_WS_PORTAL_TAXON_ROOTUNIT_DTOS, array( $taxon->uuid));
+      $root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
     } else {
       // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
       // extend by associated taxas occurrences
@@ -60,7 +60,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
       if (isset($pager->records[0])) {
         $specimensOrObservations = $pager->records;
       }
-      // cdm_ws_get(CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON,
+      // cdm_ws_get(CDM_WS_OCCURRENCE_ROOTUNIT_DTO_BY_ASSOCIATEDTAXON // was CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON,
       // null,
       // $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
       // );
@@ -84,7 +84,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
     }
 
     // --- get map service HTTP query parameters
-    if (count($specimensOrObservations) > 0 || $fieldUnitDTOs > 0) {
+    if (count($specimensOrObservations) > 0 || $root_unit_dtos > 0) {
         $render_array['map'] = occurrence_map_query_parameters($taxon);
     }
 
@@ -93,27 +93,24 @@ function compose_cdm_taxon_page_specimens($taxon) {
     if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE)){
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
-        $pager_field_units = cdm_ws_page(
-          cdm_compose_url(CDM_WS_PORTAL_TAXON, [
-            $taxon->uuid,
-            'associatedFieldUnits'
-          ]),
+        $pager_root_units = cdm_ws_page(
+          cdm_compose_url(CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS, [$taxon->uuid]),
           variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT) * 2,
           isset($_REQUEST['pager']['pageNumber']) ? isset($_REQUEST['pager']['pageNumber']) : 0
         );
 
-        if (isset($pager_field_units->records[0])) {
-          $field_unit_uuids = array();
-          foreach ($pager_field_units->records as $field_unit) {
-            $field_unit_uuids[] = $field_unit->uuid;
+        if (isset($pager_root_units->records[0])) {
+          $root_unit_uuids = array();
+          foreach ($pager_root_units->records as $root_unit) {
+            $root_unit_uuids[] = $root_unit->uuid;
           }
 
-          $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($field_unit_uuids);
+          $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_uuids);
         }
 
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
-                'pager' => $pager_field_units,
+                'pager' => $pager_root_units,
                 'path' => $_REQUEST['q'],
                 'parameters' => $_REQUEST
             )),
@@ -121,7 +118,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
         );
     }
     else if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE)){ // FIXME this seems to be wrong
-      $render_array['specimen_list'] = compose_specimen_table_top_down($fieldUnitDTOs);
+      $render_array['specimen_list'] = compose_specimen_table_top_down($root_unit_dtos);
       $render_array['specimen_list']['#weight'] = 2;
     } else {
       $specimen_table = compose_specimens_table_bottom_up($specimensOrObservations);

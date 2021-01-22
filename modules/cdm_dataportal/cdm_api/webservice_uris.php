@@ -40,7 +40,7 @@ define('CDM_WS_PORTAL_TYPEDESIGNATION', 'portal/typedesignation/$0');
 
 define('CDM_WS_TAXON', 'taxon');
 
-define('CDM_WS_PORTAL_TAXON_FIELDUNIT_DTOS', 'portal/taxon/$0/fieldUnitDTOs');
+define('CDM_WS_PORTAL_TAXON_ROOTUNIT_DTOS', 'portal/taxon/$0/rootUnitDTOs');
 
 define('CDM_WS_TAXON_CLASSIFICATIONS', 'taxon/$0/classifications');
 define('CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'taxon/findByDescriptionElementFullText');
@@ -66,6 +66,7 @@ define('CDM_WS_PORTAL_TAXON_TAXONNODEAGENTRELATIONS', 'portal/taxon/$0/taxonNode
  */
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE', 'portal/taxon/$0/descriptions/elementsByType/$1');
 define('CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS', 'portal/taxon/$0/useDescriptions');
+define('CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS', 'portal/taxon/$0/associatedRootUnits');
 define('CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS', 'portal/taxon/$0/toNameRelationships');
 define('CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS', 'portal/taxon/$0/fromNameRelationships');
 define('CDM_WS_PORTAL_TAXON_MEDIA', 'portal/taxon/$0/media');
@@ -152,6 +153,7 @@ define('CDM_WS_KML_TAXON_OCCURRENCE', 'kml/taxonOccurrencesFor/$0');
 define('CDM_WS_OCCURRENCE', 'occurrence');
 define('CDM_WS_OCCURRENCE_FILEUNIT_DTO', 'occurrence/$0/fieldUnitDTO');
 define('CDM_WS_PORTAL_OCCURRENCE', 'portal/occurrence');
+define('CDM_WS_PORTAL_OCCURRENCE_AS_DTO', 'portal/occurrence/$0/asDTO');
 define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumber');
 /**
  * url query parameters:
@@ -167,7 +169,7 @@ define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumbe
  * returns Pager<SpecimenOrObservationBase>
  */
 define('CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON', 'occurrence/byAssociatedTaxon');
-define('CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON', 'occurrence/specimensOrObservationsByAssociatedTaxon');
+define('CDM_WS_OCCURRENCE_ROOTUNIT_DTO_BY_ASSOCIATEDTAXON', 'occurrence/rootUnitDTOsByAssociatedTaxon');
 define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');
 define('CDM_WS_PORTAL_DERIVEDUNIT_FACADE', 'portal/derivedUnitFacade/$0');
 
