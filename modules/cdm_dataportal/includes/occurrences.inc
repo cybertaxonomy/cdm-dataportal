@@ -155,13 +155,13 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
            $detail_html .= '<br>';
         }
     }
-    $derivateDataDTO = $derived_unit_dto->derivateDataDTO;
+    $derivation_tree_summary_dto = $derived_unit_dto->derivationTreeSummary;
     // - specimen scans
-    $specimenScans = create_html_links($derivateDataDTO->specimenScans, true);
+    $specimenScans = create_html_links($derivation_tree_summary_dto->specimenScans, true);
     // - molecular data
     $molecularData = "";
-    if ($derivateDataDTO->molecularDataList) {
-        foreach ($derivateDataDTO->molecularDataList as $molecular) {
+    if ($derivation_tree_summary_dto->molecularDataList) {
+        foreach ($derivation_tree_summary_dto->molecularDataList as $molecular) {
             //provider link
             if (isset($molecular->providerLink)) {
                 $molecularData .= create_html_link($molecular->providerLink, true);
@@ -193,7 +193,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
         }
     }
     // - detail images
-    $detailImages = create_html_links($derivateDataDTO->detailImages, true);
+    $detailImages = create_html_links($derivation_tree_summary_dto->detailImages, true);
 
     if ($types) {
         $detail_html .= $with_full_details ? "<br>" : "";
@@ -203,8 +203,8 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
         $detail_html .= create_label("Specimen Scans") . $specimenScans . "<br>";
     }
     //specimen scan image gallery
-    if ($with_full_details and isset($derivateDataDTO->specimenScanUuids) and !empty($derivateDataDTO->specimenScanUuids)) {
-        $detail_html .= addImageGallery("Specimen scans", $derivateDataDTO->specimenScanUuids);
+    if ($with_full_details and isset($derivation_tree_summary_dto->specimenScanUuids) and !empty($derivation_tree_summary_dto->specimenScanUuids)) {
+        $detail_html .= addImageGallery("Specimen scans", $derivation_tree_summary_dto->specimenScanUuids);
     }
 
     if ($molecularData) {
@@ -217,8 +217,8 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
     }
 
     //detail image gallery
-    if ($with_full_details and isset($derivateDataDTO->detailImageUuids) and !empty($derivateDataDTO->detailImageUuids)) {
-        $detail_html .= addImageGallery("Detail Images", $derivateDataDTO->detailImageUuids);
+    if ($with_full_details and isset($derivation_tree_summary_dto->detailImageUuids) and !empty($derivation_tree_summary_dto->detailImageUuids)) {
+        $detail_html .= addImageGallery("Detail Images", $derivation_tree_summary_dto->detailImageUuids);
     }
 
     //character data
