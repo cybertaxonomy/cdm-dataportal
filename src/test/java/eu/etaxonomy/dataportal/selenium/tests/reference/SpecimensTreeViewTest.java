@@ -63,9 +63,10 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     public void testPage() {
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#specimens table.derivate_tree"));
         List<WebElement> summaryRows = specimensTable.findElements(By.cssSelector("tr.summary_row"));
-        assertEquals(2, summaryRows.size());
-        assertEquals("Germany, Berlin, 2 Apr 1835.", summaryRows.get(0).getText());
-        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", summaryRows.get(1).getText());
+        assertEquals(3, summaryRows.size());
+        assertEquals("(B SP-99999).", summaryRows.get(0).getText());
+        assertEquals("Germany, Berlin, 2 Apr 1835.", summaryRows.get(1).getText());
+        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", summaryRows.get(2).getText());
     }
 
     @Test
@@ -161,13 +162,13 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", dl1.joinedDescriptionElementText("Exact location:"));
         // TODO test Exact location link
         descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(10, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        assertEquals(24, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
         // TODO one of the links is a footnote key for which the footnote is missing
         link1 = descriptionListContainer.getLinksInElement().get(1);
         assertEquals("Detail page", link1.getText());
         assertTrue(link1.getUrl().endsWith("/cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
 
-        dl2 = new DescriptionList(dls.get(1).findElement(By.tagName("dl")));
+        dl2 = new DescriptionList(dls.get(3).findElement(By.tagName("dl")));
 
         assertEquals("Preserved Specimen", dl2.joinedDescriptionElementText("Record base:"));
         assertEquals("2017E68", dl2.joinedDescriptionElementText("Accession number:"));
@@ -180,7 +181,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         specimenTypeDesignationLinks = specimenTypeDesignation_dd.getLinksInElement();
         assertEquals("expecting one footnote key link", 1, specimenTypeDesignationLinks.size());
 
-        dl3 = new DescriptionList(dls.get(2).findElement(By.tagName("dl")));
+        dl3 = new DescriptionList(dls.get(6).findElement(By.tagName("dl")));
 
         assertEquals("Preserved Specimen", dl3.joinedDescriptionElementText("Record base:"));
         assertEquals("M-0289351", dl3.joinedDescriptionElementText("Accession number:"));
@@ -191,10 +192,6 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
                 dl3.joinedDescriptionElementText("Specimen type designations:"));
         specimenTypeDesignationLinks = dl3.getDescriptionGroups().get("Specimen type designations:").get(0).getLinksInElement();
         assertEquals("expecting one footnote key link", 1, specimenTypeDesignationLinks.size());
-
-
-
-
 
     }
 
