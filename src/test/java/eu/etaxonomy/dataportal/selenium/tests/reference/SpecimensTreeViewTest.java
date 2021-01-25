@@ -85,13 +85,14 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         LinkElement link1;
         // -------------------------------------------------------------------------------------------
         // Germany, Berlin, 2 Apr 1835.
-        int row = 0;
+        int row = 1;
         summaryRows.get(row).click(); // make the row visible
         descriptionListContainerElement = detailRows.get(row).findElement(By.cssSelector("div.description_list"));
         derivateTreeContainer = descriptionListContainerElement.findElement(By.xpath("./parent::li"));
 
         dls = detailRows.get(row).findElements(By.cssSelector("div.description_list"));
         assertEquals(2, dls.size());
+
         dl1 = new DescriptionList(dls.get(0).findElement(By.tagName("dl")));
         assertEquals("Field Unit", dl1.joinedDescriptionElementText("Record base:"));
         assertEquals("Germany", dl1.joinedDescriptionElementText("Country:"));
@@ -139,7 +140,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         BaseElement descriptionListContainer;
         List<LinkElement> specimenTypeDesignationLinks;
         LinkElement link1;
-        int row = 1;
+        int row = 2;
 
         // -------------------------------------------------------------------------------------------
         // Germany, Berlin, alt. 165 m, 52°31'1.2"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.
@@ -150,7 +151,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         logger.debug("derivateTreeContainer: " + ElementUtils.webElementTagToMarkup(derivateTreeContainer));
 
         dls = detailRows.get(row).findElements(By.cssSelector("div.description_list"));
-        assertEquals(3, dls.size());
+        assertEquals(9, dls.size());
         dl1 = new DescriptionList(dls.get(0).findElement(By.tagName("dl")));
         assertEquals("2016-03-28", dl1.joinedDescriptionElementText("Date:"));
         assertEquals("Field Unit", dl1.joinedDescriptionElementText("Record base:"));

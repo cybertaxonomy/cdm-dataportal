@@ -111,8 +111,8 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
     }
 
     if($with_full_details) {
-        if($derived_unit_dto->citation){
-            $detail_html .= "<br>".$derived_unit_dto->citation."<br>";
+        if($derived_unit_dto->summaryLabel){
+            $detail_html .= "<br>".$derived_unit_dto->summaryLabel."<br>";
 
         }
     }
@@ -1081,6 +1081,8 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
       //summary row
       if($sob_dto->class == "FieldUnitDTO"){
         $rows[] = array(
+          'id' => 'derivate_summary' . $rowcount, // summary row id
+          'class' => array('summary_row'),
           'data' => array(
             array(
               'data' => $expand_icon . $collapse_icon,
@@ -1116,12 +1118,12 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
                 . ($sob_dto->hasCharacterData ? $character_data_icon : ""),
               'class' => array('summary_row_cell', 'summary_row_icon')
             )
-          ),
-          'id' => 'derivate_summary' . $rowcount, // summary row id
-          'class' => array('summary_row'),
+          )
         );
       } else {
         $rows[] = array(
+          'id' => 'derivate_summary' . $rowcount, // summary row id
+          'class' => array('summary_row'),
           'data' => array(
             array(
               'data' => $expand_icon . $collapse_icon,
@@ -1130,7 +1132,17 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
             array(
               'data' => $sob_dto->label,
               'class' => array('summary_row_cell'),
-              'colspan' => 7
+              'colspan' => 5
+            ),
+            array(
+              'data' => $sob_dto->hasSpecimenScan ? $checked_box_icon : "",
+              'class' => array('summary_row_cell', 'summary_row_icon')
+            ),
+            array(
+              'data' => ($sob_dto->hasDna ? $sequence_icon : "") . " "
+                . ($sob_dto->hasDetailImage ? $detail_image_icon : "") . " "
+                . ($sob_dto->hasCharacterData ? $character_data_icon : ""),
+              'class' => array('summary_row_cell', 'summary_row_icon')
             )
           )
         );
@@ -1138,9 +1150,8 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
 
       //assemble field unit details
       $detail_html = "";
-      // - citation
-      if ($sob_dto->citation) {
-        $detail_html .= create_label("Citation") . $sob_dto->citation . "<br>";
+      if ($sob_dto->summaryLabel) {
+        $detail_html .= create_label("Citation") . $sob_dto->summaryLabel . "<br>";
       }
       //assemble specimen details
       if ($sob_dto->derivatives) {
@@ -1316,7 +1327,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
       'collectionCode',
       'derivatives',
       'derivateDataDTO',
-      'citation',
+      'derivationTreeSummary',
       'specimenIdentifier', // combination like  collection code + accession number
       'mostSignificantIdentifier',
       // -----

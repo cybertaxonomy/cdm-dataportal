@@ -97,25 +97,37 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#derivate_hierarchy_table"));
 
         List<WebElement> rows = specimensTable.findElements(By.cssSelector("tr"));
-        assertEquals(5, rows.size());
+        assertEquals(7, rows.size());
         // expected rows:
         // 0: header row
+
         // 1: summary row
         // 2: detail row
         // 3: summary row
         // 4: detail row
+        // 3: summary row
+        // 4: detail row
 
-        // summary row 1
+        // summary row
         int rowId = 1;
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         List<WebElement> cells = rows.get(rowId).findElements(By.tagName("td"));
+        assertEquals("(B SP-99999).", cells.get(1).getText());
+        // cell number 1 has colspan = 5 !!!
+        assertTrue(cells.get(2).findElement(By.tagName("img")).getAttribute("src")
+                .endsWith(STEP_DONE_ICON)); // scan
+        ++rowId;
+
+        ++rowId;
+        assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
+        cells = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
         assertEquals("1835-04-02", cells.get(2).getText());
         assertEquals("", cells.get(3).getText());
         // all other empty, TODO check if this is correct or if some data is being missed here
 
-        // details row 2
-        rowId = 2;
+        // details row
+        ++rowId;
         assertTrue(rows.get(rowId).getAttribute("class").contains("detail_row"));
         assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
         rows.get(rowId - 1).click();
@@ -126,14 +138,14 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals(1, detailsLines.length);
         assertEquals("Citation: Germany, Berlin, 2 Apr 1835. (BHUPM 671)", detailsLines[0]);
 
-        // summary row 4
-        rowId = 3;
+        // summary row
+        ++rowId;
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
         assertEquals("2016-03-28", cells.get(2).getText());
         assertEquals("Ehrenberg, C.G. D047", cells.get(3).getText());
-        assertEquals("CEDiT, M", cells.get(4).getText());
+        assertEquals("CEDiT, B(2), M, XKCD", cells.get(4).getText());
         assertTrue(cells.get(5).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON));
         assertTrue(cells.get(6).findElement(By.tagName("img")).getAttribute("src")
@@ -142,8 +154,8 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
                 .endsWith(DETAIL_IMAGE_DERIVATE_ICON));
 
 
-        // details row 4
-        rowId = 4;
+        // details row
+        ++rowId;
         assertTrue(rows.get(rowId).getAttribute("class").contains("detail_row"));
         assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
         rows.get(rowId - 1).click();
@@ -154,7 +166,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         BaseElement detailsCell = new BaseElement(cells.get(1));
         List<LinkElement> linksInDetails = detailsCell.getLinksInElement();
         assertEquals(9, detailsLines.length);
-        assertEquals("Citation: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047. (M M-0289351, CEDiT 2017E68)", detailsLines[0]);
+        assertEquals("Citation: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047. (CEDiT 2017E68, B BDNA 99999, B IMG 99999, M M-0289351, XKCD MASKS 2X)", detailsLines[0]);
 
         assertEquals("Specimen summary: CEDiT (2017E68)", detailsLines[1]);
         assertEquals("CEDiT (2017E68)" ,linksInDetails.get(0).getText());
