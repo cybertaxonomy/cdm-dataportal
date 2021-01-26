@@ -1328,6 +1328,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
       'derivatives',
       'derivateDataDTO',
       'summaryLabel',
+      'derivationTreeSummary',
       'specimenIdentifier', // combination like  collection code + accession number
       'mostSignificantIdentifier',
       // -----
