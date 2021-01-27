@@ -100,7 +100,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Berlin", dl1.joinedDescriptionElementText("Locality:"));
         assertEquals("1835-04-02", dl1.joinedDescriptionElementText("Date:"));
         descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(3, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        assertEquals(7, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
         link1 = descriptionListContainer.getLinksInElement().get(0);
         assertEquals("Detail page", link1.getText());
         assertTrue(link1.getUrl().endsWith("cdm_dataportal/occurrence/75b73483-7ee6-4c2c-8826-1e58a0ed18e0"));
@@ -152,7 +152,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         logger.debug("derivateTreeContainer: " + ElementUtils.webElementTagToMarkup(derivateTreeContainer));
 
         dls = detailRows.get(row).findElements(By.cssSelector("div.description_list"));
-        assertEquals(9, dls.size());
+        assertEquals(6, dls.size());
         dl1 = new DescriptionList(dls.get(0).findElement(By.tagName("dl")));
         assertEquals("2016-03-28", dl1.joinedDescriptionElementText("Date:"));
         assertEquals("Field Unit", dl1.joinedDescriptionElementText("Record base:"));
@@ -162,13 +162,13 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", dl1.joinedDescriptionElementText("Exact location:"));
         // TODO test Exact location link
         descriptionListContainer = new BaseElement(derivateTreeContainer);
-        assertEquals(24, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
+        assertEquals(17, descriptionListContainer.getLinksInElement().size()); // other links in the derivate tree are also found
         // TODO one of the links is a footnote key for which the footnote is missing
         link1 = descriptionListContainer.getLinksInElement().get(1);
         assertEquals("Detail page", link1.getText());
         assertTrue(link1.getUrl().endsWith("/cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
 
-        dl2 = new DescriptionList(dls.get(3).findElement(By.tagName("dl")));
+        dl2 = new DescriptionList(dls.get(1).findElement(By.tagName("dl")));
 
         assertEquals("Preserved Specimen", dl2.joinedDescriptionElementText("Record base:"));
         assertEquals("2017E68", dl2.joinedDescriptionElementText("Accession number:"));
@@ -181,7 +181,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         specimenTypeDesignationLinks = specimenTypeDesignation_dd.getLinksInElement();
         assertEquals("expecting one footnote key link", 1, specimenTypeDesignationLinks.size());
 
-        dl3 = new DescriptionList(dls.get(6).findElement(By.tagName("dl")));
+        dl3 = new DescriptionList(dls.get(4).findElement(By.tagName("dl")));
 
         assertEquals("Preserved Specimen", dl3.joinedDescriptionElementText("Record base:"));
         assertEquals("M-0289351", dl3.joinedDescriptionElementText("Accession number:"));
