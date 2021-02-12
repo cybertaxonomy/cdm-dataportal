@@ -366,20 +366,59 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
   drupal_add_css($universalviewer_path . '/uv-fix.css');
 
   // offline.js is all of these dependencies concatenated (jQuery, CoreJS, and JSViews)
+  drupal_add_js('
+    console.log(\'#1 Drupal jQuery: \' + jQuery.fn.jquery);
+    jQueryDrupal = jQuery;
+    $drupal = $;
+    ',
+    array(
+      'type' => 'inline',
+      'group' => JS_LIBRARY,
+      'preprocess' => FALSE,
+      'weight' => -19
+    )
+  );
+  // jquery.js uses the JS_LIBRARY group and a weight of -20,
+  // jquery.once.js uses the JS_LIBRARY group and a weight of -19
+  // drupal.js uses the JS_LIBRARY group and a weight of -1
+  //
   drupal_add_js($universalviewer_path . '/uv/lib/offline.js',
       array(
       'type' => 'file',
       'group' => JS_LIBRARY,
-      'cache' => TRUE,
-      'preprocess' => FALSE
+  //     'cache' => TRUE,
+      'preprocess' => FALSE,
+      'weight' => -18
     )
   );
+  drupal_add_js('
+      // Restore globally scoped jQuery variables to the first version loaded, 
+      // (the Drupal version), the globally scoped variable jqUV will hold the
+      // version brought with /uv/lib/offline.js
+      // here ew cant`t use jQuery = jQuery.noConflict( true ) to 
+      // restore the Drupal jQuery version since $ is not assined in this context
+      jQueryUV = jQuery; // store reference to the jQuery version which came with UV
+      $uv = jQueryUV;
+      console.log(\'#2 jQuery universal viewer inline: \' + jQueryUV.fn.jquery);
+      jQuery = jQueryDrupal;
+      $ = jQuery;
+      console.log(\'#3 Drupal jQuery: \' + jQuery.fn.jquery);
+      ',
+    array(
+      'type' => 'inline',
+      'group' => JS_LIBRARY,
+      'preprocess' => FALSE,
+      'weight' => -17,
+    )
+  );
+
   drupal_add_js($universalviewer_path . '/uv/helpers.js',
     array(
       'type' => 'file',
       'group' => JS_LIBRARY,
       'cache' => TRUE,
-      'preprocess' => FALSE
+      'preprocess' => FALSE,
+      'weight' => -16,
     )
   );
   // from UV 3.x documentation:
@@ -399,21 +438,31 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
   $basePath = base_path();
   $config_file = 'uv-config.json';
   drupal_add_js('
-      console.log(\'jQuery inline: \' + jQuery.fn.jquery);
-      jQuery(window).on(\'uvLoaded\', function() {
-        jQuery( "' . $jquery_selector . '" ).jqUniversalviewer(
-        {
-          root: \'' . $folders_up . $universalviewer_path . '/uv\',
-          configUri: \'' . $basePath . $universalviewer_path . '/'. $config_file . '\',
-          manifestUri: \'' . $manifest_uri . '\'
-        }
-        );
-      });',
+      console.log(\'#4 pre uvLoad $: \' + $.fn.jquery);
+      (function($, jQuery) {
+        // ------- 
+        window.$ = $;
+        window.jQuery = jQuery;
+        $(window).on(\'uvLoaded\', function(){ 
+          console.log(\'#5 uvLoaded .... $: \' + $.fn.jquery);
+          $( "' . $jquery_selector . '" ).jqUniversalviewer(
+          {
+            root: \'' . $folders_up . $universalviewer_path . '/uv\',
+            configUri: \'' . $basePath . $universalviewer_path . '/'. $config_file . '\',
+            manifestUri: \'' . $manifest_uri . '\'
+          }
+          );
+        });
+        window.jQuery = jQueryDrupal;
+        window.$ = $drupal;
+        // -------
+      })($uv, jQueryUV);
+      ',
     array(
       'type' => 'inline',
       'scope' => 'footer',
       'group' => JS_DEFAULT,
-      'weight' => 0,
+      'weight' => 11,
     )
   );
   drupal_add_js($universalviewer_path . '/jq-universalviewer.js',
@@ -422,7 +471,7 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
       'scope' => 'footer',
       'group' => JS_DEFAULT,
       'weight' => 10,
-      'cache' => TRUE,
+      'cache' => FALSE,
       'preprocess' => FALSE
     )
   );
@@ -432,7 +481,8 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
       'type' => 'file',
       'scope' => 'footer',
       'group' => 300, // IMPORTANT!
-      'cache' => TRUE,
+       // 'weight' => 9,
+      'cache' => FALSE,
       'preprocess' => FALSE
     )
   );

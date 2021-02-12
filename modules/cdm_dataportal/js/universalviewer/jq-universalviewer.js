@@ -68,7 +68,6 @@
         // methods like this one
         init: function() {
             var plugin = this;
-               urlDataProvider = new UV.URLDataProvider();
                setupUV(plugin, this.element);
         }
     };
@@ -83,9 +82,12 @@
         });
     };
 
+    console.log('jq-universalviewer.js > $.fn.' + pluginName + ' bound to ' + $.fn.jquery)
+
     // Private function that is only called by the plugin
     var setupUV = function(plugin, element) {
 
+        urlDataProvider = new UV.URLDataProvider();
         var collectionIndex = urlDataProvider.get('c');
 
         console.log("setupUV() with " + plugin.options.manifestUri);
@@ -131,4 +133,5 @@
     }
 
 
-})(jQuery, document, window);
+})(jQueryUV, document, window);
+console.log('jq-universalviewer.js jQueryUV: ' + jQueryUV.fn.jquery)

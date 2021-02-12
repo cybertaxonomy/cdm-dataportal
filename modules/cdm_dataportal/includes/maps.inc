@@ -215,21 +215,25 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
   // window.onload - is executed when the document and images etc is fully loaded
   // Query(document).ready - is executed much earlier, when the DOM is loaded
   drupal_add_js("
+          console.log('jQuery inline on _add_js_openlayers_map(): ' + jQuery.fn.jquery);        
+          (function(map$){
           jQuery(document).ready(function() {
-                jQuery(window).load(function () {
-                  var map_container = jQuery('#openlayers-map-" . $map_id . "').cdm_openlayers_map(
-                   '" . $mapserver_base_uri . "',
-                   '" . $edit_map_service['version'] . "',
-                   " .  json_encode($cdm_openlayers_options) . "
-                );
-                map_container.each(function(){
-                        this.cdmOpenlayersMap.registerEvents({" . "
-                        " . $event_listeners_js . "
-                        });
-                });
-                " . $execute_handler . "
+                  console.log('jQuery inline on _add_js_openlayers_map().ready: ' + jQuery.fn.jquery + ' map$:' + map$.fn.jquery);
+                  map$(window).load(function () {
+                    var map_container = map$('#openlayers-map-" . $map_id . "').cdm_openlayers_map(
+                     '" . $mapserver_base_uri . "',
+                     '" . $edit_map_service['version'] . "',
+                     " .  json_encode($cdm_openlayers_options) . "
+                  );
+                  map_container.each(function(){
+                          this.cdmOpenlayersMap.registerEvents({" . "
+                          " . $event_listeners_js . "
+                          });
+                  });
+                  " . $execute_handler . "
+          });
         });
-      });
+        })(jQuery)
     ", array('type' => 'inline'));
 
 }
