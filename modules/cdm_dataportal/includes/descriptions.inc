@@ -787,35 +787,10 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
     if(variable_get(DISTRIBUTION_CONDENSED) && isset($descriptionElements['DistributionInfoDTO']->condensedDistribution)){
       $condensed_distribution_markup = '<p class="condensed_distribution">';
 
-      $isFirst = true;
-      if(isset($descriptionElements['DistributionInfoDTO']->condensedDistribution->indigenous[0])){
-        foreach($descriptionElements['DistributionInfoDTO']->condensedDistribution->indigenous as $cdItem){
-          if(!$isFirst){
-            $condensed_distribution_markup .= ' ';
-          }
-          $condensed_distribution_markup .= '<span class="status_' . $cdItem->status->idInVocabulary . '">'
-          . $cdItem->areaStatusLabel . '</span>';
-          $isFirst = false;
-        }
-      }
-
-      if(isset($descriptionElements['DistributionInfoDTO']->condensedDistribution->foreign[0])) {
-        if(!$isFirst){
-          $condensed_distribution_markup .= ' ';
-        }
-        $isFirst = TRUE;
-        $condensed_distribution_markup .= '[';
-        foreach ($descriptionElements['DistributionInfoDTO']->condensedDistribution->foreign as $cdItem) {
-          if (!$isFirst) {
-            $condensed_distribution_markup .= ' ';
-          }
-          $condensed_distribution_markup .= '<span class="status_' . $cdItem->status->representation_L10n . '">'
-            . $cdItem->areaStatusLabel . '</span>';
-          $isFirst = false;
-        }
-        $condensed_distribution_markup .= ']';
-      }
-
+	  if(isset($descriptionElements['DistributionInfoDTO']->condensedDistribution->htmlString)){
+		$condensed_distribution_markup .= $descriptionElements['DistributionInfoDTO']->condensedDistribution->htmlString;
+	  }
+      
       $condensed_distribution_markup .= '&nbsp;' . l(
           font_awesome_icon_markup(
             'fa-info-circle',
