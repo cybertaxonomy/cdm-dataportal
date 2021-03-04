@@ -5,6 +5,8 @@
    this directory (`cdm-dataportal/modules/cdm_dataportal/js/universalviewer/uv/`), e.g.:
    
 ~~~
+cd ~/workspaces/libs/universalviewer
+grunt build
 rm -rf ~/workspaces/cdm/cdm-dataportal/modules/cdm_dataportal/js/universalviewer/uv
 cp -a ~/workspaces/libs/universalviewer/dist ~/workspaces/cdm/cdm-dataportal/modules/cdm_dataportal/js/universalviewer/uv
 rm ~/workspaces/cdm/cdm-dataportal/modules/cdm_dataportal/js/universalviewer/uv/uv.zip
@@ -12,7 +14,7 @@ rm ~/workspaces/cdm/cdm-dataportal/modules/cdm_dataportal/js/universalviewer/uv/
 
 ## Debugging:
 
-Universaviewer code is minified, for debugging, build the universalviewer project with the `--dev` option:
+Universalviewer code is minified, for debugging, build the universalviewer project with the `--dev` option:
 
 ~~~
 grunt build --dev  

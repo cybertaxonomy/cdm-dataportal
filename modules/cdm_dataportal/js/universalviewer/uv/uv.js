@@ -17524,7 +17524,7 @@ define('modules/uv-shared-module/CenterPanel',["require", "exports", "./BaseView
             this.$subtitleWrapper = this.$subtitle.find('.wrapper');
             this.$subtitleExpand = this.$subtitle.find('.expand-btn');
             this.$subtitleText = this.$subtitle.find('.text');
-            this.$content = $('<div id="content" class="content"></div>');
+            this.$content = $('<div id="uv-content" class="content"></div>');
             this.$element.append(this.$content);
             this.$attribution = $("\n                                <div class=\"attribution\">\n                                  <div class=\"header\">\n                                    <div class=\"title\"></div>\n                                    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n                                      <span aria-hidden=\"true\">&#215;</span>\n                                    </button>\n                                  </div>\n                                  <div class=\"main\">\n                                    <div class=\"attribution-text\"></div>\n                                    <div class=\"license\"></div>\n                                    <div class=\"logo\"></div>\n                                  </div>\n                                </div>\n        ");
             this.$attribution.find('.header .title').text(this.content.attribution);
