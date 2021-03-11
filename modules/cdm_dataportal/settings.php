@@ -1178,16 +1178,17 @@ function cdm_settings_general() {
       '#tree' => TRUE,
       '#description' => 'The Distribution filter offers the following options
       <ul>
-      <li><strong>Status order preference rule:</strong> In case of multiple distribution status (PresenceAbsenceTermBase) for
-        the same area the status with the highest order is preferred, see OrderedTermBase.compareTo(OrderedTermBase).</li>
-      <li><strong>Sub area preference rule:</strong>If there is an area with a direct sub area and both areas have the same
-        computed status only the information on the sub area should be reported, whereas the super area should be ignored.</li>
-      <li><strong>Marked area filter:</strong>Skip distributions for areas having a TRUE Marker with one of the specified MarkerTypes.
+      <li><strong>Status order preference rule:</strong> In case of multiple distribution status (<code>PresenceAbsenceTermBase</code>) for
+        the same area the status with the highest order is preferred, see <code>OrderedTermBase.compareTo(OrderedTermBase)</code>.</li>
+      <li><strong>Sub area preference rule:</strong> If there is an area with a direct sub-area and both areas have the same
+        computed status only information on the sub-area should be reported, whereas the super-area should be ignored.</li>
+      <li><strong>Marked area filter:</strong> Skip distributions for areas having a <code>true</code> marker with one of the specified marker types.
         Existing sub-areas of a marked area must also be marked with the same marker type, otherwise the marked
-        area acts as a fallback area for the sub areas. An area is a <em>fallback area</em> if it is marked to
-        be hidden and if it has at least one of sub area which is not marked to be hidden. The <em>fallback area</em>
-        will be show if there is no Distribution for any of the non hidden sub-areas. For more detailed discussion on
-        <em>fallback area</em> see https://dev.e-taxonomy.eu/trac/ticket/4408.</li>
+        area acts as a fallback area for the sub-areas. An area is a <em>fallback area</em> if it is marked to
+        be hidden and if it has at least one sub-area which is not marked to be hidden. The <em>fallback area</em>
+        will be shown on a map and used in a condensed distributions string if there is no distribution for any of the non-hidden
+        sub-areas. In the textual representation it will shown if distribution data for the fallback area itself exists. For more detailed discussion on
+        <em>fallback areas</em> see the ticket <a href="https://dev.e-taxonomy.eu/redmine/issues/4408">#4408</a>.</li>
       </ul>'
   );
 
