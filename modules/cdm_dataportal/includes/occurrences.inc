@@ -1516,8 +1516,8 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                   case 'determinedNames':
                     $dd_elements = array();
                     foreach ($value as $name) {
-                      $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $name->uuid); // TODO why not ->uuid here?
-                      $dd_elements[] = render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid));
+                      $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $name->uuid);
+                      $dd_elements[] = render_taxon_or_name($taxon_name, url(path_to_name($taxon_name->uuid)));
                     }
                     @_description_list_group_add($groups, cdm_occurrence_field_name_label("Identification(s)"), $dd_elements,'', 100);
                     break;

@@ -244,8 +244,11 @@ function get_partDefinition($taxonNameType) {
  * @param $taxon_name_or_taxon_base
  *    A cdm TaxonBase or TaxonName entity
  * @param $name_link
- *    URI to the taxon, @param $reference_link
- *    URI to the reference,
+ *    URI to the taxon, the path provided by path_to_taxon() must be processed
+ *    by url() before passing to this method
+ * @param $reference_link
+ *    URI to the reference, the path provided by path_to_reference() must be
+ *    processed by url() before passing to this method
  * @param bool $show_taxon_name_annotations
  *    Enable the display of footnotes for annotations on the taxon and name
  *    (default: true)
@@ -263,8 +266,6 @@ function get_partDefinition($taxonNameType) {
  *
  * @return string
  *  The markup for a taxon name.
- * @see path_to_taxon(), must be processed by url() before passing to this method
- * @see path_to_reference(), must be processed by url() before passing to this method
  */
 function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $reference_link = NULL,
   $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
