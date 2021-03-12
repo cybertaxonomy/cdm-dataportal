@@ -393,7 +393,7 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
   // 'height' => 512 / 2, // optimum size for OSM layers 256
   'aspect_ratio' => 2,
   'bbox' => '', // empty to allow automatic zooming to extend
-  'maxZoom' => 15, // corresponds to the default in cdm_openlayers_map.defaults
+  'maxZoom' => 13, // see https://dev.e-taxonomy.eu/redmine/issues/9458
   'show_labels' => FALSE,
   'caption' => '',
   'distribution_opacity' => '0.5',
