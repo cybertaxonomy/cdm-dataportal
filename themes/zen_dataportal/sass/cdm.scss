@@ -69,7 +69,7 @@ $page-part-margin: $base-line-height * 1;
     }
   }
 
-  .block-cdm-dataportal-feature,  .media-caption, .specimens {
+  .block-cdm-dataportal-feature,  .media-caption, .specimens { // TODO .specimens may be obsolete
     clear: both;
     margin-bottom: $page-part-margin;
     dt {
@@ -222,6 +222,75 @@ $page-part-margin: $base-line-height * 1;
     }
     .derived_from {
       clear: both;
+    }
+  }
+
+  // derivatives tree view (see also derivation-tree.js)
+  $tree-entry-vspace: 0; //$base-font-size / 10; TODO remove
+  $tree-line-style: 3px solid $tabs-border;
+  $tree-lines-top-offset: $base-line-height / 7;
+  $tree-lines-left-offset: $base-line-height / 7;
+  div.derived-unit-tree,
+  ul.derived-unit-sub-tree,
+  ul.derived-unit-sub-tree ul {
+    list-style: none;
+    margin: 0 0 0 $tree-lines-left-offset;
+    padding: 0;
+
+    .unit-content {
+      background-color: $menu-bar-background-color;
+      margin-left: 1em;
+    }
+   .unit-label {
+      cursor: pointer;
+    }
+    .unit-label:hover {
+      background-color: $menu-bar-background-color;
+    }
+  }
+
+  div.derived-unit-tree-root {
+    .unit-content-wrapper {
+      border-left: $tree-line-style;
+      margin-left: $tree-lines-left-offset;
+    }
+    div.item-list { // class .item-list is defined by drupal theme function
+      margin-top: $tree-lines-top-offset;
+    }
+  }
+
+  ul.derived-unit-sub-tree{
+    ul {
+      margin-left: 1.0em;
+    }
+    li {
+      position: relative;
+
+      margin-left: 0;
+      padding-left: 1em;
+      margin-top: -$tree-lines-top-offset;
+      margin-bottom: $tree-entry-vspace;
+      line-height: $base-line-height;
+
+      border-left: $tree-line-style;
+    }
+    li:last-child {
+      border-left: none;
+    }
+    li:before {
+      position: absolute;
+      top: $tree-lines-top-offset;
+      left: 0;
+
+      width: 0.5em; /* width of horizontal line */
+      height: 0.5em; /* vertical position of line */
+      vertical-align: top;
+      border-bottom: $tree-line-style;
+      content: "";
+      display: inline-block;
+    }
+    li:last-child:before {
+      border-left: $tree-line-style;
     }
   }
 
