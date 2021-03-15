@@ -2419,7 +2419,7 @@ div.derived-unit-tree {
 
 /* line 265, ../sass/cdm.scss */
 div.derived-unit-tree-root .unit-content-wrapper {
-  border-left: 3px solid #dedede;
+  border-left: 3px dotted #dedede;
   margin-left: 3.2px;
 }
 
@@ -2434,7 +2434,7 @@ ul.derived-unit-sub-tree li {
   padding-left: 1em;
   margin-top: -3.2px;
   line-height: 22.4px;
-  border-left: 3px solid #dedede;
+  border-left: 3px dotted #dedede;
 }
 /* line 288, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:last-child {
@@ -2454,13 +2454,13 @@ ul.derived-unit-sub-tree li:before {
   height: 12.7px;
   /* vertical position of line */
   vertical-align: top;
-  border-bottom: 3px solid #dedede;
+  border-bottom: 3px dotted #dedede;
   content: "";
   display: inline-block;
 }
 /* line 306, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:last-child:before {
-  border-left: 3px solid #dedede;
+  border-left: 3px dotted #dedede;
 }
 
 /*

@@ -228,7 +228,7 @@ $page-part-margin: $base-line-height * 1;
   // derivatives tree view (see also derivation-tree.js)
   $tree-entry-vspace: 7px; //$base-font-size / 2 ???
   $tree-line-width: 3px;
-  $tree-line-style: $tree-line-width solid $menu-bar-background-color;
+  $tree-line-style: $tree-line-width dotted $menu-bar-background-color;
   $tree-hline-length: 1em; // 5px;
   $tree-lines-top-offset: ($base-line-height / 7) ;
   $tree-lines-left-offset: $base-line-height / 7;
