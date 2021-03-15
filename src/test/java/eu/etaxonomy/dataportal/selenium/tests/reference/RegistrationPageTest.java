@@ -71,7 +71,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 20121",
                 regItem.getNameElement().getText());
         assertEquals(
-                "published in: Novis, P. M., Braidwood, J. & Kilroy, C., Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species in Phytotaxa 64: 11-45. 2012",
+                "published in: Novis, P. M., Braidwood, J. & Kilroy, C., Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species. – Phytotaxa 64: 11-45. 2012",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 14:21:52",
@@ -101,7 +101,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("2", typifiedNameElement.getFootNoteKeys().get(0).getText());
         assertEquals("2. Please check reference detail", p.getDataPortalContent().getFootNoteForKey(typifiedNameElement.getFootNoteKeys().get(0)).getText());
         assertEquals(
-                "published in: Jahn, R., Abarca, N., Gemeinholzer, B. & al., Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum in Diatom Research 32: 75-107. 2017",
+                "published in: Jahn, R., Abarca, N., Gemeinholzer, B. & al., Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum. – Diatom Research 32: 75-107. 2017",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 14:20:51",
@@ -142,7 +142,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Holotype: Iran, Islamic Republic of, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–83–1).2",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
-                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149. 2018",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 14:16:45",
@@ -164,7 +164,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Orig. des.: Ramsaria avicennae Heidari & Hauer designated by Heidari & Hauer 2018: 1461",
                 regItem.getNameTypeDesignations().get(0).getText());
         assertEquals(
-                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149. 2018",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 13:54:35",
@@ -193,7 +193,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Holotype: Iran, Islamic Republic of, Ramsar, alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–087–1).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
-                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018",
+                "published in: Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149. 2018",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-06 13:54:29",
@@ -215,7 +215,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24 Jul–Aug 1838",
                 regItem.getTypifiedNameElement().getText());
         assertEquals(
-                "published in: Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H., Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany) in Systematics and Biodiversity. 2017",
+                "published in: Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H., Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany). – Systematics and Biodiversity. 2017",
                 regItem.getCitation().getText());
         assertEquals(
                 "Registration on 2019-02-12 09:08:29",
