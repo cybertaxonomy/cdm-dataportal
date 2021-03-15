@@ -33,6 +33,7 @@
   module_load_include('inc', 'cdm_dataportal', 'includes/media');
   module_load_include('inc', 'cdm_dataportal', 'includes/maps');
   module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');
+  module_load_include('inc', 'cdm_dataportal', 'includes/occurrences_new'); // tmp file, shoud be merged later with occurrences.inc
   module_load_include('inc', 'cdm_dataportal', 'includes/descriptions');
   module_load_include('inc', 'cdm_dataportal', 'includes/pre-drupal8');
 
@@ -325,14 +326,14 @@ function _add_js_taxonomic_children($jquery_selector) {
     );
   }
 
-  function _add_js_ui_accordion(){
-    _add_jquery_ui();
-    drupal_add_js('jQuery(document).ready(function() {
-        jQuery( "#accordion" ).accordion();
-      });',
-      array('type' => 'inline')
-    );
-  }
+function _add_js_ui_accordion(){
+  _add_jquery_ui();
+  drupal_add_js('jQuery(document).ready(function() {
+      jQuery( "#accordion" ).accordion();
+    });',
+    array('type' => 'inline')
+  );
+}
 
 
 function _add_js_utis_client($jquery_selector){
@@ -435,6 +436,15 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
       'cache' => TRUE,
       'preprocess' => FALSE
     )
+  );
+}
+
+function _add_js_derivation_tree($jquery_selector){
+  drupal_add_js(drupal_get_path('module','cdm_dataportal') . '/js/derivation-tree.js');
+  drupal_add_js('jQuery(document).ready(function() {
+      jQuery( "' . $jquery_selector . '" ).derivationTree();
+    });',
+    array('type' => 'inline')
   );
 }
 

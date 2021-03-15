@@ -118,7 +118,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
         );
     }
     else if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE)){ // FIXME this seems to be wrong
-      $render_array['specimen_list'] = compose_specimen_table_top_down($root_unit_dtos);
+      $render_array['specimen_list'] = compose_specimen_table_top_down_new($root_unit_dtos);
       $render_array['specimen_list']['#weight'] = 2;
     } else {
       $specimen_table = compose_specimens_table_bottom_up($specimensOrObservations);
