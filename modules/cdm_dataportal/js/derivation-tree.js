@@ -32,7 +32,7 @@
         var $element = $(this);
         $element.find(".derived-unit-item").each(function () {
             var $listItem = $(this);
-            var unitLabel = $listItem.children('.unit-label');
+            var unitLabel = $listItem.children('.unit-header');
             var unitContent = $listItem.children('.unit-content')
             if(unitContent.length == 0){
                 // must be the root unit, we gonna dig one level deeper

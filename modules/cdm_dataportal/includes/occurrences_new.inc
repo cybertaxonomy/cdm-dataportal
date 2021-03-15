@@ -80,7 +80,7 @@ function derived_units_tree(array $root_unit_dtos){
       '#suffix' => '</div>',
       '#type' => 'container',
       '#attributes' => ['class' => ['derived-unit-item derived-unit-tree-root',  html_class_attribute_ref($sob_dto)]],
-      'div-container' => ['root-item-and-sub-tree' => [markup_to_render_array('<div class="unit-label">' . $sob_dto->label .'</div>'
+      'div-container' => ['root-item-and-sub-tree' => [markup_to_render_array('<div class="unit-header"><div class="unit-label">' . $sob_dto->label .'</div></div>'
         .'<div class="unit-content-wrapper">' // allows to apply the borders between .derived-unit-tree-root and .unit-content
         .'<div class="unit-content">' . compose_cdm_specimen_or_observation_tree_entry($sob_dto) . '</div>'
       . '</div>')]],
@@ -135,7 +135,7 @@ function derived_units_as_list_items(array $root_unit_dtos){
     $item['class'] = ['derived-unit-item ',  html_class_attribute_ref($sob_dto)];
     // data" element of the array is used as the contents of the list item
     $item['data'] = [];
-    $item['data'] = '<div class="unit-label">' . $sob_dto->label .'</div>'
+    $item['data'] = '<div class="unit-header"><div class="unit-label">' . $sob_dto->label .'</div></div>'
       . '<div class="unit-content">' . compose_cdm_specimen_or_observation_tree_entry($sob_dto) . '</div>';
     if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0){
       usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');

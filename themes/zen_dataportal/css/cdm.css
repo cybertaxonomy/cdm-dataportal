@@ -309,7 +309,7 @@ dl.media-caption {
   clear: both;
 }
 
-/* line 235, ../sass/cdm.scss */
+/* line 237, ../sass/cdm.scss */
 div.derived-unit-tree,
 ul.derived-unit-sub-tree,
 ul.derived-unit-sub-tree ul {
@@ -317,77 +317,95 @@ ul.derived-unit-sub-tree ul {
   margin: 0 0 0 3.2px;
   padding: 0;
 }
-/* line 240, ../sass/cdm.scss */
+/* line 242, ../sass/cdm.scss */
+div.derived-unit-tree .unit-header,
+ul.derived-unit-sub-tree .unit-header,
+ul.derived-unit-sub-tree ul .unit-header {
+  padding-top: 7px;
+}
+/* line 244, ../sass/cdm.scss */
+div.derived-unit-tree .unit-header .unit-label,
+ul.derived-unit-sub-tree .unit-header .unit-label,
+ul.derived-unit-sub-tree ul .unit-header .unit-label {
+  cursor: pointer;
+  background-color: #dedede;
+  padding-left: 5px;
+}
+/* line 249, ../sass/cdm.scss */
+div.derived-unit-tree .unit-header .unit-label:hover,
+ul.derived-unit-sub-tree .unit-header .unit-label:hover,
+ul.derived-unit-sub-tree ul .unit-header .unit-label:hover {
+  background-color: #f8f8f8;
+}
+/* line 253, ../sass/cdm.scss */
 div.derived-unit-tree .unit-content,
 ul.derived-unit-sub-tree .unit-content,
 ul.derived-unit-sub-tree ul .unit-content {
-  background-color: #dedede;
-  margin-left: 1em;
+  padding-left: 1em;
+  background-color: #ebebeb;
 }
-/* line 244, ../sass/cdm.scss */
-div.derived-unit-tree .unit-label,
-ul.derived-unit-sub-tree .unit-label,
-ul.derived-unit-sub-tree ul .unit-label {
-  cursor: pointer;
-}
-/* line 247, ../sass/cdm.scss */
-div.derived-unit-tree .unit-label:hover,
-ul.derived-unit-sub-tree .unit-label:hover,
-ul.derived-unit-sub-tree ul .unit-label:hover {
-  background-color: #dedede;
+/* line 256, ../sass/cdm.scss */
+div.derived-unit-tree .unit-content dl,
+ul.derived-unit-sub-tree .unit-content dl,
+ul.derived-unit-sub-tree ul .unit-content dl {
+  margin: 0;
 }
 
-/* line 253, ../sass/cdm.scss */
+/* line 261, ../sass/cdm.scss */
+div.derived-unit-tree {
+  margin-top: -3.2px;
+}
+
+/* line 265, ../sass/cdm.scss */
 div.derived-unit-tree-root .unit-content-wrapper {
-  border-left: 3px solid #bbbbbb;
+  border-left: 3px solid #dedede;
   margin-left: 3.2px;
 }
-/* line 257, ../sass/cdm.scss */
-div.derived-unit-tree-root div.item-list {
-  margin-top: 3.2px;
-}
 
-/* line 263, ../sass/cdm.scss */
+/* line 275, ../sass/cdm.scss */
 ul.derived-unit-sub-tree ul {
   margin-left: 1.0em;
 }
-/* line 266, ../sass/cdm.scss */
+/* line 278, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li {
   position: relative;
   margin-left: 0;
   padding-left: 1em;
   margin-top: -3.2px;
-  margin-bottom: 0;
   line-height: 22.4px;
-  border-left: 3px solid #bbbbbb;
+  border-left: 3px solid #dedede;
 }
-/* line 277, ../sass/cdm.scss */
+/* line 288, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:last-child {
   border-left: none;
 }
-/* line 280, ../sass/cdm.scss */
+/* line 290, ../sass/cdm.scss */
+ul.derived-unit-sub-tree li:last-child .unit-header, ul.derived-unit-sub-tree li:last-child .unit-content {
+  margin-left: 3px;
+}
+/* line 294, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:before {
   position: absolute;
   top: 3.2px;
   left: 0;
-  width: 0.5em;
+  width: 1em;
   /* width of horizontal line */
-  height: 0.5em;
+  height: 12.7px;
   /* vertical position of line */
   vertical-align: top;
-  border-bottom: 3px solid #bbbbbb;
+  border-bottom: 3px solid #dedede;
   content: "";
   display: inline-block;
 }
-/* line 292, ../sass/cdm.scss */
+/* line 306, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:last-child:before {
-  border-left: 3px solid #bbbbbb;
+  border-left: 3px solid #dedede;
 }
 
 /*
  * Map
  */
-/* line 300, ../sass/cdm.scss */
+/* line 314, ../sass/cdm.scss */
 .openlayers-container {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -396,39 +414,39 @@ ul.derived-unit-sub-tree li:last-child:before {
 /*
  * Registration page & items
  */
-/* line 310, ../sass/cdm.scss */
+/* line 324, ../sass/cdm.scss */
 .registration .type-status {
   font-weight: bold;
 }
-/* line 314, ../sass/cdm.scss */
+/* line 328, ../sass/cdm.scss */
 .registration .registration-date-and-institute {
   color: #999;
 }
-/* line 320, ../sass/cdm.scss */
+/* line 334, ../sass/cdm.scss */
 .registration .published-name .TaxonName .name {
   font-weight: bold;
 }
-/* line 324, ../sass/cdm.scss */
+/* line 338, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName {
   color: #999;
 }
-/* line 326, ../sass/cdm.scss */
+/* line 340, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName a {
   color: #999;
 }
-/* line 329, ../sass/cdm.scss */
+/* line 343, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName .TaxonName .name {
   font-weight: bold;
 }
-/* line 335, ../sass/cdm.scss */
+/* line 349, ../sass/cdm.scss */
 .registration .registration-summary .registered_name .name {
   font-weight: bold;
 }
-/* line 338, ../sass/cdm.scss */
+/* line 352, ../sass/cdm.scss */
 .registration .registration-summary .referenced_typified_name {
   color: #999;
 }
-/* line 341, ../sass/cdm.scss */
+/* line 355, ../sass/cdm.scss */
 .registration .registration-summary .label {
   font-weight: bold;
 }
@@ -436,13 +454,13 @@ ul.derived-unit-sub-tree li:last-child:before {
 /*
  * Theme settings page
  */
-/* line 352, ../sass/cdm.scss */
+/* line 366, ../sass/cdm.scss */
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-/* line 356, ../sass/cdm.scss */
+/* line 370, ../sass/cdm.scss */
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */
@@ -453,14 +471,14 @@ ul.derived-unit-sub-tree li:last-child:before {
  *
  * using the same media queries here as in layout/_responsive.scss
  *****************************************************************************************/
-/* line 369, ../sass/cdm.scss */
+/* line 383, ../sass/cdm.scss */
 #classification-breadcrumbs {
   font-size: 1.5em;
   line-height: 1.5em;
 }
 
 @media all and (min-width: 960px) {
-  /* line 380, ../sass/cdm.scss */
+  /* line 394, ../sass/cdm.scss */
   #classification-breadcrumbs {
     font-size: 1em;
   }
@@ -468,7 +486,7 @@ ul.derived-unit-sub-tree li:last-child:before {
 /***************************
  * TESTING ONLY 2020-02-20
  */
-/* line 388, ../sass/cdm.scss */
+/* line 402, ../sass/cdm.scss */
 .font-noto {
   font-family: "Noto Sans", sans-serif !important;
 }
