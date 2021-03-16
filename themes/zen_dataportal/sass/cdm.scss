@@ -226,6 +226,7 @@ $page-part-margin: $base-line-height * 1;
   }
 
   // derivatives tree view (see also derivation-tree.js)
+  // partially based on ideas found in https://jsfiddle.net/xuonpjmh/21/
   $tree-entry-vspace: 7px; //$base-font-size / 2 ???
   $tree-line-width: 3px;
   $tree-line-style: $tree-line-width dotted $menu-bar-background-color;
@@ -251,7 +252,7 @@ $page-part-margin: $base-line-height * 1;
       }
     }
     .unit-content {
-      padding-left: 1em;
+      padding: $base-line-height / 2;
       background-color: lighten($menu-bar-background-color, 5%);
       dl {
         margin: 0;
@@ -260,6 +261,28 @@ $page-part-margin: $base-line-height * 1;
   }
   div.derived-unit-tree {
     margin-top: -$tree-lines-top-offset; // needed for consistent spacing, see below
+    table.specimen-or-observation-details {
+      margin: 0;
+      width: 50%;
+      font-size: smaller;
+      background-color: $page-background-color;
+      thead {
+        // background-color: $menu-bar-background-color;
+        border-bottom: thin solid $menu-bar-background-color;
+      }
+      tbody {
+        background-color: $page-background-color;
+        .label {
+          text-align: right;
+          border-right: thin solid $menu-bar-background-color;
+
+        }
+      }
+      td, th {
+        padding-right: $base-line-height / 2;
+        padding-left: $base-line-height / 2;
+      }
+    }
   }
   div.derived-unit-tree-root {
     .unit-content-wrapper {

@@ -2,8 +2,10 @@
 /**
  * @file
  * Functions for dealing with CDM entities of type SpecimenOrOccurrences
- * This file contains new functions which are to replace functions in occurrences.inc
- * and should be merged with the latter one.
+ * This file contains new functions which are to replace functions in
+ *   occurrences.inc and should be merged with the latter one.
+ *
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
  *
  * @copyright
  *   (C) 2007-2021 EDIT
@@ -12,8 +14,6 @@
  *
  *   The contents of this module are subject to the Mozilla
  *   Public License Version 1.1.
- * @see http://www.mozilla.org/MPL/MPL-1.1.html
- *
  * @author
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
@@ -23,30 +23,31 @@
  * Composes the view on specimens and occurrences as derivate tree
  * starting from the field unit including all derivatives.
  *
- * @see CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE
- *
  * @param array $root_unit_dtos
  *   list of SpecimenOrObservationDTOs
+ *
  * @return array
  *   The Drupal render array
  *
  * @ingroup compose
+ * @see CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE
+ *
  */
-function compose_specimen_table_top_down_new(array $root_unit_dtos){
+function compose_specimen_table_top_down_new(array $root_unit_dtos) {
   // add icons
   $expand_icon = font_awesome_icon_markup(
     'fa-plus-square-o',
-    array(
+    [
       'alt' => 'Show details',
-      'class' => array('expand_icon')
-    )
+      'class' => ['expand_icon'],
+    ]
   );
   $collapse_icon = font_awesome_icon_markup(
     'fa-minus-square-o',
-    array(
+    [
       'alt' => 'Show details',
-      'class' => array('collapse_icon')
-    )
+      'class' => ['collapse_icon'],
+    ]
   );
 
   $derivation_tree = derived_units_tree($root_unit_dtos);
@@ -66,27 +67,38 @@ function compose_specimen_table_top_down_new(array $root_unit_dtos){
  *
  * @param array $root_unit_dtos
  *     list of SpecimenOrObservationDTOs
+ *
  * @return array
  *    An array which can be used in render arrays to be passed to the
  * theme_table() and theme_list().
  */
-function derived_units_tree(array $root_unit_dtos){
+function derived_units_tree(array $root_unit_dtos) {
 
   $root_items = [];
   //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
   foreach ($root_unit_dtos as &$sob_dto) {
+    $field_unit_dto_render_array = compose_cdm_specimen_or_observation_dto($sob_dto);
     $root_item = [
       '#prefix' => '<div class="derived-unit-tree">',
       '#suffix' => '</div>',
       '#type' => 'container',
-      '#attributes' => ['class' => ['derived-unit-item derived-unit-tree-root',  html_class_attribute_ref($sob_dto)]],
-      'div-container' => ['root-item-and-sub-tree' => [markup_to_render_array('<div class="unit-header"><div class="unit-label">' . $sob_dto->label .'</div></div>'
-        .'<div class="unit-content-wrapper">' // allows to apply the borders between .derived-unit-tree-root and .unit-content
-        .'<div class="unit-content">' . compose_cdm_specimen_or_observation_tree_entry($sob_dto) . '</div>'
-      . '</div>')]],
+      '#attributes' => [
+        'class' => [
+          'derived-unit-item derived-unit-tree-root',
+          html_class_attribute_ref($sob_dto),
+        ],
+      ],
+      'div-container' => [
+        'root-item-and-sub-tree' => [
+          markup_to_render_array('<div class="unit-header"><div class="unit-label">' . $sob_dto->label . '</div></div>'
+            . '<div class="unit-content-wrapper">' // allows to apply the borders between .derived-unit-tree-root and .unit-content
+            . '<div class="unit-content">' . drupal_render($field_unit_dto_render_array) . '</div>'
+            . '</div>'),
+        ],
+      ],
 
     ];
-    if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0){
+    if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0) {
       usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');
       // children are displayed in a nested list.
       $root_item['div-container']['root-item-and-sub-tree'][] = derived_units_sub_tree($sob_dto->derivatives);
@@ -122,22 +134,24 @@ function derived_units_sub_tree(array $unit_dtos) {
  *
  * @param array $root_unit_dtos
  *     list of SpecimenOrObservationDTOs
+ *
  * @return array
  *    An array which can be used in render arrays to be passed to the
  * theme_table() and theme_list().
  */
-function derived_units_as_list_items(array $root_unit_dtos){
+function derived_units_as_list_items(array $root_unit_dtos) {
 
   $list_items = [];
   //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
   foreach ($root_unit_dtos as &$sob_dto) {
     $item = [];
-    $item['class'] = ['derived-unit-item ',  html_class_attribute_ref($sob_dto)];
+    $item['class'] = ['derived-unit-item ', html_class_attribute_ref($sob_dto)];
     // data" element of the array is used as the contents of the list item
     $item['data'] = [];
-    $item['data'] = '<div class="unit-header"><div class="unit-label">' . $sob_dto->label .'</div></div>'
-      . '<div class="unit-content">' . compose_cdm_specimen_or_observation_tree_entry($sob_dto) . '</div>';
-    if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0){
+    $units_render_array = compose_cdm_specimen_or_observation_dto($sob_dto);
+    $item['data'] = '<div class="unit-header"><div class="unit-label">' . $sob_dto->label . '</div></div>'
+      . '<div class="unit-content">' . drupal_render($units_render_array) . '</div>';
+    if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0) {
       usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');
       // children are displayed in a nested list.
       $item['children'] = derived_units_as_list_items($sob_dto->derivatives);
@@ -146,4 +160,186 @@ function derived_units_as_list_items(array $root_unit_dtos){
   }
 
   return $list_items;
+}
+
+/**
+ * Compose an render array from a CDM SpecimenOrObservationDTO, without
+ * subordinate derivatives.
+ *
+ * The resulting render array will contain separate DOM block level elements
+ * with header line for the various kind of information like, location,
+ * gathering, specimen/observation, DNA, etc.
+ *
+ * For showing the derivation hierarchy see methods like
+ * derived_units_sub_tree()
+ *
+ * compose_hook() implementation
+ *
+ * @param object $sob_dto
+ *   the CDM FieldUnitDTO or DerivedUnitDTO to compose
+ *   the render array for.
+ * @param bool $compact_mode
+ *   Currently unused, but added for compatibility with
+ *   compose_cdm_specimen_or_observation($specimen_or_observation,
+ *   $isSpecimen_page = false, &$derivatives = null)
+ * @param array $derivatives
+ *   the render array which contains the compositions of the derivatives
+ *   of the supplied $specimenOrObservation
+ *
+ * @return array
+ *  The render array for the SpecimenOrObservationDTO
+ *
+ * @throws \Exception
+ * @ingroup compose
+ */
+function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE, &$derivatives = NULL) {
+  //TODO !!!! add derivation event information like method, etc
+  $render_array = [];
+  if (!$sob_dto) {
+    return $render_array;
+  }
+  if ($sob_dto->type == 'FieldUnit') {
+    $render_array['field-unit'] = compose_cdm_field_unit_dto_location($sob_dto, $compact_mode);
+    if(isset($sob_dto->gathering)){
+      $render_array['gathering'] = compose_cdm_gathering_dto($sob_dto->gathering, $compact_mode);
+    }
+  }
+
+  return $render_array;
+}
+
+/**
+ * Compose an render array from a CDM FieldUnitDTO, without subordinate
+ * derivatives.
+ *
+ * The resulting DOM block level element will have a header line and details.
+ *
+ * For showing the derivation hierarchy see methods like
+ * derived_units_sub_tree()
+ *
+ * compose_hook() implementation
+ *
+ * @param object $sob_dto
+ *   the CDM FieldUnitDTO
+ *   the render array for.
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The render array for the SpecimenOrObservationDTO
+ *
+ * @throws \Exception
+ * @ingroup compose
+ */
+function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
+
+  $table_heading = "Location";
+
+  $table_row_data = [];
+  if (isset_not_empty($fu_dto->sex)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('sex'), cdm_term_representation($fu_dto->sex));
+  }
+  if (isset_not_empty($fu_dto->lifeStage)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('lifeStage'), cdm_term_representation($fu_dto->lifeStage));
+  }
+  if (isset_not_empty($fu_dto->kindOfUnit)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('kindOfUnit'), cdm_term_representation($fu_dto->kindOfUnit));
+  }
+  if (isset_not_empty($fu_dto->individualCount)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('individualCount'), $fu_dto->individualCount);
+  }
+  if (isset_not_empty($fu_dto->definition)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('definition'), $fu_dto->definition);
+  }
+  if (isset_not_empty($fu_dto->fieldNumber)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('fieldNumber'), $fu_dto->fieldNumber);
+  }
+  if (isset_not_empty($fu_dto->primaryCollector)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('primaryCollector'), $fu_dto->primaryCollector);
+  }
+  if (isset_not_empty($fu_dto->fieldNotes)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('fieldNotes'), $fu_dto->fieldNotes);
+  }
+
+  return cdm_sob_dto_table($table_heading, $table_row_data, $fu_dto);
+}
+
+/**
+ * Compose an render array from a CDM FieldUnitDTO, without subordinate
+ * derivatives.
+ *
+ * The resulting DOM block level element will have a header line and details.
+ *
+ * For showing the derivation hierarchy see methods like
+ * derived_units_sub_tree()
+ *
+ * compose_hook() implementation
+ *
+ * @param object $sob_dto
+ *   the CDM FieldUnitDTO
+ *   the render array for.
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The render array for the SpecimenOrObservationDTO
+ *
+ * @throws \Exception
+ * @ingroup compose
+ */
+function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
+
+  $table_heading = "Gathering";
+
+  $table_row_data = [];
+  if (isset_not_empty($gathering_dto->date)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('date'), partialToDate($gathering_dto->date));
+  }
+
+  return cdm_sob_dto_table($table_heading, $table_row_data, $gathering_dto);
+}
+
+/**
+ * Creates a form array for showing details of SpecimenOrObservationDTO in a
+ * tabular form with heading.
+ *
+ * @param $table_heading
+ * @param array $table_row_data
+ * @param $sob_dto
+ */
+function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $weight = null) {
+  $sob_table = [
+    "#theme" => "table",
+    "#header" => [
+      'data' => $table_heading,
+      "#attributes" => [
+        'colspan' => 2
+      ]
+    ],
+    "#rows" => $table_row_data,
+    "#attributes" => [
+      "class" => [
+        'specimen-or-observation-details',
+        html_class_attribute_ref($sob_dto),
+      ]
+    ],
+  ];
+  if($weight){
+    $sob_table['#weight'] = $weight;
+  }
+  return $sob_table;
+}
+
+function cdm_sob_dto_table_row($label, $value) {
+  return [
+    'data' => [
+      [
+        'data' => str_replace(':', '', $label),
+         'class' => [
+          'label'
+        ]
+      ],
+      $value],
+    'no_striping' => TRUE,
+  ];
 }
