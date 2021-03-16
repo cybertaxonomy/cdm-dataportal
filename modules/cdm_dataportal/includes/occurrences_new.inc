@@ -189,7 +189,6 @@ function derived_units_as_list_items(array $root_unit_dtos) {
  * @return array
  *  The render array for the SpecimenOrObservationDTO
  *
- * @throws \Exception
  * @ingroup compose
  */
 function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE, &$derivatives = NULL) {
@@ -219,7 +218,7 @@ function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE
  *
  * compose_hook() implementation
  *
- * @param object $sob_dto
+ * @param object $fu_dto
  *   the CDM FieldUnitDTO
  *   the render array for.
  * @param bool $compact_mode
@@ -228,12 +227,9 @@ function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE
  * @return array
  *  The render array for the SpecimenOrObservationDTO
  *
- * @throws \Exception
  * @ingroup compose
  */
 function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
-
-  $table_heading = "Location";
 
   $table_row_data = [];
   if (isset_not_empty($fu_dto->sex)) {
@@ -276,7 +272,7 @@ function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
  *
  * compose_hook() implementation
  *
- * @param object $sob_dto
+ * @param object $gathering_dto
  *   the CDM FieldUnitDTO
  *   the render array for.
  * @param bool $compact_mode
@@ -285,7 +281,6 @@ function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
  * @return array
  *  The render array for the SpecimenOrObservationDTO
  *
- * @throws \Exception
  * @ingroup compose
  */
 function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
@@ -356,6 +351,10 @@ function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
  * @param $table_heading
  * @param array $table_row_data
  * @param $sob_dto
+ * @param $weight
+ *  The weight determining the order of the drupal render element
+ *
+ * @return array|null
  */
 function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $weight = null) {
   if(count($table_row_data) > 0 ) {
@@ -380,6 +379,7 @@ function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $wei
     }
     return $sob_table;
   }
+  return null;
 }
 
 function cdm_sob_dto_table_row($label, $value) {
@@ -396,4 +396,5 @@ function cdm_sob_dto_table_row($label, $value) {
       'no_striping' => TRUE,
     ];
   }
+  return null;
 }
