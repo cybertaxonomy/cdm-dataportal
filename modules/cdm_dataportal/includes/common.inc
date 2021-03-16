@@ -929,6 +929,8 @@ function isset_not_empty(&$var){
     return true;
   } else if(is_array($var)){
     return count($var) > 0;
+  }else if(is_string($var)){
+    return !!trim($var);
   } else {
     return !!$var;
   }
