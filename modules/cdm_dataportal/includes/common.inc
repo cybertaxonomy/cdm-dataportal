@@ -921,12 +921,16 @@ function icon_link($path, $fragment = '', $superscript = FALSE) {
  * @return bool
  *  True if the variable is set and is not NULL an is not empty.
  */
-function isset_not_empty(&$var){
+function isset_not_empty(&$var, $numerical_non_zero = FALSE){
   if (!isset($var)){
     return false;
   }
   if(is_numeric($var)) {
-    return true;
+    if($numerical_non_zero){
+      return $var;
+    } else {
+      true;
+    };
   } else if(is_array($var)){
     return count($var) > 0;
   }else if(is_string($var)){
@@ -934,5 +938,12 @@ function isset_not_empty(&$var){
   } else {
     return !!$var;
   }
-
 }
+
+function isset_numerical(&$var){
+  if (!isset($var)){
+    return false;
+  }
+  return is_numeric($var);
+}
+
