@@ -911,3 +911,16 @@ function icon_link($path, $fragment = '', $superscript = FALSE) {
   $icon_link = l(custom_icon_font_markup('icon-interal-link-alt-solid', $attributes), $path, ['html' => TRUE, 'fragment' => $fragment] );
   return $icon_link;
 }
+
+/**
+ * Determine if a variable is set and is not NULL an is not empty.
+ *
+ * @param $var
+ *  The variable to test
+ *
+ * @return bool
+ *  True if the variable is set and is not NULL an is not empty.
+ */
+function isset_not_empty($var){
+  return isset($var) & $var;
+}
