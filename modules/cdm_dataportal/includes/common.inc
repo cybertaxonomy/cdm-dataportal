@@ -495,20 +495,23 @@ function statistical_values_from_gathering_event($object, $field_base_name)
   static $default_unit = 'm';
 
   $field_name = $field_base_name . 'Text';
-  if (@is_string($object->$field_name)) {
+  if (isset_not_empty($object->$field_name)) {
     // Freetext overrides all other data
     $min_max_markup = ' ' . $object->$field_name;
   } else {
     // create markup for the atomized min max data
     $min_max_array = statistical_values_array();
-    if (@is_numeric($object->$field_base_name)) {
-      $min_max_array['Min'] = new stdClass();
-      $min_max_array['Min']->_value = $object->$field_base_name;
+    if (isset_numerical($object->$field_base_name)) {
+      $min_max_array['TypicalLowerBoundary'] = new stdClass();
+      $min_max_array['TypicalLowerBoundary']->_value = $object->$field_base_name;
     }
     $field_name = $field_base_name . 'Max';
-    if (@is_numeric($object->$field_name)) {
-      $min_max_array['Max'] = new stdClass();
-      $min_max_array['Max']->_value = $object->$field_name;
+    if (isset_numerical($object->$field_name)) {
+      $min_max_array['TypicalUpperBoundary'] = new stdClass();
+      $min_max_array['TypicalUpperBoundary']->_value = $object->$field_name;
+    } else {
+      $min_max_array['Average'] = $min_max_array['TypicalLowerBoundary'];
+      $min_max_array['TypicalLowerBoundary'] = null;
     }
     $min_max_markup = statistical_values($min_max_array, $default_unit);
   }

@@ -200,8 +200,8 @@ function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE
   }
   if ($sob_dto->type == 'FieldUnit') {
     $render_array['field-unit'] = compose_cdm_field_unit_dto_location($sob_dto, $compact_mode);
-    if(isset($sob_dto->gathering)){
-      $render_array['gathering'] = compose_cdm_gathering_dto($sob_dto->gathering, $compact_mode);
+    if(isset($sob_dto->gatheringEvent)){
+      $render_array['gathering'] = compose_cdm_gathering_dto($sob_dto->gatheringEvent, $compact_mode);
     }
   }
 
@@ -261,7 +261,8 @@ function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
     $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('fieldNotes'), $fu_dto->fieldNotes);
   }
 
-  return cdm_sob_dto_table($table_heading, $table_row_data, $fu_dto);
+  return cdm_sob_dto_table("Location", $table_row_data, $fu_dto);
+
 }
 
 /**
@@ -293,7 +294,56 @@ function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
 
   $table_row_data = [];
   if (isset_not_empty($gathering_dto->date)) {
-    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('date'), partialToDate($gathering_dto->date));
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('date'),
+      partialToDate($gathering_dto->date));
+  }
+  if (isset_not_empty($gathering_dto->collector)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('collector'),
+      $gathering_dto->collector);
+  }
+  if (isset_not_empty($gathering_dto->description)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('description'),
+      $gathering_dto->description);
+  }
+  if (isset_not_empty($gathering_dto->locality)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('locality'),
+      $gathering_dto->locality);
+  }
+  if (isset_not_empty($gathering_dto->country)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('country'),
+      $gathering_dto->country);
+  }
+  if (isset_not_empty($gathering_dto->collectingMethod)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('collectingMethod'),
+      $gathering_dto->collectingMethod);
+  }
+  if (isset($gathering_dto->exactLocation)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('exactLocation'),
+      render_point($gathering_dto->exactLocation));
+  }
+  if (isset($gathering_dto->absoluteElevation)) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('absoluteElevation'),
+      statistical_values_from_gathering_event($gathering_dto, 'absoluteElevation'));
+  }
+  if (isset($gathering_dto->distanceToGround) && $gathering_dto->distanceToGround > 0) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('distanceToGround'),
+      statistical_values_from_gathering_event($gathering_dto, 'distanceToGround'));
+  }
+  if (isset($gathering_dto->distanceToWaterSurface) && $gathering_dto->distanceToWaterSurface > 0) {
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('distanceToWaterSurface'),
+      statistical_values_from_gathering_event($gathering_dto, 'distanceToWaterSurface'));
+  }
+  if(isset_not_empty($gathering_dto->collectingAreas)){
+    $area_representations = array();
+    foreach ($gathering_dto->collectingAreas as $area) {
+      // $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
+      $area_representations[] = $area;
+    }
+    if (!empty($area_representations)) {
+      $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('collectingAreas'),
+        implode(', ', $area_representations)
+      );
+    }
   }
 
   return cdm_sob_dto_table($table_heading, $table_row_data, $gathering_dto);
@@ -308,38 +358,42 @@ function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
  * @param $sob_dto
  */
 function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $weight = null) {
-  $sob_table = [
-    "#theme" => "table",
-    "#header" => [
-      'data' => $table_heading,
+  if(count($table_row_data) > 0 ) {
+    $sob_table = [
+      "#theme" => "table",
+      "#header" => [
+        'data' => $table_heading,
+        "#attributes" => [
+          'colspan' => 2
+        ]
+      ],
+      "#rows" => $table_row_data,
       "#attributes" => [
-        'colspan' => 2
-      ]
-    ],
-    "#rows" => $table_row_data,
-    "#attributes" => [
-      "class" => [
-        'specimen-or-observation-details',
-        html_class_attribute_ref($sob_dto),
-      ]
-    ],
-  ];
-  if($weight){
-    $sob_table['#weight'] = $weight;
+        "class" => [
+          'specimen-or-observation-details',
+          html_class_attribute_ref($sob_dto),
+        ]
+      ],
+    ];
+    if($weight){
+      $sob_table['#weight'] = $weight;
+    }
+    return $sob_table;
   }
-  return $sob_table;
 }
 
 function cdm_sob_dto_table_row($label, $value) {
-  return [
-    'data' => [
-      [
-        'data' => str_replace(':', '', $label),
-         'class' => [
-          'label'
-        ]
-      ],
-      $value],
-    'no_striping' => TRUE,
-  ];
+  if($value){
+    return [
+      'data' => [
+        [
+          'data' => str_replace(':', '', $label),
+           'class' => [
+            'label'
+          ]
+        ],
+        $value],
+      'no_striping' => TRUE,
+    ];
+  }
 }

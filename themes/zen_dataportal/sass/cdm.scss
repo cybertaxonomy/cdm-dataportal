@@ -274,6 +274,7 @@ $page-part-margin: $base-line-height * 1;
         background-color: $page-background-color;
         .label {
           text-align: right;
+          white-space: nowrap;
           border-right: thin solid $menu-bar-background-color;
 
         }
