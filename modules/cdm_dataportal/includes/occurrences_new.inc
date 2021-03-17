@@ -408,7 +408,7 @@ function compose_cdm_unit_dto_type_designations($unit_dto, $compact_mode = FALSE
       render_specimen_typedesignation_dto($unit_dto->specimenTypeDesignations));
   }
 
-  return cdm_sob_dto_table(t('Type designations'), $table_row_data, $unit_dto, 5);
+  return cdm_sob_dto_table(t('Type designations'), $table_row_data, $unit_dto, 5, 2);
 }
 
 /**
@@ -479,7 +479,8 @@ function cdm_sob_dto_media_table(array $listOfMedia, $sob_dto, $heading) {
     'showCaption' => true
   ));
   $table_row_data[] = cdm_sob_dto_table_row(NULL, $gallery_markup);
-  return cdm_sob_dto_table(t($heading), $table_row_data, $sob_dto, 20);
+  $grid_col_span = count($listOfMedia) > 1 ? 2 : NULL;
+  return cdm_sob_dto_table(t($heading), $table_row_data, $sob_dto, 20, $grid_col_span);
 }
 
 /**
@@ -527,14 +528,20 @@ function compose_cdm_derived_unit_dto_sequences($unit_dto, $compact_mode = FALSE
  * @param $sob_dto
  * @param $weight
  *  The weight determining the order of the drupal render element
+ * @param $grid_col_span
+ *  The number of grid colums the table should
  *
  * @return array|null
  */
-function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $weight = NULL) {
+function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $weight = NULL, $grid_col_span = 1) {
   if (count($table_row_data) > 0) {
+    $wrapper_style = '';
+    if($grid_col_span > 1){
+      $wrapper_style = ' style="grid-column-start: span ' . $grid_col_span. ';"';
+    }
     $sob_table = [
       '#theme' => 'table',
-      '#prefix' => '<div class="table-wrapper">',
+      '#prefix' => '<div class="table-wrapper"' . $wrapper_style . '>',
       '#suffix' => '</div>',
       '#header' => [
         [
@@ -546,7 +553,7 @@ function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $wei
       "#attributes" => [
         "class" => [
           'specimen-or-observation-details',
-          html_class_attribute_ref($sob_dto),
+          html_class_attribute_ref($sob_dto)
         ],
       ],
     ];
