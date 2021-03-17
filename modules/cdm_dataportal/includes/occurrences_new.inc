@@ -77,7 +77,7 @@ function derived_units_tree(array $root_unit_dtos) {
   $root_items = [];
   //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
   foreach ($root_unit_dtos as &$sob_dto) {
-    $field_unit_dto_render_array = compose_cdm_specimen_or_observation_dto($sob_dto);
+    $field_unit_dto_render_array = compose_cdm_specimen_or_observation_dto_details_grid($sob_dto);
     $root_item = [
       '#prefix' => '<div class="derived-unit-tree">',
       '#suffix' => '</div>',
@@ -148,7 +148,7 @@ function derived_units_as_list_items(array $root_unit_dtos) {
     $item['class'] = ['derived-unit-item ', html_class_attribute_ref($sob_dto)];
     // data" element of the array is used as the contents of the list item
     $item['data'] = [];
-    $units_render_array = compose_cdm_specimen_or_observation_dto($sob_dto);
+    $units_render_array = compose_cdm_specimen_or_observation_dto_details_grid($sob_dto);
     $item['data'] = '<div class="unit-header"><div class="unit-label">' . $sob_dto->label . '</div></div>'
       . '<div class="unit-content">' . drupal_render($units_render_array) . '</div>';
     if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0) {
@@ -163,15 +163,15 @@ function derived_units_as_list_items(array $root_unit_dtos) {
 }
 
 /**
- * Compose an render array from a CDM SpecimenOrObservationDTO, without
- * subordinate derivatives.
+ * Compose grid of details tabled for a CDM SpecimenOrObservationDTO
  *
  * The resulting render array will contain separate DOM block level elements
  * with header line for the various kind of information like, location,
  * gathering, specimen/observation, DNA, etc.
  *
- * For showing the derivation hierarchy see methods like
- * derived_units_sub_tree()
+ *
+ * Subordinate derivatives will not be included. For showing the derivation
+ * hierarchy see methods like derived_units_sub_tree()
  *
  * compose_hook() implementation
  *
@@ -191,7 +191,7 @@ function derived_units_as_list_items(array $root_unit_dtos) {
  *
  * @ingroup compose
  */
-function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE, &$derivatives = NULL) {
+function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $compact_mode = FALSE, &$derivatives = NULL) {
   //TODO !!!! add derivation event information like method, etc
   $render_array = [];
   if (!$sob_dto) {
@@ -221,21 +221,63 @@ function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE
 
   return $render_array;
 }
+/**
+ * Data rows with details for a SpecimenOrObservationDTO to be used in a table
+ * @param object $sob_dto
+ *   the CDM SpecimenOrObservationDTO
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The data rows
+ */
+function sob_dto_details_rows($sob_dto, $compact_mode = FALSE) {
+
+  $table_row_data = [];
+
+  if (isset_not_empty($sob_dto->recordBase)) {
+    $label = cdm_term_representation($sob_dto->recordBase);
+    if($label == 'Dna Sample'){
+      $label == 'DNA Sample';
+    }
+    $table_row_data[0] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('recordBase'),
+      $label);
+  }
+  if (isset_not_empty($sob_dto->kindOfUnit)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('kindOfUnit'),
+      cdm_term_representation($sob_dto->kindOfUnit));
+  }
+  if (isset_not_empty($sob_dto->preferredStableUri)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('preferredStableUri'),
+      cdm_external_uri($sob_dto->preferredStableUri, false));
+  }
+  if (isset_not_empty($sob_dto->sex)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('sex'),
+      cdm_term_representation($sob_dto->sex));
+  }
+  if (isset_not_empty($sob_dto->lifeStage)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('lifeStage'),
+      cdm_term_representation($sob_dto->lifeStage));
+  }
+
+  return $table_row_data;
+}
+
 
 /**
- * Compose an render array from a CDM FieldUnitDTO, without subordinate
- * derivatives.
+ * Compose a table of details for a FieldUnitDTO.
  *
  * The resulting DOM block level element will have a header line and details.
- *
- * For showing the derivation hierarchy see methods like
- * derived_units_sub_tree()
  *
  * compose_hook() implementation
  *
  * @param object $fu_dto
  *   the CDM FieldUnitDTO
- *   the render array for.
  * @param bool $compact_mode
  *   Currently unused,
  *
@@ -246,16 +288,8 @@ function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE
  */
 function compose_cdm_field_unit_dto_details($fu_dto, $compact_mode = FALSE) {
 
-  $table_row_data = [];
-  if (isset_not_empty($fu_dto->sex)) {
-    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('sex'), cdm_term_representation($fu_dto->sex));
-  }
-  if (isset_not_empty($fu_dto->lifeStage)) {
-    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('lifeStage'), cdm_term_representation($fu_dto->lifeStage));
-  }
-  if (isset_not_empty($fu_dto->kindOfUnit)) {
-    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('kindOfUnit'), cdm_term_representation($fu_dto->kindOfUnit));
-  }
+  $table_row_data = sob_dto_details_rows($fu_dto, $compact_mode);
+
   if (isset_not_empty($fu_dto->individualCount)) {
     $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('individualCount'), $fu_dto->individualCount);
   }
@@ -273,6 +307,36 @@ function compose_cdm_field_unit_dto_details($fu_dto, $compact_mode = FALSE) {
   }
 
   return cdm_sob_dto_table(t("Field unit"), $table_row_data, $fu_dto, 2);
+}
+
+/**
+ * Compose a table of details for a DerivedUnitDTO.
+ *
+ * The resulting DOM block level element will have a header line and details.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $du_dto
+ *   the CDM DerivedUnitDTO
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The render array for the DerivedUnitDTO
+ *
+ * @ingroup compose
+ */
+function compose_cdm_derived_unit_dto_details($du_dto, $compact_mode = FALSE) {
+
+  $table_row_data = sob_dto_details_rows($du_dto, $compact_mode);
+
+  if (isset_not_empty($du_dto->characterData)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('characterData'),
+      icon_link(path_to_specimen($du_dto->uuid), '', FALSE), false);
+  }
+
+  return cdm_sob_dto_table(t("Field unit"), $table_row_data, $du_dto, 2);
 }
 
 /**
@@ -430,18 +494,17 @@ function compose_cdm_unit_dto_type_designations($unit_dto, $compact_mode = FALSE
  */
 function compose_cdm_derived_unit_dto_storage_details($sob_dto, $compact_mode = FALSE) {
 
-  $table_row_data = [];
+  $table_row_data = sob_dto_details_rows($sob_dto, $compact_mode);
 
+  if (isset($sob_dto->accessionNumber)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('accessionNumber'),
+      $sob_dto->accessionNumber);
+  }
   if (isset($sob_dto->collection)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('collection'),
       render_collection_dto($sob_dto->collection));
-  }
-  if (isset($sob_dto->storedUnder)) {
-    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($sob_dto->storedUnder->uuid));
-    $table_row_data[] = cdm_sob_dto_table_row(
-      cdm_occurrence_field_name_label('storedUnder'),
-      render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid)));
   }
   if (isset($sob_dto->storedUnder)) {
     $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($sob_dto->storedUnder->uuid));
