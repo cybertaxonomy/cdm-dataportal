@@ -306,37 +306,9 @@ function compose_cdm_field_unit_dto_details($fu_dto, $compact_mode = FALSE) {
     $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('fieldNotes'), $fu_dto->fieldNotes);
   }
 
-  return cdm_sob_dto_table(t("Field unit"), $table_row_data, $fu_dto, 2);
-}
-
-/**
- * Compose a table of details for a DerivedUnitDTO.
- *
- * The resulting DOM block level element will have a header line and details.
- *
- * compose_hook() implementation
- *
- * @param object $du_dto
- *   the CDM DerivedUnitDTO
- * @param bool $compact_mode
- *   Currently unused,
- *
- * @return array
- *  The render array for the DerivedUnitDTO
- *
- * @ingroup compose
- */
-function compose_cdm_derived_unit_dto_details($du_dto, $compact_mode = FALSE) {
-
-  $table_row_data = sob_dto_details_rows($du_dto, $compact_mode);
-
-  if (isset_not_empty($du_dto->characterData)) {
-    $table_row_data[] = cdm_sob_dto_table_row(
-      cdm_occurrence_field_name_label('characterData'),
-      icon_link(path_to_specimen($du_dto->uuid), '', FALSE), false);
-  }
-
-  return cdm_sob_dto_table(t("Field unit"), $table_row_data, $du_dto, 2);
+  $heading = $table_row_data[0]['data'][1];
+  unset($table_row_data[0]);
+  return cdm_sob_dto_table(t($heading), $table_row_data, $fu_dto, 2);
 }
 
 /**
@@ -476,43 +448,51 @@ function compose_cdm_unit_dto_type_designations($unit_dto, $compact_mode = FALSE
 }
 
 /**
- * Compose an render array from the SpecimenOrObservationDTO.determinedNames.
+ * Compose details table for a DerivedUnitDTO.
  *
  * The resulting DOM block level element will have a header line and details.
  *
  * compose_hook() implementation
  *
- * @param object $sob_dto
- *   the CDM SpecimenOrObservationDTO
+ * @param object $du_dto
+ *   the CDM DerivedUnitDTO
  * @param bool $compact_mode
  *   Currently unused,
  *
  * @return array
- *  The render array for the SpecimenOrObservationDTO.determinedNames
+ *  The render array for the DerivedUnitDTO
  *
  * @ingroup compose
  */
-function compose_cdm_derived_unit_dto_storage_details($sob_dto, $compact_mode = FALSE) {
+function compose_cdm_derived_unit_dto_storage_details($du_dto, $compact_mode = FALSE) {
 
-  $table_row_data = sob_dto_details_rows($sob_dto, $compact_mode);
+  $table_row_data = sob_dto_details_rows($du_dto, $compact_mode);
 
-  if (isset($sob_dto->accessionNumber)) {
+  if (isset($du_dto->accessionNumber)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('accessionNumber'),
-      $sob_dto->accessionNumber);
+      $du_dto->accessionNumber);
   }
-  if (isset($sob_dto->collection)) {
+  if (isset($du_dto->collection)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('collection'),
-      render_collection_dto($sob_dto->collection));
+      render_collection_dto($du_dto->collection));
   }
-  if (isset($sob_dto->storedUnder)) {
-    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($sob_dto->storedUnder->uuid));
+  if (isset($du_dto->storedUnder)) {
+    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($du_dto->storedUnder->uuid));
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('storedUnder'),
       render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid)));
   }
-  return cdm_sob_dto_table(t('Storage'), $table_row_data, $sob_dto, 1);
+  if (isset_not_empty($du_dto->characterData)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('characterData'),
+      icon_link(path_to_specimen($du_dto->uuid), '', FALSE), false);
+  }
+
+  $heading = $table_row_data[0]['data'][1];
+  unset($table_row_data[0]);
+  return cdm_sob_dto_table(t($heading), $table_row_data, $du_dto, 1);
 }
 
 /**
@@ -597,6 +577,7 @@ function compose_cdm_derived_unit_dto_sequences($unit_dto, $compact_mode = FALSE
  * @return array|null
  */
 function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $weight = NULL, $grid_col_span = 1) {
+
   if (count($table_row_data) > 0) {
     $wrapper_style = '';
     if($grid_col_span > 1){
