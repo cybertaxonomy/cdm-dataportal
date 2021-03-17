@@ -199,7 +199,7 @@ function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE
   }
   if ($sob_dto->type == 'FieldUnit') {
     $render_array['field-unit'] = compose_cdm_field_unit_dto_location($sob_dto, $compact_mode);
-    if(isset($sob_dto->gatheringEvent)){
+    if (isset($sob_dto->gatheringEvent)) {
       $render_array['gathering'] = compose_cdm_gathering_dto($sob_dto->gatheringEvent, $compact_mode);
     }
   }
@@ -257,8 +257,7 @@ function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
     $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('fieldNotes'), $fu_dto->fieldNotes);
   }
 
-  return cdm_sob_dto_table("Location", $table_row_data, $fu_dto);
-
+  return cdm_sob_dto_table(t("Field unit"), $table_row_data, $fu_dto, 2);
 }
 
 /**
@@ -284,8 +283,6 @@ function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
  * @ingroup compose
  */
 function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
-
-  $table_heading = "Gathering";
 
   $table_row_data = [];
   if (isset_not_empty($gathering_dto->date)) {
@@ -328,8 +325,8 @@ function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
     $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('distanceToWaterSurface'),
       statistical_values_from_gathering_event($gathering_dto, 'distanceToWaterSurface'));
   }
-  if(isset_not_empty($gathering_dto->collectingAreas)){
-    $area_representations = array();
+  if (isset_not_empty($gathering_dto->collectingAreas)) {
+    $area_representations = [];
     foreach ($gathering_dto->collectingAreas as $area) {
       // $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
       $area_representations[] = $area;
@@ -341,7 +338,7 @@ function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
     }
   }
 
-  return cdm_sob_dto_table($table_heading, $table_row_data, $gathering_dto);
+  return cdm_sob_dto_table(t("Gathering & Location"), $table_row_data, $gathering_dto, 1);
 }
 
 /**
@@ -356,45 +353,48 @@ function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
  *
  * @return array|null
  */
-function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $weight = null) {
-  if(count($table_row_data) > 0 ) {
+function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $weight = NULL) {
+  if (count($table_row_data) > 0) {
     $sob_table = [
-      "#theme" => "table",
-      "#header" => [
-        'data' => $table_heading,
-        "#attributes" => [
-          'colspan' => 2
-        ]
+      '#theme' => 'table',
+      '#prefix' => '<div class="table-wrapper">',
+      '#suffix' => '</div>',
+      '#header' => [
+        [
+          'data' => $table_heading,
+          'colspan' => 2,
+        ],
       ],
       "#rows" => $table_row_data,
       "#attributes" => [
         "class" => [
           'specimen-or-observation-details',
           html_class_attribute_ref($sob_dto),
-        ]
+        ],
       ],
     ];
-    if($weight){
+    if ($weight) {
       $sob_table['#weight'] = $weight;
     }
     return $sob_table;
   }
-  return null;
+  return NULL;
 }
 
 function cdm_sob_dto_table_row($label, $value) {
-  if($value){
+  if ($value) {
     return [
       'data' => [
         [
           'data' => str_replace(':', '', $label),
-           'class' => [
-            'label'
-          ]
+          'class' => [
+            'label',
+          ],
         ],
-        $value],
+        $value,
+      ],
       'no_striping' => TRUE,
     ];
   }
-  return null;
+  return NULL;
 }

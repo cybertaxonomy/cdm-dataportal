@@ -225,14 +225,17 @@ $page-part-margin: $base-line-height * 1;
     }
   }
 
-  // derivatives tree view (see also derivation-tree.js)
-  // partially based on ideas found in https://jsfiddle.net/xuonpjmh/21/
+  /*
+   * derivatives tree view (see also derivation-tree.js)
+   * partially based on ideas found in https://jsfiddle.net/xuonpjmh/21/
+   */
   $tree-entry-vspace: 7px; //$base-font-size / 2 ???
   $tree-line-width: 3px;
   $tree-line-style: $tree-line-width dotted $menu-bar-background-color;
   $tree-hline-length: 1em; // 5px;
   $tree-lines-top-offset: ($base-line-height / 7) ;
   $tree-lines-left-offset: $base-line-height / 7;
+  $derived-unit-details-table-gutter: $base-line-height / 2;
   div.derived-unit-tree,
   ul.derived-unit-sub-tree,
   ul.derived-unit-sub-tree ul {
@@ -252,22 +255,26 @@ $page-part-margin: $base-line-height * 1;
       }
     }
     .unit-content {
-      padding: $base-line-height / 2;
+      padding: $derived-unit-details-table-gutter;
       background-color: lighten($menu-bar-background-color, 5%);
+
+      display: grid;
+      grid-template-columns : repeat(2, 1fr);
+      grid-column-gap: $derived-unit-details-table-gutter;
+
       dl {
         margin: 0;
       }
     }
   }
   div.derived-unit-tree {
-    margin-top: -$tree-lines-top-offset; // needed for consistent spacing, see below
     table.specimen-or-observation-details {
       margin: 0;
-      width: 50%;
+      width: 100%;
+      vertical-align: top;
       font-size: smaller;
       background-color: $page-background-color;
       thead {
-        // background-color: $menu-bar-background-color;
         border-bottom: thin solid $menu-bar-background-color;
       }
       tbody {
@@ -276,12 +283,12 @@ $page-part-margin: $base-line-height * 1;
           text-align: right;
           white-space: nowrap;
           border-right: thin solid $menu-bar-background-color;
-
+          width: 50%;
         }
       }
       td, th {
-        padding-right: $base-line-height / 2;
-        padding-left: $base-line-height / 2;
+        padding-right: $derived-unit-details-table-gutter;
+        padding-left: $derived-unit-details-table-gutter;
       }
     }
   }
@@ -289,9 +296,6 @@ $page-part-margin: $base-line-height * 1;
     .unit-content-wrapper {
       border-left: $tree-line-style;
       margin-left: $tree-lines-left-offset;
-    }
-    div.item-list { // class .item-list is defined by drupal theme function
-      // margin-top: $tree-lines-top-offset;
     }
   }
 
