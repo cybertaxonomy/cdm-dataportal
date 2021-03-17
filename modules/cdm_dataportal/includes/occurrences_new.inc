@@ -198,10 +198,25 @@ function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE
     return $render_array;
   }
   if ($sob_dto->type == 'FieldUnit') {
-    $render_array['field-unit'] = compose_cdm_field_unit_dto_location($sob_dto, $compact_mode);
+    $render_array['field-unit'] = compose_cdm_field_unit_dto_details($sob_dto, $compact_mode);
     if (isset($sob_dto->gatheringEvent)) {
-      $render_array['gathering'] = compose_cdm_gathering_dto($sob_dto->gatheringEvent, $compact_mode);
+      $render_array['gathering'] = compose_cdm_gathering_dto_details($sob_dto->gatheringEvent, $compact_mode);
     }
+  } else {
+    $render_array['storage'] = compose_cdm_derived_unit_dto_storage_details($sob_dto, $compact_mode);
+    $render_array['type-designations'] = compose_cdm_unit_dto_type_designations($sob_dto, $compact_mode);
+    if($sob_dto->type == 'DnaSample'){
+      // FIXME:
+      $render_array['dna-sample'] = compose_cdm_derived_unit_dto_sequences($sob_dto, $compact_mode);
+    } else if($sob_dto->type == 'MediaSpecimen' && isset_not_empty($sob_dto->mediaSpecimen)) {
+      $render_array['media-specimens'] = cdm_sob_dto_media_table($sob_dto->mediaSpecimen, $sob_dto, 'Media Specimens');
+    }
+  }
+  if(isset_not_empty($sob_dto->determinedNames)){
+    $render_array['determinations'] = compose_cdm_sob_dto_determinations($sob_dto, $compact_mode);
+  }
+  if(isset_not_empty($sob_dto->listOfMedia)){
+    $render_array['media'] = cdm_sob_dto_media_table($sob_dto->listOfMedia, $sob_dto, 'Media');;
   }
 
   return $render_array;
@@ -229,7 +244,7 @@ function compose_cdm_specimen_or_observation_dto($sob_dto, $compact_mode = FALSE
  *
  * @ingroup compose
  */
-function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
+function compose_cdm_field_unit_dto_details($fu_dto, $compact_mode = FALSE) {
 
   $table_row_data = [];
   if (isset_not_empty($fu_dto->sex)) {
@@ -261,28 +276,23 @@ function compose_cdm_field_unit_dto_location($fu_dto, $compact_mode = FALSE) {
 }
 
 /**
- * Compose an render array from a CDM FieldUnitDTO, without subordinate
- * derivatives.
+ * Compose an render array from a CDM GatheringDTO.
  *
  * The resulting DOM block level element will have a header line and details.
- *
- * For showing the derivation hierarchy see methods like
- * derived_units_sub_tree()
  *
  * compose_hook() implementation
  *
  * @param object $gathering_dto
- *   the CDM FieldUnitDTO
- *   the render array for.
+ *   the CDM GatheringDTO object
  * @param bool $compact_mode
  *   Currently unused,
  *
  * @return array
- *  The render array for the SpecimenOrObservationDTO
+ *  The render array for the GatheringDTO
  *
  * @ingroup compose
  */
-function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
+function compose_cdm_gathering_dto_details($gathering_dto, $compact_mode = FALSE) {
 
   $table_row_data = [];
   if (isset_not_empty($gathering_dto->date)) {
@@ -342,6 +352,173 @@ function compose_cdm_gathering_dto($gathering_dto, $compact_mode = FALSE) {
 }
 
 /**
+ * Compose an render array from the SpecimenOrObservationDTO.determinedNames.
+ *
+ * The resulting DOM block level element will have a header line and details.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $sob_dto
+ *   the CDM SpecimenOrObservationDTO
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The render array for the SpecimenOrObservationDTO.determinedNames
+ *
+ * @ingroup compose
+ */
+function compose_cdm_sob_dto_determinations($sob_dto, $compact_mode = FALSE) {
+
+  $table_row_data = [];
+
+  foreach ($sob_dto->determinedNames as $name) {
+    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $name->uuid);
+    $table_row_data[] = cdm_sob_dto_table_row(NULL, render_taxon_or_name($taxon_name, url(path_to_name($taxon_name->uuid))));
+  }
+
+  $label = count($table_row_data) > 1 ? t("Identifications") : t("Identification");
+  return cdm_sob_dto_table($label, $table_row_data, $sob_dto, 1);
+}
+
+/**
+ * Compose an render array from the DerivedUnitDTO.specimenTypeDesignations.
+ *
+ * The resulting DOM block level element will have a header line and details.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $unit_dto
+ *   the CDM DerivedUnitDTO
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The render array for the SpecimenOrObservationDTO.determinedNames
+ *
+ * @ingroup compose
+ */
+function compose_cdm_unit_dto_type_designations($unit_dto, $compact_mode = FALSE) {
+
+  $table_row_data = [];
+
+  if (isset_not_empty($unit_dto->specimenTypeDesignations)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      NULL,
+      render_specimen_typedesignation_dto($unit_dto->specimenTypeDesignations));
+  }
+
+  return cdm_sob_dto_table(t('Type designations'), $table_row_data, $unit_dto, 5);
+}
+
+/**
+ * Compose an render array from the SpecimenOrObservationDTO.determinedNames.
+ *
+ * The resulting DOM block level element will have a header line and details.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $sob_dto
+ *   the CDM SpecimenOrObservationDTO
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The render array for the SpecimenOrObservationDTO.determinedNames
+ *
+ * @ingroup compose
+ */
+function compose_cdm_derived_unit_dto_storage_details($sob_dto, $compact_mode = FALSE) {
+
+  $table_row_data = [];
+
+  if (isset($sob_dto->collection)) {
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('collection'),
+      render_collection_dto($sob_dto->collection));
+  }
+  if (isset($sob_dto->storedUnder)) {
+    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($sob_dto->storedUnder->uuid));
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('storedUnder'),
+      render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid)));
+  }
+  if (isset($sob_dto->storedUnder)) {
+    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($sob_dto->storedUnder->uuid));
+    $table_row_data[] = cdm_sob_dto_table_row(
+      cdm_occurrence_field_name_label('storedUnder'),
+      render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid)));
+  }
+  return cdm_sob_dto_table(t('Storage'), $table_row_data, $sob_dto, 1);
+}
+
+/**
+ * @param $listOfMedia
+ * @param $sob_dto
+ * @param $heading
+ *
+ * @return array|null
+ */
+function cdm_sob_dto_media_table(array $listOfMedia, $sob_dto, $heading) {
+  $table_row_data = [];
+  $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
+  $captionElements = array(
+    'title',
+    '#uri' => t('open media'),
+  );
+  $gallery_markup = compose_cdm_media_gallerie(array(
+    'mediaList' => $listOfMedia,
+    'galleryName' => $sob_dto->uuid,
+    'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
+    'cols' => $gallery_settings['cdm_dataportal_media_cols'],
+    'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+    'captionElements' => $captionElements,
+    'mediaLinkType' => 'LIGHTBOX',
+    'alternativeMediaUri' => NULL,
+    'galleryLinkUri' => NULL,
+    'showCaption' => true
+  ));
+  $table_row_data[] = cdm_sob_dto_table_row(NULL, $gallery_markup);
+  return cdm_sob_dto_table(t($heading), $table_row_data, $sob_dto, 20);
+}
+
+/**
+ * Compose an render array from the DerivedUnitDTO.sequences.
+ *
+ * The resulting DOM block level element will have a header line and details.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $unit_dto
+ *   the CDM DerivedUnitDTO
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The render array for the DerivedUnitDTO.sequences.
+ *
+ * @ingroup compose
+ *
+ * TODO see  #3347 (services and REST service controller for molecular classes implemented)
+ */
+function compose_cdm_derived_unit_dto_sequences($unit_dto, $compact_mode = FALSE) {
+
+  $table_row_data = [];
+  if(isset_not_empty($unit_dto->sequences)){
+    foreach ($unit_dto->sequences as $sequence) {
+      if (isset($sequence->geneticAccessionNumber)) {
+        $table_row_data[] = cdm_sob_dto_table_row(
+          cdm_occurrence_field_name_label('geneticAccessionNumber'),
+          $sequence->geneticAccessionNumber);
+      }
+      // TODO ....
+    }
+  }
+
+  return cdm_sob_dto_table(t('Storage'), $table_row_data, $unit_dto, 1);
+}
+
+/**
  * Creates a form array for showing details of SpecimenOrObservationDTO in a
  * tabular form with heading.
  *
@@ -383,18 +560,31 @@ function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $wei
 
 function cdm_sob_dto_table_row($label, $value) {
   if ($value) {
-    return [
-      'data' => [
-        [
-          'data' => str_replace(':', '', $label),
-          'class' => [
-            'label',
+    if($label) {
+      return [
+        'data' => [
+          [
+            'data' => str_replace(':', '', $label),
+            'class' => [
+              'label',
+            ],
           ],
+          $value,
         ],
-        $value,
-      ],
-      'no_striping' => TRUE,
-    ];
+        'no_striping' => TRUE,
+      ];
+    } else {
+      // value spanning two columns
+      return [
+        'data' => [
+          [
+            'data' => $value,
+            'colspan' => 2,
+          ]
+        ],
+        'no_striping' => TRUE,
+      ];
+    }
   }
   return NULL;
 }

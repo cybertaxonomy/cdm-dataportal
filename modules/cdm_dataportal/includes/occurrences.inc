@@ -1921,9 +1921,8 @@ function render_collection($collection, $do_link = false /* to be made true, see
   while($super_collection){
     $collection_str = $is_dto ? $super_collection->label : $super_collection->titleCache;
     if(
-      (isset($super_collection->institute) && $super_collection->institute->titleCache) ||
-      ($is_dto && $super_collection->institute)
-    ){
+    ($is_dto && $super_collection->institute) ||
+    (isset_not_empty($super_collection->institute) && isset_not_empty($super_collection->institute->titleCache))){
       $collection_str .= ' at ' . ($is_dto ? $super_collection->institute : $super_collection->institute->titleCache);
     }
     $collection_str_list[] = $collection_str;
