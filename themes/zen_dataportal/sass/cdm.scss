@@ -259,9 +259,14 @@ $page-part-margin: $base-line-height * 1;
       background-color: lighten($menu-bar-background-color, 5%);
 
       display: grid;
-      grid-template-columns : repeat(2, 1fr);
       grid-column-gap: $derived-unit-details-table-gutter;
-
+      grid-row-gap: $derived-unit-details-table-gutter;
+      @media all and (max-width: 659px) {
+        grid-template-columns : repeat(1, 1fr);
+      }
+      @media all and (min-width: 660px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
       dl {
         margin: 0;
       }
