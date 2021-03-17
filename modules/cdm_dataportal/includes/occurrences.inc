@@ -427,7 +427,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                 switch ($field) {
 
                   case 'recordBasis':
-                    $label = $value->message_L10n;
+                    $label = $value->representation_L10n;
                     if($label == 'Dna Sample'){
                       $label == 'DNA Sample';
                     }
@@ -1345,7 +1345,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
   if (is_object($specimen_or_observation_dto)) {
 
     if(isset($specimen_or_observation_dto->recordBase)){
-        $type_label = $specimen_or_observation_dto->recordBase->message_L10n;
+        $type_label = $specimen_or_observation_dto->recordBase->representation_L10n;
     }
       RenderHints::setFootnoteListKey($type_label . '-' . $specimen_or_observation_dto->uuid);
 
@@ -1379,7 +1379,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
                 /* ---- SpecimenOrObservationBase --- */
                 case 'recordBase':
-                  $label = $value->message_L10n;
+                  $label = $value->representation_L10n;
                   if($label == 'Dna Sample'){
                     $label == 'DNA Sample';
                   }

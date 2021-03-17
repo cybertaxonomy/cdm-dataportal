@@ -38,7 +38,7 @@ function compose_taxon_node_status(array $taxon_nodes){
       $annotations_and_sources = handle_annotations_and_sources($taxon_node);
 
       if(isset($taxon_node->status)){
-        $state_label = strtolower($taxon_node->status->message_L10n);
+        $state_label = strtolower($taxon_node->status->representation_L10n);
         if(isset($taxon_node->statusNote_L10n)){
           $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote_L10n . ')</span>';
         }
