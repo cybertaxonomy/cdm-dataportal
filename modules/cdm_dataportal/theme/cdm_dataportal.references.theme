@@ -79,12 +79,17 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
 }
 
 /**
+ * Creates an internal link displayes as icon.
+ *
  * @param $path
+ * The drupal path to create the link for
+ * @param string[] $class_attributes
+ *   Class attributes for the link element. By default ['superscript'] is being used.
  *
  * @return string
  */
-function cdm_internal_link($path) {
-  return l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), $path, array('html' => true));
+function cdm_internal_link($path, $class_attributes = ['superscript']) {
+  return l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => $class_attributes]), $path, ['html' => true]);
 }
 
 /**

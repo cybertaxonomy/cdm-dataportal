@@ -90,7 +90,7 @@ function derived_units_tree(array $root_unit_dtos) {
       ],
       'div-container' => [
         'root-item-and-sub-tree' => [
-          markup_to_render_array('<div class="unit-header"><div class="unit-label">' . $sob_dto->label . '</div></div>'
+          markup_to_render_array(derived_units_tree_node_header($sob_dto)
             . '<div class="unit-content-wrapper">' // allows to apply the borders between .derived-unit-tree-root and .unit-content
             . '<div class="unit-content">' . drupal_render($field_unit_dto_render_array) . '</div>'
             . '</div>'),
@@ -149,7 +149,7 @@ function derived_units_as_list_items(array $root_unit_dtos) {
     // data" element of the array is used as the contents of the list item
     $item['data'] = [];
     $units_render_array = compose_cdm_specimen_or_observation_dto_details_grid($sob_dto);
-    $item['data'] = '<div class="unit-header"><div class="unit-label">' . $sob_dto->label . '</div></div>'
+    $item['data'] = derived_units_tree_node_header($sob_dto)
       . '<div class="unit-content">' . drupal_render($units_render_array) . '</div>';
     if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0) {
       usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');
@@ -160,6 +160,16 @@ function derived_units_as_list_items(array $root_unit_dtos) {
   }
 
   return $list_items;
+}
+
+/**
+ * @param $sob_dto
+ *
+ * @return string
+ */
+function derived_units_tree_node_header($sob_dto) {
+  $link =  cdm_internal_link(path_to_specimen($sob_dto->uuid), null);
+  return '<div class="unit-header"><div class="unit-label">' . $sob_dto->label . '<span class="page-link">' . $link . '</span></div></div>';
 }
 
 /**

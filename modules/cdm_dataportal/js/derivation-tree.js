@@ -33,6 +33,9 @@
         $element.find(".derived-unit-item").each(function () {
             var $listItem = $(this);
             var unitLabel = $listItem.children('.unit-header');
+            unitLabel.find('.page-link').click(function(event){
+                event.stopPropagation();
+            });
             var unitContent = $listItem.children('.unit-content')
             if(unitContent.length == 0){
                 // must be the root unit, we gonna dig one level deeper
