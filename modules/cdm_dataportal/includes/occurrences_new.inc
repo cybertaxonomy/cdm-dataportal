@@ -202,7 +202,6 @@ function derived_units_tree_node_header($sob_dto) {
  * @ingroup compose
  */
 function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $compact_mode = FALSE, &$derivatives = NULL) {
-  //TODO !!!! add derivation event information like method, etc
   $render_array = [];
   if (!$sob_dto) {
     return $render_array;
@@ -213,6 +212,9 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $compact
       $render_array['gathering'] = compose_cdm_gathering_dto_details($sob_dto->gatheringEvent, $compact_mode);
     }
   } else {
+    if(isset($sob_dto->derivationEvent)){
+      $render_array['derivation-event'] = compose_cdm_derivation_event($sob_dto->derivationEvent);
+    }
     $render_array['storage'] = compose_cdm_derived_unit_dto_storage_details($sob_dto, $compact_mode);
     $render_array['type-designations'] = compose_cdm_unit_dto_type_designations($sob_dto, $compact_mode);
     if($sob_dto->type == 'DnaSample'){
@@ -278,6 +280,54 @@ function sob_dto_details_rows($sob_dto, $compact_mode = FALSE) {
   return $table_row_data;
 }
 
+/**
+ * Compose a table of details for a DerivationEventDTO.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $derivation_event_dto
+ *   the CDM DerivationEventDTO
+ * @param bool $compact_mode
+ *   Currently unused,
+ *
+ * @return array
+ *  The render array for the DerivationEventDTO
+ *
+ * @ingroup compose
+ */
+function compose_cdm_derivation_event($derivation_event_dto, $compact_mode = FALSE){
+
+  $details_array = [];
+  // $markup = t("Derivation") . ': ';
+  $markup = ucfirst(cdm_term_representation($derivation_event_dto->eventType));
+  if(isset_not_empty($derivation_event_dto->actor)){
+    $details_array[] = $derivation_event_dto->actor;
+  }
+  if(isset_not_empty($derivation_event_dto->institute)){
+    $details_array[] = $derivation_event_dto->institute;
+  }
+  if(isset_not_empty($derivation_event_dto->timePeriod)){
+    $details_array[] = timePeriodToString($derivation_event_dto->timePeriod);
+  }
+  $details_markup = join(', ', $details_array);
+  if($details_markup){
+    $markup .= ': ' . $details_markup;
+  }
+  $render_array = [
+    '#type' => 'container',
+    '#attributes' => [
+      'class' => [
+        'derivation-event',
+        html_class_attribute_ref($derivation_event_dto)
+      ],
+      'style' => [
+        'grid-column-start: span 2'
+      ]
+    ],
+    'content' => markup_to_render_array($markup)
+  ];
+  return $render_array;
+}
 
 /**
  * Compose a table of details for a FieldUnitDTO.

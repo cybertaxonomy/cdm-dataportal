@@ -274,6 +274,11 @@ $page-part-margin: $base-line-height * 1;
         margin: 0;
       }
     }
+    .derivation-event {
+      font-size: smaller;
+      margin-top: -$derived-unit-details-table-gutter;
+      color: $link-color-synonym;
+    }
   }
   div.derived-unit-tree {
     table.specimen-or-observation-details {
