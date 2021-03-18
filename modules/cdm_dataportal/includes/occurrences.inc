@@ -1386,7 +1386,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                   _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $label,NULL, -10);
                 break;
                 case 'derivationEvent':
-                    @_description_list_group_add($groups, 'Gathering type:', ucfirst($value->derivationEventType), NULL, 1);
+                    @_description_list_group_add($groups, 'Gathering type:', ucfirst($value->eventType), NULL, 1);
                     break;
                 case 'accessionNumber':
                     @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 0);
