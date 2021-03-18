@@ -50,21 +50,24 @@ function html_class_attribute_ref($cdm_entity) {
 
   $attributes = '';
   if (is_cdm_entity($cdm_entity)) {
+    // Entities
     $attributes =  "cdm:" . $cdm_entity->class . " uuid:" . $cdm_entity->uuid;
-  } elseif (isset($cdm_entity->class)) {
     switch ($cdm_entity->class){
-      case 'TypedEntityReference':
-      case 'TaggedEntityReference':
-      case 'TypeDesignationDTO':
-        $attributes =  "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
-      break;
-      case 'TaxonNodeDto':
-        $attributes .= " taxon_uuid:"  . $cdm_entity->taxonUuid . " sec_uuid:"  . $cdm_entity->secUuid;;
-      break;
       case 'Taxon':
         if(isset($cdm_entity->sec->uuid)){
-        $attributes .= " sec_uuid:"  . $cdm_entity->sec->uuid;
-      }
+          $attributes .= " sec_uuid:"  . $cdm_entity->sec->uuid;
+        }
+        break;
+    }
+  } elseif (isset($cdm_entity->class)) {
+    // DTOs
+    if(isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)){
+        $attributes =  "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
+    }
+    // additional data of specific DTOs
+    switch ($cdm_entity->class){
+      case 'TaxonNodeDto':
+        $attributes .= "taxon_uuid:"  . $cdm_entity->taxonUuid . " sec_uuid:"  . $cdm_entity->secUuid;;
       break;
     }
   }
