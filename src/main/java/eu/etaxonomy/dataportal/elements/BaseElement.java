@@ -32,6 +32,7 @@ import eu.etaxonomy.dataportal.ElementUtils;
 public class BaseElement {
 
     public static final Logger logger = Logger.getLogger(BaseElement.class);
+
     /**
      * Default tolerance for testing sizes and positions
      */
@@ -50,6 +51,21 @@ public class BaseElement {
 
     public WebElement getElement() {
         return element;
+    }
+
+    /**
+     * Null save factory method
+     *
+     * @param we
+     *  May be <code>null</code>
+     * @return
+     *  The new BaseElement or <code>null</code>.
+     */
+    public static BaseElement from(WebElement we) {
+        if(we != null) {
+            return new BaseElement(we);
+        }
+        return null;
     }
 
     public String getText() {
