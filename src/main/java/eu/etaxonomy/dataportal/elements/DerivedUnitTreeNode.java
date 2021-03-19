@@ -30,11 +30,12 @@ public class DerivedUnitTreeNode extends BaseElement {
         // > .item-list > ul.derived-unit-sub-tree > li.derived-unit-item
         String xpathStr =
                 "./div" + XPathTools.classAttrContains("item-list")
-                + "/ul" + XPathTools.classAttrContains("derived-unit-sub-tree")
+                + "/ul" + XPathTools.classAttrContains("derived-unit-item")
                 + "/li" + XPathTools.classAttrContains("derived-unit-item");
         subNodes = element.findElements(By.xpath(xpathStr))
         .stream()
-        .map(e -> new DerivedUnitTreeNode(e))
+        .peek(el -> System.out.println("#####> " + element.getText() + " >>> " + el.getText()))
+        .map(el -> new DerivedUnitTreeNode(el))
         .collect(Collectors.toList());
     }
 

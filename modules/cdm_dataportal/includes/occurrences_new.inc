@@ -128,7 +128,8 @@ function derived_units_sub_tree(array $unit_dtos) {
     '#theme' => 'item_list',
     '#type' => 'ul',
     '#attributes' => [
-      'class' => CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE . ' derived-unit-sub-tree',
+      // NOTE: class attribute "derived-unit-item" is important for consistency with subordinate <ul> elements produced by the drupal theme function
+      'class' => CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE . ' derived-unit-item derived-unit-sub-tree',
     ],
     '#items' => $list_items,
   ];
