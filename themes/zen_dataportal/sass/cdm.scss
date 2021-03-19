@@ -17,6 +17,10 @@ $page-part-margin: $base-line-height * 1;
   @include cdm-link-style;
 }
 
+.footnotes .footnote {
+  font-size: smaller;
+}
+
 .node-cdm-name {
   .name-page-name {
     margin-top: $zen-gutter-width / 2;

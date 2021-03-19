@@ -2134,91 +2134,96 @@ tr.selected td {
   color: #115e92;
 }
 
-/* line 21, ../sass/cdm.scss */
+/* line 20, ../sass/cdm.scss */
+.footnotes .footnote {
+  font-size: smaller;
+}
+
+/* line 25, ../sass/cdm.scss */
 .node-cdm-name .name-page-name {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-/* line 25, ../sass/cdm.scss */
+/* line 29, ../sass/cdm.scss */
 .node-cdm-name .registered_name {
   font-weight: bold;
 }
-/* line 28, ../sass/cdm.scss */
+/* line 32, ../sass/cdm.scss */
 .node-cdm-name .type-status {
   font-weight: bold;
 }
 
-/* line 34, ../sass/cdm.scss */
+/* line 38, ../sass/cdm.scss */
 #content a.tabs-primary__tab-link {
   color: #333;
 }
-/* line 38, ../sass/cdm.scss */
+/* line 42, ../sass/cdm.scss */
 #content table {
   caption-side: top;
 }
-/* line 39, ../sass/cdm.scss */
+/* line 43, ../sass/cdm.scss */
 #content table th {
   text-align: left;
 }
-/* line 43, ../sass/cdm.scss */
+/* line 47, ../sass/cdm.scss */
 #content table caption {
   text-align: right;
   font-size: smaller;
 }
 
-/* line 50, ../sass/cdm.scss */
+/* line 54, ../sass/cdm.scss */
 #page-toc {
   float: right;
   background-color: white;
 }
-/* line 53, ../sass/cdm.scss */
+/* line 57, ../sass/cdm.scss */
 #page-toc h3 {
   margin-top: 0;
   line-height: 22.4px;
 }
 
-/* line 59, ../sass/cdm.scss */
+/* line 63, ../sass/cdm.scss */
 #taxonProfileImage {
   float: left;
 }
 
-/* line 64, ../sass/cdm.scss */
+/* line 68, ../sass/cdm.scss */
 .block-cdm-dataportal-feature .content-caption {
   text-align: right;
 }
-/* line 67, ../sass/cdm.scss */
+/* line 71, ../sass/cdm.scss */
 .block-cdm-dataportal-feature .label {
   font-style: italic;
 }
 
-/* line 72, ../sass/cdm.scss */
+/* line 76, ../sass/cdm.scss */
 .block-cdm-dataportal-feature, .media-caption, .specimens {
   clear: both;
   margin-bottom: 22.4px;
 }
-/* line 75, ../sass/cdm.scss */
+/* line 79, ../sass/cdm.scss */
 .block-cdm-dataportal-feature dt, .media-caption dt, .specimens dt {
   float: left;
   font-weight: bold;
   margin-right: 0.3em;
 }
-/* line 80, ../sass/cdm.scss */
+/* line 84, ../sass/cdm.scss */
 .block-cdm-dataportal-feature dd, .media-caption dd, .specimens dd {
   margin: 0;
   margin-left: 40px;
 }
-/* line 84, ../sass/cdm.scss */
+/* line 88, ../sass/cdm.scss */
 .block-cdm-dataportal-feature dl dl, .media-caption dl dl, .specimens dl dl {
   margin: 0;
   /* reset default from cdm_dataportal.css */
 }
 
-/* line 89, ../sass/cdm.scss */
+/* line 93, ../sass/cdm.scss */
 .breadcrumbs li {
   padding: 0 0 0 0;
 }
 
-/* line 94, ../sass/cdm.scss */
+/* line 98, ../sass/cdm.scss */
 .description-table .described-entities .label {
   font-weight: bold;
 }
@@ -2248,12 +2253,12 @@ tr.selected td {
 #search_results .Taxon a:visited {
   color: #115e92;
 }
-/* line 108, ../sass/cdm.scss */
+/* line 112, ../sass/cdm.scss */
 #search_results table {
   margin: 1em 0;
 }
 
-/* line 117, ../sass/cdm.scss */
+/* line 121, ../sass/cdm.scss */
 div.cdm-item-list div.item {
   margin: 11.2px 0;
 }
@@ -2261,7 +2266,7 @@ div.cdm-item-list div.item {
 /*
  * Taxon page and parts
  */
-/* line 126, ../sass/cdm.scss */
+/* line 130, ../sass/cdm.scss */
 .page-part {
   margin-bottom: 22.4px;
   clear: none;
@@ -2271,7 +2276,7 @@ div.cdm-item-list div.item {
  * definition list container rendered by the
  * drupal theme function theme_description_list()
  */
-/* line 136, ../sass/cdm.scss */
+/* line 140, ../sass/cdm.scss */
 .description_list h3 {
   font-size: 14px;
   line-height: 22.4px;
@@ -2281,12 +2286,12 @@ div.cdm-item-list div.item {
 /*
  * Synonymy
  */
-/* line 150, ../sass/cdm.scss */
+/* line 154, ../sass/cdm.scss */
 #synonymy div.accepted-name {
   margin-bottom: -1em;
   margin-top: 1em;
 }
-/* line 155, ../sass/cdm.scss */
+/* line 159, ../sass/cdm.scss */
 #synonymy .homotypic-synonymy-group, #synonymy .heterotypic-synonymy-group, #synonymy .taxon-relationships {
   border-bottom: 1px solid #DEDEDE;
   /* replace padding by margin */
@@ -2297,21 +2302,21 @@ div.cdm-item-list div.item {
 /*
  * Media
  */
-/* line 166, ../sass/cdm.scss */
+/* line 170, ../sass/cdm.scss */
 dl.media-caption {
   margin: 0;
 }
 
-/* line 170, ../sass/cdm.scss */
+/* line 174, ../sass/cdm.scss */
 .media-caption dd {
   margin-left: 0;
 }
-/* line 172, ../sass/cdm.scss */
+/* line 176, ../sass/cdm.scss */
 .media-caption dd .title {
   font-size: 100%;
 }
 
-/* line 177, ../sass/cdm.scss */
+/* line 181, ../sass/cdm.scss */
 .image-gallerie td.caption {
   padding-bottom: 1em;
 }
@@ -2319,53 +2324,53 @@ dl.media-caption {
 /*
  * specimens and type designations
  */
-/* line 185, ../sass/cdm.scss */
+/* line 189, ../sass/cdm.scss */
 #specimens table.media_gallery {
   margin-top: 0.2em;
 }
-/* line 188, ../sass/cdm.scss */
+/* line 192, ../sass/cdm.scss */
 #specimens .description_list {
   clear: both;
 }
-/* line 190, ../sass/cdm.scss */
+/* line 194, ../sass/cdm.scss */
 #specimens .description_list h3 {
   margin-top: 0;
   background-color: #ddd;
 }
-/* line 194, ../sass/cdm.scss */
+/* line 198, ../sass/cdm.scss */
 #specimens .description_list h4 {
   clear: left;
   margin-bottom: 0;
   font-style: italic;
 }
-/* line 200, ../sass/cdm.scss */
+/* line 204, ../sass/cdm.scss */
 #specimens .dynabox_content {
   margin-left: 20px;
   margin-right: 20px;
 }
-/* line 204, ../sass/cdm.scss */
+/* line 208, ../sass/cdm.scss */
 #specimens .block-cdm-dataportal-feature {
   margin-left: 40px;
   margin-bottom: 0;
 }
-/* line 207, ../sass/cdm.scss */
+/* line 211, ../sass/cdm.scss */
 #specimens .block-cdm-dataportal-feature h2 {
   font-size: 14px;
   line-height: 22.4px;
   font-weight: bold;
 }
-/* line 214, ../sass/cdm.scss */
+/* line 218, ../sass/cdm.scss */
 #specimens ul.typeDesignations {
   clear: both;
 }
-/* line 217, ../sass/cdm.scss */
+/* line 221, ../sass/cdm.scss */
 #specimens .dna-sequence div {
   font-size: 14px;
   font-family: monospace;
   clear: left;
   padding-left: 40px;
 }
-/* line 223, ../sass/cdm.scss */
+/* line 227, ../sass/cdm.scss */
 #specimens .derived_from {
   clear: both;
 }
@@ -2374,7 +2379,7 @@ dl.media-caption {
  * derivatives tree view (see also derivation-tree.js)
  * partially based on ideas found in https://jsfiddle.net/xuonpjmh/21/
  */
-/* line 241, ../sass/cdm.scss */
+/* line 245, ../sass/cdm.scss */
 div.derived-unit-tree,
 ul.derived-unit-sub-tree,
 ul.derived-unit-sub-tree ul {
@@ -2382,13 +2387,13 @@ ul.derived-unit-sub-tree ul {
   margin: 0 0 0 3.2px;
   padding: 0;
 }
-/* line 246, ../sass/cdm.scss */
+/* line 250, ../sass/cdm.scss */
 div.derived-unit-tree .unit-header,
 ul.derived-unit-sub-tree .unit-header,
 ul.derived-unit-sub-tree ul .unit-header {
   padding-top: 7px;
 }
-/* line 248, ../sass/cdm.scss */
+/* line 252, ../sass/cdm.scss */
 div.derived-unit-tree .unit-header .unit-label,
 ul.derived-unit-sub-tree .unit-header .unit-label,
 ul.derived-unit-sub-tree ul .unit-header .unit-label {
@@ -2396,19 +2401,19 @@ ul.derived-unit-sub-tree ul .unit-header .unit-label {
   background-color: #dedede;
   padding-left: 5px;
 }
-/* line 252, ../sass/cdm.scss */
+/* line 256, ../sass/cdm.scss */
 div.derived-unit-tree .unit-header .unit-label .page-link,
 ul.derived-unit-sub-tree .unit-header .unit-label .page-link,
 ul.derived-unit-sub-tree ul .unit-header .unit-label .page-link {
   float: right;
 }
-/* line 256, ../sass/cdm.scss */
+/* line 260, ../sass/cdm.scss */
 div.derived-unit-tree .unit-header .unit-label:hover,
 ul.derived-unit-sub-tree .unit-header .unit-label:hover,
 ul.derived-unit-sub-tree ul .unit-header .unit-label:hover {
   background-color: #f8f8f8;
 }
-/* line 260, ../sass/cdm.scss */
+/* line 264, ../sass/cdm.scss */
 div.derived-unit-tree .unit-content,
 ul.derived-unit-sub-tree .unit-content,
 ul.derived-unit-sub-tree ul .unit-content {
@@ -2419,7 +2424,7 @@ ul.derived-unit-sub-tree ul .unit-content {
   grid-row-gap: 11.2px;
 }
 @media all and (max-width: 659px) {
-  /* line 260, ../sass/cdm.scss */
+  /* line 264, ../sass/cdm.scss */
   div.derived-unit-tree .unit-content,
   ul.derived-unit-sub-tree .unit-content,
   ul.derived-unit-sub-tree ul .unit-content {
@@ -2427,20 +2432,20 @@ ul.derived-unit-sub-tree ul .unit-content {
   }
 }
 @media all and (min-width: 660px) {
-  /* line 260, ../sass/cdm.scss */
+  /* line 264, ../sass/cdm.scss */
   div.derived-unit-tree .unit-content,
   ul.derived-unit-sub-tree .unit-content,
   ul.derived-unit-sub-tree ul .unit-content {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-/* line 273, ../sass/cdm.scss */
+/* line 277, ../sass/cdm.scss */
 div.derived-unit-tree .unit-content dl,
 ul.derived-unit-sub-tree .unit-content dl,
 ul.derived-unit-sub-tree ul .unit-content dl {
   margin: 0;
 }
-/* line 277, ../sass/cdm.scss */
+/* line 281, ../sass/cdm.scss */
 div.derived-unit-tree .derivation-event,
 ul.derived-unit-sub-tree .derivation-event,
 ul.derived-unit-sub-tree ul .derivation-event {
@@ -2449,7 +2454,7 @@ ul.derived-unit-sub-tree ul .derivation-event {
   color: #7c7c7c;
 }
 
-/* line 284, ../sass/cdm.scss */
+/* line 288, ../sass/cdm.scss */
 div.derived-unit-tree table.details-table {
   margin: 0;
   width: 100%;
@@ -2457,38 +2462,38 @@ div.derived-unit-tree table.details-table {
   font-size: smaller;
   background-color: white;
 }
-/* line 290, ../sass/cdm.scss */
+/* line 294, ../sass/cdm.scss */
 div.derived-unit-tree table.details-table thead {
   border-bottom: thin solid #dedede;
 }
-/* line 293, ../sass/cdm.scss */
+/* line 297, ../sass/cdm.scss */
 div.derived-unit-tree table.details-table tbody {
   background-color: white;
 }
-/* line 295, ../sass/cdm.scss */
+/* line 299, ../sass/cdm.scss */
 div.derived-unit-tree table.details-table tbody .label {
   text-align: right;
   white-space: nowrap;
   border-right: thin solid #dedede;
   width: 50%;
 }
-/* line 302, ../sass/cdm.scss */
+/* line 306, ../sass/cdm.scss */
 div.derived-unit-tree table.details-table td, div.derived-unit-tree table.details-table th {
   padding-right: 11.2px;
   padding-left: 11.2px;
 }
 
-/* line 309, ../sass/cdm.scss */
+/* line 313, ../sass/cdm.scss */
 div.derived-unit-tree-root .unit-content-wrapper {
   border-left: 3px dotted #dedede;
   margin-left: 3.2px;
 }
 
-/* line 316, ../sass/cdm.scss */
+/* line 320, ../sass/cdm.scss */
 ul.derived-unit-sub-tree ul {
   margin-left: 1.0em;
 }
-/* line 319, ../sass/cdm.scss */
+/* line 323, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li {
   position: relative;
   margin-left: 0;
@@ -2497,15 +2502,15 @@ ul.derived-unit-sub-tree li {
   line-height: 22.4px;
   border-left: 3px dotted #dedede;
 }
-/* line 329, ../sass/cdm.scss */
+/* line 333, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:last-child {
   border-left: none;
 }
-/* line 331, ../sass/cdm.scss */
+/* line 335, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:last-child .unit-header, ul.derived-unit-sub-tree li:last-child .unit-content {
   margin-left: 3px;
 }
-/* line 335, ../sass/cdm.scss */
+/* line 339, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:before {
   position: absolute;
   top: 3.2px;
@@ -2519,7 +2524,7 @@ ul.derived-unit-sub-tree li:before {
   content: "";
   display: inline-block;
 }
-/* line 347, ../sass/cdm.scss */
+/* line 351, ../sass/cdm.scss */
 ul.derived-unit-sub-tree li:last-child:before {
   border-left: 3px dotted #dedede;
 }
@@ -2527,7 +2532,7 @@ ul.derived-unit-sub-tree li:last-child:before {
 /*
  * Map
  */
-/* line 355, ../sass/cdm.scss */
+/* line 359, ../sass/cdm.scss */
 .openlayers-container {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -2536,39 +2541,39 @@ ul.derived-unit-sub-tree li:last-child:before {
 /*
  * Registration page & items
  */
-/* line 365, ../sass/cdm.scss */
+/* line 369, ../sass/cdm.scss */
 .registration .type-status {
   font-weight: bold;
 }
-/* line 369, ../sass/cdm.scss */
+/* line 373, ../sass/cdm.scss */
 .registration .registration-date-and-institute {
   color: #999;
 }
-/* line 375, ../sass/cdm.scss */
+/* line 379, ../sass/cdm.scss */
 .registration .published-name .TaxonName .name {
   font-weight: bold;
 }
-/* line 379, ../sass/cdm.scss */
+/* line 383, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName {
   color: #999;
 }
-/* line 381, ../sass/cdm.scss */
+/* line 385, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName a {
   color: #999;
 }
-/* line 384, ../sass/cdm.scss */
+/* line 388, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName .TaxonName .name {
   font-weight: bold;
 }
-/* line 390, ../sass/cdm.scss */
+/* line 394, ../sass/cdm.scss */
 .registration .registration-summary .registered_name .name {
   font-weight: bold;
 }
-/* line 393, ../sass/cdm.scss */
+/* line 397, ../sass/cdm.scss */
 .registration .registration-summary .referenced_typified_name {
   color: #999;
 }
-/* line 396, ../sass/cdm.scss */
+/* line 400, ../sass/cdm.scss */
 .registration .registration-summary .label {
   font-weight: bold;
 }
@@ -2576,13 +2581,13 @@ ul.derived-unit-sub-tree li:last-child:before {
 /*
  * Theme settings page
  */
-/* line 407, ../sass/cdm.scss */
+/* line 411, ../sass/cdm.scss */
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-/* line 411, ../sass/cdm.scss */
+/* line 415, ../sass/cdm.scss */
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */
@@ -2593,14 +2598,14 @@ ul.derived-unit-sub-tree li:last-child:before {
  *
  * using the same media queries here as in layout/_responsive.scss
  *****************************************************************************************/
-/* line 424, ../sass/cdm.scss */
+/* line 428, ../sass/cdm.scss */
 #classification-breadcrumbs {
   font-size: 1.5em;
   line-height: 1.5em;
 }
 
 @media all and (min-width: 960px) {
-  /* line 435, ../sass/cdm.scss */
+  /* line 439, ../sass/cdm.scss */
   #classification-breadcrumbs {
     font-size: 1em;
   }
@@ -2608,7 +2613,7 @@ ul.derived-unit-sub-tree li:last-child:before {
 /***************************
  * TESTING ONLY 2020-02-20
  */
-/* line 443, ../sass/cdm.scss */
+/* line 447, ../sass/cdm.scss */
 .font-noto {
   font-family: "Noto Sans", sans-serif !important;
 }

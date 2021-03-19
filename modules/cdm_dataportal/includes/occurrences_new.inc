@@ -74,6 +74,9 @@ function compose_specimen_table_top_down_new(array $root_unit_dtos) {
  */
 function derived_units_tree(array $root_unit_dtos) {
 
+  RenderHints::pushToRenderStack('derived-unit-tree');
+  RenderHints::setFootnoteListKey('derived-unit-tree');
+
   $root_items = [];
   //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
   foreach ($root_unit_dtos as &$sob_dto) {
@@ -105,6 +108,9 @@ function derived_units_tree(array $root_unit_dtos) {
     }
     $root_items[] = $root_item;
   }
+
+  $root_items['footnotes'] = markup_to_render_array(render_footnotes());
+  RenderHints::popFromRenderStack();
 
   return $root_items;
 }
