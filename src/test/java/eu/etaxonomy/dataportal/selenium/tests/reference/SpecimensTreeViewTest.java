@@ -64,7 +64,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
                 .collect(Collectors.toList());
     }
 
-    //@Test
+    @Test
     public void testPage() {
 
         assertEquals(3, duTrees.size());
@@ -77,7 +77,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     }
 
 
-    //@Test
+    @Test
     public void testDerivationTree1() {
 
         DerivedUnitTree tree1 = duTrees.get(0);
@@ -93,7 +93,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("B_SP-99999.png", subNode3.getHeader().getText());
     }
 
-    //@Test
+    @Test
     public void testDerivationTree2() {
 
         DerivedUnitTree tree2 = duTrees.get(1);
