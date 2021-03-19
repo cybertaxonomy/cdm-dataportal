@@ -676,7 +676,8 @@ function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $wei
       "#rows" => $table_row_data,
       "#attributes" => [
         "class" => [
-          'specimen-or-observation-details',
+          'details-table',
+          'details-table-' . normalize_to_class_attribute($table_heading),
           html_class_attribute_ref($sob_dto)
         ],
       ],

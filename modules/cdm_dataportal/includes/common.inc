@@ -953,3 +953,9 @@ function isset_numerical(&$var){
   return is_numeric($var);
 }
 
+function normalize_to_class_attribute($string){
+  $string = strtolower($string);
+  $string = preg_replace('/\s/', '_', $string);
+  $string = preg_replace('/[^a-z0-9\-_]/', '', $string);
+  return $string;
+}

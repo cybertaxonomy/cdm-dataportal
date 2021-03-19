@@ -2450,7 +2450,7 @@ ul.derived-unit-sub-tree ul .derivation-event {
 }
 
 /* line 284, ../sass/cdm.scss */
-div.derived-unit-tree table.specimen-or-observation-details {
+div.derived-unit-tree table.details-table {
   margin: 0;
   width: 100%;
   vertical-align: top;
@@ -2458,22 +2458,22 @@ div.derived-unit-tree table.specimen-or-observation-details {
   background-color: white;
 }
 /* line 290, ../sass/cdm.scss */
-div.derived-unit-tree table.specimen-or-observation-details thead {
+div.derived-unit-tree table.details-table thead {
   border-bottom: thin solid #dedede;
 }
 /* line 293, ../sass/cdm.scss */
-div.derived-unit-tree table.specimen-or-observation-details tbody {
+div.derived-unit-tree table.details-table tbody {
   background-color: white;
 }
 /* line 295, ../sass/cdm.scss */
-div.derived-unit-tree table.specimen-or-observation-details tbody .label {
+div.derived-unit-tree table.details-table tbody .label {
   text-align: right;
   white-space: nowrap;
   border-right: thin solid #dedede;
   width: 50%;
 }
 /* line 302, ../sass/cdm.scss */
-div.derived-unit-tree table.specimen-or-observation-details td, div.derived-unit-tree table.specimen-or-observation-details th {
+div.derived-unit-tree table.details-table td, div.derived-unit-tree table.details-table th {
   padding-right: 11.2px;
   padding-left: 11.2px;
 }
