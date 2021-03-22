@@ -34,21 +34,6 @@
  *
  */
 function compose_specimen_table_top_down_new(array $root_unit_dtos) {
-  // add icons
-  $expand_icon = font_awesome_icon_markup(
-    'fa-plus-square-o',
-    [
-      'alt' => 'Show details',
-      'class' => ['expand_icon'],
-    ]
-  );
-  $collapse_icon = font_awesome_icon_markup(
-    'fa-minus-square-o',
-    [
-      'alt' => 'Show details',
-      'class' => ['collapse_icon'],
-    ]
-  );
 
   $derivation_tree = derived_units_tree($root_unit_dtos);
 
