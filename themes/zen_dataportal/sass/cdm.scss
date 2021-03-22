@@ -264,49 +264,11 @@ $page-part-margin: $base-line-height * 1;
     .unit-content {
       padding: $derived-unit-details-table-gutter;
       background-color: lighten($menu-bar-background-color, 5%);
-
-      display: grid;
-      grid-column-gap: $derived-unit-details-table-gutter;
-      grid-row-gap: $derived-unit-details-table-gutter;
-      @media all and (max-width: 659px) {
-        grid-template-columns : repeat(1, 1fr);
-      }
-      @media all and (min-width: 660px) {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      dl {
-        margin: 0;
-      }
     }
     .derivation-event {
       font-size: smaller;
       margin-top: -$derived-unit-details-table-gutter;
       color: $link-color-synonym;
-    }
-  }
-  div.derived-unit-tree {
-    table.details-table {
-      margin: 0;
-      width: 100%;
-      vertical-align: top;
-      font-size: smaller;
-      background-color: $page-background-color;
-      thead {
-        border-bottom: thin solid $menu-bar-background-color;
-      }
-      tbody {
-        background-color: $page-background-color;
-        .label {
-          text-align: right;
-          white-space: nowrap;
-          border-right: thin solid $menu-bar-background-color;
-          width: 50%;
-        }
-      }
-      td, th {
-        padding-right: $derived-unit-details-table-gutter;
-        padding-left: $derived-unit-details-table-gutter;
-      }
     }
   }
   div.derived-unit-tree-root {
@@ -315,7 +277,6 @@ $page-part-margin: $base-line-height * 1;
       margin-left: $tree-lines-left-offset;
     }
   }
-
   ul.derived-unit-sub-tree{
     ul {
       margin-left: 1.0em;
@@ -352,6 +313,47 @@ $page-part-margin: $base-line-height * 1;
       border-left: $tree-line-style;
     }
   }
+
+  .derived-unit-details-grid {
+    table.details-table {
+      margin: 0;
+      width: 100%;
+      vertical-align: top;
+      font-size: smaller;
+      background-color: $page-background-color;
+      thead {
+        border-bottom: thin solid $menu-bar-background-color;
+      }
+      tbody {
+        background-color: $page-background-color;
+        .label {
+          text-align: right;
+          white-space: nowrap;
+          border-right: thin solid $menu-bar-background-color;
+          width: 50%;
+        }
+      }
+      td, th {
+        padding-right: $derived-unit-details-table-gutter;
+        padding-left: $derived-unit-details-table-gutter;
+      }
+    }
+  }
+  .derived-unit-details-grid {
+    display: grid;
+    grid-column-gap: $derived-unit-details-table-gutter;
+    grid-row-gap: $derived-unit-details-table-gutter;
+    @media all and (max-width: 659px) {
+      grid-template-columns : repeat(1, 1fr);
+    }
+    @media all and (min-width: 660px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    dl {
+      margin: 0;
+    }
+  }
+
 
   /*
    * Map

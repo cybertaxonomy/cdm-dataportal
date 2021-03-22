@@ -157,7 +157,7 @@ function derived_units_as_list_items(array $root_unit_dtos) {
     $item['data'] = [];
     $units_render_array = compose_cdm_specimen_or_observation_dto_details_grid($sob_dto);
     $item['data'] = derived_units_tree_node_header($sob_dto)
-      . '<div class="unit-content">' . drupal_render($units_render_array) . '</div>';
+      . '<div class="unit-content derived-unit-details-grid">' . drupal_render($units_render_array) . '</div>';
     if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0) {
       usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');
       // children are displayed in a nested list.
