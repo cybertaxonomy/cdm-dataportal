@@ -151,7 +151,7 @@ define('CDM_WS_KML_TYPEDESIGNATIONS', 'kml/typeDesignations/$0');
 define('CDM_WS_KML_TAXON_OCCURRENCE', 'kml/taxonOccurrencesFor/$0');
 
 define('CDM_WS_OCCURRENCE', 'occurrence');
-define('CDM_WS_OCCURRENCE_FILEUNIT_DTO', 'occurrence/$0/fieldUnitDTO');
+define('CDM_WS_OCCURRENCE_FIELD_UNIT_DTOS', 'occurrence/$0/fieldUnitDTOs');
 define('CDM_WS_PORTAL_OCCURRENCE', 'portal/occurrence');
 define('CDM_WS_PORTAL_OCCURRENCE_AS_DTO', 'portal/occurrence/$0/asDTO');
 define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumber');

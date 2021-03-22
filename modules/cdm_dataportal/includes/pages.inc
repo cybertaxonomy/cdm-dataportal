@@ -1112,16 +1112,7 @@ function compose_cdm_specimen_page($sob_dto)
 {
   drupal_set_title($sob_dto->label);
   RenderHints::pushToRenderStack('specimen_page');
-
-  $specimen_render_array = compose_cdm_specimen_or_observation_new($sob_dto);
-  $render_array['specimen_or_observation_detail'] = [
-    '#type' => 'container',
-    '#attributes' => [
-      'class' => 'derived-unit-details-grid'
-    ],
-    'children' => $specimen_render_array
-    ];
-
+  $render_array = compose_cdm_specimen_or_observation_new($sob_dto);
   RenderHints::popFromRenderStack();
   return $render_array;
 }

@@ -448,6 +448,16 @@ function _add_js_derivation_tree($jquery_selector){
   );
 }
 
+function _add_js_derivation_tree_focus_unit($unit_uuid){
+  drupal_add_js('jQuery(document).ready(function() {
+      jQuery( ".derived-unit-tree > .uuid\\\\:' . $unit_uuid . ' > .unit-header, .derived-unit-sub-tree > .uuid\\\\:' . $unit_uuid . ' > .unit-header" )
+         .css(\'font-weight\', \'bold\')
+        .find(".page-link").hide();
+    });',
+    array('type' => 'inline')
+  );
+}
+
   /**
    * Provides the markup for an font awesome icon.
    *
