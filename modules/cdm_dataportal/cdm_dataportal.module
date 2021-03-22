@@ -1831,18 +1831,17 @@ function specimen_by_accession_number_view($accession_number = null) {
  *    - content
  */
 function cdm_dataportal_specimen_view($uuid) {
-    //TODO: get the specimenOrObservationBaseDTO and don't call the webservice a second time in compose_cdm_specimen_page
-    $occurrence = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, $uuid);
-    if (empty($occurrence)) {
+
+    $sob_dto = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE_AS_DTO, $uuid);
+    if (empty($sob_dto)) {
         drupal_set_title(t('Specimen does not exist'), PASS_THROUGH);
         return FALSE;
     }
     $specimenpage = new stdClass();
-
-    $specimenpage->title = render_specimen_page_title($occurrence);
+    $specimenpage->title = render_specimen_page_title($sob_dto);
 
     // Render the specimen page.
-    $render_array = compose_cdm_specimen_page($occurrence);
+    $render_array = compose_cdm_specimen_page($sob_dto);
     $specimenpage->content = drupal_render($render_array);
 
     return $specimenpage;

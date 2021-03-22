@@ -1100,47 +1100,30 @@ function compose_classification_breadcrumbs($taxon_uuid) {
 
 /**
  *
- * @param $specimen_or_observation
- *   A CDM SpecimenOrObservation entity
+ * @param $sob_dto
+ *   A SpecimenOrObservationDTO
  *
  * @return array
  *    The drupal render array for the page
  *
  * @ingroup compose
  */
-function compose_cdm_specimen_page($specimen_or_observation)
+function compose_cdm_specimen_page($sob_dto)
 {
-  drupal_set_title("Specimen Details");
+  drupal_set_title($sob_dto->label);
   RenderHints::pushToRenderStack('specimen_page');
 
-  $specimen_table = array(
-      '#theme' => 'table',
-      '#weight' => 2,
-      // prefix attributes and rows with '#' to let it pass to the theme function,
-      // otherwise it is handled as child render array
-
-    '#attributes' => array('class' => 'specimens'),
-      '#rows' => array(),
-      '#prefix' => '<div id="specimens">',
-      '#suffix' => '</div>',
-
-
-  );
-  $specimen_markup = compose_cdm_specimen_or_observation($specimen_or_observation, true);
-
-  $specimen_table['#rows'][] = array(
-          // An array of table rows. Every row is an array of cells, or an associative array
-          'data' => $specimen_markup,
-          'class' =>  array(
-              'descriptionElement',
-              'descriptionElement_IndividualsAssociation'
-          ),
-  );
-
-  $render_array['specimen_table'] =  $specimen_table;
+  $specimen_render_array = compose_cdm_specimen_or_observation_new($sob_dto);
+  $render_array['specimen_or_observation_detail'] = [
+    '#type' => 'container',
+    '#attributes' => [
+      'class' => 'derived-unit-details-grid'
+    ],
+    'children' => $specimen_render_array
+    ];
 
   RenderHints::popFromRenderStack();
-  return $specimen_markup; // $render_array;
+  return $render_array;
 }
 
 /**
@@ -1406,32 +1389,25 @@ function cdm_taxonpage_tab_label($tabname) {
  *  Returns HTML for the default title of a specimen page.
  *  The returned title is a the identifier of the specimen.
  *
- * @param object $occurrence
- *  The CDM SpecimenOrObservation instance
- *     being formatted for the title.
+ * @param object $sob_dto
+ *  A SpecimenOrObservationDTO to create a tile string for.
  *
  * @return string
  *  Markup for the title of a specimen page
  */
-function render_specimen_page_title($occurrence)
+function render_specimen_page_title($sob_dto)
 {
   RenderHints::pushToRenderStack('render_specimen_page_title');
   $out = '';
-  list($specimenID, $collection) = specimen_id_and_collection_for($occurrence);
-  if ($occurrence->class == 'FieldUnit'){
+  if ($sob_dto->type == 'FieldUnit'){
     $out .= '<span class="type-label">Field unit: </span>';
   }else{
     $out .= '<span class="type-label">Specimen:  </span>';
+    $out .= $sob_dto->specimenIdentifier;
   }
-
-  if($collection){
-    $out .= $collection." ";
-  }
-  $out .= $specimenID;
-
   RenderHints::popFromRenderStack();
 
-  return '<span class="' . $occurrence->class . '">' . $out . '</span>';
+  return '<span class="' . html_class_attribute_ref($sob_dto) . '">' . $out . '</span>';
 }
 
 /**
