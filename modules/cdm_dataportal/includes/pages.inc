@@ -26,7 +26,7 @@
  *
  * @param object $taxon
  *   A cdm Taxon object
- * @return
+ * @return array
  *   A render array suitable for drupal_render()
  *
  * @ingroup Compose
@@ -174,7 +174,7 @@ function create_html_link($link, $openInExternalWindow=false){
 
 /**
  * Creates HTML links from the given link list concatenated by default by a comma.
- * @param $linkList the list with Link objects having "uri" and "linkText" as members
+ * @param array $linkList list with Link objects having "uri" and "linkText" as members
  * @return string the assembled HTML string containing the links
  */
 function create_html_links($linkList, $openInExternalWindow=false, $separator=", ")
@@ -859,7 +859,7 @@ function compose_cdm_taxon_page_experts($taxon){
  * @param string $add_tab
  *   Optional parameter. The given string will be added to the array of tabs
  *
- * @return
+ * @return array
  *   The array of tabs
  */
 function taxon_page_tabs_hidden_add($add_tab = NULL) {
@@ -973,7 +973,7 @@ function cdm_dataportal_preprocess_menu_local_task(&$variables) {
 /**
  * Composes and returns an render array for the classification breadcrumbs of the given taxon.
  *
- * @param taxon
+ * @param $taxon_uuid
  *
  * @return array
  *   A Drupal render array for a table with the experts
@@ -1395,6 +1395,10 @@ function compose_cdm_reference_page($uuid) {
  *
  * The $tabname as passed to the method will be returned if no override
  * label is configured in the settings.
+ *
+ * @param $tabname
+ *
+ * @return mixed
  */
 function cdm_taxonpage_tab_label($tabname) {
   static $taxon_tabs_labels = null;
