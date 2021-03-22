@@ -313,13 +313,16 @@ $page-part-margin: $base-line-height * 1;
       border-left: $tree-line-style;
     }
   }
-
+  div.derived-unit-tree {
+    table.details-table {
+      font-size: smaller;
+    }
+  }
   .derived-unit-details-grid {
     table.details-table {
       margin: 0;
       width: 100%;
       vertical-align: top;
-      font-size: smaller;
       background-color: $page-background-color;
       thead {
         border-bottom: thin solid $menu-bar-background-color;

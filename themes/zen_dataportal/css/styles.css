@@ -2475,54 +2475,58 @@ ul.derived-unit-sub-tree li:last-child:before {
   border-left: 3px dotted #dedede;
 }
 
-/* line 318, ../sass/cdm.scss */
+/* line 317, ../sass/cdm.scss */
+div.derived-unit-tree table.details-table {
+  font-size: smaller;
+}
+
+/* line 322, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table {
   margin: 0;
   width: 100%;
   vertical-align: top;
-  font-size: smaller;
   background-color: white;
 }
-/* line 324, ../sass/cdm.scss */
+/* line 327, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table thead {
   border-bottom: thin solid #dedede;
 }
-/* line 327, ../sass/cdm.scss */
+/* line 330, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table tbody {
   background-color: white;
 }
-/* line 329, ../sass/cdm.scss */
+/* line 332, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table tbody .label {
   text-align: right;
   white-space: nowrap;
   border-right: thin solid #dedede;
   width: 50%;
 }
-/* line 336, ../sass/cdm.scss */
+/* line 339, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table td, .derived-unit-details-grid table.details-table th {
   padding-right: 11.2px;
   padding-left: 11.2px;
 }
 
-/* line 342, ../sass/cdm.scss */
+/* line 345, ../sass/cdm.scss */
 .derived-unit-details-grid {
   display: grid;
   grid-column-gap: 11.2px;
   grid-row-gap: 11.2px;
 }
 @media all and (max-width: 659px) {
-  /* line 342, ../sass/cdm.scss */
+  /* line 345, ../sass/cdm.scss */
   .derived-unit-details-grid {
     grid-template-columns: repeat(1, 1fr);
   }
 }
 @media all and (min-width: 660px) {
-  /* line 342, ../sass/cdm.scss */
+  /* line 345, ../sass/cdm.scss */
   .derived-unit-details-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-/* line 352, ../sass/cdm.scss */
+/* line 355, ../sass/cdm.scss */
 .derived-unit-details-grid dl {
   margin: 0;
 }
@@ -2530,7 +2534,7 @@ ul.derived-unit-sub-tree li:last-child:before {
 /*
  * Map
  */
-/* line 361, ../sass/cdm.scss */
+/* line 364, ../sass/cdm.scss */
 .openlayers-container {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -2539,39 +2543,39 @@ ul.derived-unit-sub-tree li:last-child:before {
 /*
  * Registration page & items
  */
-/* line 371, ../sass/cdm.scss */
+/* line 374, ../sass/cdm.scss */
 .registration .type-status {
   font-weight: bold;
 }
-/* line 375, ../sass/cdm.scss */
+/* line 378, ../sass/cdm.scss */
 .registration .registration-date-and-institute {
   color: #999;
 }
-/* line 381, ../sass/cdm.scss */
+/* line 384, ../sass/cdm.scss */
 .registration .published-name .TaxonName .name {
   font-weight: bold;
 }
-/* line 385, ../sass/cdm.scss */
+/* line 388, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName {
   color: #999;
 }
-/* line 387, ../sass/cdm.scss */
+/* line 390, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName a {
   color: #999;
 }
-/* line 390, ../sass/cdm.scss */
+/* line 393, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName .TaxonName .name {
   font-weight: bold;
 }
-/* line 396, ../sass/cdm.scss */
+/* line 399, ../sass/cdm.scss */
 .registration .registration-summary .registered_name .name {
   font-weight: bold;
 }
-/* line 399, ../sass/cdm.scss */
+/* line 402, ../sass/cdm.scss */
 .registration .registration-summary .referenced_typified_name {
   color: #999;
 }
-/* line 402, ../sass/cdm.scss */
+/* line 405, ../sass/cdm.scss */
 .registration .registration-summary .label {
   font-weight: bold;
 }
@@ -2579,13 +2583,13 @@ ul.derived-unit-sub-tree li:last-child:before {
 /*
  * Theme settings page
  */
-/* line 413, ../sass/cdm.scss */
+/* line 416, ../sass/cdm.scss */
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-/* line 417, ../sass/cdm.scss */
+/* line 420, ../sass/cdm.scss */
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */
@@ -2596,14 +2600,14 @@ ul.derived-unit-sub-tree li:last-child:before {
  *
  * using the same media queries here as in layout/_responsive.scss
  *****************************************************************************************/
-/* line 430, ../sass/cdm.scss */
+/* line 433, ../sass/cdm.scss */
 #classification-breadcrumbs {
   font-size: 1.5em;
   line-height: 1.5em;
 }
 
 @media all and (min-width: 960px) {
-  /* line 441, ../sass/cdm.scss */
+  /* line 444, ../sass/cdm.scss */
   #classification-breadcrumbs {
     font-size: 1em;
   }
@@ -2611,7 +2615,7 @@ ul.derived-unit-sub-tree li:last-child:before {
 /***************************
  * TESTING ONLY 2020-02-20
  */
-/* line 449, ../sass/cdm.scss */
+/* line 452, ../sass/cdm.scss */
 .font-noto {
   font-family: "Noto Sans", sans-serif !important;
 }
