@@ -204,7 +204,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("http://testid.org/2017E68", preserverdSpecimenTable_1.getDetailsValueCell("Preferred stable uri").getLinksInElement().get(0).getUrl());
         assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", preserverdSpecimenTable_1.getDetailsValueCellText("Collection"));
         assertEquals("Glenodinium apiculatum", preserverdSpecimenTable_1.getDetailsValueCellText("Stored under"));
-        //assertTrue(preserverdSpecimenTable_1.getDetailsValueCell("Stored under").getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/taxon/d245083e-3bda-435f-9bb3-bdc2249ff23c/cdm_dataportal/name/758a9b10-6817-496b-b5a3-dd66b38c13b0/null/null/"));
+        assertTrue(preserverdSpecimenTable_1.getDetailsValueCell("Stored under").getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/name/758a9b10-6817-496b-b5a3-dd66b38c13b0/null/null/"));
         assertEquals("D. Veloper", preserverdSpecimenTable_1.getDetailsValueCellText("Exsiccatum"));
         assertEquals("CE_2017E68", preserverdSpecimenTable_1.getDetailsValueCellText("Catalog number"));
         assertEquals("E2017E68", preserverdSpecimenTable_1.getDetailsValueCellText("Barcode"));
@@ -216,7 +216,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DetailsTable identificationsTable_1 = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Identification"));
         assertEquals("Glenodinium apiculatum",
                 identificationsTable_1.getBodyCellText(0, 0));
-        //assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/taxon/d245083e-3bda-435f-9bb3-bdc2249ff23c/cdm_dataportal/name/758a9b10-6817-496b-b5a3-dd66b38c13b0/null/null/"));
+        assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/name/758a9b10-6817-496b-b5a3-dd66b38c13b0/null/null/"));
 
         // --- --- node_1_1
 

@@ -34,7 +34,7 @@ public class DerivedUnitTreeNode extends BaseElement {
                 + "/li" + XPathTools.classAttrContains("derived-unit-item");
         subNodes = element.findElements(By.xpath(xpathStr))
         .stream()
-        .peek(el -> System.out.println("#####> " + element.getText() + " >>> " + el.getText()))
+       // .peek(el -> System.out.println("#####> " + element.getText() + " >>> " + el.getText()))
         .map(el -> new DerivedUnitTreeNode(el))
         .collect(Collectors.toList());
     }
