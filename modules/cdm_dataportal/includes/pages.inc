@@ -1099,13 +1099,16 @@ function compose_classification_breadcrumbs($taxon_uuid) {
 
 
 /**
- * @param $specimen_uuid
+ *
+ * @param $specimen_or_observation
+ *   A CDM SpecimenOrObservation entity
+ *
  * @return array
  *    The drupal render array for the page
  *
  * @ingroup compose
  */
-function compose_cdm_specimen_page($specimen_uuid)
+function compose_cdm_specimen_page($specimen_or_observation)
 {
   drupal_set_title("Specimen Details");
   RenderHints::pushToRenderStack('specimen_page');
@@ -1123,34 +1126,21 @@ function compose_cdm_specimen_page($specimen_uuid)
 
 
   );
-  $specimen = compose_cdm_specimen_or_observation($specimen_uuid, true);
-  /*
-  $render_array = array(
-          '#theme' => 'item_list',
-          '#items' => array($specimen),
-          '#type' => 'ul');
-  $output = drupal_render($render_array);
- */
+  $specimen_markup = compose_cdm_specimen_or_observation($specimen_or_observation, true);
+
   $specimen_table['#rows'][] = array(
           // An array of table rows. Every row is an array of cells, or an associative array
-          'data' => $specimen,
+          'data' => $specimen_markup,
           'class' =>  array(
               'descriptionElement',
               'descriptionElement_IndividualsAssociation'
           ),
   );
 
-
- // $detail_html = compose_cdm_specimen_or_observation($specimen_uuid, true);
-//    $render_array['markup'] = array(
-//        '#prefix' => '<div id="specimens" class="page">',
-//        'content' => $specimen_table,
-//        '#suffix' => '</div>',
-//    );
   $render_array['specimen_table'] =  $specimen_table;
 
   RenderHints::popFromRenderStack();
-  return $specimen; // $render_array;
+  return $specimen_markup; // $render_array;
 }
 
 /**
