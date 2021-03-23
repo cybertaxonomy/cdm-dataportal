@@ -405,9 +405,36 @@ function compose_cdm_sob_dto_determinations($sob_dto, $full_details = FALSE) {
 
   $table_row_data = [];
 
-  foreach ($sob_dto->determinedNames as $name) {
-    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $name->uuid);
-    $table_row_data[] = cdm_sob_dto_table_row(NULL, render_taxon_or_name($taxon_name, url(path_to_name($taxon_name->uuid))));
+  foreach ($sob_dto->determinations as $det_event) {
+    // FIXME use $det_event->determination->taggedText instead of loading the entity
+    if($det_event->determination->type == "TaxonName") {
+      $link_path = path_to_name($det_event->determination->uuid);
+      $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_NAME, [$det_event->determination->uuid]);
+    } else {
+      $link_path = path_to_taxon($det_event->determination->uuid);
+      $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_TAXON, [$det_event->determination->uuid]);
+    }
+    $timeperiod_string = NULL;
+    if (isset($det_eventEvent->timeperiod)) {
+      $timeperiod_string = timePeriodToString($det_event->timeperiod);
+    }
+    $markup = $det_event->determination->taggedText;
+    if (isset($determinationEvent->modifier)) {
+      $markup .= cdm_term_representation($determinationEvent->modifier);
+    }
+    if ($timeperiod_string) {
+      $markup .= ' ' . $timeperiod_string;
+    }
+    if (isset($determinationEvent->actor->titleCache)) {
+      $markup .= ' ' . $determinationEvent->actor->titleCache;
+    }
+    // FXIME not yet supported by the DTO!
+    if (isset($determinationEvent->description)) {
+      $markup .= ' ' . $determinationEvent->description;
+    }
+    $row = cdm_sob_dto_table_row(NULL, render_taxon_or_name($taxon_or_name, $link_path));
+    $row['#weight'] = isset_numerical($det_event->isPreferred) ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
+    $table_row_data[] = $row;
   }
 
   $label = count($table_row_data) > 1 ? t("Identifications") : t("Identification");
@@ -722,11 +749,6 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
 
 
 
-      @_description_list_group_add($groups, t('Notes:'), $dd_elements);
-
-
-
-
     /** TODO
 
 
@@ -735,47 +757,7 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       $glue = ', ';
 
       foreach ($value as $determinationEvent) {
-        $timeperiod_string = NULL;
-        if (isset($determinationEvent->timeperiod)) {
-          $timeperiod_string = timePeriodToString($determinationEvent->timeperiod);
-        }
-        $weight = isset($determinationEvent->preferred) && $determinationEvent->preferred == 1 ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
-        // check key exists
-        while (array_key_exists($weight, $dd_elements)) {
-          $weight .= '0';
-        }
 
-        $taxon_name = '';
-        $name_link = '';
-        if ($determinationEvent->taxonName) {
-          $taxon_name = cdm_ws_get(CDM_WS_NAME, $determinationEvent->taxonName->uuid);
-          $taxon_name->taggedName = cdm_ws_get(CDM_WS_NAME, array($determinationEvent->taxonName->uuid, "taggedName"));
-          $name_link = path_to_name($determinationEvent->taxonName->uuid);
-        } else if ($determinationEvent->taxon) {
-          $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', $determinationEvent->taxon->uuid);
-          $name_link = path_to_taxon($determinationEvent->taxon->uuid);
-        }
-        if ($taxon_name) {
-          //$taxon_html = render_taxon_or_name($taxon_name, $name_link);
-
-          $taxon_html = l($taxon_name->titleCache, $name_link);
-          $dd_elements[$weight] = $taxon_html;
-        }
-        if (isset($determinationEvent->modifier)) {
-          $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);
-        }
-        if ($timeperiod_string) {
-          $dd_elements[$weight] .= $glue . $timeperiod_string;
-        }
-        if (isset($determinationEvent->actor->titleCache)) {
-          $dd_elements[$weight] .= $glue . $determinationEvent->actor->titleCache;
-        }
-        if (isset($determinationEvent->description)) {
-          $dd_elements[$weight] .= $glue . $determinationEvent->description;
-        }
-      }
-      ksort($dd_elements);
-      @_description_list_group_add($groups, cdm_occurrence_field_name_label('determinations'), $dd_elements);
       break;
      */
 
