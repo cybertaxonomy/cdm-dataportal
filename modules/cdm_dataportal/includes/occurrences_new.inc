@@ -296,11 +296,9 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = 
   }
 
   /* TODO
-
-            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('medium'), $value->medium, NULL, 1);
-            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('temperature'), $value->temperature, NULL, 2);
-            @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('definedMaterialOrMethod'), $value->definedMaterialOrMethod, NULL, 3);
-
+  @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('medium'), $value->medium, NULL, 1);
+  @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('temperature'), $value->temperature, NULL, 2);
+  @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('definedMaterialOrMethod'), $value->definedMaterialOrMethod, NULL, 3);
   */
   if (isset_not_empty($du_dto->characterData)) {
     $table_row_data[] = cdm_sob_dto_table_row(
@@ -419,26 +417,26 @@ function compose_cdm_sob_dto_determinations($sob_dto, $full_details = FALSE) {
       $link_path = path_to_taxon($det_event->determination->uuid);
       $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_TAXON, [$det_event->determination->uuid]);
     }
-    $timeperiod_string = NULL;
-    if (isset($det_eventEvent->timeperiod)) {
-      $timeperiod_string = timePeriodToString($det_event->timeperiod);
+    $time_period_string = NULL;
+    if (isset($det_eventEvent->timePeriod)) {
+      $time_period_string = timePeriodToString($det_event->timePeriod);
     }
-    $markup = $det_event->determination->taggedText;
+    $markup = render_taxon_or_name($taxon_or_name, $link_path);
     if (isset($determinationEvent->modifier)) {
       $markup .= cdm_term_representation($determinationEvent->modifier);
     }
-    if ($timeperiod_string) {
-      $markup .= ' ' . $timeperiod_string;
+    if ($time_period_string) {
+      $markup .= ', ' . $time_period_string;
     }
     if (isset($determinationEvent->actor->titleCache)) {
-      $markup .= ' ' . $determinationEvent->actor->titleCache;
+      $markup .= ', ' . $determinationEvent->actor->titleCache;
     }
     // FXIME not yet supported by the DTO!
     if (isset($determinationEvent->description)) {
-      $markup .= ' ' . $determinationEvent->description;
+      $markup .= ', ' . $determinationEvent->description;
     }
-    $row = cdm_sob_dto_table_row(NULL, render_taxon_or_name($taxon_or_name, $link_path));
-    $row['#weight'] = isset_numerical($det_event->isPreferred) ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
+    $row = cdm_sob_dto_table_row(NULL, $markup);
+    $row['#weight'] = isset_numerical($det_event->isPreferred) ? '0' : ($time_period_string ? $time_period_string : '1');
     $table_row_data[] = $row;
   }
 
