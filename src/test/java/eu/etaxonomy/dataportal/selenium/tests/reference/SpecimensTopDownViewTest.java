@@ -68,7 +68,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", dl1.joinedDescriptionElementText("Collection:"));
         assertEquals("2017E68", dl1.joinedDescriptionElementText("Most significant identifier:"));
         assertEquals("2017E68", dl1.joinedDescriptionElementText("Accession number:"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172)",
                 dl1.joinedDescriptionElementText("Specimen type designations:"));
         // 2
         assertEquals("gathering in-situ from:", contentElements.get(1).getText());
