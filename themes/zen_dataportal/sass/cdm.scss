@@ -270,6 +270,9 @@ $page-part-margin: $base-line-height * 1;
       margin-top: -$derived-unit-details-table-gutter;
       color: $link-color-synonym;
     }
+    .focused_item {
+      font-weight: bold;
+    }
   }
   div.derived-unit-tree-root {
     .unit-content-wrapper {
