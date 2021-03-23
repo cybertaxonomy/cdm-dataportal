@@ -89,18 +89,8 @@ function html_class_attribute_ref($cdm_entity) {
  * @ingroup compose
  */
 function compose_cdm_marker($marker) {
-
-  $render_array = array(
-      // ---- generic
-      //  these entries should be common to all cdm enitiy render arrays
-      '#theme' => 'cdm_marker', // TODO   add alternative theme funcitons: 'cdm_marker_' . marker.type.label
-      '#attributes' => array('class' => html_class_attribute_ref($marker)),
-
-      // ---- individual
-      '#label' => $marker->markerType->representation_L10n . ': ' . (($marker->flag !== TRUE ? t('yes') : t('no'))),
-  );
-
-  return $render_array;
+  $label = $marker->markerType->representation_L10n . ': ' . (($marker->flag !== TRUE ? t('yes') : t('no')));
+  return markup_to_render_array('<span class="' . html_class_attribute_ref($marker) . '">' . $label . '</span>');
 }
 
 /**
