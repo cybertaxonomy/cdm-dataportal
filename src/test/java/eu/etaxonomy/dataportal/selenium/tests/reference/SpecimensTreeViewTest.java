@@ -216,7 +216,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DetailsTable identificationsTable_1 = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Identification"));
         assertEquals("Glenodinium apiculatum",
                 identificationsTable_1.getBodyCellText(0, 0));
-        assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/name/758a9b10-6817-496b-b5a3-dd66b38c13b0/null/null/"));
+        assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/taxon/d245083e-3bda-435f-9bb3-bdc2249ff23c"));
 
         // --- --- node_1_1
 
