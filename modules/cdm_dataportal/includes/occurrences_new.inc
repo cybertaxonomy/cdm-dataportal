@@ -76,6 +76,7 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_de
     // Annotations and Sources
     RenderHints::setAnnotationsAndSourceConfig([
       'sources_as_content' => TRUE,
+      'annotations_as_content' => TRUE,
       'link_to_name_used_in_source' => TRUE,
       'link_to_reference' => FALSE,
       'add_footnote_keys' => FALSE,
@@ -84,6 +85,10 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_de
     $annotations_and_sources = handle_annotations_and_sources($sob_dto);
     if ($annotations_and_sources->hasSourceReferences()) {
       $render_array['sources'] = compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources);
+    }
+
+    if(count($annotations_and_sources->getAnnotations()) > 0){
+      $render_array['annotations'] = compose_cdm_sob_dto_annotations($sob_dto, $annotations_and_sources);
     }
       // Markers
     $markers = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, [$sob_dto->uuid, 'markers']);
@@ -465,6 +470,24 @@ function compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources) {
   }
 
   $label = count($table_row_data) > 1 ? t("Sources") : t("Source");
+  return cdm_sob_dto_table($label, $table_row_data, $sob_dto, 1);
+}
+
+/**
+ * @param $sob_dto
+ * @param \AnnotationsAndSources $annotations_and_sources
+ *
+ * @return array|null
+ */
+function compose_cdm_sob_dto_annotations($sob_dto, $annotations_and_sources) {
+
+  $table_row_data = [];
+
+  foreach ($annotations_and_sources->getAnnotations() as $annotation_text) {
+    $table_row_data[] = cdm_sob_dto_table_row(NULL, $annotation_text);
+  }
+
+  $label = count($table_row_data) > 1 ? t("Annotations") : t("Annotation");
   return cdm_sob_dto_table($label, $table_row_data, $sob_dto, 1);
 }
 

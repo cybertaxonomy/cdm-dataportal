@@ -45,4 +45,12 @@ class Footnote {
 
     return render_footnote($this->key, $this->object, $enclosing_tag, $footnote_list_key);
   }
+
+  /**
+   * @return string
+   *  The footnote text or markup
+   */
+  public function getContent(){
+    return $this->object;
+  }
 }
