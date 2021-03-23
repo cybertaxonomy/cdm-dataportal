@@ -38,16 +38,13 @@
  *   Currently unused, but added for compatibility with
  *   compose_cdm_specimen_or_observation($specimen_or_observation,
  *   $isSpecimen_page = false, &$derivatives = null)
- * @param array $derivatives
- *   the render array which contains the compositions of the derivatives
- *   of the supplied $specimenOrObservation
  *
  * @return array
  *  The render array for the SpecimenOrObservationDTO
  *
  * @ingroup compose
  */
-function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $compact_mode = FALSE, &$derivatives = NULL) {
+function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $compact_mode = FALSE) {
   $render_array = [];
   if (!$sob_dto) {
     return $render_array;
@@ -643,7 +640,9 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
     }
     ******/
 
-    RenderHints::setFootnoteListKey($sob_dto->type . '-' . $sob_dto->uuid);
+    RenderHints::pushToRenderStack('specimen_or_observation');
+    $footnote_list_key = $sob_dto->type . '-' . $sob_dto->uuid;
+    RenderHints::setFootnoteListKey($footnote_list_key);
 
     $render_array['sob_details_grid'] = [
       '#type' => 'container',
@@ -771,7 +770,7 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
 
 
 
-
+    $render_array['footnotes'] = markup_to_render_array(render_footnotes($footnote_list_key));
 
 
   } // END of $specimenOrObservation exists
