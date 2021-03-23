@@ -34,44 +34,56 @@
  * @param object $sob_dto
  *   the CDM FieldUnitDTO or DerivedUnitDTO to compose
  *   the render array for.
- * @param bool $compact_mode
- *   Currently unused, but added for compatibility with
- *   compose_cdm_specimen_or_observation($specimen_or_observation,
- *   $isSpecimen_page = false, &$derivatives = null)
+ * @param bool $full_details
+ *  Activates the display of additional data like: annotations, markers, ...
  *
  * @return array
  *  The render array for the SpecimenOrObservationDTO
  *
  * @ingroup compose
  */
-function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $compact_mode = FALSE) {
+function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_details = FALSE) {
   $render_array = [];
   if (!$sob_dto) {
     return $render_array;
   }
   if ($sob_dto->type == 'FieldUnit') {
-    $render_array['field-unit'] = compose_cdm_field_unit_dto_details($sob_dto, $compact_mode);
+    $render_array['field-unit'] = compose_cdm_field_unit_dto_details($sob_dto, $full_details);
     if (isset($sob_dto->gatheringEvent)) {
-      $render_array['gathering'] = compose_cdm_gathering_dto_details($sob_dto->gatheringEvent, $compact_mode);
+      $render_array['gathering'] = compose_cdm_gathering_dto_details($sob_dto->gatheringEvent, $full_details);
     }
   } else {
     if(isset($sob_dto->derivationEvent)){
       $render_array['derivation-event'] = compose_cdm_derivation_event($sob_dto->derivationEvent);
     }
-    $render_array['storage'] = compose_cdm_derived_unit_dto_storage_details($sob_dto, $compact_mode);
-    $render_array['type-designations'] = compose_cdm_unit_dto_type_designations($sob_dto, $compact_mode);
+    $render_array['storage'] = compose_cdm_derived_unit_dto_storage_details($sob_dto, $full_details);
+    $render_array['type-designations'] = compose_cdm_unit_dto_type_designations($sob_dto, $full_details);
     if($sob_dto->type == 'DnaSample'){
       // FIXME:
-      $render_array['dna-sample'] = compose_cdm_derived_unit_dto_sequences($sob_dto, $compact_mode);
+      $render_array['dna-sample'] = compose_cdm_derived_unit_dto_sequences($sob_dto, $full_details);
     } else if($sob_dto->type == 'MediaSpecimen' && isset_not_empty($sob_dto->mediaSpecimen)) {
       $render_array['media-specimens'] = cdm_sob_dto_media_table($sob_dto->mediaSpecimen, $sob_dto, 'Media Specimens');
     }
   }
   if(isset_not_empty($sob_dto->determinedNames)){
-    $render_array['determinations'] = compose_cdm_sob_dto_determinations($sob_dto, $compact_mode);
+    $render_array['determinations'] = compose_cdm_sob_dto_determinations($sob_dto, $full_details);
   }
   if(isset_not_empty($sob_dto->listOfMedia)){
     $render_array['media'] = cdm_sob_dto_media_table($sob_dto->listOfMedia, $sob_dto, 'Media');;
+  }
+
+  if($full_details){
+      RenderHints::setAnnotationsAndSourceConfig([
+        'sources_as_content' => TRUE,
+        'link_to_name_used_in_source' => TRUE,
+        'link_to_reference' => FALSE,
+        'add_footnote_keys' => FALSE,
+        'bibliography_aware' => FALSE
+      ]);
+      $annotations_and_sources = handle_annotations_and_sources($sob_dto);
+      if ($annotations_and_sources->hasSourceReferences()) {
+        $render_array['sources'] = compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources);
+      }
   }
 
   return $render_array;
@@ -80,13 +92,13 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $compact
  * Data rows with details for a SpecimenOrObservationDTO to be used in a table
  * @param object $sob_dto
  *   the CDM SpecimenOrObservationDTO
- * @param bool $compact_mode
+ * @param bool $full_details
  *   Currently unused,
  *
  * @return array
  *  The data rows
  */
-function sob_dto_details_rows($sob_dto, $compact_mode = FALSE) {
+function sob_dto_details_rows($sob_dto, $full_details = FALSE) {
 
   $table_row_data = [];
 
@@ -130,7 +142,7 @@ function sob_dto_details_rows($sob_dto, $compact_mode = FALSE) {
  *
  * @param object $derivation_event_dto
  *   the CDM DerivationEventDTO
- * @param bool $compact_mode
+ * @param bool $full_details
  *   Currently unused,
  *
  * @return array
@@ -138,7 +150,7 @@ function sob_dto_details_rows($sob_dto, $compact_mode = FALSE) {
  *
  * @ingroup compose
  */
-function compose_cdm_derivation_event($derivation_event_dto, $compact_mode = FALSE){
+function compose_cdm_derivation_event($derivation_event_dto, $full_details = FALSE){
 
   $details_array = [];
   // $markup = t("Derivation") . ': ';
@@ -181,7 +193,7 @@ function compose_cdm_derivation_event($derivation_event_dto, $compact_mode = FAL
  *
  * @param object $fu_dto
  *   the CDM FieldUnitDTO
- * @param bool $compact_mode
+ * @param bool $full_details
  *   Currently unused,
  *
  * @return array
@@ -189,9 +201,9 @@ function compose_cdm_derivation_event($derivation_event_dto, $compact_mode = FAL
  *
  * @ingroup compose
  */
-function compose_cdm_field_unit_dto_details($fu_dto, $compact_mode = FALSE) {
+function compose_cdm_field_unit_dto_details($fu_dto, $full_details = FALSE) {
 
-  $table_row_data = sob_dto_details_rows($fu_dto, $compact_mode);
+  $table_row_data = sob_dto_details_rows($fu_dto, $full_details);
 
   if (isset_not_empty($fu_dto->individualCount)) {
     $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('individualCount'), $fu_dto->individualCount);
@@ -223,7 +235,7 @@ function compose_cdm_field_unit_dto_details($fu_dto, $compact_mode = FALSE) {
  *
  * @param object $du_dto
  *   the CDM DerivedUnitDTO
- * @param bool $compact_mode
+ * @param bool $full_details
  *   Currently unused,
  *
  * @return array
@@ -231,9 +243,9 @@ function compose_cdm_field_unit_dto_details($fu_dto, $compact_mode = FALSE) {
  *
  * @ingroup compose
  */
-function  compose_cdm_derived_unit_dto_storage_details($du_dto, $compact_mode = FALSE) {
+function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = FALSE) {
 
-  $table_row_data = sob_dto_details_rows($du_dto, $compact_mode);
+  $table_row_data = sob_dto_details_rows($du_dto, $full_details);
 
   if (isset($du_dto->accessionNumber)) {
     $table_row_data[] = cdm_sob_dto_table_row(
@@ -299,7 +311,7 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $compact_mode = 
  *
  * @param object $gathering_dto
  *   the CDM GatheringDTO object
- * @param bool $compact_mode
+ * @param bool $full_details
  *   Currently unused,
  *
  * @return array
@@ -307,7 +319,7 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $compact_mode = 
  *
  * @ingroup compose
  */
-function compose_cdm_gathering_dto_details($gathering_dto, $compact_mode = FALSE) {
+function compose_cdm_gathering_dto_details($gathering_dto, $full_details = FALSE) {
 
   $table_row_data = [];
   if (isset_not_empty($gathering_dto->date)) {
@@ -375,7 +387,7 @@ function compose_cdm_gathering_dto_details($gathering_dto, $compact_mode = FALSE
  *
  * @param object $sob_dto
  *   the CDM SpecimenOrObservationDTO
- * @param bool $compact_mode
+ * @param bool $full_details
  *   Currently unused,
  *
  * @return array
@@ -383,7 +395,7 @@ function compose_cdm_gathering_dto_details($gathering_dto, $compact_mode = FALSE
  *
  * @ingroup compose
  */
-function compose_cdm_sob_dto_determinations($sob_dto, $compact_mode = FALSE) {
+function compose_cdm_sob_dto_determinations($sob_dto, $full_details = FALSE) {
 
   $table_row_data = [];
 
@@ -397,6 +409,33 @@ function compose_cdm_sob_dto_determinations($sob_dto, $compact_mode = FALSE) {
 }
 
 /**
+ * Compose an render array from the SpecimenOrObservationDTO.determinedNames.
+ *
+ * The resulting DOM block level element will have a header line and details.
+ *
+ * compose_hook() implementation
+ *
+ * @param \AnnotationsAndSources $annotations_and_sources
+ *   see
+ *
+ * @return array
+ *  The render array for the SpecimenOrObservationDTO.determinedNames
+ *
+ * @ingroup compose
+ */
+function compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources) {
+
+  $table_row_data = [];
+
+  foreach ($annotations_and_sources->getSourceReferences() as $source_ref) {
+    $table_row_data[] = cdm_sob_dto_table_row(NULL, $source_ref);
+  }
+
+  $label = count($table_row_data) > 1 ? t("Sources") : t("Source");
+  return cdm_sob_dto_table($label, $table_row_data, $sob_dto, 1);
+}
+
+/**
  * Compose an render array from the DerivedUnitDTO.specimenTypeDesignations.
  *
  * The resulting DOM block level element will have a header line and details.
@@ -405,7 +444,7 @@ function compose_cdm_sob_dto_determinations($sob_dto, $compact_mode = FALSE) {
  *
  * @param object $unit_dto
  *   the CDM DerivedUnitDTO
- * @param bool $compact_mode
+ * @param bool $full_details
  *   Currently unused,
  *
  * @return array
@@ -413,7 +452,7 @@ function compose_cdm_sob_dto_determinations($sob_dto, $compact_mode = FALSE) {
  *
  * @ingroup compose
  */
-function compose_cdm_unit_dto_type_designations($unit_dto, $compact_mode = FALSE) {
+function compose_cdm_unit_dto_type_designations($unit_dto, $full_details = FALSE) {
 
   $table_row_data = [];
 
@@ -466,7 +505,7 @@ function cdm_sob_dto_media_table(array $listOfMedia, $sob_dto, $heading) {
  *
  * @param object $unit_dto
  *   the CDM DerivedUnitDTO
- * @param bool $compact_mode
+ * @param bool $full_details
  *   Currently unused,
  *
  * @return array
@@ -476,7 +515,7 @@ function cdm_sob_dto_media_table(array $listOfMedia, $sob_dto, $heading) {
  *
  * TODO see  #3347 (services and REST service controller for molecular classes implemented)
  */
-function compose_cdm_derived_unit_dto_sequences($unit_dto, $compact_mode = FALSE) {
+function compose_cdm_derived_unit_dto_sequences($unit_dto, $full_details = FALSE) {
 
   $table_row_data = [];
   if(isset_not_empty($unit_dto->sequences)){
@@ -605,19 +644,13 @@ function cdm_sob_dto_table_row($label, $value) {
  * @param object $sob_dto
  *   the CDM FieldUnit or DerivedUnit to compose
  *   the render array for.
- * @param bool $isSpecimen_page
- * @param array $derivatives
- *   the render array which contains the compositions of the derivatives
- *   of the supplied $specimenOrObservation
  *
  * @return array
  *   the supplied render array $derivatives to which the composition of the supplied
  *   $specimenOrObservation has been added to
  *
- * @throws \Exception
  * @ingroup compose
  */
-
 function compose_cdm_specimen_or_observation_new($sob_dto)
 {
 
@@ -649,7 +682,7 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       '#attributes' => [
         'class' => 'derived-unit-details-grid'
       ],
-      'children' => compose_cdm_specimen_or_observation_dto_details_grid($sob_dto)
+      'children' => compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, true)
     ];;
 
     $derivation_tree_roots = cdm_ws_get(CDM_WS_OCCURRENCE_FIELD_UNIT_DTOS, [$sob_dto->uuid]);
@@ -662,7 +695,7 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       /* TODO
       case 'definition':
 
-                case 'annotations':
+      case 'annotations':
       $dd_elements = array();
       foreach ($value as $annotation) {
         // TODO respect annotation type filter settings
@@ -670,7 +703,7 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       }
       break;
 
-    case 'markers':
+      case 'markers':
       $dd_elements = array();
       foreach ($value as $marker) {
         $dd_elements[] = compose_cdm_marker($marker);
@@ -679,8 +712,7 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       break;
 
       @_description_list_group_add($groups, t('Notes:'), $dd_elements);
-       *
-       */
+
 
 
 
@@ -736,25 +768,6 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       break;
      */
 
-      /* TODO
-
-    case 'sources':
-      RenderHints::setAnnotationsAndSourceConfig([
-        'sources_as_content' => TRUE,
-        'link_to_name_used_in_source' => TRUE,
-        'link_to_reference' => FALSE,
-        'add_footnote_keys' => FALSE,
-        'bibliography_aware' => FALSE
-      ]);
-      $annotations_and_sources = handle_annotations_and_sources($sob_dto);
-      if ($annotations_and_sources->hasSourceReferences()) {
-        @_description_list_group_add($groups, t('Sources') . ':', join(', ', $annotations_and_sources->getSourceReferences()), '', 12);
-      }
-      break;
-       */
-
-
-
     /*   TODO Extensions
     // TODO: filter by using visible_extensions_sorted()
     // TODO: treat as top level element, see https://dev.e-taxonomy.eu/redmine/issues/2985#note-23
@@ -767,8 +780,6 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
         '', 100);
     }
     */
-
-
 
     $render_array['footnotes'] = markup_to_render_array(render_footnotes($footnote_list_key));
 

@@ -555,7 +555,8 @@ function cdm_entity_sources_sorted($entity) {
     $sources = $entity->sources;
   }
   else {
-    $sources = [];
+    // try to load the sources
+    $sources = cdm_ws_fetch_all('portal/' . cdm_ws_base_uri($entity->class) . '/' . $entity->uuid .  '/sources');
   }
   usort($sources, 'compare_original_sources');
   return $sources;

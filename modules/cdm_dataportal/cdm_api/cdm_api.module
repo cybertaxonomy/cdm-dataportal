@@ -1005,6 +1005,9 @@ function cdm_ws_base_uri($cdm_type_simple)
     case 'DerivedUnit':
     case 'DnaSample':
     case 'MediaSpecimen':
+    case 'DerivedUnitDTO':
+    case 'FieldUnitDTO':
+    case 'DNASampleDTO':
       $ws_base_uri = CDM_WS_OCCURRENCE;
       break;
 
