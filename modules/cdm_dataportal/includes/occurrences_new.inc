@@ -73,17 +73,23 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_de
   }
 
   if($full_details){
-      RenderHints::setAnnotationsAndSourceConfig([
-        'sources_as_content' => TRUE,
-        'link_to_name_used_in_source' => TRUE,
-        'link_to_reference' => FALSE,
-        'add_footnote_keys' => FALSE,
-        'bibliography_aware' => FALSE
-      ]);
-      $annotations_and_sources = handle_annotations_and_sources($sob_dto);
-      if ($annotations_and_sources->hasSourceReferences()) {
-        $render_array['sources'] = compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources);
-      }
+    // Annotations and Sources
+    RenderHints::setAnnotationsAndSourceConfig([
+      'sources_as_content' => TRUE,
+      'link_to_name_used_in_source' => TRUE,
+      'link_to_reference' => FALSE,
+      'add_footnote_keys' => FALSE,
+      'bibliography_aware' => FALSE
+    ]);
+    $annotations_and_sources = handle_annotations_and_sources($sob_dto);
+    if ($annotations_and_sources->hasSourceReferences()) {
+      $render_array['sources'] = compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources);
+    }
+      // Markers
+    $markers = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, [$sob_dto->uuid, 'markers']);
+    if(isset_not_empty($markers->records)){
+      $render_array['markers'] = compose_cdm_sob_dto_markers($sob_dto, $markers);
+    }
   }
 
   return $render_array;
@@ -435,6 +441,17 @@ function compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources) {
   return cdm_sob_dto_table($label, $table_row_data, $sob_dto, 1);
 }
 
+function compose_cdm_sob_dto_markers($sob_dto, $markers) {
+
+  $table_row_data = [];
+  foreach ($markers->records as $marker) {
+    $table_row_data[] = cdm_sob_dto_table_row($marker->markerType->representation_L10n, ($marker->flag !== TRUE ? t('yes') : t('no')));
+  }
+
+  $label = count($table_row_data) > 1 ? t("Markers") : t("Marker");
+  return cdm_sob_dto_table($label, $table_row_data, $sob_dto, 1);
+}
+
 /**
  * Compose an render array from the DerivedUnitDTO.specimenTypeDesignations.
  *
@@ -703,13 +720,7 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       }
       break;
 
-      case 'markers':
-      $dd_elements = array();
-      foreach ($value as $marker) {
-        $dd_elements[] = compose_cdm_marker($marker);
-      }
-      @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
-      break;
+
 
       @_description_list_group_add($groups, t('Notes:'), $dd_elements);
 
