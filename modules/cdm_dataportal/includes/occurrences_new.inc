@@ -418,22 +418,22 @@ function compose_cdm_sob_dto_determinations($sob_dto, $full_details = FALSE) {
       $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_TAXON, [$det_event->determination->uuid]);
     }
     $time_period_string = NULL;
-    if (isset($det_eventEvent->timePeriod)) {
+    if (isset($det_event->timePeriod)) {
       $time_period_string = timePeriodToString($det_event->timePeriod);
     }
     $markup = render_taxon_or_name($taxon_or_name, $link_path);
-    if (isset($determinationEvent->modifier)) {
-      $markup .= cdm_term_representation($determinationEvent->modifier);
+    if (isset($det_event->modifier)) {
+      $markup .= cdm_term_representation($det_event->modifier);
     }
     if ($time_period_string) {
       $markup .= ', ' . $time_period_string;
     }
-    if (isset($determinationEvent->actor->titleCache)) {
-      $markup .= ', ' . $determinationEvent->actor->titleCache;
+    if (isset($det_event->actor)) {
+      $markup .= ', ' . $det_event->actor;
     }
     // FXIME not yet supported by the DTO!
-    if (isset($determinationEvent->description)) {
-      $markup .= ', ' . $determinationEvent->description;
+    if (isset($det_event->description)) {
+      $markup .= ', ' . $det_event->description;
     }
     $row = cdm_sob_dto_table_row(NULL, $markup);
     $row['#weight'] = isset_numerical($det_event->isPreferred) ? '0' : ($time_period_string ? $time_period_string : '1');
