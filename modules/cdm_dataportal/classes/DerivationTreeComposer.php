@@ -193,14 +193,22 @@ class DerivationTreeComposer {
    * @return string
    */
   function derived_units_tree_node_header($sob_dto) {
-    $link =  cdm_internal_link(path_to_specimen($sob_dto->uuid), null);
-    $link_markup = '<span class="page-link">' . $link . '</span>';
+    $link = '';
     $focused_attribute = '';
-    if(is_uuid($this->getFocusedUnitUuid()) & $sob_dto->uuid == $this->getFocusedUnitUuid()){
+    $hover_effect_attribute = '';
+    if(is_uuid($this->getFocusedUnitUuid()) & $sob_dto->uuid == $this->getFocusedUnitUuid()) {
       $focused_attribute = " focused_item";
-      $link_markup = '';
+    } else {
+      $link = cdm_internal_link(path_to_specimen($sob_dto->uuid), NULL);
     }
-    return '<div class="unit-header ' . $focused_attribute .'"><div class="unit-label">' . $sob_dto->label . $link_markup . '</div></div>';
+    if($this->isWithDetails()){
+      $hover_effect_attribute = ' unit-label-hover-effect';
+    }
+    $icon_link_markup = '';
+    if($link) {
+      $icon_link_markup = '<span class="page-link">' . $link . '</span>';
+    }
+    return '<div class="unit-header ' . $focused_attribute .'"><div class="unit-label' . $hover_effect_attribute .' ">' . $sob_dto->label . $icon_link_markup . '</div></div>';
   }
 
 }

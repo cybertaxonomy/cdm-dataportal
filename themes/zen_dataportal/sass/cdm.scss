@@ -250,14 +250,14 @@ $page-part-margin: $base-line-height * 1;
    .unit-header {
      padding-top: $tree-entry-vspace;
      .unit-label {
-       cursor: pointer;
        background-color: $menu-bar-background-color;
        padding-left: 5px;
        .page-link {
          float: right;
        }
      }
-      .unit-label:hover {
+      .unit-label-hover-effect:hover {
+        cursor: pointer;
         background-color: lighten($menu-bar-background-color, 10%)
       }
     }

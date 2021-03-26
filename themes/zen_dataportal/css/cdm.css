@@ -336,20 +336,20 @@ ul.derived-unit-sub-tree ul .unit-header {
 div.derived-unit-tree .unit-header .unit-label,
 ul.derived-unit-sub-tree .unit-header .unit-label,
 ul.derived-unit-sub-tree ul .unit-header .unit-label {
-  cursor: pointer;
   background-color: #dedede;
   padding-left: 5px;
 }
-/* line 256, ../sass/cdm.scss */
+/* line 255, ../sass/cdm.scss */
 div.derived-unit-tree .unit-header .unit-label .page-link,
 ul.derived-unit-sub-tree .unit-header .unit-label .page-link,
 ul.derived-unit-sub-tree ul .unit-header .unit-label .page-link {
   float: right;
 }
-/* line 260, ../sass/cdm.scss */
-div.derived-unit-tree .unit-header .unit-label:hover,
-ul.derived-unit-sub-tree .unit-header .unit-label:hover,
-ul.derived-unit-sub-tree ul .unit-header .unit-label:hover {
+/* line 259, ../sass/cdm.scss */
+div.derived-unit-tree .unit-header .unit-label-hover-effect:hover,
+ul.derived-unit-sub-tree .unit-header .unit-label-hover-effect:hover,
+ul.derived-unit-sub-tree ul .unit-header .unit-label-hover-effect:hover {
+  cursor: pointer;
   background-color: #f8f8f8;
 }
 /* line 264, ../sass/cdm.scss */
