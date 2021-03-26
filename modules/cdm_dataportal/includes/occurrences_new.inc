@@ -722,22 +722,6 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
   $render_array = [];
   if (is_object($sob_dto)) {
 
-    /*** 95% no longer needed
-    if ($sob_dto->class == 'FieldUnit'){
-      // WARNING: adding a List<MediaDTO> as $specimen_or_observation->_derivedUnitMedia
-      $sob_dto->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-        $sob_dto->uuid,
-        'fieldObjectMediaDTO',
-      ));
-    }else{
-      // WARNING: adding a List<Media> as $specimen_or_observation->_derivedUnitMedia
-      $sob_dto->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-        $sob_dto->uuid,
-        'derivedUnitMedia',
-      ));
-    }
-    ******/
-
     RenderHints::pushToRenderStack('specimen_or_observation');
     $footnote_list_key = $sob_dto->type . '-' . $sob_dto->uuid;
     RenderHints::setFootnoteListKey($footnote_list_key);
@@ -750,7 +734,7 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       'children' => compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, true)
     ];;
 
-    $derivation_tree_roots = cdm_ws_get(CDM_WS_OCCURRENCE_FIELD_UNIT_DTOS, [$sob_dto->uuid]);
+    $derivation_tree_roots = cdm_ws_get(CDM_WS_OCCURRENCE_ROOT_UNIT_DTOS, [$sob_dto->uuid]);
     $render_array['derivation_tree_header'] = markup_to_render_array("<h3>Derivation tree</h3>");
     $derivationTreeComposer = new DerivationTreeComposer($derivation_tree_roots);
     $derivationTreeComposer->setWithDetails(false);
