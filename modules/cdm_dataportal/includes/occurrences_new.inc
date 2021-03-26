@@ -741,31 +741,6 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
     $derivationTreeComposer->setFocusedUnitUuid($sob_dto->uuid);
     $render_array['derivation_tree'] = $derivationTreeComposer->compose();
 
-      /* TODO
-      case 'definition':
-
-      case 'annotations':
-      $dd_elements = array();
-      foreach ($value as $annotation) {
-        // TODO respect annotation type filter settings
-        $dd_elements[] = $annotation->text;
-      }
-      break;
-
-
-
-    /** TODO
-
-
-    case 'determinations':
-      $dd_elements = array();
-      $glue = ', ';
-
-      foreach ($value as $determinationEvent) {
-
-      break;
-     */
-
     /*   TODO Extensions
     // TODO: filter by using visible_extensions_sorted()
     // TODO: treat as top level element, see https://dev.e-taxonomy.eu/redmine/issues/2985#note-23
