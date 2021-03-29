@@ -526,7 +526,7 @@ function compose_cdm_unit_dto_type_designations($unit_dto, $full_details = FALSE
   if (isset_not_empty($unit_dto->specimenTypeDesignations)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       NULL,
-      render_specimen_typedesignation_dto($unit_dto->specimenTypeDesignations));
+      render_specimen_typedesignation_dto($unit_dto->specimenTypeDesignations, false, 'div', 'div'));
   }
 
   return cdm_sob_dto_table(t('Type designations'), $table_row_data, $unit_dto, 5, 2);
