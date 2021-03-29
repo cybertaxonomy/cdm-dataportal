@@ -208,7 +208,7 @@ class DerivationTreeComposer {
     if($link) {
       $icon_link_markup = '<span class="page-link">' . $link . '</span>';
     }
-    return '<div class="unit-header ' . $focused_attribute .'"><div class="unit-label' . $hover_effect_attribute .' ">' . $sob_dto->label . $icon_link_markup . '</div></div>';
+    return '<div class="unit-header ' . $focused_attribute .'"><div class="unit-label' . $hover_effect_attribute .' "><span class="">' . symbol_for_base_of_record($sob_dto->recordBase->uuid). '</span> ' . $sob_dto->label . $icon_link_markup . '</div></div>';
   }
 
 }

@@ -18,6 +18,8 @@
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
 
+
+
 /**
  * Compose grid of details tabled for a CDM SpecimenOrObservationDTO
  *
