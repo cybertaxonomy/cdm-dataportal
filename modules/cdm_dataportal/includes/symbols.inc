@@ -16,6 +16,9 @@
  *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
  */
 
+const SYMBOL_COLLAPSIBLE_CLOSED = 'chevron-right';
+const SYMBOL_COLLAPSIBLE_OPEN = 'chevron-down';
+
 /**
  * @param $base_of_record_uuid
  *  The UUID of the SpecimenOrObservationType

@@ -6,45 +6,16 @@
  */
 @import url("../fonts/notosans-webfont-2017-2/stylesheet.css");
 @import url("../fonts/notomono-webfont-2020/stylesheet.css");
-/* line 30, ../sass/ie-legacy.scss */
-.pie-element, .lt-ie9 #page {
-  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
-  position: relative;
-}
-
-/* line 43, ../sass/ie-legacy.scss */
-.pie-container {
-  z-index: 0;
-  position: relative;
-}
-
-/* line 47, ../sass/ie-legacy.scss */
-.z-pie-element, .lt-ie9 #page {
-  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
-  z-index: 0;
-}
-
-/* line 63, ../sass/ie-legacy.scss */
-.lt-ie9 #header {
-  /* 
-   * reset right padding to zero and use margin-right instead,
-   * this avoids the need for background-clip: content-box
-   * which is not suppoorted in IE < 9
-   */
-  padding-right: 0;
-  margin-right: 20px;
-}
-
-/* line 43, ../sass/_mixins.scss */
+/* line 42, ../sass/_mixins.scss */
 .block a:link,
 .block a:visited, .node a:link,
 .node a:visited, #identificationKey a:link,
 #identificationKey a:visited, #content a:link,
 #content a:visited {
-  color: #115e92;
+  color: #115E92;
   text-decoration: none;
 }
-/* line 49, ../sass/_mixins.scss */
+/* line 48, ../sass/_mixins.scss */
 .block a:hover,
 .block a:focus, .node a:hover,
 .node a:focus, #identificationKey a:hover,
@@ -52,7 +23,7 @@
 #content a:focus {
   text-decoration: underline;
 }
-/* line 58, ../sass/_mixins.scss */
+/* line 57, ../sass/_mixins.scss */
 .block .Synonym a:link,
 .block .Synonym a:visited, .block .misapplied-name a:link,
 .block .misapplied-name a:visited, .node .Synonym a:link,
@@ -62,15 +33,15 @@
 #identificationKey .misapplied-name a:visited, #content .Synonym a:link,
 #content .Synonym a:visited, #content .misapplied-name a:link,
 #content .misapplied-name a:visited {
-  color: #7c7c7c;
+  color: #7C7C7C;
 }
-/* line 64, ../sass/_mixins.scss */
+/* line 63, ../sass/_mixins.scss */
 .block .Taxon a:link,
 .block .Taxon a:visited, .node .Taxon a:link,
 .node .Taxon a:visited, #identificationKey .Taxon a:link,
 #identificationKey .Taxon a:visited, #content .Taxon a:link,
 #content .Taxon a:visited {
-  color: #115e92;
+  color: #115E92;
 }
 
 /* line 20, ../sass/cdm.scss */
@@ -113,7 +84,7 @@
 /* line 54, ../sass/cdm.scss */
 #page-toc {
   float: right;
-  background-color: white;
+  background-color: #fff;
 }
 /* line 57, ../sass/cdm.scss */
 #page-toc h3 {
@@ -170,27 +141,27 @@
 /*
  * Search results
  */
-/* line 43, ../sass/_mixins.scss */
+/* line 42, ../sass/_mixins.scss */
 #search_results a:link,
 #search_results a:visited {
-  color: #115e92;
+  color: #115E92;
   text-decoration: none;
 }
-/* line 49, ../sass/_mixins.scss */
+/* line 48, ../sass/_mixins.scss */
 #search_results a:hover,
 #search_results a:focus {
   text-decoration: underline;
 }
-/* line 58, ../sass/_mixins.scss */
+/* line 57, ../sass/_mixins.scss */
 #search_results .Synonym a:link,
 #search_results .Synonym a:visited, #search_results .misapplied-name a:link,
 #search_results .misapplied-name a:visited {
-  color: #7c7c7c;
+  color: #7C7C7C;
 }
-/* line 64, ../sass/_mixins.scss */
+/* line 63, ../sass/_mixins.scss */
 #search_results .Taxon a:link,
 #search_results .Taxon a:visited {
-  color: #115e92;
+  color: #115E92;
 }
 /* line 112, ../sass/cdm.scss */
 #search_results table {
@@ -316,162 +287,170 @@ dl.media-caption {
 
 /*
  * derivatives tree view (see also derivation-tree.js)
- * partially based on ideas found in https://jsfiddle.net/xuonpjmh/21/
  */
-/* line 245, ../sass/cdm.scss */
-div.derived-unit-tree,
-ul.derived-unit-sub-tree,
-ul.derived-unit-sub-tree ul {
+/* line 246, ../sass/cdm.scss */
+.item-tree ul {
   list-style: none;
-  margin: 0 0 0 3.2px;
-  padding: 0;
+  margin: 0;
+  padding-left: 0;
 }
-/* line 250, ../sass/cdm.scss */
-div.derived-unit-tree .unit-header,
-ul.derived-unit-sub-tree .unit-header,
-ul.derived-unit-sub-tree ul .unit-header {
-  padding-top: 7px;
+/* line 251, ../sass/cdm.scss */
+.item-tree ul.collapsed {
+  display: none;
 }
-/* line 252, ../sass/cdm.scss */
-div.derived-unit-tree .unit-header .unit-label,
-ul.derived-unit-sub-tree .unit-header .unit-label,
-ul.derived-unit-sub-tree ul .unit-header .unit-label {
-  background-color: #dedede;
-  padding-left: 5px;
-}
-/* line 255, ../sass/cdm.scss */
-div.derived-unit-tree .unit-header .unit-label .page-link,
-ul.derived-unit-sub-tree .unit-header .unit-label .page-link,
-ul.derived-unit-sub-tree ul .unit-header .unit-label .page-link {
-  float: right;
+/* line 254, ../sass/cdm.scss */
+.item-tree ul li {
+  padding: 7px 0px 0px 28px;
+  margin-top: 3.5px;
+  position: relative;
 }
 /* line 259, ../sass/cdm.scss */
-div.derived-unit-tree .unit-header .unit-label-hover-effect:hover,
-ul.derived-unit-sub-tree .unit-header .unit-label-hover-effect:hover,
-ul.derived-unit-sub-tree ul .unit-header .unit-label-hover-effect:hover {
+.item-tree ul li::before {
+  content: "";
+  position: absolute;
+  top: 18.2px;
+  left: -14px;
+  border-left: 3.5px dotted #DEDEDE;
+  border-bottom: 3.5px dotted #DEDEDE;
+  width: 28px;
+  height: 100%;
+}
+/* line 270, ../sass/cdm.scss */
+.item-tree ul li:last-child:before {
+  content: none;
+}
+/* line 274, ../sass/cdm.scss */
+.item-tree ul li .item-wrapper-with-sub-items {
+  position: relative;
+}
+/* line 276, ../sass/cdm.scss */
+.item-tree ul li .item-wrapper-with-sub-items::after {
+  content: "";
+  position: absolute;
+  top: 18.2px;
+  left: -14px;
+  border-left: 3.5px dotted #DEDEDE;
+  border-bottom: 3.5px dotted #DEDEDE;
+  width: 28px;
+  height: 100%;
+}
+/* line 290, ../sass/cdm.scss */
+.item-tree ul li.collapsed .item-wrapper-with-sub-items::after {
+  content: none;
+}
+/* line 296, ../sass/cdm.scss */
+.item-tree > .item-list > ul {
+  margin-left: -14px;
+}
+/* line 299, ../sass/cdm.scss */
+.item-tree > .item-list > ul > li:last-child:before {
+  content: unset;
+}
+/* line 302, ../sass/cdm.scss */
+.item-tree > .item-list > ul > li::before {
+  content: unset;
+}
+/* line 306, ../sass/cdm.scss */
+.item-tree > .item-list > ul > li:not(:last-child) > ul > li:before {
+  content: unset;
+}
+/* line 316, ../sass/cdm.scss */
+.item-tree .tree-node-symbol {
+  display: inline-block;
+  width: 22.4px;
+  height: 22.4px;
+  color: #DEDEDE;
+  background-color: #fff;
+  margin-left: -23.45px;
+  text-align: center;
+  font-size: larger;
+}
+/* line 329, ../sass/cdm.scss */
+.item-tree .tree-node-symbol-collapsible:hover {
+  color: #000;
+}
+
+/* line 339, ../sass/cdm.scss */
+.item-tree .unit-header-wrapper .unit-label {
+  background-color: #DEDEDE;
+}
+/* line 341, ../sass/cdm.scss */
+.item-tree .unit-header-wrapper .unit-label .symbol {
+  padding-left: 5px;
+}
+/* line 344, ../sass/cdm.scss */
+.item-tree .unit-header-wrapper .unit-label .page-link {
+  float: right;
+  padding-right: 5.6px;
+}
+/* line 349, ../sass/cdm.scss */
+.item-tree .unit-header-wrapper .unit-label-hover-effect:hover {
   cursor: pointer;
   background-color: #f8f8f8;
 }
-/* line 264, ../sass/cdm.scss */
-div.derived-unit-tree .unit-content,
-ul.derived-unit-sub-tree .unit-content,
-ul.derived-unit-sub-tree ul .unit-content {
+/* line 354, ../sass/cdm.scss */
+.item-tree .unit-content {
   padding: 11.2px;
   background-color: #ebebeb;
 }
-/* line 268, ../sass/cdm.scss */
-div.derived-unit-tree .derivation-event,
-ul.derived-unit-sub-tree .derivation-event,
-ul.derived-unit-sub-tree ul .derivation-event {
+/* line 358, ../sass/cdm.scss */
+.item-tree .derivation-event {
   font-size: smaller;
   margin-top: -11.2px;
-  color: #7c7c7c;
+  color: #7C7C7C;
 }
-/* line 273, ../sass/cdm.scss */
-div.derived-unit-tree .focused_item,
-ul.derived-unit-sub-tree .focused_item,
-ul.derived-unit-sub-tree ul .focused_item {
+/* line 363, ../sass/cdm.scss */
+.item-tree .focused_item {
   font-weight: bold;
 }
 
-/* line 278, ../sass/cdm.scss */
-div.derived-unit-tree-root .unit-content-wrapper {
-  border-left: 3px dotted #dedede;
-  margin-left: 3.2px;
-}
-
-/* line 284, ../sass/cdm.scss */
-ul.derived-unit-sub-tree ul {
-  margin-left: 1.0em;
-}
-/* line 287, ../sass/cdm.scss */
-ul.derived-unit-sub-tree li {
-  position: relative;
-  margin-left: 0;
-  padding-left: 1em;
-  margin-top: -3.2px;
-  line-height: 22.4px;
-  border-left: 3px dotted #dedede;
-}
-/* line 297, ../sass/cdm.scss */
-ul.derived-unit-sub-tree li:last-child {
-  border-left: none;
-}
-/* line 299, ../sass/cdm.scss */
-ul.derived-unit-sub-tree li:last-child .unit-header, ul.derived-unit-sub-tree li:last-child .unit-content {
-  margin-left: 3px;
-}
-/* line 303, ../sass/cdm.scss */
-ul.derived-unit-sub-tree li:before {
-  position: absolute;
-  top: 3.2px;
-  left: 0;
-  width: 1em;
-  /* width of horizontal line */
-  height: 12.7px;
-  /* vertical position of line */
-  vertical-align: top;
-  border-bottom: 3px dotted #dedede;
-  content: "";
-  display: inline-block;
-}
-/* line 315, ../sass/cdm.scss */
-ul.derived-unit-sub-tree li:last-child:before {
-  border-left: 3px dotted #dedede;
-}
-
-/* line 320, ../sass/cdm.scss */
-div.derived-unit-tree table.details-table {
-  font-size: smaller;
-}
-
-/* line 325, ../sass/cdm.scss */
+/* line 370, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table {
   margin: 0;
   width: 100%;
   vertical-align: top;
-  background-color: white;
+  background-color: #fff;
 }
-/* line 330, ../sass/cdm.scss */
+/* line 375, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table thead {
-  border-bottom: thin solid #dedede;
+  border-bottom: thin solid #DEDEDE;
 }
-/* line 333, ../sass/cdm.scss */
+/* line 378, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table tbody {
-  background-color: white;
+  background-color: #fff;
 }
-/* line 335, ../sass/cdm.scss */
+/* line 380, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table tbody .label {
   text-align: right;
   white-space: nowrap;
-  border-right: thin solid #dedede;
+  border-right: thin solid #DEDEDE;
   width: 50%;
 }
-/* line 342, ../sass/cdm.scss */
+/* line 387, ../sass/cdm.scss */
 .derived-unit-details-grid table.details-table td, .derived-unit-details-grid table.details-table th {
   padding-right: 11.2px;
   padding-left: 11.2px;
 }
 
-/* line 348, ../sass/cdm.scss */
+/* line 393, ../sass/cdm.scss */
 .derived-unit-details-grid {
   display: grid;
   grid-column-gap: 11.2px;
   grid-row-gap: 11.2px;
 }
 @media all and (max-width: 659px) {
-  /* line 348, ../sass/cdm.scss */
+  /* line 393, ../sass/cdm.scss */
   .derived-unit-details-grid {
     grid-template-columns: repeat(1, 1fr);
   }
 }
 @media all and (min-width: 660px) {
-  /* line 348, ../sass/cdm.scss */
+  /* line 393, ../sass/cdm.scss */
   .derived-unit-details-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-/* line 358, ../sass/cdm.scss */
+/* line 403, ../sass/cdm.scss */
 .derived-unit-details-grid dl {
   margin: 0;
 }
@@ -479,7 +458,7 @@ div.derived-unit-tree table.details-table {
 /*
  * Map
  */
-/* line 367, ../sass/cdm.scss */
+/* line 412, ../sass/cdm.scss */
 .openlayers-container {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -488,39 +467,39 @@ div.derived-unit-tree table.details-table {
 /*
  * Registration page & items
  */
-/* line 377, ../sass/cdm.scss */
+/* line 422, ../sass/cdm.scss */
 .registration .type-status {
   font-weight: bold;
 }
-/* line 381, ../sass/cdm.scss */
+/* line 426, ../sass/cdm.scss */
 .registration .registration-date-and-institute {
   color: #999;
 }
-/* line 387, ../sass/cdm.scss */
+/* line 432, ../sass/cdm.scss */
 .registration .published-name .TaxonName .name {
   font-weight: bold;
 }
-/* line 391, ../sass/cdm.scss */
+/* line 436, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName {
   color: #999;
 }
-/* line 393, ../sass/cdm.scss */
+/* line 438, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName a {
   color: #999;
 }
-/* line 396, ../sass/cdm.scss */
+/* line 441, ../sass/cdm.scss */
 .registration .typified-name .cdm\:TaxonName .TaxonName .name {
   font-weight: bold;
 }
-/* line 402, ../sass/cdm.scss */
+/* line 447, ../sass/cdm.scss */
 .registration .registration-summary .registered_name .name {
   font-weight: bold;
 }
-/* line 405, ../sass/cdm.scss */
+/* line 450, ../sass/cdm.scss */
 .registration .registration-summary .referenced_typified_name {
   color: #999;
 }
-/* line 408, ../sass/cdm.scss */
+/* line 453, ../sass/cdm.scss */
 .registration .registration-summary .label {
   font-weight: bold;
 }
@@ -528,13 +507,13 @@ div.derived-unit-tree table.details-table {
 /*
  * Theme settings page
  */
-/* line 419, ../sass/cdm.scss */
+/* line 464, ../sass/cdm.scss */
 #system-theme-settings .image-preview {
   width: 600px;
   max-height: 150px;
   overflow: auto;
 }
-/* line 423, ../sass/cdm.scss */
+/* line 468, ../sass/cdm.scss */
 #system-theme-settings .image-preview img {
   max-width: none;
   /* reset style in mormalize.scss */
@@ -545,14 +524,14 @@ div.derived-unit-tree table.details-table {
  *
  * using the same media queries here as in layout/_responsive.scss
  *****************************************************************************************/
-/* line 436, ../sass/cdm.scss */
+/* line 481, ../sass/cdm.scss */
 #classification-breadcrumbs {
   font-size: 1.5em;
   line-height: 1.5em;
 }
 
 @media all and (min-width: 960px) {
-  /* line 447, ../sass/cdm.scss */
+  /* line 492, ../sass/cdm.scss */
   #classification-breadcrumbs {
     font-size: 1em;
   }
@@ -560,7 +539,9 @@ div.derived-unit-tree table.details-table {
 /***************************
  * TESTING ONLY 2020-02-20
  */
-/* line 455, ../sass/cdm.scss */
+/* line 500, ../sass/cdm.scss */
 .font-noto {
   font-family: "Noto Sans", sans-serif !important;
 }
+
+/*# sourceMappingURL=cdm.css.map */

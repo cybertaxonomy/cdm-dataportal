@@ -85,7 +85,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
     // --- get map service HTTP query parameters
     if (count($specimensOrObservations) > 0 || $root_unit_dtos > 0) {
-        $render_array['map'] = occurrence_map_query_parameters($taxon);
+       //######## RE-ENABLE !!!!! $render_array['map'] = occurrence_map_query_parameters($taxon);
     }
 
     // -------------------------------------------------------
@@ -120,6 +120,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
     else if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE)){ // FIXME this seems to be wrong
       $derivationTreeComposer = new DerivationTreeComposer($root_unit_dtos);
       $derivationTreeComposer->setWithDetails(true);
+      $derivationTreeComposer->setCollapsible(true);
       $render_array['specimen_list'] = $derivationTreeComposer->compose();
       $render_array['specimen_list']['#weight'] = 2;
     } else {
@@ -1033,7 +1034,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   $rank_limit_uuid = variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT);
 
   $rank_separator = '<span> '
-    . font_awesome_icon_markup('fa-chevron-right')
+    . font_awesome_icon_markup('fa-' . SYMBOL_COLLAPSIBLE_CLOSED)
     . ' </span>';
   $more_children_icon = font_awesome_icon_markup('fa-sitemap fa-rotate-270');
   $more_children_label = '...';

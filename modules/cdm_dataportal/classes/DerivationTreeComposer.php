@@ -6,12 +6,40 @@ class DerivationTreeComposer {
   private $root_unit_dtos;
   private $focused_unit_uuid = null;
   private $with_details = false;
+  private $collapsible = false;
+
+  /**
+   * @return bool
+   */
+  public function isCollapsible() {
+    return $this->collapsible;
+  }
+
+  /**
+   * @param bool $collapsible
+   */
+  public function setCollapsible($collapsible) {
+    $this->collapsible = $collapsible;
+  }
 
   /**
    * @return bool
    */
   public function isWithDetails() {
     return $this->with_details;
+  }
+
+  public function collapsibleItemClassAttribute($has_sub_derivatives) {
+    return $this->isCollapsible() & $has_sub_derivatives === TRUE ? ' tree-item-collapsible' : '';
+
+  }
+
+  public function subItemsClassAttribute($has_sub_derivatives) {
+    return $has_sub_derivatives === true ? ' with-sub-items' : '';
+  }
+
+  public function itemCollapsedStateClassAttribute() {
+    return $this->isCollapsible() ? ' collapsed' : '';
   }
 
   /**
@@ -64,7 +92,7 @@ class DerivationTreeComposer {
     $render_array = [];
     $render_array['derived-unit-tree'] = $derivation_tree;
 
-    _add_js_derivation_tree('.derived-unit-tree');
+    _add_js_derivation_tree('.item-tree');
 
     return $render_array;
   }
@@ -81,73 +109,28 @@ class DerivationTreeComposer {
    *    An array which can be used in render arrays to be passed to the
    * theme_table() and theme_list().
    */
-  private function derived_units_tree() {
 
+  private function derived_units_tree() {
     RenderHints::pushToRenderStack('derived-unit-tree');
     RenderHints::setFootnoteListKey('derived-unit-tree');
 
-    $root_items = [];
-    //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
-    foreach ($this->root_unit_dtos as &$sob_dto) {
+    $list_items = $this->derived_units_as_list_items($this->root_unit_dtos);
 
-      $content_wrapper_markup = '';
-      if($this->with_details){
-        $field_unit_dto_render_array = compose_cdm_specimen_or_observation_dto_details_grid($sob_dto);
-        $content_wrapper_markup = '<div class="unit-content-wrapper">' // allows to apply the borders between .derived-unit-tree-root and .unit-content
-          . '<div class="unit-content derived-unit-details-grid">' . drupal_render($field_unit_dto_render_array) . '</div>'
-          . '</div>';
-      }
-      $root_item = [
-        '#prefix' => '<div class="derived-unit-tree">',
-        '#suffix' => '</div>',
-        '#type' => 'container',
-        '#attributes' => [
-          'class' => [
-            'derived-unit-item derived-unit-tree-root',
-            html_class_attribute_ref($sob_dto),
-          ],
-        ],
-        'div-container' => [
-          'root-item-and-sub-tree' => [
-            markup_to_render_array($this->derived_units_tree_node_header($sob_dto)
-              . $content_wrapper_markup),
-          ],
-        ],
-
-      ];
-      if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0) {
-        usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');
-        // children are displayed in a nested list.
-        $root_item['div-container']['root-item-and-sub-tree'][] = $this->derived_units_sub_tree($sob_dto->derivatives);
-      }
-      $root_items[] = $root_item;
-    }
+    $root_items = [
+      '#theme' => 'item_list',
+      '#type' => 'ul',
+      '#prefix' => '<div class="item-tree">',
+      '#suffix' => '</div>',
+      '#attributes' => [
+      ],
+      '#items' => $list_items,
+    ];
 
     $root_items['footnotes'] = markup_to_render_array(render_footnotes());
     RenderHints::popFromRenderStack();
 
     return $root_items;
-  }
 
-  /**
-   * @param array $unit_dtos
-   *
-   * @return array
-   */
-   private function derived_units_sub_tree(array $unit_dtos) {
-
-    $list_items = $this->derived_units_as_list_items($unit_dtos);
-
-    $derivation_tree = [
-      '#theme' => 'item_list',
-      '#type' => 'ul',
-      '#attributes' => [
-        // NOTE: class attribute "derived-unit-item" is important for consistency with subordinate <ul> elements produced by the drupal theme function
-        'class' => CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE . ' derived-unit-item derived-unit-sub-tree',
-      ],
-      '#items' => $list_items,
-    ];
-    return $derivation_tree;
   }
 
   /**
@@ -165,18 +148,28 @@ class DerivationTreeComposer {
     $list_items = [];
     //we need one more item to contain the items of one level (fieldunit, derivate data etc.)
     foreach ($root_unit_dtos as &$sob_dto) {
+      $has_sub_derivatives = isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0;
       $item = [];
-      $item['class'] = ['derived-unit-item ', html_class_attribute_ref($sob_dto)];
+      $item['class'] = [
+        'derived-unit-item ',
+        html_class_attribute_ref($sob_dto),
+        $this->itemCollapsedStateClassAttribute(),
+        $this->collapsibleItemClassAttribute($has_sub_derivatives),
+        $this->subItemsClassAttribute($has_sub_derivatives)
+      ];
       // data" element of the array is used as the contents of the list item
       $item['data'] = [];
       $unit_content_markup = '';
       if($this->with_details){
-        $units_render_array = compose_cdm_specimen_or_observation_dto_details_grid($sob_dto);
-        $unit_content_markup = '<div class="unit-content derived-unit-details-grid">' . drupal_render($units_render_array) . '</div>';
+        $unit_dto_render_array = compose_cdm_specimen_or_observation_dto_details_grid($sob_dto);
+        $this->applyUnitContentGrid($unit_dto_render_array);
+        $unit_content_markup = drupal_render($unit_dto_render_array);
       }
-      $item['data'] = $this->derived_units_tree_node_header($sob_dto)
-        . $unit_content_markup;
-      if (isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0) {
+      $item['data'] = $this->applyItemWrapper(
+        $this->derived_units_tree_node_header($sob_dto)
+        . $unit_content_markup
+        , $has_sub_derivatives);
+      if ($has_sub_derivatives) {
         usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');
         // children are displayed in a nested list.
         $item['children'] = $this->derived_units_as_list_items($sob_dto->derivatives);
@@ -185,6 +178,27 @@ class DerivationTreeComposer {
     }
 
     return $list_items;
+  }
+
+
+  /**
+   * @param $unit_dto_render_array
+   *
+   * @return mixed
+   *
+   * FIXME: merge into compose_cdm_specimen_or_observation_dto_details_grid() again
+   */
+  function applyUnitContentGrid(&$unit_dto_render_array){
+    $unit_dto_render_array['#prefix'] = '<div class="unit-content derived-unit-details-grid">';
+    $unit_dto_render_array['#suffix'] = '</div>';
+    return $unit_dto_render_array;
+  }
+
+  function applyItemWrapper($item_markup, $has_children){
+    $sub_item_line_class_attribute = $has_children ? ' item-wrapper-with-sub-items' : '';
+    return '<div class="item-wrapper' . $sub_item_line_class_attribute . '">' // allows to apply the borders between .derived-unit-tree-root and .unit-content
+      . $item_markup
+    . '</div>';
   }
 
   /**
@@ -196,6 +210,8 @@ class DerivationTreeComposer {
     $link = '';
     $focused_attribute = '';
     $hover_effect_attribute = '';
+    $collapse_open_icons = '';
+    $unit_header_wrapper_sub_items_class_attr = '';
     if(is_uuid($this->getFocusedUnitUuid()) & $sob_dto->uuid == $this->getFocusedUnitUuid()) {
       $focused_attribute = " focused_item";
     } else {
@@ -208,7 +224,22 @@ class DerivationTreeComposer {
     if($link) {
       $icon_link_markup = '<span class="page-link">' . $link . '</span>';
     }
-    return '<div class="unit-header ' . $focused_attribute .'"><div class="unit-label' . $hover_effect_attribute .' "><span class="">' . symbol_for_base_of_record($sob_dto->recordBase->uuid). '</span> ' . $sob_dto->label . $icon_link_markup . '</div></div>';
+    $has_sub_derivatives = isset($sob_dto->derivatives) && sizeof($sob_dto->derivatives) > 0;
+    if($has_sub_derivatives){
+      if($this->isCollapsible()){
+        $collapse_open_icons = '<span class="tree-node-symbol tree-node-symbol-collapsible">'
+          . font_awesome_icon_markup('fa-' . SYMBOL_COLLAPSIBLE_CLOSED)
+          . '</span>';
+      } else {
+        $collapse_open_icons = '<span class="tree-node-symbol">'
+          . font_awesome_icon_markup('fa-' . SYMBOL_COLLAPSIBLE_OPEN)
+          . '</span>';
+      }
+    }
+    if($has_sub_derivatives){
+      $unit_header_wrapper_sub_items_class_attr = ' unit-header-wrapper-with-sub-items';
+    }
+    return '<div class="unit-header-wrapper' . $unit_header_wrapper_sub_items_class_attr . $focused_attribute . '"><div class="unit-header"><div class="unit-label' . $hover_effect_attribute .' ">' . $collapse_open_icons . '<span class="symbol">' . symbol_for_base_of_record($sob_dto->recordBase->uuid). '</span>' . $sob_dto->label . $icon_link_markup . '</div></div></div>';
   }
 
 }

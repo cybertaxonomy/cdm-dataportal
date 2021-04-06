@@ -5,35 +5,6 @@
 /* Import Sass mixins, variables, Compass modules, etc. */
 @import url("../fonts/notosans-webfont-2017-2/stylesheet.css");
 @import url("../fonts/notomono-webfont-2020/stylesheet.css");
-/* line 30, ../sass/ie-legacy.scss */
-.pie-element, .lt-ie9 #page {
-  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
-  position: relative;
-}
-
-/* line 43, ../sass/ie-legacy.scss */
-.pie-container {
-  z-index: 0;
-  position: relative;
-}
-
-/* line 47, ../sass/ie-legacy.scss */
-.z-pie-element, .lt-ie9 #page {
-  behavior: url("/polyfills/css3pie/PIE-1.0.0.htc");
-  z-index: 0;
-}
-
-/* line 63, ../sass/ie-legacy.scss */
-.lt-ie9 #header {
-  /* 
-   * reset right padding to zero and use margin-right instead,
-   * this avoids the need for background-clip: content-box
-   * which is not suppoorted in IE < 9
-   */
-  padding-right: 0;
-  margin-right: 20px;
-}
-
 /* HTML element (SMACSS base) rules */
 /**
  * @file
@@ -48,7 +19,7 @@ dd {
 }
 
 /* Address paddings set differently in IE 6/7. */
-/* line 16, ../sass/_normalize-rtl.scss */
+/* line 14, ../sass/_normalize-rtl.scss */
 menu,
 ol,
 ul {
@@ -96,16 +67,16 @@ legend {
   /* line 89, ../sass/layouts/_responsive.scss */
   .sidebar-first #content {
     float: right;
-    width: 66.66667%;
-    margin-right: 33.33333%;
-    margin-left: -100%;
+    width: 40%;
+    margin-right: 20%;
+    margin-left: -60%;
   }
   /* line 94, ../sass/layouts/_responsive.scss */
   .sidebar-first .region-sidebar-first {
     float: right;
-    width: 33.33333%;
+    width: 20%;
     margin-right: 0%;
-    margin-left: -33.33333%;
+    margin-left: -20%;
   }
 
   /**
@@ -119,16 +90,16 @@ legend {
   /* line 104, ../sass/layouts/_responsive.scss */
   .sidebar-second #content {
     float: right;
-    width: 66.66667%;
+    width: 40%;
     margin-right: 0%;
-    margin-left: -66.66667%;
+    margin-left: -40%;
   }
   /* line 109, ../sass/layouts/_responsive.scss */
   .sidebar-second .region-sidebar-second {
     float: right;
-    width: 33.33333%;
-    margin-right: 66.66667%;
-    margin-left: -100%;
+    width: 20%;
+    margin-right: 40%;
+    margin-left: -60%;
   }
 
   /**
@@ -143,23 +114,23 @@ legend {
   /* line 119, ../sass/layouts/_responsive.scss */
   .two-sidebars #content {
     float: right;
-    width: 66.66667%;
-    margin-right: 33.33333%;
-    margin-left: -100%;
+    width: 40%;
+    margin-right: 20%;
+    margin-left: -60%;
   }
   /* line 124, ../sass/layouts/_responsive.scss */
   .two-sidebars .region-sidebar-first {
     float: right;
-    width: 33.33333%;
+    width: 20%;
     margin-right: 0%;
-    margin-left: -33.33333%;
+    margin-left: -20%;
   }
   /* line 129, ../sass/layouts/_responsive.scss */
   .two-sidebars .region-sidebar-second {
     float: right;
-    width: 100%;
+    width: 60%;
     margin-right: 0%;
-    margin-left: -100%;
+    margin-left: -60%;
     padding-left: 0;
     padding-right: 0;
     clear: right;
@@ -185,24 +156,24 @@ legend {
   /* line 139, ../sass/layouts/_responsive.scss */
   .two-sidebars .region-sidebar-second .block:nth-child(3n+1) {
     float: right;
-    width: 33.33333%;
+    width: 20%;
     margin-right: 0%;
-    margin-left: -33.33333%;
+    margin-left: -20%;
     clear: right;
   }
   /* line 144, ../sass/layouts/_responsive.scss */
   .two-sidebars .region-sidebar-second .block:nth-child(3n+2) {
     float: right;
-    width: 33.33333%;
-    margin-right: 33.33333%;
-    margin-left: -66.66667%;
+    width: 20%;
+    margin-right: 20%;
+    margin-left: -40%;
   }
   /* line 148, ../sass/layouts/_responsive.scss */
   .two-sidebars .region-sidebar-second .block:nth-child(3n) {
     float: right;
-    width: 33.33333%;
-    margin-right: 66.66667%;
-    margin-left: -100%;
+    width: 20%;
+    margin-right: 40%;
+    margin-left: -60%;
   }
 }
 /**
@@ -220,16 +191,16 @@ legend {
   /* line 168, ../sass/layouts/_responsive.scss */
   .sidebar-first #content {
     float: right;
-    width: 75%;
-    margin-right: 25%;
-    margin-left: -100%;
+    width: 60%;
+    margin-right: 20%;
+    margin-left: -80%;
   }
   /* line 173, ../sass/layouts/_responsive.scss */
   .sidebar-first .region-sidebar-first {
     float: right;
-    width: 25%;
+    width: 20%;
     margin-right: 0%;
-    margin-left: -25%;
+    margin-left: -20%;
   }
 
   /**
@@ -243,16 +214,16 @@ legend {
   /* line 183, ../sass/layouts/_responsive.scss */
   .sidebar-second #content {
     float: right;
-    width: 75%;
+    width: 60%;
     margin-right: 0%;
-    margin-left: -75%;
+    margin-left: -60%;
   }
   /* line 188, ../sass/layouts/_responsive.scss */
   .sidebar-second .region-sidebar-second {
     float: right;
-    width: 25%;
-    margin-right: 75%;
-    margin-left: -100%;
+    width: 20%;
+    margin-right: 60%;
+    margin-left: -80%;
   }
 
   /**
@@ -267,23 +238,23 @@ legend {
   /* line 198, ../sass/layouts/_responsive.scss */
   .two-sidebars #content {
     float: right;
-    width: 50%;
-    margin-right: 25%;
-    margin-left: -75%;
+    width: 40%;
+    margin-right: 20%;
+    margin-left: -60%;
   }
   /* line 203, ../sass/layouts/_responsive.scss */
   .two-sidebars .region-sidebar-first {
     float: right;
-    width: 25%;
+    width: 20%;
     margin-right: 0%;
-    margin-left: -25%;
+    margin-left: -20%;
   }
   /* line 208, ../sass/layouts/_responsive.scss */
   .two-sidebars .region-sidebar-second {
     float: right;
-    width: 25%;
-    margin-right: 75%;
-    margin-left: -100%;
+    width: 20%;
+    margin-right: 60%;
+    margin-left: -80%;
   }
 }
 /* Component (SMACSS module) rules */
@@ -310,7 +281,7 @@ legend {
  * Navigation bar.
  */
 /* Main menu and secondary menu links and menu block links. */
-/* line 27, ../sass/components/_misc-rtl.scss */
+/* line 26, ../sass/components/_misc-rtl.scss */
 #navigation .links,
 #navigation .menu {
   text-align: right;
@@ -405,7 +376,7 @@ span.field-label {
   text-align: right;
 }
 
-/* line 132, ../sass/components/_misc-rtl.scss */
+/* line 131, ../sass/components/_misc-rtl.scss */
 html.js #user-login-form li.openid-link,
 #user-login-form li.openid-link {
   /* Un-do some of the padding on the ul list. */
@@ -444,3 +415,5 @@ html.js .collapsed .fieldset-legend {
 /* SMACSS theme rules */
 /* @import "theme-A-rtl"; */
 /* @import "theme-B-rtl"; */
+
+/*# sourceMappingURL=styles-rtl.css.map */
