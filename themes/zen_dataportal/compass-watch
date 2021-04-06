@@ -12,7 +12,7 @@ then
     echo "  sudo gem uninstall compass --all"
     echo "  sudo gem uninstall sass --all"
     echo "  sudo gem install compass --version 0.12.7"
-    exit -1
+#    exit -1
 fi
 
 # no need to specify the set the --debug-info here since we are 

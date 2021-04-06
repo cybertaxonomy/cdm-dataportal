@@ -141,7 +141,7 @@ $tabs-border: #bbb;
 // Add the Zen Grids responsive layout mixins.
 @import "zen";
 
-@import "ie-legacy"; // Adds css fixes for older IE browsers and thus adds CSS3 PIE support which emulates some css3 features, see pie.scss
+//@import "ie-legacy"; // Adds css fixes for older IE browsers and thus adds CSS3 PIE support which emulates some css3 features, see pie.scss
 
 
 // Now we add our custom helper mixins.
