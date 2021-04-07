@@ -10,15 +10,14 @@ package eu.etaxonomy.dataportal.selenium.tests.reference;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.DrupalVars;
@@ -46,7 +45,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
     private TaxonPage p;
 
-    List<DerivedUnitTree> duTrees;
+    DerivedUnitTree duTree;
 
     @Before
     public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
@@ -59,20 +58,19 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     // must be called after setting the drupal vars
     public void loadPage() throws MalformedURLException {
         p = new TaxonPage(driver, getContext(), glenodinium_apiculatum_t, "specimens");
-        duTrees = p.getDataPortalContent().getElement().findElements(By.cssSelector(".derived-unit-tree")).stream()
-                .map(el -> DerivedUnitTree.from(el))
-                .collect(Collectors.toList());
+        WebElement treeElement = p.getDataPortalContent().getElement().findElement(By.cssSelector(".item-tree"));
+        duTree = DerivedUnitTree.from(treeElement);
     }
 
     @Test
     public void testPage() {
 
-        assertEquals(3, duTrees.size());
-        BaseElement rootNodeHeader1 = duTrees.get(0).getRootNode().getHeader();
+        assertEquals(3, duTree.getRootNodes().size());
+        BaseElement rootNodeHeader1 = duTree.getRootNodes().get(0).getHeader();
         assertEquals("(B SP-99999).", rootNodeHeader1.getText());
-        BaseElement rootNodeHeader2 = duTrees.get(1).getRootNode().getHeader();
+        BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
         assertEquals("Germany, Berlin, 2 Apr 1835.", rootNodeHeader2.getText());
-        BaseElement rootNodeHeader3 = duTrees.get(2).getRootNode().getHeader();
+        BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
         assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", rootNodeHeader3.getText());
     }
 
@@ -80,13 +78,16 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     @Test
     public void testDerivationTree1() {
 
-        DerivedUnitTree tree1 = duTrees.get(0);
-        DerivedUnitTreeNode rootNode = tree1.getRootNode();
+
+        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(0);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
         DerivedUnitTreeNode subNode3 = rootNode.getSubNodes().get(2);
 
         assertEquals("(B SP-99999).", rootNode.getHeader().getText());
+        assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
+        rootNode.getTreeNodeSymbol().click();
+        assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
         assertEquals("(B B-923845).", subNode1.getHeader().getText());
         assertEquals("(B DNA-9098080).", subNode2.getHeader().getText());
         assertEquals("B_SP-99999.png", subNode3.getHeader().getText());
@@ -113,11 +114,13 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     @Test
     public void testDerivationTree2() {
 
-        DerivedUnitTree tree2 = duTrees.get(1);
-        DerivedUnitTreeNode rootNode = tree2.getRootNode();
+        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(1);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
 
         assertEquals("Germany, Berlin, 2 Apr 1835.", rootNode.getHeader().getText());
+        assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
+        rootNode.getTreeNodeSymbol().click();
+        assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
         assertEquals("BHUPM 671 (ECdraw671.jpg)", subNode1.getHeader().getText());
 
         // ---- root node
@@ -158,15 +161,22 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     @Test
     public void testDerivationTree3() {
 
-        DerivedUnitTree tree3 = duTrees.get(2);
-        DerivedUnitTreeNode rootNode = tree3.getRootNode();
+        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(2);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
         DerivedUnitTreeNode subNode1_1 = subNode1.getSubNodes().get(0);
         DerivedUnitTreeNode subNode1_2 = subNode1.getSubNodes().get(1);
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
 
         assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", rootNode.getHeader().getText());
+
+        assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
+        rootNode.getTreeNodeSymbol().click();
+        assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
         assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT 2017E68).", subNode1.getHeader().getText());
+
+        assertFalse("sub node 1 initially invisible", subNode1_1.getElement().isDisplayed());
+        subNode1.getTreeNodeSymbol().click();
+        assertTrue("sub node 1 visible after click", subNode1_1.getElement().isDisplayed());
         assertEquals("B IMG 99999 (?fn%3dIMG%2099999.jpg%26mo%3dfile)", subNode1_1.getHeader().getText());
         assertEquals("XKCD MASKS 2X (Masks)", subNode1_2.getHeader().getText());
         assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M M-0289351).", subNode2.getHeader().getText());

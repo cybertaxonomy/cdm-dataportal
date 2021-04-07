@@ -8,8 +8,13 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
+import eu.etaxonomy.dataportal.selenium.XPathTools;
 
 /**
  * @author a.kohlbecker
@@ -18,22 +23,22 @@ import org.openqa.selenium.WebElement;
 public class DerivedUnitTree extends BaseElement {
 
 
-    private DerivedUnitTreeNode rootNode = null;
+    private List<DerivedUnitTreeNode> rootNodes = null;
 
 
     public DerivedUnitTree(WebElement element) {
         super(element);
-        rootNode = new DerivedUnitTreeNode(element.findElement(By.cssSelector(".derived-unit-tree-root")));
+        rootNodes = element.findElements(By.xpath("./div" + XPathTools.classAttrContains("item-list") +"/ul/li")).stream()
+        .map(el -> new DerivedUnitTreeNode(el))
+        .collect(Collectors.toList());
     }
 
     public static DerivedUnitTree from(WebElement element) {
         return new DerivedUnitTree(element);
     }
 
-
-
-    public DerivedUnitTreeNode getRootNode() {
-        return rootNode;
+    public List<DerivedUnitTreeNode> getRootNodes() {
+        return rootNodes;
     }
 
 }

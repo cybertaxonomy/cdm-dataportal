@@ -24,6 +24,7 @@ import eu.etaxonomy.dataportal.selenium.XPathTools;
 public class DerivedUnitTreeNode extends BaseElement {
 
     private List<DerivedUnitTreeNode> subNodes = new ArrayList<>();
+    private WebElement itemWrapper;
 
     public DerivedUnitTreeNode(WebElement element) {
         super(element);
@@ -37,14 +38,19 @@ public class DerivedUnitTreeNode extends BaseElement {
        // .peek(el -> System.out.println("#####> " + element.getText() + " >>> " + el.getText()))
         .map(el -> new DerivedUnitTreeNode(el))
         .collect(Collectors.toList());
+        itemWrapper = element.findElement(By.xpath("./div" + XPathTools.classAttrContains("item-wrapper")));
     }
 
     public BaseElement getHeader() {
-        return BaseElement.from(getElement().findElement(By.cssSelector(".unit-header")));
+        return BaseElement.from(itemWrapper.findElement(By.cssSelector(".unit-header")));
+    }
+
+    public WebElement getTreeNodeSymbol() {
+        return itemWrapper.findElement(By.cssSelector(".unit-header .tree-node-symbol"));
     }
 
     public BaseElement getContent() {
-        return BaseElement.from(getElement().findElement(By.cssSelector(".unit-content")));
+        return BaseElement.from(itemWrapper.findElement(By.cssSelector(".unit-content")));
     }
 
     public DetailsTable getDetailsTable(String tableClassAttribute) {
