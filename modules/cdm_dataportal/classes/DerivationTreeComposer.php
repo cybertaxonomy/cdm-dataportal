@@ -239,7 +239,33 @@ class DerivationTreeComposer {
     if($has_sub_derivatives){
       $unit_header_wrapper_sub_items_class_attr = ' unit-header-wrapper-with-sub-items';
     }
-    return '<div class="unit-header-wrapper' . $unit_header_wrapper_sub_items_class_attr . $focused_attribute . '"><div class="unit-header"><div class="unit-label' . $hover_effect_attribute .' ">' . $collapse_open_icons . '<span class="symbol">' . symbol_for_base_of_record($sob_dto->recordBase->uuid). '</span>' . $sob_dto->label . $icon_link_markup . '</div></div></div>';
+    return '<div class="unit-header-wrapper' . $unit_header_wrapper_sub_items_class_attr . $focused_attribute . '"><div class="unit-header"><div class="unit-label' . $hover_effect_attribute .' ">' . $collapse_open_icons . '<span class="symbol">' . $this->symbol_markup($sob_dto) . '</span>' . $sob_dto->label . $icon_link_markup . '</div></div></div>';
+  }
+
+  /**
+   * @param $sob_dto
+   *
+   * @return String
+   */
+  public function symbol_markup($sob_dto) {
+    if(count($sob_dto->specimenTypeDesignations)){
+      $base_of_record_symbol = font_awesome_icon_stack([
+        symbol_for_base_of_record($sob_dto->recordBase->uuid,
+          [
+          'class' => ['fas', 'fa-stack-1x'],
+          'style' => ['--fa-primary-color: red;']
+        ]),
+        font_awesome_icon_markup('fa-tag',
+          [
+            'class' => ['fas', 'fa-rotate-180', 'fa-stack-1x'],
+            'style' => ['color: red; vertical-align:bottom; text-align:left; font-size:.75em; bottom: -0.35em;']
+          ]
+        )
+      ]);
+    } else {
+      $base_of_record_symbol = symbol_for_base_of_record($sob_dto->recordBase->uuid);
+    }
+    return $base_of_record_symbol;
   }
 
 }

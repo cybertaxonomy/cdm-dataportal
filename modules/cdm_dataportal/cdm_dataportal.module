@@ -469,7 +469,6 @@ function _add_js_derivation_tree($jquery_selector){
   function font_awesome_icon_markup($icon_name = NULL, $attributes = array()){
     _add_font_awesome_font();
 
-
     if($icon_name){
       if(!isset($attributes['class'])){
         $attributes['class'] = array();
@@ -482,6 +481,29 @@ function _add_js_derivation_tree($jquery_selector){
 
     return '';
   }
+
+/**
+ * see https://fontawesome.com/how-to-use/on-the-web/styling/stacking-icons
+ * @param array $fa_icons_markup
+ *  Array of font awesome icon markup preferably created by font_awesome_icon_markup()
+ *
+ * @return string
+ *  The markup
+ */
+function font_awesome_icon_stack($fa_icons_markup, $attributes = array(), $no_resize = TRUE){
+
+
+    if(!isset($attributes['class'])){
+      $attributes['class'] = array();
+    }
+    if($no_resize){
+      $attributes['class'][] = 'fa-stack-no-resize';
+    } else {
+      $attributes['class'][] = 'fa-stack';
+    }
+
+    return '<span ' . drupal_attributes($attributes) . '>' . join('', $fa_icons_markup) . '</span>';
+}
 
 /**
  * @param string $glyph_name

@@ -26,7 +26,7 @@ const SYMBOL_COLLAPSIBLE_OPEN = 'chevron-down';
  * @return String
  *  Markup for a font awesome icon
  */
-function symbol_for_base_of_record($base_of_record_uuid){
+function symbol_for_base_of_record($base_of_record_uuid, $attributes = array()){
 
   switch($base_of_record_uuid){
     case UUID_SPECIMEN_OR_OBSERVATION_TYPE_PRESERVEDSPECIMEN :
@@ -75,5 +75,5 @@ function symbol_for_base_of_record($base_of_record_uuid){
       $fa_icon_name = 'cube'; // or 'archive'
   }
 
-  return font_awesome_icon_markup('fa-'.$fa_icon_name);
+  return font_awesome_icon_markup('fa-'.$fa_icon_name, $attributes);
 }

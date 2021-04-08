@@ -111,8 +111,17 @@ select.highlite-first-child option:first-child {
     border-style: solid;
 }
 
+/* font-awesome */
 .fa-icon {
     font-family: 'Font Awesome 5 Free' !important;
+}
+.fa-stack-no-resize { /* custom .fa-stack implementation which does not magnify the icon stack */
+    display: inline-block;
+    height: 1em;
+    line-height: 1em;
+    position: relative;
+    vertical-align: middle;
+    width: 1.5em;
 }
 
 /*
