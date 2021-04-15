@@ -1,0 +1,19 @@
+{
+    "name": "cybertaxonomy.org/cdm_dataportal_profile_testing",
+    "description": "CDM DataPortal installation profile for testing",
+    "type": "drupal-profile",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Andreas Kohlbecker",
+            "email": "a.kohlbecker@bgbm.org"
+        }
+    ],
+    "homepage": "https://cybertaxonomy.eu/portal/git",
+    "support": {
+        "issues": "https://dev.e-taxonomy.eu/redmine/projects/edit/issues?query_id=72",
+        "source": "https://github.com/cybertaxonomy/cdm-dataportal"
+    }
+}
+
+ 

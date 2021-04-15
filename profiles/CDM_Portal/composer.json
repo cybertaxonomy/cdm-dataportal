@@ -1,6 +1,6 @@
 {
-    "name": "cybertaxonomy.org/cdm_dataportal_profiles",
-    "description": "CDM DataPortal installation profiles",
+    "name": "cybertaxonomy.org/cdm_dataportal_profile",
+    "description": "CDM DataPortal installation profile",
     "type": "drupal-profile",
     "license": "GPL-2.0-or-later",
     "authors": [
@@ -13,7 +13,7 @@
     "support": {
         "issues": "https://dev.e-taxonomy.eu/redmine/projects/edit/issues?query_id=72",
         "source": "https://github.com/cybertaxonomy/cdm-dataportal"
-    },
+    }
 }
 
  
