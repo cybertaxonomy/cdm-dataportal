@@ -1,15 +1,123 @@
 {
-  "name": "cybertaxonomy.org/cdm-dataportal",
-  "description": "The dataportal publishes CDM data hosted in a CommunityStore on the web.",
-  "minimum-stability": "stable",
-  "license": "GPL2",
-  "authors": [
-    {
-      "name": "Andreas Kohlbecker",
-      "email": "a.kohlbecker@bgbm.org"
+    "name": "cybertaxonomy.org/drupal-7-dataportal",
+    "description": "The dataportal publishes CDM data hosted in a CommunityStore on the web.",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Andreas Kohlbecker",
+            "email": "a.kohlbecker@bgbm.org"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/7"
+        },
+        {
+            "type": "path",
+            "url": "./modules/cdm_dataportal"
+        },
+        {
+            "type": "path",
+            "url": "./themes/zen_dataportal",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "./profiles/CDM_Portal",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
+            "url": "./profiles/CDM_Portal_Testing",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "ext-curl": "*",
+        "ext-gd": "*",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-pdo": "*",
+        "ext-xml": "*",
+        "composer/installers": "^1.2",
+        "composer/semver": "^1.4",
+        "cweagans/composer-patches": "^1.6.5",
+        "drupal-composer/preserve-paths": "^0.1",
+        "drupal/composer_autoloader": "^1.0",
+        "drupal/drupal": "^7.62",
+        "drush/drush": "^8.0",
+        "symfony/filesystem": "~2.7|^3",
+        "webflo/drupal-finder": "^1.0.0",
+        
+        "cybertaxonomy.org/cdm_dataportal": "*",
+        "cybertaxonomy.org/zen_dataportal": "*",
+        "cybertaxonomy.org/cdm_dataportal_profile": "*",
+        
+        "drupal/admin_menu": "*",
+        "drupal/admin_menu_toolbar": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5",
+        "cybertaxonomy.org/cdm_dataportal_profile_testing": "*"
+    },
+    "conflict": {
+        "drupal/core": "8.*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "classmap": [
+            "scripts/composer/ScriptHandler.php",
+            "scripts/composer/CdmDataPortalHelper.php"
+        ]
+    },
+    "scripts": {
+        "pre-install-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "pre-update-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "post-install-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
+            "Cybertaxonomy\\composer\\CdmDataPortalHelper::createPolyfillSymlinks"
+        ],
+        "post-update-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
+            "Cybertaxonomy\\composer\\CdmDataPortalHelper::createPolyfillSymlinks"
+        ],
+        "post-create-project-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::removeInternalFiles"
+        ]
+    },
+    "extra": {
+        "installer-paths": {
+            "web/": ["type:drupal-core"],
+            "web/profiles/{$name}/": ["type:drupal-profile"],
+            "web/sites/all/drush/{$name}/": ["type:drupal-drush"],
+            "web/sites/all/libraries/{$name}/": ["type:drupal-library"],
+            "web/sites/all/modules/contrib/{$name}/": ["type:drupal-module"],
+            "web/sites/all/themes/contrib/{$name}/": ["type:drupal-theme"]
+        },
+        "patches": {
+            "cweagans/composer-patches": {
+                "Call the preserve paths hooks" : "https://github.com/SebCorbin/composer-patches/commit/1cb9bacba51f8bba0c5f3f322c3bb61e4ceae974.patch"
+            }
+        },
+        "preserve-paths": [
+            "web/sites"
+        ]
     }
-  ],
-  "require-dev": {
-    "phpunit/phpunit": "^5"
-  }
 }

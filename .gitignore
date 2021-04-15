@@ -6,9 +6,12 @@
 /.settings
 target
 /screenshots
-/vendor
+# composer files
+vendor
+/web
+/drush
 
-
+# IDE
 .idea/
 .classpath
 .settings/
