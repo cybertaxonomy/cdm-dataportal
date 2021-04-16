@@ -65,8 +65,7 @@ mkdir ./dist
 cd ./dist
 git clone --depth 1 --branch $VERSION $GIT_REPO_URL $TARGET_DIR
 cd $TARGET_DIR
-composer install
-composer update
+composer install --no-dev
 rm -rf vendor
 cd ../
 echo "creating the installation archive: $ARCHIVE_FILE"

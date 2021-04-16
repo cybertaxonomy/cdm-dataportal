@@ -13,6 +13,9 @@
     "support": {
         "issues": "https://dev.e-taxonomy.eu/redmine/projects/edit/issues?query_id=72",
         "source": "https://github.com/cybertaxonomy/cdm-dataportal"
+    },
+    "require" : {
+        "cybertaxonomy.org/cdm_dataportal": "^7.5.20"
     }
 }
 
