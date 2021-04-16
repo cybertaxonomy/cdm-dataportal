@@ -6,6 +6,7 @@
 /.settings
 target
 /screenshots
+/dist
 # composer files
 vendor
 /web
