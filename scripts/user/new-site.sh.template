@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#
+# See ../../README.md
+#
+#
+
+export SITE_NAME='test-site'
+
+export ADMIN_USR='admin'
+export ADMIN_PWD='change--me'
+export ADMIN_EMAIL='admin@dataportal.test'
+
+export MYSQL_USR='root'
+export MYSQL_PWD='change--me'
+
+export DB_PREFIX='drupal7_dataportal_'
+export MYSQL_URL="mysql://${MYSQL_USR}:${MYSQL_PWD}@localhost/${DB_PREFIX}"$(echo ${SITE_NAME} | tr ' -' '_')
+
+export BASE_URL='http://dataportal.test/'
+
+export DRUPAL_ROOT=../../web
+
+drush -r $DRUPAL_ROOT -l $BASE_URL/$SITE_NAME site-install "cdm_portal" \
+    --site-name=$SITE_NAME  \
+    --sites-subdir=$SITE_NAME \
+    --account-name=$ADMIN_USR  \
+    --account-pass=$ADMIN_PWD  \
+    --account-mail=$ADMIN_EMAIL \
+    --db-prefix=$DB_PREFIX \
+    --db-su=$MYSQL_USR \
+    --db-su-pw=$MYSQL_PWD \
+    --db-url=$MYSQL_URL \
+    --no-clean-url \
+    install_configure_form.update_status_module='array(FALSE,FALSE)'

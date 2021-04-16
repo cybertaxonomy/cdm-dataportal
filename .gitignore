@@ -20,3 +20,4 @@ composer.lock
 .attach*
 C:\\nppdf32Log\\debuglog.txt
 workbench.xmi
+new-site.sh

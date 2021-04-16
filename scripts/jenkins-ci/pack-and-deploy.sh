@@ -66,14 +66,15 @@ cd ./dist
 git clone --depth 1 --branch $VERSION $GIT_REPO_URL $TARGET_DIR
 cd $TARGET_DIR
 composer install
+composer update
 rm -rf vendor
 cd ../
 echo "creating the installation archive: $ARCHIVE_FILE"
 tar czf $ARCHIVE_FILE $TARGET_DIR
-rm -rf $TARGET_DIR
+# rm -rf $TARGET_DIR
 
 if [[ -n "$SSH_HOST" && "$VERSION" =~ [0-9]+\.[0-9]+\.[0-9]+  ]] ; then
-  echo "deploying $ARCHIVE_FILE to $SSH_HOST"
+  echo "deploying release $ARCHIVE_FILE to $SSH_HOST"
   # create the new folder on the server and upload everything
   ssh ${SSH_HOST} "rm -rf /var/www/download/dataportal/$VERSION"
   ssh ${SSH_HOST} "mkdir /var/www/download/dataportal/$VERSION"
@@ -81,7 +82,9 @@ if [[ -n "$SSH_HOST" && "$VERSION" =~ [0-9]+\.[0-9]+\.[0-9]+  ]] ; then
   ssh ${SSH_HOST} "ln -s /var/www/download/dataportal/$VERSION /var/www/download/dataportal/stable"
   scp $ARCHIVE_FILE ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
 else
-  echo "no deployment for VERSION="$VERSION
+  echo "deployment of development version"
+#  ssh ${SSH_HOST} "mkdir /var/www/download/dataportal/$VERSION"
+#  scp $ARCHIVE_FILE ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
 fi
 
 # DONE
