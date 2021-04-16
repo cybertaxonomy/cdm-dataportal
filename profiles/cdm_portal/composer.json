@@ -1,5 +1,5 @@
 {
-    "name": "cybertaxonomy.org/cdm_dataportal_profile",
+    "name": "cybertaxonomy.org/cdm_portal",
     "description": "CDM DataPortal installation profile",
     "type": "drupal-profile",
     "license": "GPL-2.0-or-later",

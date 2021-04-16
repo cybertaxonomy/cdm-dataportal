@@ -16,27 +16,30 @@
         },
         {
             "type": "path",
-            "url": "./modules/cdm_dataportal"
+            "url": "./modules/cdm_dataportal",
+            "options": {
+                "symlink": true
+            }
         },
         {
             "type": "path",
             "url": "./themes/zen_dataportal",
             "options": {
-                "symlink": false
+                "symlink": true
             }
         },
         {
             "type": "path",
             "url": "./profiles/CDM_Portal",
             "options": {
-                "symlink": false
+                "symlink": true
             }
         },
         {
             "type": "path",
             "url": "./profiles/CDM_Portal_Testing",
             "options": {
-                "symlink": false
+                "symlink": true
             }
         }
     ],
@@ -60,14 +63,14 @@
         
         "cybertaxonomy.org/cdm_dataportal": "*",
         "cybertaxonomy.org/zen_dataportal": "*",
-        "cybertaxonomy.org/cdm_dataportal_profile": "*",
+        "cybertaxonomy.org/cdm_portal": "*",
         
         "drupal/admin_menu": "*",
         "drupal/admin_menu_toolbar": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^5",
-        "cybertaxonomy.org/cdm_dataportal_profile_testing": "*"
+        "cybertaxonomy.org/cdm_portal_testing": "*"
     },
     "conflict": {
         "drupal/core": "8.*"

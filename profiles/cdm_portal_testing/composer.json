@@ -1,5 +1,5 @@
 {
-    "name": "cybertaxonomy.org/cdm_dataportal_profile_testing",
+    "name": "cybertaxonomy.org/CDM_Portal_Testing",
     "description": "CDM DataPortal installation profile for testing",
     "type": "drupal-profile",
     "license": "GPL-2.0-or-later",
