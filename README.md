@@ -11,7 +11,8 @@ Project dependencies required for bundeling the final insallation package are ma
 * `./drush`: drush, as installed by composer
 * `./debug`: scripts that help debugging problems with drupal multisite setups
 * `./modules`: drupal modules, the actual **cdm_dataportal** module is found here. 
-* `./scripts`: scripts, installed by composer and manually added ones
+* `./scripts/composer`: scripts, installed by composer and manually added ones
+* `./scripts/jenkins-ci`: scripts for testing, release, deployment in jenkins.
 * `./site`: documentation source code, will be build by maven (see `pom.xml`)
 * `./src`: java project with selenium tests
 * `./themes`: drupal themes
