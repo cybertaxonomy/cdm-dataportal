@@ -82,11 +82,10 @@ if [[ -n "$SSH_HOST" && "$VERSION" =~ [0-9]+\.[0-9]+\.[0-9]+  ]] ; then
   scp $ARCHIVE_FILE ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
 else
   echo "deployment of development version"
-#  ssh ${SSH_HOST} "mkdir /var/www/download/dataportal/$VERSION"
-#  scp $ARCHIVE_FILE ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
+  ssh ${SSH_HOST} "mkdir /var/www/download/dataportal/$VERSION"
+  scp $ARCHIVE_FILE ${SSH_HOST}:/var/www/download/dataportal/${VERSION}/
 fi
 
-# DONE
 echo "pack-and-deploy done"
 
 
