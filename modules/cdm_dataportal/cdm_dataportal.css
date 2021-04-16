@@ -111,8 +111,17 @@ select.highlite-first-child option:first-child {
     border-style: solid;
 }
 
+/* font-awesome */
 .fa-icon {
     font-family: 'Font Awesome 5 Free' !important;
+}
+.fa-stack-no-resize { /* custom .fa-stack implementation which does not magnify the icon stack */
+    display: inline-block;
+    height: 1em;
+    line-height: 1em;
+    position: relative;
+    vertical-align: middle;
+    width: 1.5em;
 }
 
 /*
@@ -753,7 +762,8 @@ table.cdm\:Reference {
     padding: 0;
 }
 
-
+/**
+disabled for derivatives tree view (see also derivation-tree.js)
 #specimens .item-list ul{
     list-style-type: none;
     list-style-image: none;
@@ -762,6 +772,8 @@ table.cdm\:Reference {
 #specimens .item-list li{
     padding: 0 ;
 }
+*/
+
 
 #specimens .dna-sequence div {
     font-family: monospace;
@@ -882,5 +894,11 @@ table.cdm\:Reference {
  */
 select {
   max-width: 100%;
+}
+
+/* TMP */
+
+.unit-details {
+    border: 1px solid #c5c5c5;
 }
 

@@ -49,6 +49,9 @@ const MEMBER_OF_FOOTNOTES = ' member-of-footnotes-';
  *    For original sources the $footnote_list_key will be overwritten
  *    by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
+ * @param bool $add_annotations
+ *    Footnotes for annotations will not be created if this is FALSE
+ *
  * @return array
  *   An array of the footnote keys for the supplied cdm entity
  *
@@ -59,7 +62,8 @@ function cdm_entity_footnotes(
   $footnote_list_key = NULL,
   $do_link_to_reference = FALSE,
   $do_link_to_name_used_in_source = FALSE,
-  $is_bibliography_aware = FALSE
+  $is_bibliography_aware = FALSE,
+  $add_annotations = TRUE
 ){
 
   $sources = cdm_entity_sources_sorted($cdm_entity);
@@ -69,7 +73,9 @@ function cdm_entity_footnotes(
   }
 
   // Annotations as footnotes.
-  $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key);
+  if($add_annotations){
+    $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key);
+  }
 
   // Source references as footnotes.
   if($is_bibliography_aware){
@@ -137,6 +143,29 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
   }
 
   return $foot_note_keys;
+}
+
+/**
+ * Fetches the list of visible annotations for the cdm entity or for the comparable
+ * object and returns a list of the annotation texts
+ *
+ * @param stdClass $cdm_entity
+ *   A single CdmBase instance ore comparable object.
+ *
+ * @see cdm_fetch_visible_annotations()
+ */
+function cdm_entity_annotations_as_content(stdClass $cdm_entity) {
+
+  $annotation_texts = [];
+  $annotations = cdm_fetch_visible_annotations($cdm_entity);
+  if (is_array($annotations)) {
+    foreach ($annotations as $annotation) {
+      if($annotation->text){
+        $annotation_texts[] = $annotation->text;
+      }
+    }
+  }
+  return $annotation_texts;
 }
 
 /**
@@ -346,6 +375,7 @@ function handle_nomenclatural_reference_as_footnote($name)
 
 const ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT = [
   'sources_as_content' => FALSE,
+  'annotations_as_content' => FALSE,
   'link_to_name_used_in_source' => TRUE,
   'link_to_reference' => TRUE,
   'add_footnote_keys' => TRUE,
@@ -528,13 +558,18 @@ function handle_annotations_and_sources($entity, $inline_text_prefix = null, $fo
   } // END of references inline
 
   // footnotes for sources and annotations or put into into bibliography if requested ...
+  $do_foonotes_as_content = isset($config['annotations_as_content']) && $config['annotations_as_content'];
+  if($do_foonotes_as_content){
+    $annotationsAndSources->setAnnotations(cdm_entity_annotations_as_content($entity));
+  }
   if ($config['add_footnote_keys']) {
     $annotationsAndSources->addAllFootNoteKeys(cdm_entity_footnotes(
       $entity,
       $footnote_list_key_suggestion,
       $config['link_to_reference'],
       $config['link_to_name_used_in_source'],
-      (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE)
+      (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE),
+      !$do_foonotes_as_content
     ));
   }
   return $annotationsAndSources;
@@ -555,7 +590,13 @@ function cdm_entity_sources_sorted($entity) {
     $sources = $entity->sources;
   }
   else {
-    $sources = [];
+    // try to load the sources
+    if(isset_not_empty($entity->uuid)){
+      $sources = cdm_ws_fetch_all(cdm_compose_url('portal/' . cdm_ws_base_uri($entity->class), [ $entity->uuid, 'sources']));
+    } else {
+      // this may happen with DerivedUnitFaced, also with others?
+      $sources = [];
+    }
   }
   usort($sources, 'compare_original_sources');
   return $sources;

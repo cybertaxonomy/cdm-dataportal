@@ -26,7 +26,7 @@
  *
  * @param object $taxon
  *   A cdm Taxon object
- * @return
+ * @return array
  *   A render array suitable for drupal_render()
  *
  * @ingroup Compose
@@ -85,7 +85,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
     // --- get map service HTTP query parameters
     if (count($specimensOrObservations) > 0 || $root_unit_dtos > 0) {
-        $render_array['map'] = occurrence_map_query_parameters($taxon);
+       //######## RE-ENABLE !!!!! $render_array['map'] = occurrence_map_query_parameters($taxon);
     }
 
     // -------------------------------------------------------
@@ -118,7 +118,10 @@ function compose_cdm_taxon_page_specimens($taxon) {
         );
     }
     else if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE)){ // FIXME this seems to be wrong
-      $render_array['specimen_list'] = compose_specimen_table_top_down($root_unit_dtos);
+      $derivationTreeComposer = new DerivationTreeComposer($root_unit_dtos);
+      $derivationTreeComposer->setWithDetails(true);
+      $derivationTreeComposer->setCollapsible(true);
+      $render_array['specimen_list'] = $derivationTreeComposer->compose();
       $render_array['specimen_list']['#weight'] = 2;
     } else {
       $specimen_table = compose_specimens_table_bottom_up($specimensOrObservations);
@@ -174,7 +177,7 @@ function create_html_link($link, $openInExternalWindow=false){
 
 /**
  * Creates HTML links from the given link list concatenated by default by a comma.
- * @param $linkList the list with Link objects having "uri" and "linkText" as members
+ * @param array $linkList list with Link objects having "uri" and "linkText" as members
  * @return string the assembled HTML string containing the links
  */
 function create_html_links($linkList, $openInExternalWindow=false, $separator=", ")
@@ -859,7 +862,7 @@ function compose_cdm_taxon_page_experts($taxon){
  * @param string $add_tab
  *   Optional parameter. The given string will be added to the array of tabs
  *
- * @return
+ * @return array
  *   The array of tabs
  */
 function taxon_page_tabs_hidden_add($add_tab = NULL) {
@@ -973,7 +976,7 @@ function cdm_dataportal_preprocess_menu_local_task(&$variables) {
 /**
  * Composes and returns an render array for the classification breadcrumbs of the given taxon.
  *
- * @param taxon
+ * @param $taxon_uuid
  *
  * @return array
  *   A Drupal render array for a table with the experts
@@ -1031,7 +1034,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
   $rank_limit_uuid = variable_get(TAXONTREE_RANKLIMIT, TAXONTREE_RANKLIMIT_DEFAULT);
 
   $rank_separator = '<span> '
-    . font_awesome_icon_markup('fa-chevron-right')
+    . font_awesome_icon_markup('fa-' . SYMBOL_COLLAPSIBLE_CLOSED)
     . ' </span>';
   $more_children_icon = font_awesome_icon_markup('fa-sitemap fa-rotate-270');
   $more_children_label = '...';
@@ -1099,58 +1102,22 @@ function compose_classification_breadcrumbs($taxon_uuid) {
 
 
 /**
- * @param $specimen_uuid
+ *
+ * @param $sob_dto
+ *   A SpecimenOrObservationDTO
+ *
  * @return array
  *    The drupal render array for the page
  *
  * @ingroup compose
  */
-function compose_cdm_specimen_page($specimen_uuid)
+function compose_cdm_specimen_page($sob_dto)
 {
-  drupal_set_title("Specimen Details");
+  drupal_set_title($sob_dto->label);
   RenderHints::pushToRenderStack('specimen_page');
-
-  $specimen_table = array(
-      '#theme' => 'table',
-      '#weight' => 2,
-      // prefix attributes and rows with '#' to let it pass to the theme function,
-      // otherwise it is handled as child render array
-
-    '#attributes' => array('class' => 'specimens'),
-      '#rows' => array(),
-      '#prefix' => '<div id="specimens">',
-      '#suffix' => '</div>',
-
-
-  );
-  $specimen = compose_cdm_specimen_or_observation($specimen_uuid, true);
-  /*
-  $render_array = array(
-          '#theme' => 'item_list',
-          '#items' => array($specimen),
-          '#type' => 'ul');
-  $output = drupal_render($render_array);
- */
-  $specimen_table['#rows'][] = array(
-          // An array of table rows. Every row is an array of cells, or an associative array
-          'data' => $specimen,
-          'class' =>  array(
-              'descriptionElement',
-              'descriptionElement_IndividualsAssociation'
-          ),
-  );
-
-
- // $detail_html = compose_cdm_specimen_or_observation($specimen_uuid, true);
-//    $render_array['markup'] = array(
-//        '#prefix' => '<div id="specimens" class="page">',
-//        'content' => $specimen_table,
-//        '#suffix' => '</div>',
-//    );
-  $render_array['specimen_table'] =  $specimen_table;
-
+  $render_array = compose_cdm_specimen_or_observation_new($sob_dto);
   RenderHints::popFromRenderStack();
-  return $specimen; // $render_array;
+  return $render_array;
 }
 
 /**
@@ -1395,6 +1362,10 @@ function compose_cdm_reference_page($uuid) {
  *
  * The $tabname as passed to the method will be returned if no override
  * label is configured in the settings.
+ *
+ * @param $tabname
+ *
+ * @return mixed
  */
 function cdm_taxonpage_tab_label($tabname) {
   static $taxon_tabs_labels = null;
@@ -1412,32 +1383,25 @@ function cdm_taxonpage_tab_label($tabname) {
  *  Returns HTML for the default title of a specimen page.
  *  The returned title is a the identifier of the specimen.
  *
- * @param object $occurrence
- *  The CDM SpecimenOrObservation instance
- *     being formatted for the title.
+ * @param object $sob_dto
+ *  A SpecimenOrObservationDTO to create a tile string for.
  *
  * @return string
  *  Markup for the title of a specimen page
  */
-function render_specimen_page_title($occurrence)
+function render_specimen_page_title($sob_dto)
 {
   RenderHints::pushToRenderStack('render_specimen_page_title');
   $out = '';
-  list($specimenID, $collection) = specimen_id_and_collection_for($occurrence);
-  if ($occurrence->class == 'FieldUnit'){
+  if ($sob_dto->type == 'FieldUnit'){
     $out .= '<span class="type-label">Field unit: </span>';
   }else{
     $out .= '<span class="type-label">Specimen:  </span>';
+    $out .= $sob_dto->specimenIdentifier;
   }
-
-  if($collection){
-    $out .= $collection." ";
-  }
-  $out .= $specimenID;
-
   RenderHints::popFromRenderStack();
 
-  return '<span class="' . $occurrence->class . '">' . $out . '</span>';
+  return '<span class="' . html_class_attribute_ref($sob_dto) . '">' . $out . '</span>';
 }
 
 /**

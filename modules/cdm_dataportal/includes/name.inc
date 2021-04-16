@@ -244,8 +244,11 @@ function get_partDefinition($taxonNameType) {
  * @param $taxon_name_or_taxon_base
  *    A cdm TaxonBase or TaxonName entity
  * @param $name_link
- *    URI to the taxon, @param $reference_link
- *    URI to the reference,
+ *    URI to the taxon, the path provided by path_to_taxon() must be processed
+ *    by url() before passing to this method
+ * @param $reference_link
+ *    URI to the reference, the path provided by path_to_reference() must be
+ *    processed by url() before passing to this method
  * @param bool $show_taxon_name_annotations
  *    Enable the display of footnotes for annotations on the taxon and name
  *    (default: true)
@@ -263,8 +266,6 @@ function get_partDefinition($taxonNameType) {
  *
  * @return string
  *  The markup for a taxon name.
- * @see path_to_taxon(), must be processed by url() before passing to this method
- * @see path_to_reference(), must be processed by url() before passing to this method
  */
 function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $reference_link = NULL,
   $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
@@ -972,7 +973,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         $link_to_name_page = url(path_to_name($name_type_designation->typeName->uuid));
         $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($name_type_designation) . '">' .  type_designation_status_label_markup($name_type_designation) ;
 
-        if (!empty($name_type_designation->source->citation)) {
+        if (!empty($name_type_designation->designationSource->citation)) {
           $out .= type_designation_citation_layout($name_type_designation, $separator); // TODO type_designation_citation_layout() needs most probably to be replaced
 
         }
@@ -994,15 +995,15 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
     foreach ($specimen_type_designations as $specimen_type_designation) {
       $type_citation_markup = '';
 
-      if (!empty($specimen_type_designation->source->citation)) {
+      if (!empty($specimen_type_designation->designationSource->citation)) {
 
-        $citation_footnote_str = cdm_reference_markup($specimen_type_designation->source->citation, null, false, true);
-        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $specimen_type_designation->source->citation->uuid);
+        $citation_footnote_str = cdm_reference_markup($specimen_type_designation->designationSource->citation, null, false, true);
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $specimen_type_designation->designationSource->citation->uuid);
 
         if (!empty($author_team->titleCache)) {
-          $year = @timePeriodToString($specimen_type_designation->source->citation->datePublished, true, 'YYYY');
+          $year = @timePeriodToString($specimen_type_designation->designationSource->citation->datePublished, true, 'YYYY');
           $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
-          if ($authorteam_str == $specimen_type_designation->source->citation->titleCache) {
+          if ($authorteam_str == $specimen_type_designation->designationSource->citation->titleCache) {
             $citation_footnote_str = '';
           }
         } else {
@@ -1025,8 +1026,8 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         }
 
         $type_citation_markup .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">' . $authorteam_str . '</span>';
-        if (!empty($specimen_type_designation->source->citationMicroReference)) {
-          $type_citation_markup .= ': ' . trim($specimen_type_designation->source->citationMicroReference);
+        if (!empty($specimen_type_designation->designationSource->citationMicroReference)) {
+          $type_citation_markup .= ': ' . trim($specimen_type_designation->designationSource->citationMicroReference);
         }
         $type_citation_markup .= $footnote_key_markup . ')';
       }
@@ -1127,15 +1128,15 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
     foreach ($specimen_typedesignation_dtos as $std_dto) {
       $type_citation_markup = '';
 
-      if (!empty($std_dto->source->citation)) {
+      if (!empty($std_dto->designationSource->citation)) {
 
-        $citation_footnote_str = cdm_reference_markup($std_dto->source->citation, null, false, true);
-        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std_dto->source->citation->uuid);
+        $citation_footnote_str = cdm_reference_markup($std_dto->designationSource->citation, null, false, true);
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std_dto->designationSource->citation->uuid);
 
         if (!empty($author_team->titleCache)) {
-          $year = @timePeriodToString($std_dto->source->citation->datePublished, true, 'YYYY');
+          $year = @timePeriodToString($std_dto->designationSource->citation->datePublished, true, 'YYYY');
           $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
-          if ($authorteam_str == $std_dto->source->citation->titleCache) {
+          if ($authorteam_str == $std_dto->designationSource->citation->titleCache) {
             $citation_footnote_str = '';
           }
         } else {
@@ -1158,8 +1159,8 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
         }
 
         $type_citation_markup .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">' . $authorteam_str . '</span>';
-        if (!empty($std_dto->source->citationMicroReference)) {
-          $type_citation_markup .= ': ' . trim($std_dto->source->citationMicroReference);
+        if (!empty($std_dto->designationSource->citationMicroReference)) {
+          $type_citation_markup .= ': ' . trim($std_dto->designationSource->citationMicroReference);
         }
         $type_citation_markup .= $footnote_key_markup . ')';
       }
@@ -2072,8 +2073,8 @@ function type_status_order()
  */
 function type_designation_citation_layout($typeDesignation, $footnote_separator = ',') {
   $res = '';
-  $citation = $typeDesignation->source->citation;
-  $pages = $typeDesignation->source->citationMicroReference;
+  $citation = $typeDesignation->designationSource->citation;
+  $pages = $typeDesignation->designationSource->citationMicroReference;
   if(isset($typeDesignation->typeStatus->uuid) && isset($typeDesignation->typeStatus->representation_L10n)) {
     if ( $typeDesignation->typeStatus->uuid == UUID_NTD_ORIGINAL_DESIGNATION || $typeDesignation->typeStatus->uuid == UUID_NTD_MONOTYPY) {
       $res = ' (' . $typeDesignation->typeStatus->representation_L10n . ')';

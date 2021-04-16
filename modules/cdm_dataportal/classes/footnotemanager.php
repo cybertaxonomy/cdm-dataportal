@@ -104,6 +104,30 @@ class FootnoteManager {
   }
 
   /**
+   * Provides the content of foot notes
+   *
+   * @param string $footnoteListKey
+   *
+   * @return array
+   *   The content of foot notes or an empty array if the $footnoteListKey is
+   *   blocked
+   */
+  public static function footnoteListContents($footnoteListKey) {
+
+    if(self::isBlockedFootnoteListKey($footnoteListKey)){
+      // the footnote key is blocked, don't render it!
+      return [];
+    }
+    $content_list = [];
+    if (array_key_exists($footnoteListKey, self::$fnstore)) {
+      foreach (self::$fnstore[$footnoteListKey] as $fn) {
+        $content_list[] = $fn->getContent();
+      }
+    }
+    return $content_list;
+  }
+
+  /**
    * Add a new footnote.
    *
    * @param $footnoteListKey

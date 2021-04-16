@@ -22,6 +22,7 @@
   module_load_include('php', 'cdm_dataportal', 'help');
   module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
 
+  module_load_include('inc', 'cdm_dataportal', 'includes/symbols');
   module_load_include('inc', 'cdm_dataportal', 'includes/common');
   module_load_include('inc', 'cdm_dataportal', 'includes/footnotes');
   module_load_include('inc', 'cdm_dataportal', 'includes/agent');
@@ -33,6 +34,7 @@
   module_load_include('inc', 'cdm_dataportal', 'includes/media');
   module_load_include('inc', 'cdm_dataportal', 'includes/maps');
   module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');
+  module_load_include('inc', 'cdm_dataportal', 'includes/occurrences_new'); // tmp file, shoud be merged later with occurrences.inc
   module_load_include('inc', 'cdm_dataportal', 'includes/descriptions');
   module_load_include('inc', 'cdm_dataportal', 'includes/pre-drupal8');
 
@@ -325,14 +327,14 @@ function _add_js_taxonomic_children($jquery_selector) {
     );
   }
 
-  function _add_js_ui_accordion(){
-    _add_jquery_ui();
-    drupal_add_js('jQuery(document).ready(function() {
-        jQuery( "#accordion" ).accordion();
-      });',
-      array('type' => 'inline')
-    );
-  }
+function _add_js_ui_accordion(){
+  _add_jquery_ui();
+  drupal_add_js('jQuery(document).ready(function() {
+      jQuery( "#accordion" ).accordion();
+    });',
+    array('type' => 'inline')
+  );
+}
 
 
 function _add_js_utis_client($jquery_selector){
@@ -438,6 +440,15 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
   );
 }
 
+function _add_js_derivation_tree($jquery_selector){
+  drupal_add_js(drupal_get_path('module','cdm_dataportal') . '/js/derivation-tree.js');
+  drupal_add_js('jQuery(document).ready(function() {
+      jQuery( "' . $jquery_selector . '" ).derivationTree();
+    });',
+    array('type' => 'inline')
+  );
+}
+
   /**
    * Provides the markup for an font awesome icon.
    *
@@ -458,7 +469,6 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
   function font_awesome_icon_markup($icon_name = NULL, $attributes = array()){
     _add_font_awesome_font();
 
-
     if($icon_name){
       if(!isset($attributes['class'])){
         $attributes['class'] = array();
@@ -471,6 +481,29 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
 
     return '';
   }
+
+/**
+ * see https://fontawesome.com/how-to-use/on-the-web/styling/stacking-icons
+ * @param array $fa_icons_markup
+ *  Array of font awesome icon markup preferably created by font_awesome_icon_markup()
+ *
+ * @return string
+ *  The markup
+ */
+function font_awesome_icon_stack($fa_icons_markup, $attributes = array(), $no_resize = TRUE){
+
+
+    if(!isset($attributes['class'])){
+      $attributes['class'] = array();
+    }
+    if($no_resize){
+      $attributes['class'][] = 'fa-stack-no-resize';
+    } else {
+      $attributes['class'][] = 'fa-stack';
+    }
+
+    return '<span ' . drupal_attributes($attributes) . '>' . join('', $fa_icons_markup) . '</span>';
+}
 
 /**
  * @param string $glyph_name
@@ -1821,18 +1854,17 @@ function specimen_by_accession_number_view($accession_number = null) {
  *    - content
  */
 function cdm_dataportal_specimen_view($uuid) {
-    //TODO: get the specimenOrObservationBaseDTO and don't call the webservice a second time in compose_cdm_specimen_page
-    $occurrence = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, $uuid);
-    if (empty($occurrence)) {
+
+    $sob_dto = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE_AS_DTO, $uuid);
+    if (empty($sob_dto)) {
         drupal_set_title(t('Specimen does not exist'), PASS_THROUGH);
         return FALSE;
     }
     $specimenpage = new stdClass();
-
-    $specimenpage->title = render_specimen_page_title($occurrence);
+    $specimenpage->title = render_specimen_page_title($sob_dto);
 
     // Render the specimen page.
-    $render_array = compose_cdm_specimen_page($occurrence);
+    $render_array = compose_cdm_specimen_page($sob_dto);
     $specimenpage->content = drupal_render($render_array);
 
     return $specimenpage;

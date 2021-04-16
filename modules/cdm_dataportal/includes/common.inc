@@ -50,21 +50,24 @@ function html_class_attribute_ref($cdm_entity) {
 
   $attributes = '';
   if (is_cdm_entity($cdm_entity)) {
+    // Entities
     $attributes =  "cdm:" . $cdm_entity->class . " uuid:" . $cdm_entity->uuid;
-  } elseif (isset($cdm_entity->class)) {
     switch ($cdm_entity->class){
-      case 'TypedEntityReference':
-      case 'TaggedEntityReference':
-      case 'TypeDesignationDTO':
-        $attributes =  "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
-      break;
-      case 'TaxonNodeDto':
-        $attributes .= " taxon_uuid:"  . $cdm_entity->taxonUuid . " sec_uuid:"  . $cdm_entity->secUuid;;
-      break;
       case 'Taxon':
         if(isset($cdm_entity->sec->uuid)){
-        $attributes .= " sec_uuid:"  . $cdm_entity->sec->uuid;
-      }
+          $attributes .= " sec_uuid:"  . $cdm_entity->sec->uuid;
+        }
+        break;
+    }
+  } elseif (isset($cdm_entity->class)) {
+    // DTOs
+    if(isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)){
+        $attributes =  "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
+    }
+    // additional data of specific DTOs
+    switch ($cdm_entity->class){
+      case 'TaxonNodeDto':
+        $attributes .= "taxon_uuid:"  . $cdm_entity->taxonUuid . " sec_uuid:"  . $cdm_entity->secUuid;;
       break;
     }
   }
@@ -86,18 +89,8 @@ function html_class_attribute_ref($cdm_entity) {
  * @ingroup compose
  */
 function compose_cdm_marker($marker) {
-
-  $render_array = array(
-      // ---- generic
-      //  these entries should be common to all cdm enitiy render arrays
-      '#theme' => 'cdm_marker', // TODO   add alternative theme funcitons: 'cdm_marker_' . marker.type.label
-      '#attributes' => array('class' => html_class_attribute_ref($marker)),
-
-      // ---- individual
-      '#label' => $marker->markerType->representation_L10n . ': ' . (($marker->flag !== TRUE ? t('yes') : t('no'))),
-  );
-
-  return $render_array;
+  $label = $marker->markerType->representation_L10n . ': ' . (($marker->flag !== TRUE ? t('yes') : t('no')));
+  return markup_to_render_array('<span class="' . html_class_attribute_ref($marker) . '">' . $label . '</span>');
 }
 
 /**
@@ -495,20 +488,23 @@ function statistical_values_from_gathering_event($object, $field_base_name)
   static $default_unit = 'm';
 
   $field_name = $field_base_name . 'Text';
-  if (@is_string($object->$field_name)) {
+  if (isset_not_empty($object->$field_name)) {
     // Freetext overrides all other data
     $min_max_markup = ' ' . $object->$field_name;
   } else {
     // create markup for the atomized min max data
     $min_max_array = statistical_values_array();
-    if (@is_numeric($object->$field_base_name)) {
-      $min_max_array['Min'] = new stdClass();
-      $min_max_array['Min']->_value = $object->$field_base_name;
+    if (isset_numerical($object->$field_base_name)) {
+      $min_max_array['TypicalLowerBoundary'] = new stdClass();
+      $min_max_array['TypicalLowerBoundary']->_value = $object->$field_base_name;
     }
     $field_name = $field_base_name . 'Max';
-    if (@is_numeric($object->$field_name)) {
-      $min_max_array['Max'] = new stdClass();
-      $min_max_array['Max']->_value = $object->$field_name;
+    if (isset_numerical($object->$field_name)) {
+      $min_max_array['TypicalUpperBoundary'] = new stdClass();
+      $min_max_array['TypicalUpperBoundary']->_value = $object->$field_name;
+    } else {
+      $min_max_array['Average'] = $min_max_array['TypicalLowerBoundary'];
+      $min_max_array['TypicalLowerBoundary'] = null;
     }
     $min_max_markup = statistical_values($min_max_array, $default_unit);
   }
@@ -910,4 +906,46 @@ function icon_link($path, $fragment = '', $superscript = FALSE) {
   }
   $icon_link = l(custom_icon_font_markup('icon-interal-link-alt-solid', $attributes), $path, ['html' => TRUE, 'fragment' => $fragment] );
   return $icon_link;
+}
+
+/**
+ * Determine if a variable is set and is not NULL an is not empty.
+ *
+ * @param $var
+ *  The variable to test
+ *
+ * @return bool
+ *  True if the variable is set and is not NULL an is not empty.
+ */
+function isset_not_empty(&$var, $numerical_non_zero = FALSE){
+  if (!isset($var)){
+    return false;
+  }
+  if(is_numeric($var)) {
+    if($numerical_non_zero){
+      return $var;
+    } else {
+      true;
+    };
+  } else if(is_array($var)){
+    return count($var) > 0;
+  }else if(is_string($var)){
+    return !!trim($var);
+  } else {
+    return !!$var;
+  }
+}
+
+function isset_numerical(&$var){
+  if (!isset($var)){
+    return false;
+  }
+  return is_numeric($var);
+}
+
+function normalize_to_class_attribute($string){
+  $string = strtolower($string);
+  $string = preg_replace('/\s/', '_', $string);
+  $string = preg_replace('/[^a-z0-9\-_]/', '', $string);
+  return $string;
 }

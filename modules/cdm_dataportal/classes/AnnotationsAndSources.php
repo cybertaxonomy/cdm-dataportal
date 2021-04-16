@@ -21,6 +21,28 @@ class AnnotationsAndSources {
   private $sourceReferences = [];
 
   /**
+   * This field is being used when annotations are not handled as footnotes
+   *
+   * @var array
+   *  an array of the annotations markup
+   */
+  private $annotations = [];
+
+  /**
+   * @return array
+   */
+  public function getAnnotations() {
+    return $this->annotations;
+  }
+
+  /**
+   * @param array $annotations
+   */
+  public function setAnnotations($annotations) {
+    $this->annotations = $annotations;
+  }
+
+  /**
    * @var array an associative array of the names in source,
    *        the name in source strings are de-duplicated
    *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)

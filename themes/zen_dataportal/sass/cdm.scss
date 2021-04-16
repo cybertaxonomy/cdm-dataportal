@@ -17,6 +17,10 @@ $page-part-margin: $base-line-height * 1;
   @include cdm-link-style;
 }
 
+.footnotes .footnote {
+  font-size: smaller;
+}
+
 .node-cdm-name {
   .name-page-name {
     margin-top: $zen-gutter-width / 2;
@@ -69,7 +73,7 @@ $page-part-margin: $base-line-height * 1;
     }
   }
 
-  .block-cdm-dataportal-feature,  .media-caption, .specimens {
+  .block-cdm-dataportal-feature,  .media-caption, .specimens { // TODO .specimens may be obsolete
     clear: both;
     margin-bottom: $page-part-margin;
     dt {
@@ -224,6 +228,184 @@ $page-part-margin: $base-line-height * 1;
       clear: both;
     }
   }
+
+/*
+ * derivatives tree view (see also derivation-tree.js)
+ */
+$tree-entry-vspace: $base-font-size / 2;
+$tree-entry-header-height: $base-line-height;
+$tree-line-width: $tree-entry-vspace / 2;
+$tree-hline-length: $base-font-size * 2; // 1em; // 5px;
+$tree-line-style: $tree-line-width dotted $menu-bar-background-color;
+$tree-hline-to-item-gap: $tree-hline-length / 2;
+$tree-lines-top-offset: $base-line-height / 7;
+$tree-lines-left-offset: $base-line-height / 7;
+$collapse-symbol-width: $base-line-height;
+
+.item-tree {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 0; //$tree-hline-length;
+
+    &.collapsed {
+      display: none;
+    }
+    li {
+      padding: $tree-entry-vspace 0px 0px $tree-hline-length;
+      margin-top: $tree-line-width; // add little extra space for perfect border connections
+      position: relative;
+
+      &::before { // vertical & horizontal lines
+        content: "";
+        position: absolute;
+        top: $tree-entry-vspace + ($tree-entry-header-height / 2);
+        left: -$tree-hline-to-item-gap;
+        border-left: $tree-line-style;
+        border-bottom: $tree-line-style;
+        width: $tree-hline-length;
+        height: 100%;
+      }
+
+      &:last-child:before {
+        content: none;
+      }
+
+      .item-wrapper-with-sub-items {
+        position: relative;
+        &::after {
+          content: "";
+          position: absolute;
+          top: $tree-entry-vspace + ($tree-entry-header-height / 2);
+          left: -$tree-hline-to-item-gap;
+          border-left: $tree-line-style;
+          border-bottom: $tree-line-style;
+          // debug
+          //border-left: 2px dashed cyan;
+          //border-bottom: 2px dashed cyan;
+          width: $tree-hline-length;
+          height: 100%;
+        }
+      }
+      &.collapsed .item-wrapper-with-sub-items::after {
+        content: none; // negates the style set with .item-wrapper-with-sub-items:after in case the sub-items are collapsed
+      }
+    }
+  }
+  // First Level Elements
+  & > .item-list > ul {
+    margin-left: -$tree-hline-to-item-gap; // re-align whole tree with parent block element
+    & > li {
+      &:last-child:before {
+        content: unset;
+      }
+      &::before {
+        content: unset;
+      }
+      &:not(:last-child) > ul > li {
+        &:before {
+          content: unset;
+        }
+      }
+    }
+  }
+  // debug
+  //li:first-child::before {
+  //  border-color: #1bdf00;
+  //}
+  .tree-node-symbol {
+    display: inline-block;
+    width: $collapse-symbol-width;
+    height: $collapse-symbol-width;
+    color: $menu-bar-background-color;
+    background-color: $page-background-color;
+    margin-left: -($collapse-symbol-width / 2) - $tree-hline-to-item-gap + ($tree-line-width / 2);
+    text-align: center;
+    font-size: larger;
+    //.open {
+    //  display: none;
+    //}
+  }
+  .tree-node-symbol-collapsible:hover {
+    color: $menu-bar-text-color;
+  }
+}
+
+// -- tree independent styling
+$derived-unit-details-table-gutter: $base-line-height / 2;
+
+.item-tree {
+  .unit-header-wrapper {
+    .unit-label {
+      background-color: $menu-bar-background-color;
+      .symbol {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+      .page-link {
+        float: right;
+        padding-right: $derived-unit-details-table-gutter / 2;
+      }
+    }
+    .unit-label-hover-effect:hover {
+      cursor: pointer;
+      background-color: lighten($menu-bar-background-color, 10%)
+    }
+  }
+  .unit-content {
+    padding: $derived-unit-details-table-gutter;
+    background-color: lighten($menu-bar-background-color, 5%);
+  }
+  .derivation-event {
+    font-size: smaller;
+    margin-top: -$derived-unit-details-table-gutter;
+    color: $link-color-synonym;
+  }
+  .focused_item {
+    font-weight: bold;
+  }
+}
+
+// --- details grid
+.derived-unit-details-grid {
+  table.details-table {
+    margin: 0;
+    width: 100%;
+    vertical-align: top;
+    background-color: $page-background-color;
+    thead {
+      border-bottom: thin solid $menu-bar-background-color;
+    }
+    tbody {
+      background-color: $page-background-color;
+      .label {
+        text-align: right;
+        white-space: nowrap;
+        border-right: thin solid $menu-bar-background-color;
+        width: 50%;
+      }
+    }
+    td, th {
+      padding-right: $derived-unit-details-table-gutter;
+      padding-left: $derived-unit-details-table-gutter;
+    }
+  }
+}
+.derived-unit-details-grid {
+  display: grid;
+  grid-column-gap: $derived-unit-details-table-gutter;
+  grid-row-gap: $derived-unit-details-table-gutter;
+  @media all and (max-width: 659px) {
+    grid-template-columns : repeat(1, 1fr);
+  }
+  @media all and (min-width: 660px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  dl {
+    margin: 0;
+  }
+}
+
 
   /*
    * Map

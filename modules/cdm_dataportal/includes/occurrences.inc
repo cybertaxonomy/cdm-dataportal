@@ -18,78 +18,6 @@
 
 
 /**
- * Provides the HTML markup for a specimen page
- *
- * @param $specimen
- *
- * @return string
- *  The markup for a specimen page
- */
-function render_cdm_specimen_page($specimen)
-{
-
-    $specimen_details = compose_cdm_specimen_or_observation($specimen, true);
-    //$detail_html .= drupal_render($specimen_details);
-
-    $specimen->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-        $specimen->uuid,
-        'fieldObjectMediaDTO',
-    ));
-    $specimen->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
-        $specimen->uuid,
-        'derivedUnitMedia',
-    ));
-    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SPECIMEN_GALLERY_NAME);
-    $captionElements = array(
-        'title',
-        '#uri' => t('open media'),
-    );
-    if (isset($specimen->fieldObjectMediaDTO) ) {
-        $gallery_html = compose_cdm_media_gallerie(array(
-            'mediaList' => $specimen->fieldObjectMediaDTO,
-            'galleryName' => $specimen->titleCache,
-            'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
-            'cols' => $gallery_settings['cdm_dataportal_media_cols'],
-            'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
-            'captionElements' => $captionElements,
-            'mediaLinkType' => 'LIGHTBOX',
-            'alternativeMediaUri' => NULL,
-            'galleryLinkUri' => NULL,
-        ));
-        $specimen_details[] = markup_to_render_array($gallery_html);
-    }
-
-    if (isset($specimen->_derivedUnitMedia) ) {
-        $gallery_html = compose_cdm_media_gallerie(array(
-            'mediaList' => $specimen->_derivedUnitMedia,
-            'galleryName' => $specimen->titleCache,
-            'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
-            'cols' => $gallery_settings['cdm_dataportal_media_cols'],
-            'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
-            'captionElements' => $captionElements,
-            'mediaLinkType' => 'LIGHTBOX',
-            'alternativeMediaUri' => NULL,
-            'galleryLinkUri' => NULL,
-        ));
-        $specimen_details[] = markup_to_render_array($gallery_html);
-    }
-
-    $specimen_array = $specimen_details;
-    $output = "";
-    foreach($specimen_array as $value){
-        $renderArray = array(
-            '#theme' => 'item_list',
-            '#items' => array($value),
-            '#type' => 'ul');
-        $output .= drupal_render($renderArray);
-    }
-
-
-    return $output;
-}
-
-
-/**
  * Renders a DerivedUnit either in a compact form or with full details.
  *
  * @param $derived_unit_dto
@@ -427,7 +355,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                 switch ($field) {
 
                   case 'recordBasis':
-                    $label = $value->message_L10n;
+                    $label = $value->representation_L10n;
                     if($label == 'Dna Sample'){
                       $label == 'DNA Sample';
                     }
@@ -1208,93 +1136,6 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
   return $derivateHierarchyTable;
 }
 
-/**
- * Composes the view on specimens and occurrences as derivate tree
- * starting from the field unit including all derivatives.
- *
- * @see CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE
- *
- * @param array $root_unit_dtos
- *   list of SpecimenOrObservationDTOs
- * @return array
- *   The Drupal render array
- *
- * @ingroup compose
- */
-function compose_specimen_table_top_down(array $root_unit_dtos){
-
-  $specimen_render_array_items = specimen_render_array_items($root_unit_dtos);
-
-    // add icons
-  $expand_icon = font_awesome_icon_markup(
-    'fa-plus-square-o',
-    array(
-      'alt' => 'Show details',
-      'class' => array('expand_icon')
-    )
-  );
-  $collapse_icon = font_awesome_icon_markup(
-    'fa-minus-square-o',
-    array(
-      'alt' => 'Show details',
-      'class' => array('collapse_icon')
-    )
-  );
-  $tableId = "specimen_tree_table";
-  $specimen_table = array(
-    '#theme' => 'table',
-    // prefix attributes and rows with '#' to let it pass toF the theme function,
-    // otherwise it is handled as child render array
-    '#attributes' => array(
-      'class' => 'specimens ' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE ,
-      'id' => $tableId
-    ),
-    '#rows' => array(),
-  );
-  $rowcount = 0;
-  foreach($specimen_render_array_items as $value){
-    $renderArray = array(
-      '#theme' => 'item_list',
-      '#items' => $value['children'],
-      '#type' => 'ul');
-    $output = drupal_render($renderArray);
-
-    $specimen_table['#rows'][] = array(
-      'data' =>array(
-        array(
-          'data' => $expand_icon . $collapse_icon,
-          'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
-        ),
-        $value['data']
-      ),
-      'id' => 'label' . $rowcount, // summary row id
-      'class' => array('summary_row'),
-    );
-    $specimen_table['#rows'][] = array(
-      'data' =>  array(
-        array(
-          'data' => "", //empty first column
-          'class' => array('expand_column')
-        ),
-        array(
-          'data' => $output
-
-        )
-      ),
-      'class' =>  array('detail_row')
-//                'class' =>  array(
-//                    'descriptionElement',
-//                    'descriptionElement_IndividualsAssociation'
-      //               ),
-    );
-    $rowcount++;
-
-  }
-  drupal_add_js_rowToggle("#".$tableId);
-
-  return $specimen_table;
-}
-
 
 /**
  * Renders a FieldUnitDTO or DerivedUnitDTO
@@ -1345,7 +1186,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
   if (is_object($specimen_or_observation_dto)) {
 
     if(isset($specimen_or_observation_dto->recordBase)){
-        $type_label = $specimen_or_observation_dto->recordBase->message_L10n;
+        $type_label = $specimen_or_observation_dto->recordBase->representation_L10n;
     }
       RenderHints::setFootnoteListKey($type_label . '-' . $specimen_or_observation_dto->uuid);
 
@@ -1379,14 +1220,14 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
 
                 /* ---- SpecimenOrObservationBase --- */
                 case 'recordBase':
-                  $label = $value->message_L10n;
+                  $label = $value->representation_L10n;
                   if($label == 'Dna Sample'){
                     $label == 'DNA Sample';
                   }
                   _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $label,NULL, -10);
                 break;
                 case 'derivationEvent':
-                    @_description_list_group_add($groups, 'Gathering type:', ucfirst($value->derivationEventType), NULL, 1);
+                    @_description_list_group_add($groups, 'Gathering type:', ucfirst($value->eventType), NULL, 1);
                     break;
                 case 'accessionNumber':
                     @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $value, NULL, 0);
@@ -1516,8 +1357,8 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                   case 'determinedNames':
                     $dd_elements = array();
                     foreach ($value as $name) {
-                      $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $name->uuid); // TODO why not ->uuid here?
-                      $dd_elements[] = render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid));
+                      $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $name->uuid);
+                      $dd_elements[] = render_taxon_or_name($taxon_name, url(path_to_name($taxon_name->uuid)));
                     }
                     @_description_list_group_add($groups, cdm_occurrence_field_name_label("Identification(s)"), $dd_elements,'', 100);
                     break;
@@ -1921,9 +1762,8 @@ function render_collection($collection, $do_link = false /* to be made true, see
   while($super_collection){
     $collection_str = $is_dto ? $super_collection->label : $super_collection->titleCache;
     if(
-      (isset($super_collection->institute) && $super_collection->institute->titleCache) ||
-      ($is_dto && $super_collection->institute)
-    ){
+    ($is_dto && $super_collection->institute) ||
+    (isset_not_empty($super_collection->institute) && isset_not_empty($super_collection->institute->titleCache))){
       $collection_str .= ' at ' . ($is_dto ? $super_collection->institute : $super_collection->institute->titleCache);
     }
     $collection_str_list[] = $collection_str;
