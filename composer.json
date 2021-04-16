@@ -30,14 +30,14 @@
         },
         {
             "type": "path",
-            "url": "./profiles/CDM_Portal",
+            "url": "./profiles/cdm_portal",
             "options": {
                 "symlink": true
             }
         },
         {
             "type": "path",
-            "url": "./profiles/CDM_Portal_Testing",
+            "url": "./profiles/cdm_portal_testing",
             "options": {
                 "symlink": true
             }
