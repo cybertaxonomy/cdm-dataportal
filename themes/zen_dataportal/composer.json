@@ -15,7 +15,8 @@
         "source": "https://github.com/cybertaxonomy/cdm-dataportal"
     },
     "require" : {
-        "cybertaxonomy.org/cdm_dataportal": "^7.5.20"
+        "cybertaxonomy.org/cdm_dataportal": "^7.5.20",
+        "drupal/zen": "7.5.5"
     }
 }
 

@@ -23,6 +23,13 @@
         },
         {
             "type": "path",
+            "url": "./themes/zen",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
             "url": "./themes/zen_dataportal",
             "options": {
                 "symlink": true
