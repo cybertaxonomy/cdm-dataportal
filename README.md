@@ -62,12 +62,12 @@ tar -xzf drupal-7-cdm-dataportal-5.22.0.tar.gz
 sudo chown -R :www-data drupal-7-cdm-dataportal/web
 ~~~
 
-You may now want to copy the apache 2 site configuration files from `scripts/apache2.4/` to `/etc/apache2/sites-available/` and to activate one of them, perferably the ssl site configuration:
+You may now want to copy the apache 2 site configuration files from `scripts/apache2.4/` to `/etc/apache2/sites-available/` and to activate one of them, preferably the ssl site configuration:
 
 ~~~
 sudo cp drupal-7-cdm-dataportal/scripts/apache2/dataportal.test* /etc/apache2/sites-available/
-a2ensite dataportal.test-ssl.conf
-systemctl restart apache2
+sudo a2ensite dataportal.test-ssl.conf
+sudo systemctl restart apache2
 ~~~
 
 Now you are prepared to install a dataportal drupal site. 
