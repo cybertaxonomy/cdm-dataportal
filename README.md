@@ -41,7 +41,10 @@ https://www.drupal.org/docs/develop/using-composer/using-composer-with-drupal
 https://www.drupal.org/docs/develop/using-composer/managing-dependencies-for-a-custom-project
 
 
+
 ### Installation
+
+**NOTE:** For detailed instructions which also cover the setup of apache and mysql please refer to: https://cybertaxonomy.eu/dataportal/installation
 
 Download the latest release from https://cybertaxonomy.eu/download/dataportal/stable/ to the location where you want to install the cdm-dataportal drupal 7 project e.g.
 
@@ -59,34 +62,57 @@ tar -xzf drupal-7-cdm-dataportal-5.22.0.tar.gz
 sudo chown -R :www-data drupal-7-cdm-dataportal/web
 ~~~
 
-Install a dataportal drupal site 
-
-A template for the below sctipt can be found in `scripts/user/`
-Make anm executable copy from `new-site.sh.template` as `new-site.sh` 
+You may now want to copy the apache 2 site configuration files from `scripts/apache2.4/` to `/etc/apache2/sites-available/` and to activate one of them, perferably the ssl site configuration:
 
 ~~~
-cp new-site.sh.template new-site.sh; chmod 775 new-site.sh
+sudo cp drupal-7-cdm-dataportal/scripts/apache2/dataportal.test* /etc/apache2/sites-available/
+a2ensite dataportal.test-ssl.conf
+systemctl restart apache2
 ~~~
 
-Adapt the variables to match your desired setup:
+Now you are prepared to install a dataportal drupal site. 
+
+A template for the below script can be found in `scripts/user/`
+Make an executable copy from `new-site.sh.template` as `new-site.sh` 
 
 ~~~
-export SITE_NAME='test-site'
+cp new-site.sh.template new-site.sh; chmod u+x new-site.sh
+~~~
 
-export ADMIN_USR='admin'
-export ADMIN_PWD='change--me'
-export ADMIN_EMAIL='admin@dataportal.test'
+Adapt the below shown variables in the script to match your desired setup:
 
-export MYSQL_USR='root'
-export MYSQL_PWD='change--me'
+~~~
+################################################################
+## Configure below variables
 
-export DB_PREFIX='drupal7_dataportal_'
-export MYSQL_URL="mysql://${MYSQL_USR}:${MYSQL_PWD}@localhost/${DB_PREFIX}${SITE_NAME}"
+SITE_NAME='test-site'
 
-export BASE_URL='http://dataportal.test/'
-~~~~
+# HOST_NAME and PROTOCOL determine the base URL of the new site
+# The default values will form the base URL like http://dataportal.test
+# See also MULTI_SITE below
+HOST_NAME='dataportal.test'
+PROTOCOL='https' # values 'http' ot https'
+# For MULTI_SITE=0 the site will be installed at the base BASE_URL
+# In multisite setups (MULTI_SITE=1), however, the site URL results 
+# in http://dataportal.test/test-site
+# !! Mutisite support ist still experimental !!
+MULTI_SITE=0 # values: 1 = true, 0 or other = false
 
-And execurte the script from within the folder `scripts/user/`, other wise the $DRUPAL_ROOT variable will not match the `./web` folder !
+ADMIN_USR='admin'
+ADMIN_PWD='change--me'
+ADMIN_EMAIL='admin@dataportal.test'
+
+MYSQL_USR='root'
+MYSQL_PWD='change--me'
+DB_PREFIX='drupal7_dataportal_'
+
+
+################################################################
+~~~
+
+And execute the script from within the folder `scripts/user/`, otherwise the `$DRUPAL_ROOT` variable will not match the `./web` folder !
+
+Once the script has fished it will print out the final URL of the new site together with other useful information.
 
 
 
