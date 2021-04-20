@@ -15,7 +15,11 @@
 #  5. Pack the whole  ./drupal-7-cdm-dataportal as tar.gz archive
 ##############################################################
 
+# github requires an API key for shallow cloning, so we use the BGBM repo fist 
 GIT_REPO_URL="edit-git:/var/git/cdm-dataportal.git"
+# and switch the origin remote to github later on
+GIT_REPO_URL_PUB='https://github.com/cybertaxonomy/cdm-dataportal.git'
+
 
 # here you can use an host short cut configured in ~/.ssh/config
 SSH_HOST='edit-deploy'
@@ -65,6 +69,7 @@ mkdir ./dist
 cd ./dist
 git clone --depth 1 --branch $VERSION $GIT_REPO_URL $TARGET_DIR
 cd $TARGET_DIR
+git remote set-url origin $GIT_REPO_URL_PUB
 composer install --no-dev
 rm -rf vendor
 cd ../
