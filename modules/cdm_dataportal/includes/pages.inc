@@ -85,7 +85,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
     // --- get map service HTTP query parameters
     if (count($specimensOrObservations) > 0 || $root_unit_dtos > 0) {
-       //######## RE-ENABLE !!!!! $render_array['map'] = occurrence_map_query_parameters($taxon);
+       $render_array['map'] = occurrence_map_query_parameters($taxon);
     }
 
     // -------------------------------------------------------
