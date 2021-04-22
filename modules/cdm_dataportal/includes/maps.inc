@@ -350,8 +350,7 @@ function compose_distribution_map($query_string) {
     // The $query_string is empty if there are no distribution areas defined.
     return null;
   }
-  $query_string = preg_replace('/([=\|])(country_earth)([^_])/', '$1country_earth_no_labels$3', $query_string);
-
+  
   /* ------ choose the display mode, either openlayers or static image ------ */
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
