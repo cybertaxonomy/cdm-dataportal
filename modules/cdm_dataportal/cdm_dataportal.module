@@ -1730,17 +1730,17 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
       ), 'warning');
     }
     else {
-      $trees = '';
+      $trees = [];
       foreach ($classifications as $classification) {
         if (isset($classification->titleCache)) {
-          $trees .= ($trees ? ', ' : '') . '<strong>' . $classification->titleCache . '</strong>';
+          $trees[] = '<strong>' . $classification->titleCache . '</strong>';
         }
       }
 
       drupal_set_message(format_plural(count($trees),
           'This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification, but in this one: !trees',
           'This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification, but in one of these: !trees',
-          array('!taxonname' => $taxon_name_markup, '!trees' => $trees)
+          array('!taxonname' => $taxon_name_markup, '!trees' => join(', ', $trees))
         ) ,
         'warning');
     }

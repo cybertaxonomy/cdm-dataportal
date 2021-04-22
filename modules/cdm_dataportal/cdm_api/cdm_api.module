@@ -1318,8 +1318,7 @@ function cdm_ws_taxonomy_root_level($taxon_uuid = NULL) {
         if (!is_array($test)) {
           // The default set by the admin seems to be invalid or is not even set.
           drupal_set_message(_no_classfication_uuid_message(), 'warning');
-        }
-        if (count($test) == 0) {
+        } else if (count($test) == 0) {
           // The default set by the admin seems to be invalid or is not even set.
           drupal_set_message("The chosen classification is empty.", 'status');
         }
