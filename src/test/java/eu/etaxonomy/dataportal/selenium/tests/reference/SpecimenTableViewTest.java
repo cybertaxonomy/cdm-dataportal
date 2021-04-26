@@ -140,7 +140,8 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Germany", cells.get(1).getText());
         assertEquals("2016-03-28", cells.get(2).getText());
         assertEquals("Ehrenberg, C.G. D047", cells.get(3).getText());
-        assertEquals("CEDiT, B(2), M, XKCD", cells.get(4).getText());
+         // Only two preserved specimes exepectet in the collection statistics"
+        assertEquals("M, CEDiT", cells.get(4).getText());
         assertTrue(cells.get(5).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON));
         assertTrue(cells.get(6).findElement(By.tagName("img")).getAttribute("src")
