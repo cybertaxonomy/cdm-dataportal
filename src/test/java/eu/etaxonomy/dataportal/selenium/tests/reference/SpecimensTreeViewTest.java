@@ -67,7 +67,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         assertEquals(3, duTree.getRootNodes().size());
         BaseElement rootNodeHeader1 = duTree.getRootNodes().get(0).getHeader();
-        assertEquals("(B SP-99999).", rootNodeHeader1.getText());
+        assertEquals("B SP-99999", rootNodeHeader1.getText());
         BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
         assertEquals("Germany, Berlin, 2 Apr 1835.", rootNodeHeader2.getText());
         BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
@@ -84,12 +84,12 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
         DerivedUnitTreeNode subNode3 = rootNode.getSubNodes().get(2);
 
-        assertEquals("(B SP-99999).", rootNode.getHeader().getText());
+        assertEquals("B SP-99999", rootNode.getHeader().getText());
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
-        assertEquals("(B B-923845).", subNode1.getHeader().getText());
-        assertEquals("(B DNA-9098080).", subNode2.getHeader().getText());
+        assertEquals("B B-923845", subNode1.getHeader().getText());
+        assertEquals("B DNA-9098080", subNode2.getHeader().getText());
         assertEquals("B_SP-99999.png", subNode3.getHeader().getText());
 
         // NOTE we are only testing subnode 1 here as all other details are tested in other methods
@@ -172,14 +172,14 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
-        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT 2017E68).", subNode1.getHeader().getText());
+        assertEquals("CEDiT 2017E68", subNode1.getHeader().getText());
 
         assertFalse("sub node 1 initially invisible", subNode1_1.getElement().isDisplayed());
         subNode1.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1_1.getElement().isDisplayed());
         assertEquals("B IMG 99999 (?fn%3dIMG%2099999.jpg%26mo%3dfile)", subNode1_1.getHeader().getText());
         assertEquals("XKCD MASKS 2X (Masks)", subNode1_2.getHeader().getText());
-        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M M-0289351).", subNode2.getHeader().getText());
+        assertEquals("M M-0289351", subNode2.getHeader().getText());
 
         // --- Root note
         rootNode.getHeader().getElement().click(); // make the  content visible
