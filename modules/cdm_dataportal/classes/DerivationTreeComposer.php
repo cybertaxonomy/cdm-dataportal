@@ -239,7 +239,12 @@ class DerivationTreeComposer {
     if($has_sub_derivatives){
       $unit_header_wrapper_sub_items_class_attr = ' unit-header-wrapper-with-sub-items';
     }
-    return '<div class="unit-header-wrapper' . $unit_header_wrapper_sub_items_class_attr . $focused_attribute . '"><div class="unit-header"><div class="unit-label' . $hover_effect_attribute .' ">' . $collapse_open_icons . '<span class="symbol">' . $this->symbol_markup($sob_dto) . '</span>' . $sob_dto->label . $icon_link_markup . '</div></div></div>';
+    if( $sob_dto->type == 'FieldUnit' ){
+      $label = $sob_dto->label;
+    } else {
+      $label = $sob_dto->specimenIdentifier;
+    }
+    return '<div class="unit-header-wrapper' . $unit_header_wrapper_sub_items_class_attr . $focused_attribute . '"><div class="unit-header"><div class="unit-label' . $hover_effect_attribute .' ">' . $collapse_open_icons . '<span class="symbol">' . $this->symbol_markup($sob_dto) . '</span>' . $label . $icon_link_markup . '</div></div></div>';
   }
 
   /**
