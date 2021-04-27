@@ -1397,7 +1397,7 @@ function render_specimen_page_title($sob_dto)
     $out .= '<span class="type-label">Field unit: </span>';
   }else{
     $out .= '<span class="type-label">Specimen:  </span>';
-    $out .= $sob_dto->specimenIdentifier;
+    $out .= $sob_dto->specimenShortTitle;
   }
   RenderHints::popFromRenderStack();
 

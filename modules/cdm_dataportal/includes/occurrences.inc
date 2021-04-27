@@ -34,7 +34,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
     //link to specimen page
     $path_to_specimen = path_to_specimen($derived_unit_dto->uuid);
     if (!$with_full_details) {
-        $specimenPageLink = l($derived_unit_dto->specimenIdentifier, $path_to_specimen);
+        $specimenPageLink = l($derived_unit_dto->specimenShortTitle, $path_to_specimen);
         $detail_html .= "<strong>Specimen summary: $specimenPageLink</strong><br>";
     }
 
@@ -1085,7 +1085,7 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
       if ($sob_dto->derivatives) {
         $derivatives_orderd = [];
         foreach ($sob_dto->derivatives as $derivative_dto) {
-          $derivatives_orderd[$derivative_dto->specimenIdentifier] = $derivative_dto;
+          $derivatives_orderd[$derivative_dto->specimenShortTitle] = $derivative_dto;
         }
         ksort($derivatives_orderd);
         foreach ($derivatives_orderd as $derivative_dto) {
@@ -1793,8 +1793,8 @@ function render_collection($collection, $do_link = false /* to be made true, see
  */
 function compare_specimen_or_observation_dtos($a, $b) {
     // Sort alphabetically.
-    $a_text =  isset($a->specimenIdentifier) ? $a->specimenIdentifier : $a->label;
-    $b_text =  isset($b->specimenIdentifier) ? $b->specimenIdentifier : $b->label;
+    $a_text =  isset($a->specimenShortTitle) ? $a->specimenShortTitle : $a->label;
+    $b_text =  isset($b->specimenShortTitle) ? $b->specimenShortTitle : $b->label;
     return strcasecmp($a_text, $b_text);
 }
 
