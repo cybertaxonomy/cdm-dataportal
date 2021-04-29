@@ -121,7 +121,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
-        assertEquals("BHUPM 671 (ECdraw671.jpg)", subNode1.getHeader().getText());
+        assertEquals("BHUPM 671", subNode1.getHeader().getText());
 
         // ---- root node
         rootNode.getHeader().getElement().click(); // make the  content visible
@@ -177,7 +177,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertFalse("sub node 1 initially invisible", subNode1_1.getElement().isDisplayed());
         subNode1.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1_1.getElement().isDisplayed());
-        assertEquals("B IMG 99999 (?fn%3dIMG%2099999.jpg%26mo%3dfile)", subNode1_1.getHeader().getText());
+        assertEquals("B IMG 99999", subNode1_1.getHeader().getText());
         assertEquals("XKCD MASKS 2X (Masks)", subNode1_2.getHeader().getText());
         assertEquals("M M-0289351", subNode2.getHeader().getText());
 
