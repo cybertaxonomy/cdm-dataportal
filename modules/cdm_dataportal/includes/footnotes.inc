@@ -373,16 +373,17 @@ function handle_nomenclatural_reference_as_footnote($name)
 
 /* ============ annotations_and_sources handling =================== */
 
-const ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT = [
+// since PHP 5.6 constant expressions are allowed in const --> change to const AMNOTATIONS_... ?
+define("ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT", [
   'sources_as_content' => FALSE,
   'annotations_as_content' => FALSE,
   'link_to_name_used_in_source' => TRUE,
   'link_to_reference' => TRUE,
   'add_footnote_keys' => TRUE,
   'bibliography_aware' => FALSE
-];
+]);
 
-  /**
+/**
  * Provides the default configuration for handle_annotations_and_sources() in the
  * synonymy.
  *
