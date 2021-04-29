@@ -372,8 +372,6 @@ function handle_nomenclatural_reference_as_footnote($name)
 }
 
 /* ============ annotations_and_sources handling =================== */
-
-// since PHP 5.6 constant expressions are allowed in const --> change to const AMNOTATIONS_... ?
 define("ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT", [
   'sources_as_content' => FALSE,
   'annotations_as_content' => FALSE,
