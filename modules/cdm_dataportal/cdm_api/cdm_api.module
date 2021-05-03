@@ -1937,8 +1937,6 @@ function cdm_lazyload_array_field($cdm_base_type, $field_name, &$cdm_entity)
  */
 function cdm_ws_getNomenclaturalReference($referenceUuid, $microreference) {
 
-  drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used.", "error");
-
   // TODO the below statement avoids error boxes due to #4644 remove it once this ticket is solved
   if(is_array($microreference) || is_object($microreference)) {
     return '';
