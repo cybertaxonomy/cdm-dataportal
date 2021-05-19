@@ -110,9 +110,59 @@ DB_PREFIX='drupal7_dataportal_'
 ################################################################
 ~~~
 
-And execute the script from within the folder `scripts/user/`, otherwise the `$DRUPAL_ROOT` variable will not match the `./web` folder !
+Execute the script **from within the folder** `scripts/user/`, otherwise the `$DRUPAL_ROOT` variable will not match the `./web` folder !
 
 Once the script has fished it will print out the final URL of the new site together with other useful information.
+
+### Update
+
+#### Preparation
+
+**Install composer**
+
+~~~
+apt-get install composer
+~~~
+
+**Unshallow the installation package**
+
+The installation package contains a shallow clone of the git repository only. In order to easily upgrade the dataportal-module it is highly recommended to unshallow the git repository clone
+
+~~~
+git remote set-url origin https://github.com/cybertaxonomy/cdm-dataportal.git
+git fetch --unshallow
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+git fetch origin
+git checkout origin/master
+~~~
+
+#### Updating to a specific cdm-dataportal release
+
+NOTE: The modules and themes in the `./web/sites/all/` are symlinked to the source code in `./modules` and `./themes`. Hence, updating the dataportal only involves checking out the according release from the git remote:
+
+To see the list of available release tags:
+
+~~~
+git tag --list | egrep '[0-9]+\.[0-9]+\.[0-9]+' | sort -V
+~~~
+
+Checkout the release tag. For example to checkout the release `5.22.0`:
+
+~~~
+git checkout 5.22.0
+~~~
+
+Git will respond with a warning that "*You are in 'detached HEAD' state.*", this is ok and no need to be concerned.
+
+
+ 
+`
+
+
+
+
+
+
 
 
 
