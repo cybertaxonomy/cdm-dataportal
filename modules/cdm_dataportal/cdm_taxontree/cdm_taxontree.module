@@ -53,7 +53,7 @@ function cdm_taxontree_menu() {
  */
 function cdm_taxontree_block_info() {
   $block['cdm_tree'] = array(
-        "info" => t('CDM taxon tree'),
+        "info" => t('CDM - Taxonomic tree'),
         "cache" => DRUPAL_NO_CACHE
       );
 

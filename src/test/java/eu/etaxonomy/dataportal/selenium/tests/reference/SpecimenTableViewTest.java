@@ -131,7 +131,8 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         String detailsText = cells.get(1).getText();
         String[] detailsLines = StringUtils.split(detailsText, "\n");
         assertEquals(1, detailsLines.length);
-        assertEquals("Citation: Germany, Berlin, 2 Apr 1835. (BHUPM 671)", detailsLines[0]);
+        assertEquals("Citation: Germany, Berlin, 2 Apr 1835.", detailsLines[0]);
+
 
         // summary row
         ++rowId;
@@ -140,7 +141,8 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Germany", cells.get(1).getText());
         assertEquals("2016-03-28", cells.get(2).getText());
         assertEquals("Ehrenberg, C.G. D047", cells.get(3).getText());
-        assertEquals("CEDiT, B(2), M, XKCD", cells.get(4).getText());
+         // Only two preserved specimes exepectet in the collection statistics"
+        assertEquals("CEDiT, M", cells.get(4).getText());
         assertTrue(cells.get(5).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON));
         assertTrue(cells.get(6).findElement(By.tagName("img")).getAttribute("src")
@@ -161,21 +163,21 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         BaseElement detailsCell = new BaseElement(cells.get(1));
         List<LinkElement> linksInDetails = detailsCell.getLinksInElement();
         assertEquals(9, detailsLines.length);
-        assertEquals("Citation: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047. (CEDiT 2017E68, B BDNA 99999, B IMG 99999, M M-0289351, XKCD MASKS 2X)", detailsLines[0]);
+        assertEquals("Citation: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047. (CEDiT 2017E68, M M-0289351)", detailsLines[0]);
 
-        assertEquals("Specimen summary: CEDiT (2017E68)", detailsLines[1]);
-        assertEquals("CEDiT (2017E68)" ,linksInDetails.get(0).getText());
+        assertEquals("Specimen summary: CEDiT 2017E68", detailsLines[1]);
+        assertEquals("CEDiT 2017E68" ,linksInDetails.get(0).getText());
         assertTrue(linksInDetails.get(0).getUrl().endsWith("cdm_dataportal/occurrence/8585081c-b73b-440b-b349-582845cf3fb4"));
         assertEquals("Preferred stable URI: http://testid.org/2017E68", detailsLines[2]);
         assertEquals("http://testid.org/2017E68" ,linksInDetails.get(1).getText());
         assertEquals("http://testid.org/2017E68", linksInDetails.get(1).getUrl());
         assertEquals("Epitype of Glenodinium apiculatum Ehrenb.", detailsLines[3]);
-        assertEquals("Specimen Scans: CEDiT (2017E68)", detailsLines[4]);
+        assertEquals("Specimen Scans: CEDiT 2017E68", detailsLines[4]);
         assertEquals("Detail Images: Masks", detailsLines[5]);
         assertEquals("Masks" ,linksInDetails.get(3).getText());
         assertEquals("https://imgs.xkcd.com/comics/masks_2x.png", linksInDetails.get(3).getUrl());
 
-        assertEquals("Specimen summary: M (M-0289351)", detailsLines[6]);
+        assertEquals("Specimen summary: M M-0289351", detailsLines[6]);
         assertEquals("Preferred stable URI: http://herbarium.bgbm.org/object/B400042045", detailsLines[7]);
         assertEquals("Isolectotype of Glenodinium apiculatum Ehrenb.", detailsLines[8]);
         assertEquals(6, linksInDetails.size());

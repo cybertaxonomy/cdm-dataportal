@@ -14,7 +14,7 @@
  *
  * @see system_install()
  */
-function CDM_Portal_Testing_install() {
+function cdm_portal_testing_install() {
   include_once DRUPAL_ROOT . '/profiles/CDM_Portal/CDM_Portal.install';
   CDM_Portal_install();
 

@@ -372,7 +372,6 @@ function handle_nomenclatural_reference_as_footnote($name)
 }
 
 /* ============ annotations_and_sources handling =================== */
-
 const ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT = [
   'sources_as_content' => FALSE,
   'annotations_as_content' => FALSE,
@@ -382,7 +381,7 @@ const ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT = [
   'bibliography_aware' => FALSE
 ];
 
-  /**
+/**
  * Provides the default configuration for handle_annotations_and_sources() in the
  * synonymy.
  *

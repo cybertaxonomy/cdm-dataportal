@@ -54,8 +54,8 @@ function html_class_attribute_ref($cdm_entity) {
     $attributes =  "cdm:" . $cdm_entity->class . " uuid:" . $cdm_entity->uuid;
     switch ($cdm_entity->class){
       case 'Taxon':
-        if(isset($cdm_entity->sec->uuid)){
-          $attributes .= " sec_uuid:"  . $cdm_entity->sec->uuid;
+        if(isset($cdm_entity->secSource->uuid)){
+          $attributes .= " sec_uuid:"  . $cdm_entity->secSource->citation->uuid;
         }
         break;
     }

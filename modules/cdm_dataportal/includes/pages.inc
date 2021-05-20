@@ -85,7 +85,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
     // --- get map service HTTP query parameters
     if (count($specimensOrObservations) > 0 || $root_unit_dtos > 0) {
-       //######## RE-ENABLE !!!!! $render_array['map'] = occurrence_map_query_parameters($taxon);
+       $render_array['map'] = occurrence_map_query_parameters($taxon);
     }
 
     // -------------------------------------------------------
@@ -703,7 +703,7 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     $accepted_name = '';
     if (variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0)) {
       $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
-      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon->sec->titleCache . '</div>';
+      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon->secSource->citation->titleCache . '</div>';
     }
     if (isset($taxon->name->nomenclaturalSource->citation)) {
       $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
@@ -1397,7 +1397,7 @@ function render_specimen_page_title($sob_dto)
     $out .= '<span class="type-label">Field unit: </span>';
   }else{
     $out .= '<span class="type-label">Specimen:  </span>';
-    $out .= $sob_dto->specimenIdentifier;
+    $out .= $sob_dto->specimenShortTitle;
   }
   RenderHints::popFromRenderStack();
 

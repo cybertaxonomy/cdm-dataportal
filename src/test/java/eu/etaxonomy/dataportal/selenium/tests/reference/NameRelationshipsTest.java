@@ -62,7 +62,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2",
                 regItem.getNameElement().getText());
         assertEquals(
-                "published in: Lem, Nonsens species of the developers Vol1. 2001",
+                "published in: Lem 2001: Nonsens species of the developers Vol1.",
                 regItem.getCitation().getText());
 
         List<BaseElement> nameRelationshipElements = regItem.getNameRelationsipsElements();

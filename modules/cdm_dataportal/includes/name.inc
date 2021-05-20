@@ -414,7 +414,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     if (isset($renderTemplate['referencePart']['reference']) && isset($taxon_name->nomenclaturalSource)) {
       $microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
       if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation)){
-        // TODO is this case still relevant? The tagged text should already contain all information!
+        // drupal message for debugging of #9599
+        // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
+        //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
         $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->citation->uuid, $microreference);
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);

@@ -14,7 +14,7 @@
  *
  * @see system_install()
  */
-function CDM_Portal_install() {
+function cdm_portal_install() {
 
 
  /****************************************

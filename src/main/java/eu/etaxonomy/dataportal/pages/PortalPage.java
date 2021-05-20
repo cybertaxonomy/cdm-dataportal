@@ -200,12 +200,12 @@ public abstract class PortalPage {
             if(getAciveHealthChecks().contains(HealthChecks.NO_ERROR)) {
                 String ignore_error = null;
                 List<String> errors = getErrors().stream().filter(str -> ignore_error == null || !str.startsWith(ignore_error)).collect(Collectors.toList());
-                assertTrue("The page must not show an error box", errors.size() == 0);
+                assertTrue("The page must not show an error box: (" + String.join(" | ", errors) + ")", errors.size() == 0);
             }
             if(getAciveHealthChecks().contains(HealthChecks.NO_WARNING)) {
                 String ignore_warning = null;
                 List<String> warnings = getWarnings().stream().filter(str -> ignore_warning == null || !str.startsWith(ignore_warning)).collect(Collectors.toList());
-                assertTrue("The page must not show an warning box", warnings.size() == 0);
+                assertTrue("The page must not show an warning box: (" + String.join(" | ", warnings) + ")", warnings.size() == 0);
             }
         } catch (NoSuchElementException e) {
             //IGNORE since this is expected!
