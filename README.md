@@ -156,8 +156,10 @@ rm -r drupal-7-cdm-dataportal.last
 
 **Strategy**: Inplace updating of the installation by making use of git and drush or composer. 
 
-* Pro: Update of drupal and custom modules independent of what is provided by the instalation packe
-* Con: More complex procedure
+*THIS METHOD IS RECOMMENDED FOR MOST SITUATIONS**
+
+* Pro: Update of drupal and custom modules independent of what is provided by the instalation package.
+* Con: Initial preparation is more complex, 
 
 #### Preparation
 
@@ -175,12 +177,7 @@ php composer-setup.php --filename=composer --version 1.10.22
 php -r "unlink('composer-setup.php');"
 ~~~
 
-The above comamnds fails with: "Installer corrupt"? Please update the corresponding command with the new one from http//getcomposer.org/download/. It is **important not use use a version > 1.*!**
-
-
-**Install drush 8**
-
-Please refer to the [official installation guide](https://docs.drush.org/en/8.x/install/)
+The above commands fails with "Installer corrupt"? Please update the corresponding command with the new one from http//getcomposer.org/download/. It is **important not use use a version > 1.*!**
 
 **Unshallow the installation package**
 
@@ -191,6 +188,14 @@ git fetch --unshallow
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 git fetch origin
 git checkout origin/master
+~~~
+
+**install dependencies**
+
+This will also install **drush**
+
+~~~
+ ./composer install --no-dev
 ~~~
 
 #### Updating to a specific cdm-dataportal release
@@ -216,13 +221,32 @@ executed in the installation package root e.g. `/var/www/drupal-7-cdm-dataportal
 Please adapt to your specific settings if needed.
 
 ~~~
-drush -r web -l https://dataportal.test updatedb
-drush -r web -l https://dataportal.test cc all
+./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test updatedb
+./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test cc all
 ~~~
 
+#### Updating drupal and modules
 
- 
-`
+First of all create a backup of the instalation:
+
+~~~
+cd /var/www/drupal-7-cdm-dataportal 
+tar -czf ../drupal-7-cdm-dataportal-backup-$(date -I).tar.gz ./
+~~~
+
+Now use `composer` to update drupal core and contributed modules:
+
+~~~
+./composer update -no-dev
+~~~
+
+Run any pending database updates and clear the caches
+
+~~~
+./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test updatedb
+./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test cc all
+~~~
+
 
 
 
