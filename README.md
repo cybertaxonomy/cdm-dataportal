@@ -135,7 +135,7 @@ mv drupal-7-cdm-dataportal drupal-7-cdm-dataportal.last
 remove old installation packages
 
 ~~~
-rm drupal-7-cdm-dataportal*.tar.gz
+rm drupal-7-cdm-dataportal*.tar.gz*
 ~~~
 
 now follow the steps in the chapter **Download & extract** above.
@@ -144,6 +144,12 @@ finally copy the default site to the new installation
 
 ~~~
 cp -r drupal-7-cdm-dataportal.last/web/sites/default/ drupal-7-cdm-dataportal/web/sites/
+~~~
+
+Once you have confirmed that the updated instalation is working correctly:
+
+~~~
+rm -r drupal-7-cdm-dataportal.last
 ~~~
 
 ### Update - method 2
