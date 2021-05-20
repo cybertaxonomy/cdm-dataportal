@@ -8,7 +8,7 @@ Project dependencies required for bundeling the final insallation package are ma
 
 ## Project structure
 
-* `./drush`: drush, as installed by composer
+* `./drush`: commands, configuration and site aliases for Drush
 * `./debug`: scripts that help debugging problems with drupal multisite setups
 * `./modules`: drupal modules, the actual **cdm_dataportal** module is found here. 
 * `./scripts/composer`: scripts, installed by composer and manually added ones
@@ -46,11 +46,13 @@ https://www.drupal.org/docs/develop/using-composer/managing-dependencies-for-a-c
 
 **NOTE:** For detailed instructions which also cover the setup of apache and mysql please refer to: https://cybertaxonomy.eu/dataportal/installation
 
+#### Download & extract
+
 Download the latest release from https://cybertaxonomy.eu/download/dataportal/stable/ to the location where you want to install the cdm-dataportal drupal 7 project e.g.
 
 ~~~
 cd /var/www
-wget https://cybertaxonomy.eu/download/dataportal/stable/drupal-7-cdm-dataportal-5.22.0.tar.gz
+wget https://cybertaxonomy.eu/download/dataportal/stable/drupal-7-cdm-dataportal-5.22.1.tar.gz
 ~~~
 
 This archive contains a shallow clone of the whole project together with a ready to use drupal 7 installation with the cdm-dataportal module, zen_dataportal theme and other requirements. The drupal-7 installation is in the sub folder `./web`
@@ -58,9 +60,11 @@ This archive contains a shallow clone of the whole project together with a ready
 extract and adapt the owner ship of the `./web` sub folder:
 
 ~~~
-tar -xzf drupal-7-cdm-dataportal-5.22.0.tar.gz
+tar -xzf drupal-7-cdm-dataportal-5.22.1.tar.gz
 sudo chown -R :www-data drupal-7-cdm-dataportal/web
 ~~~
+
+##### Apache2 configuration
 
 You may now want to copy the apache 2 site configuration files from `scripts/apache2.4/` to `/etc/apache2/sites-available/` and to activate one of them, preferably the ssl site configuration:
 
@@ -69,6 +73,8 @@ sudo cp drupal-7-cdm-dataportal/scripts/apache2/dataportal.test* /etc/apache2/si
 sudo a2ensite dataportal.test-ssl.conf
 sudo systemctl restart apache2
 ~~~
+
+##### Site installation
 
 Now you are prepared to install a dataportal drupal site. 
 
@@ -114,22 +120,62 @@ Execute the script **from within the folder** `scripts/user/`, otherwise the `$D
 
 Once the script has fished it will print out the final URL of the new site together with other useful information.
 
-### Update
+### Update - method 1
+
+**Strategy**: Downloading of the installation package for a new release of the cdm-dataportal and replacing the old installation by the content of the installation package.
+
+* Pro: Few simple steps.
+* Con: The steps described here are not suitable for multisite installation or when additional modules are installed.
+
+~~~
+cd /var/www
+mv drupal-7-cdm-dataportal drupal-7-cdm-dataportal.last
+~~~
+
+remove old installation packages
+
+~~~
+rm drupal-7-cdm-dataportal*.tar.gz
+~~~
+
+now follow the steps in the chapter **Download & extract** above.
+
+finally copy the default site to the new installation 
+
+~~~
+cp -r drupal-7-cdm-dataportal.last/web/sites/default/ drupal-7-cdm-dataportal/web/sites/
+~~~
+
+### Update - method 2
+
+**Strategy**: Inplace updating of the installation by making use of git and drush or composer. 
+
+* Pro: Update of drupal and custom modules independent of what is provided by the instalation packe
+* Con: More complex procedure
 
 #### Preparation
 
 **Install composer**
 
+
+globally via apt
+
 ~~~
 apt-get install composer
 ~~~
+
+In case the version provided by apt is too old, you can install composer manually in the project directory `/var/www/drupal-7-cdm-dataportal` by folowing the steps from http//getcomposer.org/download/ **NOTE**: I you are usaing this method you need to use `./composer.phar` instead of `composer`
+
+
+**Install drush 8**
+
+Please refer to the [official installation guide](https://docs.drush.org/en/8.x/install/)
 
 **Unshallow the installation package**
 
 The installation package contains a shallow clone of the git repository only. In order to easily upgrade the dataportal-module it is highly recommended to unshallow the git repository clone
 
 ~~~
-git remote set-url origin https://github.com/cybertaxonomy/cdm-dataportal.git
 git fetch --unshallow
 git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 git fetch origin
@@ -149,10 +195,19 @@ git tag --list | egrep '[0-9]+\.[0-9]+\.[0-9]+' | sort -V
 Checkout the release tag. For example to checkout the release `5.22.0`:
 
 ~~~
-git checkout 5.22.0
+git checkout 5.22.1
 ~~~
 
 Git will respond with a warning that "*You are in 'detached HEAD' state.*", this is ok and no need to be concerned.
+
+Finally apply any pending database updates and clear the cache. **NOTE**: Below we assume that the command is being 
+executed in the installation package root e.g. `/var/www/drupal-7-cdm-dataportal` and that the site is available under https://dataportal.test. 
+Please adapt to your specific settings if needed.
+
+~~~
+drush -r web -l https://dataportal.test updatedb
+drush -r web -l https://dataportal.test cc all
+~~~
 
 
  
