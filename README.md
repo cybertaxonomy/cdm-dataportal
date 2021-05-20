@@ -125,7 +125,7 @@ Once the script has fished it will print out the final URL of the new site toget
 **Strategy**: Downloading of the installation package for a new release of the cdm-dataportal and replacing the old installation by the content of the installation package.
 
 * Pro: Few simple steps.
-* Con: The steps described here are not suitable for multisite installation or when additional modules are installed.
+* Con: The steps described here are not suitable for multi-site installation or when additional modules are installed.
 
 ~~~
 cd /var/www
@@ -146,7 +146,7 @@ finally copy the default site to the new installation
 cp -r drupal-7-cdm-dataportal.last/web/sites/default/ drupal-7-cdm-dataportal/web/sites/
 ~~~
 
-Once you have confirmed that the updated instalation is working correctly:
+Once you have confirmed that the updated installation is working correctly:
 
 ~~~
 rm -r drupal-7-cdm-dataportal.last
@@ -154,11 +154,11 @@ rm -r drupal-7-cdm-dataportal.last
 
 ### Update - method 2
 
-**Strategy**: Inplace updating of the installation by making use of git and drush or composer. 
+**Strategy**: In-place updating of the installation by making use of git and drush or composer. 
 
 *THIS METHOD IS RECOMMENDED FOR MOST SITUATIONS**
 
-* Pro: Update of drupal and custom modules independent of what is provided by the instalation package.
+* Pro: Update of drupal and custom modules independent of what is provided by the installation package.
 * Con: Initial preparation is more complex, 
 
 #### Preparation
@@ -167,7 +167,7 @@ rm -r drupal-7-cdm-dataportal.last
 
 !!! *Composer v2.x would fail to preserve existing site installations* !!!
 
-In case the version provided by apt is too old (<1.10), you can install composer manually in the project directory `/var/www/drupal-7-cdm-dataportal` (The http//getcomposer.org/download/ **NOTE**: I you are usaing this method you need to use `./composer.phar` instead of `composer`
+In case the version provided by apt is too old (<1.10), you can install composer manually in the project directory `/var/www/drupal-7-cdm-dataportal`. In the following we assume you have installed composer this way and will use `./composer` instead of `composer`.
 
 ~~~
 cd /var/www/drupal-7-cdm-dataportal
@@ -177,11 +177,11 @@ php composer-setup.php --filename=composer --version 1.10.22
 php -r "unlink('composer-setup.php');"
 ~~~
 
-The above commands fails with "Installer corrupt"? Please update the corresponding command with the new one from http//getcomposer.org/download/. It is **important not use use a version > 1.*!**
+The above commands fails with "Installer corrupt"? Please update the corresponding command with the new one from [http//getcomposer.org/download/](http//getcomposer.org/download/). It is **important not use use a version > 1.*!**
 
-**Unshallow the installation package**
+**Un-shallow the installation package**
 
-The installation package contains a shallow clone of the git repository only. In order to easily upgrade the dataportal-module it is highly recommended to unshallow the git repository clone
+The installation package contains a shallow clone of the git repository only. In order to easily upgrade the dataportal-module it is highly recommended to un-shallow the git repository clone
 
 ~~~
 git fetch --unshallow
@@ -200,7 +200,7 @@ This will also install **drush**
 
 #### Updating to a specific cdm-dataportal release
 
-NOTE: The modules and themes in the `./web/sites/all/` are symlinked to the source code in `./modules` and `./themes`. Hence, updating the dataportal only involves checking out the according release from the git remote:
+NOTE: The modules and themes in the `./web/sites/all/` are sym-linked to the source code in `./modules` and `./themes`. Hence, updating the dataportal only involves checking out the according release from the git remote:
 
 To see the list of available release tags:
 
@@ -214,7 +214,7 @@ Checkout the release tag. For example to checkout the release `5.22.0`:
 git checkout 5.22.1
 ~~~
 
-Git will respond with a warning that "*You are in 'detached HEAD' state.*", this is ok and no need to be concerned.
+Git will respond with a warning that "*You are in 'detached HEAD' state.*", this is OK and no need to be concerned.
 
 Finally apply any pending database updates and clear the cache. **NOTE**: Below we assume that the command is being 
 executed in the installation package root e.g. `/var/www/drupal-7-cdm-dataportal` and that the site is available under https://dataportal.test. 
@@ -227,7 +227,7 @@ Please adapt to your specific settings if needed.
 
 #### Updating drupal and modules
 
-First of all create a backup of the instalation:
+First of all create a backup of the installation:
 
 ~~~
 cd /var/www/drupal-7-cdm-dataportal 
