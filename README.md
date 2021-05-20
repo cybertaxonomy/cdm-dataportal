@@ -161,16 +161,21 @@ rm -r drupal-7-cdm-dataportal.last
 
 #### Preparation
 
-**Install composer**
+**Install composer v 1.10.x**
 
+!!! *Composer v2.x would fail to preserve existing site installations* !!!
 
-globally via apt
+In case the version provided by apt is too old (<1.10), you can install composer manually in the project directory `/var/www/drupal-7-cdm-dataportal` (The http//getcomposer.org/download/ **NOTE**: I you are usaing this method you need to use `./composer.phar` instead of `composer`
 
 ~~~
-apt-get install composer
+cd /var/www/drupal-7-cdm-dataportal
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === '756890a4488ce9024fc62c56153228907f1545c228516cbf63f885e036d37e9a59d27d63f46af1d4d07ee0f76181c7d3') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php --filename=composer --version 1.10.22
+php -r "unlink('composer-setup.php');"
 ~~~
 
-In case the version provided by apt is too old, you can install composer manually in the project directory `/var/www/drupal-7-cdm-dataportal` by folowing the steps from http//getcomposer.org/download/ **NOTE**: I you are usaing this method you need to use `./composer.phar` instead of `composer`
+The above comamnds fails with: "Installer corrupt"? Please update the corresponding command with the new one from http//getcomposer.org/download/. It is **important not use use a version > 1.*!**
 
 
 **Install drush 8**
