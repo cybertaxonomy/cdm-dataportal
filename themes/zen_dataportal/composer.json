@@ -16,7 +16,7 @@
     },
     "require" : {
         "cybertaxonomy.org/cdm_dataportal": "^7.5.20",
-        "drupal/zen": "7.5.5"
+        "drupal/zen": "5.5.0"
     }
 }
 
