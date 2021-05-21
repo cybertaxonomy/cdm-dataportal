@@ -152,6 +152,13 @@ finally copy the default site to the new installation
 cp -r drupal-7-cdm-dataportal.last/web/sites/default/ drupal-7-cdm-dataportal/web/sites/
 ~~~
 
+apply any pending database updates
+
+~~~
+drush updatedb
+drush cc all
+~~~
+
 Once you have confirmed that the updated installation is working correctly:
 
 ~~~
