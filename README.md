@@ -2,9 +2,10 @@
 
 Drupal 7 modules and themes as web frontend to publish data hosted in a [cdm server](https://github.com/cybertaxonomy/cdm-server).
 
-This project has a monolithic strucure, that is it contains multiple projects in one git repository.
+This project has a monolithic structure, that is it contains multiple projects in one git repository.
 
-Project dependencies required for bundeling the final insallation package are managed via composer. Dependencies of the sub projects like *modules/cdm_dataportal*, *themes/zen_dataportal*, etc still have manually copied dependencies. 
+Project dependencies required for bundling the final installation package are managed via composer. 
+Dependencies of sub-projects like *modules/cdm_dataportal*, *themes/zen_dataportal*, etc still have manually copied dependencies. 
 
 ## Project structure
 
@@ -44,29 +45,33 @@ https://www.drupal.org/docs/develop/using-composer/managing-dependencies-for-a-c
 
 ### Installation
 
-**NOTE:** For detailed instructions which also cover the setup of apache and mysql please refer to: https://cybertaxonomy.eu/dataportal/installation
+**NOTE:** For detailed instructions which also cover the setup of apache and mysql please refer 
+to: https://cybertaxonomy.eu/dataportal/installation
 
 #### Download & extract
 
-Download the latest release from https://cybertaxonomy.eu/download/dataportal/stable/ to the location where you want to install the cdm-dataportal drupal 7 project e.g.
+Download the latest release from https://cybertaxonomy.eu/download/dataportal/stable/ to the location where you want 
+to install the cdm-dataportal Drupal 7 project e.g.
 
 ~~~
 cd /var/www
-wget https://cybertaxonomy.eu/download/dataportal/stable/drupal-7-cdm-dataportal-5.22.1.tar.gz
+wget https://cybertaxonomy.eu/download/dataportal/stable/drupal-7-cdm-dataportal-5.23.0.tar.gz
 ~~~
 
-This archive contains a shallow clone of the whole project together with a ready to use drupal 7 installation with the cdm-dataportal module, zen_dataportal theme and other requirements. The drupal-7 installation is in the sub folder `./web`
+This archive contains a shallow clone of the whole project together with a ready to use drupal 7 installation with the 
+cdm-dataportal module, zen_dataportal theme and other requirements. The drupal-7 installation is in the sub folder `./web`
 
-extract and adapt the owner ship of the `./web` sub folder:
+extract and adapt the ownership of the `./web` sub folder:
 
 ~~~
-tar -xzf drupal-7-cdm-dataportal-5.22.1.tar.gz
+tar -xzf drupal-7-cdm-dataportal-5.23.0.tar.gz
 sudo chown -R :www-data drupal-7-cdm-dataportal/web
 ~~~
 
 ##### Apache2 configuration
 
-You may now want to copy the apache 2 site configuration files from `scripts/apache2.4/` to `/etc/apache2/sites-available/` and to activate one of them, preferably the ssl site configuration:
+You may now want to copy the apache 2 site configuration files from `scripts/apache2.4/` to `/etc/apache2/sites-available/` 
+and to activate one of them, preferably the ssl site configuration:
 
 ~~~
 sudo cp drupal-7-cdm-dataportal/scripts/apache2/dataportal.test* /etc/apache2/sites-available/
@@ -122,7 +127,8 @@ Once the script has fished it will print out the final URL of the new site toget
 
 ### Update - method 1
 
-**Strategy**: Downloading of the installation package for a new release of the cdm-dataportal and replacing the old installation by the content of the installation package.
+**Strategy**: Downloading of the installation package for a new release of the cdm-dataportal and replacing the old 
+installation by the content of the installation package.
 
 * Pro: Few simple steps.
 * Con: The steps described here are not suitable for multi-site installation or when additional modules are installed.
@@ -167,7 +173,9 @@ rm -r drupal-7-cdm-dataportal.last
 
 !!! *Composer v2.x would fail to preserve existing site installations* !!!
 
-In case the version provided by apt is too old (<1.10), you can install composer manually in the project directory `/var/www/drupal-7-cdm-dataportal`. In the following we assume you have installed composer this way and will use `./composer` instead of `composer`.
+In case the version provided by apt is too old (<1.10), you can install composer manually in the project 
+directory `/var/www/drupal-7-cdm-dataportal`. In the following we assume you have installed composer this way and 
+will use `./composer` instead of `composer`.
 
 ~~~
 cd /var/www/drupal-7-cdm-dataportal
@@ -181,7 +189,8 @@ The above commands fails with "Installer corrupt"? Please update the correspondi
 
 **Un-shallow the installation package**
 
-The installation package contains a shallow clone of the git repository only. In order to easily upgrade the dataportal-module it is highly recommended to un-shallow the git repository clone
+The installation package contains a shallow clone of the git repository only. In order to easily upgrade the 
+dataportal-module it is highly recommended to un-shallow the git repository clone
 
 ~~~
 git fetch --unshallow
@@ -200,7 +209,8 @@ This will also install **drush**
 
 #### Updating to a specific cdm-dataportal release
 
-NOTE: The modules and themes in the `./web/sites/all/` are sym-linked to the source code in `./modules` and `./themes`. Hence, updating the dataportal only involves checking out the according release from the git remote:
+NOTE: The modules and themes in the `./web/sites/all/` are sym-linked to the source code in `./modules` and `./themes`. 
+Hence, updating the dataportal only involves checking out the according release from the git remote:
 
 To see the list of available release tags:
 
@@ -208,17 +218,17 @@ To see the list of available release tags:
 git tag --list | egrep '[0-9]+\.[0-9]+\.[0-9]+' | sort -V
 ~~~
 
-Checkout the release tag. For example to checkout the release `5.22.0`:
+Checkout the release tag. For example to checkout the release `5.23.0`:
 
 ~~~
-git checkout 5.22.1
+git checkout 5.23.0
 ~~~
 
 Git will respond with a warning that "*You are in 'detached HEAD' state.*", this is OK and no need to be concerned.
 
 Finally apply any pending database updates and clear the cache. **NOTE**: Below we assume that the command is being 
-executed in the installation package root e.g. `/var/www/drupal-7-cdm-dataportal` and that the site is available under https://dataportal.test. 
-Please adapt to your specific settings if needed.
+executed in the installation package root e.g. `/var/www/drupal-7-cdm-dataportal` and that the site is available under 
+https://dataportal.test. Please adapt to your specific settings if needed.
 
 ~~~
 ./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test updatedb
@@ -246,24 +256,3 @@ Run any pending database updates and clear the caches
 ./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test updatedb
 ./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test cc all
 ~~~
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
