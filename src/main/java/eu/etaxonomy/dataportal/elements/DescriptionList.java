@@ -31,7 +31,7 @@ public class DescriptionList extends BaseElement {
     private Map<String, List<DescriptionElement>> descriptionGroups = new HashMap<>();
 
     /**
-     * @param element A WebElement for a DescriptionList ('{@code<dl>}') DOM object.
+     * @param element A WebElement for a DescriptionList ('{@code <dl>}') DOM object.
      */
     public DescriptionList(WebElement element) {
         super(element);

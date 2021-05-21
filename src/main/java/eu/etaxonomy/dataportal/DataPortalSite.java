@@ -50,9 +50,6 @@ public enum DataPortalSite {
         return key;
     }
 
-    /**
-     * @return
-     */
     public DataPortalContext getContext() {
         return context;
     }

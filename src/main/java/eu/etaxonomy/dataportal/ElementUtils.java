@@ -119,10 +119,10 @@ public class ElementUtils {
     }
 
     /**
-     * Intended for loggin purposes.
+     * Intended for logging purposes.
      * <p>
      * Creates incomplete markup of the WebElement with the attributes id and class like:
-     * {@code <tagName id="the-id" class="">
+     * {@code <tagName id="the-id" class="">}
      *
      * @param we the WebElement
      * @return the markup
