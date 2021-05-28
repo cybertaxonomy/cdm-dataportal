@@ -35,6 +35,12 @@ if [[ -z "$(grep 'cybertaxonomy.org/drupal-7-dataportal' composer.json)"  ]]; th
     exit -1
 fi
 
+# --- full backup befor any modification
+echo "creating full backup ..."
+archive_file=../drupal-7-cdm-dataportal-backup-$(date -I).tar.gz
+tar -czf $archive_file ./
+echo "backup archive created at "$(readlink -f $archive_file)
+
 # -- setup 
 
 TMP=$(mktemp -d)
@@ -54,13 +60,7 @@ if [[ -n "$site_url" ]]; then
     DRUSH=$DRUSH" -l $site_url"
 fi 
 
-echo "creating full backup ..."
-archive_file=../drupal-7-cdm-dataportal-backup-$(date -I).tar.gz
-tar -czf $archive_file ./
-echo "backup archive created at "$(readlink -f $archive_file)
-
-echo "backing up settings and config files to temp backup ${TMP} ..."
-
+echo "back up of settings and config files to ${TMP} ..."
 # backup modified files
 cp -a web/.htaccess* ${TMP}/
 # .htaccess.dist is provieded by the drupal/drupal package und must not be in the backup
