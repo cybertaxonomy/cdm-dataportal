@@ -244,22 +244,42 @@ https://dataportal.test. Please adapt to your specific settings if needed.
 
 #### Updating drupal and modules
 
-First create a backup of the installation:
+The drupal-7-cdm-dataportal installer provides a script for convenient and secure updating of single or multisite setups.
+It will 
+
+1. create backups
+1. set the site(s) to maintenance mode   
+1. Update drupal core and contributed modules via `composer`
+1. Run any pending database updates and clear the caches
+
+A brief help for this script is available from `scripts/admin/update-dependencies.sh --help` 
 
 ~~~
-cd /var/www/drupal-7-cdm-dataportal 
-tar -czf ../drupal-7-cdm-dataportal-backup-$(date -I).tar.gz ./
+USAGE: update-dependencies.sh [--deactivate-install] [--multi-site] [--mailto <ADDRESS>]
+  --deactivate-install :  The install.php will be hidden by appending '.off' to the filename
+  -h, --help:  Print this help text
+  --mailto <ADDRESS>:  send a email to the ADDRESS with a log of the update process
+  --multi-site:  Do a multi-site update. Requires dataportals-drush. 
+        See https://dev.e-taxonomy.eu/svn/trunk/server-scripts/dataportal-admin/
+  --site-url:  The site url to be used with drush. This option disables the --multi-site option
 ~~~
 
-Now use `composer` to update drupal core and contributed modules:
+
+
+Update a single site installation with default site URL
 
 ~~~
-./composer update --no-dev
+scripts/admin/update-dependencies.sh --deactivate-install 
 ~~~
 
-Run any pending database updates and clear the caches
+Update a single site installation with custom site URL
 
 ~~~
-./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test updatedb
-./vendor/drush/drush/drush -r /var/www/drupal-7-cdm-dataportal/web/ -l https://dataportal.test cc all
+scripts/admin/update-dependencies.sh --deactivate-install --site-url http://edit.test/d7/cichorieae/ 
+~~~
+
+Update a multi-site installation with custom site URL
+
+~~~
+scripts/admin/update-dependencies.sh --deactivate-install --multi-site
 ~~~
