@@ -244,7 +244,7 @@ https://dataportal.test. Please adapt to your specific settings if needed.
 
 #### Updating drupal and modules
 
-First of all create a backup of the installation:
+First create a backup of the installation:
 
 ~~~
 cd /var/www/drupal-7-cdm-dataportal 
@@ -254,7 +254,7 @@ tar -czf ../drupal-7-cdm-dataportal-backup-$(date -I).tar.gz ./
 Now use `composer` to update drupal core and contributed modules:
 
 ~~~
-./composer update -no-dev
+./composer update --no-dev
 ~~~
 
 Run any pending database updates and clear the caches
