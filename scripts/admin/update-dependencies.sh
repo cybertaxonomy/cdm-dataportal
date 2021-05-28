@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 
 # -- options
@@ -7,7 +7,7 @@ while [[ "$#" -gt 0 ]]; do
         -h|--help) print_help=1;;
         --mailto) MAILTO="$2"; shift ;;
         --deactivate-install) deactivate_install=1 ;;
-        --multi-site) multi-site=1 ;;
+        --multi-site) multisite=1 ;;
         --site-url) site_url=$2; shift ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
@@ -15,7 +15,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 if [[ -n "$site_url" ]]; then
-    unset multi-site
+    unset multisite
 fi 
 
 # -- help
@@ -36,6 +36,8 @@ if [[ -z "$(grep 'cybertaxonomy.org/drupal-7-dataportal' composer.json)"  ]]; th
 fi
 
 # --- backups before any modification
+TMP=$(mktemp -d)
+
 echo "creating full backup ..."
 archive_file=../drupal-7-cdm-dataportal-backup-$(date -I).tar.gz
 tar -czf $archive_file ./
@@ -49,9 +51,8 @@ rm -f ${TMP}/.htaccess.dist
 cp -a web/robots*.txt ${TMP}/
 
 # -- setup 
-TMP=$(mktemp -d)
 
-if [[ "$multi-site" == "1" ]]; then
+if [[ "$multisite" == "1" ]]; then
     DRUSH=$(which dataportals-drush) 
 else 
     DRUSH=./vendor/drush/drush/drush
@@ -64,10 +65,7 @@ fi
 DRUSH=$DRUSH" -r $(pwd)/web/" 
 if [[ -n "$site_url" ]]; then
     DRUSH=$DRUSH" -l $site_url"
-fi 
-
-
-exit 0 
+fi
 
 echo "setting dataportals in update mode ..."
 # set all portals into maintenance mode
