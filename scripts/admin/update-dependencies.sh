@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 
 # -- options
@@ -7,7 +7,7 @@ while [[ "$#" -gt 0 ]]; do
         -h|--help) print_help=1;;
         --mailto) MAILTO="$2"; shift ;;
         --deactivate-install) deactivate_install=1 ;;
-        --multisite) multisite=1 ;;
+        --multi-site) multi-site=1 ;;
         --site-url) site_url=$2; shift ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
@@ -15,17 +15,17 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 if [[ -n "$site_url" ]]; then
-    unset multisite
+    unset multi-site
 fi 
 
 # -- help
 if [[ "$print_help" == "1" ]]; then
-	echo "USAGE: update-dependencies.sh [--deactivate-install] [--multisite] [--mailto <ADDRESS>]"
+	echo "USAGE: update-dependencies.sh [--deactivate-install] [--multi-site] [--mailto <ADDRESS>]"
 	echo "  --deactivate-install :  The install.php will be hidden by appending '.off' to the filename"
 	echo "  -h, --help:  Print this help text"
 	echo "  --mailto <ADDRESS>:  send a email to the ADDRESS with a log of the update process"
-	echo "  --multisite:  Do a multisite update. Requires dataportals-drush. See https://dev.e-taxonomy.eu/svn/trunk/server-scripts/dataportal-admin/"
-	echo "  --site-url:  The site url to be used with drush. This option disables the --multisite option"
+	echo "  --multi-site:  Do a multi-site update. Requires dataportals-drush. See https://dev.e-taxonomy.eu/svn/trunk/server-scripts/dataportal-admin/"
+	echo "  --site-url:  The site url to be used with drush. This option disables the --multi-site option"
 	exit 0
 fi
 
@@ -35,17 +35,23 @@ if [[ -z "$(grep 'cybertaxonomy.org/drupal-7-dataportal' composer.json)"  ]]; th
     exit -1
 fi
 
-# --- full backup before any modification
+# --- backups before any modification
 echo "creating full backup ..."
 archive_file=../drupal-7-cdm-dataportal-backup-$(date -I).tar.gz
 tar -czf $archive_file ./
 echo "backup archive created at "$(readlink -f $archive_file)
 
-# -- setup 
+echo "back up of settings and config files to ${TMP} ..."
+# backup modified files
+cp -a web/.htaccess* ${TMP}/
+# .htaccess.dist is provided by the drupal/drupal package und must not be in the backup
+rm -f ${TMP}/.htaccess.dist
+cp -a web/robots*.txt ${TMP}/
 
+# -- setup 
 TMP=$(mktemp -d)
 
-if [[ "$multisite" == "1" ]]; then
+if [[ "$multi-site" == "1" ]]; then
     DRUSH=$(which dataportals-drush) 
 else 
     DRUSH=./vendor/drush/drush/drush
@@ -60,18 +66,14 @@ if [[ -n "$site_url" ]]; then
     DRUSH=$DRUSH" -l $site_url"
 fi 
 
-echo "back up of settings and config files to ${TMP} ..."
-# backup modified files
-cp -a web/.htaccess* ${TMP}/
-# .htaccess.dist is provieded by the drupal/drupal package und must not be in the backup
-rm -f ${TMP}/.htaccess.dist
-cp -a web/robots*.txt ${TMP}/
+
+exit 0 
 
 echo "setting dataportals in update mode ..."
-# set all portals into maintainance mode
+# set all portals into maintenance mode
 $DRUSH vset -y maintenance_mode 1
 
-# turn clean urls off since .htaccess will be overwritten during the updatecode
+# turn clean urls off since .htaccess will be overwritten during the update
 $DRUSH vset clean_url -y 0
 
 # turn off cdm_debug_mode in all sites
@@ -88,7 +90,7 @@ composer update --no-dev --ansi | tee ${TMP}/composer.log
 echo "-------------------------------------------------------------------"
 echo "restoring settings and config files from temp backup ..."
 
-# restore original settings and files and disable maintainance mode
+# restore original settings and files and disable maintenance mode
 rm -f .htaccess.dist
 cp web/.htaccess web/.htaccess.dist
 cp -a ${TMP}/.htaccess* web/
