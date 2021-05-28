@@ -94,7 +94,10 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
         if($base_uri == CDM_WS_NAME){
           $tagged_text_method = "/taggedName";
         }
-        $referenced_tt = cdm_ws_get($base_uri . "/" . $tt->entityReference->uuid . $tagged_text_method);
+        if(!str_endsWith($base_uri, '/')){
+          $base_uri .= '/';
+        }
+        $referenced_tt = cdm_ws_get($base_uri . $tt->entityReference->uuid . $tagged_text_method);
         if($referenced_tt){
           if(isset($tt->attributes)){
             foreach($referenced_tt as $reftt){
@@ -320,17 +323,16 @@ function normalize_tagged_text(&$taggedTextList) {
 }
 
 /**
- * Extracts from a tagged text array the tagged text for a references which is concatenated with citation
+ * Extracts from a tagged text array all tagged text for references which is concatenated with citation
  * detail separator and citation detail into one single element.
  *
  * @param $tagged_text
  *    The tagged text to operate on
  * @param string $ref_tag_type
- *    The tagtype for a secreference is "secReference", but "relSecReference" is also used in case of relationships.
+ *    The tag type for a reference is "reference", this is uses as default.
  * @param bool $replace_with_placeholder
  *    Indicates the method to add a empty placeholder tagged text alement as relpacement for the extrated tagged text
  *    elements.
- * @param string $ref_detail_tag_type
  * @return array
  */
 function tagged_text_extract_reference(&$tagged_text, $ref_tag_type = "reference", $replace_with_placeholder = false) {
@@ -338,14 +340,15 @@ function tagged_text_extract_reference(&$tagged_text, $ref_tag_type = "reference
   $extracted_tt = array();
   if (is_array($tagged_text)) {
     $extract_pos = null;
-    for ($i = 0; $i < count($tagged_text); $i++) {
+    $tt_legth = count($tagged_text);
+    for ($i = 0; $i < $tt_legth; $i++) {
       if ($tagged_text[$i]->type == $ref_tag_type){
         if ($i > 0 && $tagged_text[$i - 1]->type == 'separator') {
           // the reference may be preceeded by a separator in case it is not a in-reference
           $extracted_tt[] = $tagged_text[$i - 1];
           unset($tagged_text[$i - 1]);
         } else {
-          // need to add a separator to since the reference tagged text will become the first element
+          // need to add a separator since the reference tagged text will become the first element
           // ant thus will not be preceded by a separator
           $extracted_tt[] = tagged_text_new('separator', ' ');
         }
@@ -356,7 +359,6 @@ function tagged_text_extract_reference(&$tagged_text, $ref_tag_type = "reference
         } else {
           unset($tagged_text[$i]);
         }
-        break;
       }
     }
   }
@@ -381,7 +383,8 @@ function tagged_text_extract_reference_and_detail(&$tagged_text, $ref_tag_type =
   $extracted_tt = array();
   if (is_array($tagged_text)) {
     $extract_pos = null;
-    for ($i = 0; $i < count($tagged_text) - 1; $i++) {
+    $tt_length = count($tagged_text);
+    for ($i = 0; $i < $tt_length - 1; $i++) {
       if ($tagged_text[$i + 1]->type == $ref_tag_type && $tagged_text[$i]->type == "separator"){
         $extracted_tt[0] = $tagged_text[$i];
         $extracted_tt[1] = $tagged_text[$i + 1];

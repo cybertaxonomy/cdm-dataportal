@@ -52,10 +52,10 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         TaxonPage p = new TaxonPage(driver, getContext(), glenodinium_apiculatum_t, "specimens");
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#specimens table.specimens"));
         List<WebElement> rows = specimensTable.findElements(By.tagName("tr"));
-        assertEquals(3, rows.size());
-        assertEquals("Epitype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047 (CEDiT 2017E68).", rows.get(0).getText());
-        assertEquals("Isolectotype: Germany, Berlin, 52°31'1.2\"N, 13°21'E, 28.3.2016, D047 (M M-0289351).", rows.get(1).getText());
-        assertEquals("Lectotype: -title cache generation not implemented-", rows.get(2).getText());
+        assertEquals(4, rows.size());
+        assertEquals("Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT 2017E68).", rows.get(0).getText());
+        assertEquals("Isolectotype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M M-0289351).", rows.get(1).getText());
+        assertEquals("Lectotype: Germany, Berlin, 2 Apr 1835 (BHUPM 671).", rows.get(2).getText());
 
         Dynabox dynabox1 = new Dynabox(rows.get(0).findElement(By.className("dynabox")), driver);
         BaseElement dynaboxContent = dynabox1.click();
@@ -63,30 +63,23 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         assertEquals(3, contentElements.size());
         // 1
         DescriptionList dl1 = new DescriptionList(contentElements.get(0).findElement(By.tagName("dl")));
-        assertEquals("PreservedSpecimen", dl1.joinedDescriptionElementText("Record basis:"));
+        assertEquals("Preserved Specimen", dl1.joinedDescriptionElementText("Record basis:"));
         assertEquals("Specimen", dl1.joinedDescriptionElementText("Kind of unit:"));
-        assertEquals("CEDiT\nCode:\nCEDiT", dl1.joinedDescriptionElementText("Collection:"));
+        assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", dl1.joinedDescriptionElementText("Collection:"));
         assertEquals("2017E68", dl1.joinedDescriptionElementText("Most significant identifier:"));
         assertEquals("2017E68", dl1.joinedDescriptionElementText("Accession number:"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172)",
                 dl1.joinedDescriptionElementText("Specimen type designations:"));
         // 2
         assertEquals("gathering in-situ from:", contentElements.get(1).getText());
         // 3
         DescriptionList dl3 = new DescriptionList(contentElements.get(2).findElement(By.tagName("dl")));
-        assertEquals("FieldUnit", dl3.joinedDescriptionElementText("Record basis:"));
+        assertEquals("Field Unit", dl3.joinedDescriptionElementText("Record basis:"));
         assertEquals("D047", dl3.joinedDescriptionElementText("Collecting number:"));
         assertEquals("2016-03-28", dl3.joinedDescriptionElementText("Gathering date"));
         assertEquals("Germany", dl3.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl3.joinedDescriptionElementText("Locality:"));
-        assertEquals("52°31'1.2\"N, 13°21'E\nError radius:\n" +
-                "20 m\n" +
-                "Longitude:\n" +
-                "13.35°\n" +
-                "Latitude:\n" +
-                "52.517°", dl3.joinedDescriptionElementText("Exact location:"));
-
-
+        assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", dl3.joinedDescriptionElementText("Exact location:"));
 
 
     }

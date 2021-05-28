@@ -22,6 +22,7 @@
   module_load_include('php', 'cdm_dataportal', 'help');
   module_load_include('php', 'cdm_dataportal', 'cdm_dataportal.search');
 
+  module_load_include('inc', 'cdm_dataportal', 'includes/symbols');
   module_load_include('inc', 'cdm_dataportal', 'includes/common');
   module_load_include('inc', 'cdm_dataportal', 'includes/footnotes');
   module_load_include('inc', 'cdm_dataportal', 'includes/agent');
@@ -33,6 +34,7 @@
   module_load_include('inc', 'cdm_dataportal', 'includes/media');
   module_load_include('inc', 'cdm_dataportal', 'includes/maps');
   module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');
+  module_load_include('inc', 'cdm_dataportal', 'includes/occurrences_new'); // tmp file, shoud be merged later with occurrences.inc
   module_load_include('inc', 'cdm_dataportal', 'includes/descriptions');
   module_load_include('inc', 'cdm_dataportal', 'includes/pre-drupal8');
 
@@ -40,7 +42,6 @@
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.common');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.descriptions');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.media');
-  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.occurrence');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.page');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.taxon');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.name');
@@ -326,14 +327,14 @@ function _add_js_taxonomic_children($jquery_selector) {
     );
   }
 
-  function _add_js_ui_accordion(){
-    _add_jquery_ui();
-    drupal_add_js('jQuery(document).ready(function() {
-        jQuery( "#accordion" ).accordion();
-      });',
-      array('type' => 'inline')
-    );
-  }
+function _add_js_ui_accordion(){
+  _add_jquery_ui();
+  drupal_add_js('jQuery(document).ready(function() {
+      jQuery( "#accordion" ).accordion();
+    });',
+    array('type' => 'inline')
+  );
+}
 
 
 function _add_js_utis_client($jquery_selector){
@@ -439,6 +440,15 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
   );
 }
 
+function _add_js_derivation_tree($jquery_selector){
+  drupal_add_js(drupal_get_path('module','cdm_dataportal') . '/js/derivation-tree.js');
+  drupal_add_js('jQuery(document).ready(function() {
+      jQuery( "' . $jquery_selector . '" ).derivationTree();
+    });',
+    array('type' => 'inline')
+  );
+}
+
   /**
    * Provides the markup for an font awesome icon.
    *
@@ -459,7 +469,6 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
   function font_awesome_icon_markup($icon_name = NULL, $attributes = array()){
     _add_font_awesome_font();
 
-
     if($icon_name){
       if(!isset($attributes['class'])){
         $attributes['class'] = array();
@@ -472,6 +481,29 @@ function _add_js_universalviewer($jquery_selector, $manifest_uri){
 
     return '';
   }
+
+/**
+ * see https://fontawesome.com/how-to-use/on-the-web/styling/stacking-icons
+ * @param array $fa_icons_markup
+ *  Array of font awesome icon markup preferably created by font_awesome_icon_markup()
+ *
+ * @return string
+ *  The markup
+ */
+function font_awesome_icon_stack($fa_icons_markup, $attributes = array(), $no_resize = TRUE){
+
+
+    if(!isset($attributes['class'])){
+      $attributes['class'] = array();
+    }
+    if($no_resize){
+      $attributes['class'][] = 'fa-stack-no-resize';
+    } else {
+      $attributes['class'][] = 'fa-stack';
+    }
+
+    return '<span ' . drupal_attributes($attributes) . '>' . join('', $fa_icons_markup) . '</span>';
+}
 
 /**
  * @param string $glyph_name
@@ -1136,6 +1168,8 @@ function cdm_taxonomictree_selector() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  *
+ * used by cdm_taxonomictree_selector()
+ *
  * @deprecated use compose_classification_selector instead
  */
 function cdm_taxonomictree_selector_form($form, &$form_state) {
@@ -1157,19 +1191,10 @@ function cdm_taxonomictree_selector_form($form, &$form_state) {
     '#type' => 'hidden',
     '#value' =>  $destination,
   );
-
-  $options = cdm_get_taxontrees_as_options();
-  $taxontree_includes = variable_get(CDM_TAXONTREE_INCLUDES, null);
-  if($taxontree_includes){
-    $filtered_options = array();
-    foreach($options as $uuid=>$label){
-      if(!empty($taxontree_includes[$uuid])){
-        $filtered_options[$uuid] = $label;
-      }
-    }
-    $options = $filtered_options;
-  }
-
+  $options = cdm_get_taxontrees_as_options(
+    FALSE,
+    variable_get(CDM_TAXONTREE_INCLUDES, [])
+  );
   $form['val'] = array(
     '#type' => 'select',
     '#title' => t('Available classifications'),
@@ -1191,34 +1216,33 @@ function compose_classification_selector() {
   $destination_array = drupal_get_destination();
   $destination = $destination_array['destination'];
 
-  $options = cdm_get_taxontrees_as_options();
+  $options = cdm_get_taxontrees_as_options(
+    FALSE,
+    variable_get(CDM_TAXONTREE_INCLUDES, [])
+  );
   $items = array();
-  $taxontree_includes = variable_get(CDM_TAXONTREE_INCLUDES, null);
 
   $current_classification_uuid = get_current_classification_uuid();
 
 
   foreach($options as $uuid=>$label){
-    if(!$taxontree_includes || !empty($taxontree_includes[$uuid])){
-
-      $class_attributes = '';
-      if($current_classification_uuid == $uuid){
-        $class_attributes  = array('focused');
-      }
-      $items[] = array(
-        'data' => l($label,
-          'cdm_api/setvalue/session',
-          array(
-            'query' => array(
-              'destination' => $destination,
-              'val' => $uuid,
-              'var' => '[cdm][taxonomictree_uuid]'
-            ),
-          )
-        ),
-        'class' => $class_attributes
-      );
+    $class_attributes = '';
+    if($current_classification_uuid == $uuid){
+      $class_attributes  = array('focused');
     }
+    $items[] = array(
+      'data' => l($label,
+        'cdm_api/setvalue/session',
+        array(
+          'query' => array(
+            'destination' => $destination,
+            'val' => $uuid,
+            'var' => '[cdm][taxonomictree_uuid]'
+          ),
+        )
+      ),
+      'class' => $class_attributes
+    );
   }
 
   $render_array = array(
@@ -1231,16 +1255,6 @@ function compose_classification_selector() {
 }
 
 
-/* UNREACHABLE since action of form directly links to view.
- function cdm_dataportal_search_taxon_form_submit($form_id, $form_values) {
-
- $_SESSION['cdm']['search'] = $form_values;
- //return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['vernacular']?'1':'0').'/'.$form_values['language'];
- return '/cdm_dataportal/search/taxon/'.$form_values['queryString'].'/'.($form_values['onlyAccepted']?'1':'0');
- //$paramstr = compose_url_prameterstr($form_values);
- //return url('/cdm_dataportal/search/taxon/', array('query' => $paramstr));
- }
- */
 /* ====================== menu callback functions ====================== */
 /**
  * @todo Please document this function.
@@ -1334,18 +1348,6 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
     'mediarepresentation_uuid' => $mediarepresentation_uuid,
     'partId' => $part,
     ));
-}
-
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function _load_taxonBase(&$taxonBase) {
-  if (isset($taxonBase->uuid)) {
-    $taxonBase->name = cdm_ws_get(CDM_WS_TAXON, array($taxonBase->uuid, "name"));
-    $taxonBase->name->taggedName = cdm_ws_get(CDM_WS_NAME, array($taxonBase->name->uuid, "taggedName"));
-    $taxonBase->name->nomenclaturalReference = cdm_ws_get(CDM_WS_NAME, array($taxonBase->name->uuid, "nomenclaturalReference"));
-  }
 }
 
 /**
@@ -1597,7 +1599,7 @@ function _load_polytomousKeySubGraph(&$polytomousKeyNode) {
     return;
   }
 
-  $polytomousKeyNode = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, $polytomousKeyNode->uuid);
+  $polytomousKeyNode = cdm_ws_get(CDM_WS_PORTAL_POLYTOMOUSKEY_NODE, $polytomousKeyNode->uuid);
 
   if (!$polytomousKeyNode) {
     // drupal_set_message("_load_polytomousKeyChildNodes() : could not load polytomousKeyNode", "error");
@@ -1608,13 +1610,6 @@ function _load_polytomousKeySubGraph(&$polytomousKeyNode) {
   foreach ($polytomousKeyNode->children as &$childNode) {
     _load_polytomousKeySubGraph($childNode);
   }
-
-  // Load subkey.
-  $polytomousKeyNode->subkey = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, array($polytomousKeyNode->uuid, "subkey"));
-
-  // Load taxon.
-  $polytomousKeyNode->taxon = cdm_ws_get(CDM_WS_POLYTOMOUSKEY_NODE, array($polytomousKeyNode->uuid, "taxon"));
-  _load_taxonBase($polytomousKeyNode->taxon);
   return;
 }
 
@@ -1735,17 +1730,17 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
       ), 'warning');
     }
     else {
-      $trees = '';
+      $trees = [];
       foreach ($classifications as $classification) {
         if (isset($classification->titleCache)) {
-          $trees .= ($trees ? ', ' : '') . '<strong>' . $classification->titleCache . '</strong>';
+          $trees[] = '<strong>' . $classification->titleCache . '</strong>';
         }
       }
 
       drupal_set_message(format_plural(count($trees),
           'This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification, but in this one: !trees',
           'This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification, but in one of these: !trees',
-          array('!taxonname' => $taxon_name_markup, '!trees' => $trees)
+          array('!taxonname' => $taxon_name_markup, '!trees' => join(', ', $trees))
         ) ,
         'warning');
     }
@@ -1839,9 +1834,7 @@ function specimen_by_accession_number_view($accession_number = null) {
     }
     $specimenpage = new stdClass();
 
-    $specimenpage->title = theme('theme_cdm_specimen_dto_page_title', array(
-      'specimen' => $field_unit_dto
-    ));
+    $specimenpage->title = render_cdm_specimen_dto_page_title($field_unit_dto);
 
      $render_array['markup'] = $specimen_table;
      $specimenpage->content = drupal_render($render_array);
@@ -1861,18 +1854,17 @@ function specimen_by_accession_number_view($accession_number = null) {
  *    - content
  */
 function cdm_dataportal_specimen_view($uuid) {
-    //TODO: get the derivateDTO and don't call the webservice a second time in compose_cdm_specimen_page
-    $specimen = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE, $uuid);
-    if (empty($specimen)) {
+
+    $sob_dto = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE_AS_DTO, $uuid);
+    if (empty($sob_dto)) {
         drupal_set_title(t('Specimen does not exist'), PASS_THROUGH);
         return FALSE;
     }
     $specimenpage = new stdClass();
-
-    $specimenpage->title = specimen_page_title($specimen);
+    $specimenpage->title = render_specimen_page_title($sob_dto);
 
     // Render the specimen page.
-    $render_array = compose_cdm_specimen_page($specimen);
+    $render_array = compose_cdm_specimen_page($sob_dto);
     $specimenpage->content = drupal_render($render_array);
 
     return $specimenpage;
@@ -2128,11 +2120,11 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     $show_taxa_section = variable_get(CDM_NAME_PAGE_SECTION_TAXA, CDM_NAME_PAGE_SECTION_TAXA_DEFAULT);
     if($show_taxa_section){
       if ($taxa) {
-        $content['related_taxa_header'] = markup_to_render_array("<h2>Taxa for this name</h2>");
+        $content['related_taxa_header'] = markup_to_render_array("<h2>" . count($taxa) > 1 ? t("Taxa for this name") :  t("Taxon for this name") . "</h2>");
         $content['related_taxa'] = compose_list_of_taxa($taxa);
       }
       else {
-        $content['related_taxa'] = markup_to_render_array('This name is not assigned to a taxon.', null, '<div class="no-taxon-message">', '</div>');
+        $content['related_taxa'] = markup_to_render_array('This name is not assigned to any taxon.', null, '<div class="no-taxon-message">', '</div>');
       }
     }
 
@@ -2149,39 +2141,38 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
 /**
  * Returns a registration page as a Drupal node to be rendered by Drupal.
  *
- * @param string  $registration_identifier_encoded
+ * @param string  $registration_identifie
  *   The persistent identifier of the registration urlencoded.
  * @return mixed
  *   The formatted registration page as node.
  */
-function cdm_dataportal_registration_page_view($registration_identifier_encoded) {
+function cdm_dataportal_registration_page_view() {
 
-  cdm_check_valid_portal_page("/\/cdm_dataportal\/registration\/.*$/");
-  $registration_page = cdm_dataportal_registration_view($registration_identifier_encoded);
+  cdm_check_valid_portal_page("/\/cdm_dataportal\/registration/");
+  $registration_identifier = $_REQUEST['identifier'];
+  $registration_page = cdm_dataportal_registration_view($registration_identifier);
   return cdm_node_show_simulate($registration_page);
 }
 
 /**
- * @param $registration_identifier_encoded
+ * @param $registration_identifier
  * @return array
  *   The drupal render array for the registration view.
  */
-function cdm_dataportal_registration_view($registration_identifier_encoded) {
-
-  $registration_identifier = urldecode($registration_identifier_encoded);
+function cdm_dataportal_registration_view($registration_identifier) {
 
   RenderHints::pushToRenderStack('registration_page');
   RenderHints::setFootnoteListKey('registration_page');
 
   $render_array = array();
-  $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER . $registration_identifier_encoded);
+  $registration_dto = cdm_ws_get(CDM_WS_REGISTRATION_DTO, null, 'identifier=' . $registration_identifier);
   if($registration_dto){
 
     drupal_set_title(t('Registration Id:') . ' ' . $registration_identifier, PASS_THROUGH);
     $render_array = compose_registration_dto_full($registration_dto, true);
 
   } else {
-    $status_text = cdm_ws_get(CDM_WS_REGISTRATION_STATUS_BY_IDENTIFIER, array($registration_identifier));
+    $status_text = cdm_ws_get(CDM_WS_REGISTRATION_STATUS, null, 'identifier=' . $registration_identifier);
     if(isset($status_text->String)) {
       $status_text = strtolower($status_text->String);
       if($status_text == 'preparation' || $status_text == 'curation'){
@@ -2478,6 +2469,20 @@ function path_to_named_area($uuid) {
 }
 
 /**
+ * @param $uuid
+ *
+ * @return string
+ */
+function path_to_collection($uuid) {
+  if (!$uuid) {
+    return '';
+  }
+  else {
+    return 'cdm_dataportal/collection/' . $uuid;
+  }
+}
+
+/**
  * Creates a URL to show a synonmy in the according taxon page.
  *
  * The URL will point to the synonymy tab of the taxon page of the accepted taxon given as parameter $acceptedUuid.
@@ -2524,7 +2529,7 @@ function path_to_key($keyType, $keyUuid) {
   if (!$keyUuid || !$keyType) {
     return FALSE;
   }
-  $keyType{0} = strtolower($keyType{0});
+  $keyType[0] = strtolower($keyType[0]);
   return "cdm_dataportal/" . $keyType . "/$keyUuid";
 }
 
@@ -2545,21 +2550,24 @@ function path_to_reference($uuid) {
 }
 
 /**
- * Composes the drupal path to the reference identified by the uuid.
- *
- * @param string $identifier
+ * @param string $registration_identifier
  *  The persistent identifier of the registration entity (Registration.identifier).
+ *
  * @return string
- *  The drupal path
+ *  the markup for a HTML link
  */
-function path_to_registration($identifier) {
+function render_link_to_registration($registration_identifier) {
 
   if(variable_get(CDM_REGISTRATION_PRESISTENT_IDENTIFIER_AS_LINK)){
-    return $identifier;
+    $path = $registration_identifier;
+    $query = [];
   } else {
-    return 'cdm_dataportal/registration/' . urlencode($identifier);
+    $path = 'cdm_dataportal/registration';
+    $query = ['identifier' => $registration_identifier];
   }
+  return l($registration_identifier, $path, array('attributes' => array('class' => array('identifier')), 'query' => $query));
 }
+
 
 /**
  * Creates the path to a cdm_dataportal taxon name page.
@@ -3014,6 +3022,29 @@ function diff_viewer($text_a, $text_b) {
     . Diff::toTable($diff, '', '')
     . '</div></div>';
   return $diff_viewer_markup;
+}
+
+/**
+ * ====== EXPERIMENTAL only used by Euro+Med ===============
+ */
+
+
+/**
+ * See
+ *  - https://dev.e-taxonomy.eu/redmine/issues/9233
+ *  - https://www.drupal.org/project/feedback_simple
+ *  - https://www.drupal.org/node/1299158
+ * Implements hook_preprocess_feedback_simple().
+ *
+ * TODO: move into separate module
+ */
+function cdm_dataportal_preprocess_feedback_simple(&$variables) {
+  // Add modal_forms classes.
+  $variables['class'][] = 'ctools-use-modal';
+  // Uncomment either small, medium or large.
+  $variables['class'][] = 'ctools-modal-modal-popup-small';
+  // $variables['class'][] = 'ctools-modal-modal-popup-medium';
+  // $variables['class'][] = 'ctools-modal-modal-popup-large';
 }
 
 

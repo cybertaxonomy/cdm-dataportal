@@ -12,6 +12,12 @@ define('CDM_WS_AGENT', 'agent');
 define('CDM_WS_PORTAL_AGENT', 'portal/agent');
 define('CDM_WS_REFERENCE', 'reference');
 define('CDM_WS_REFERENCE_AUTHORTEAM', 'reference/$0/authorship');
+/**
+ * Parameter $0 : the reference uuid
+ *
+ * Provides the protologue and original publication links of the name
+ */
+define('CDM_WS_NAME_PROTOLOGUE_LINKS', 'name/$0/protologueLinks');
 define('CDM_WS_NOMENCLATURAL_REFERENCE_CITATION', 'reference/$0/nomenclaturalCitation');
 
 define('CDM_WS_NAME', 'name');
@@ -34,7 +40,7 @@ define('CDM_WS_PORTAL_TYPEDESIGNATION', 'portal/typedesignation/$0');
 
 define('CDM_WS_TAXON', 'taxon');
 
-define('CDM_WS_TAXON_FIELDUNIT_DTOS', 'taxon/$0/fieldUnitDTOs');
+define('CDM_WS_PORTAL_TAXON_ROOTUNIT_DTOS', 'portal/taxon/$0/rootUnitDTOs');
 
 define('CDM_WS_TAXON_CLASSIFICATIONS', 'taxon/$0/classifications');
 define('CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT', 'taxon/findByDescriptionElementFullText');
@@ -60,6 +66,7 @@ define('CDM_WS_PORTAL_TAXON_TAXONNODEAGENTRELATIONS', 'portal/taxon/$0/taxonNode
  */
 define('CDM_WS_PORTAL_TAXON_DESCRIPTIONS_ELEMENTSBYTYPE', 'portal/taxon/$0/descriptions/elementsByType/$1');
 define('CDM_WS_PORTAL_TAXON_USEDESCRIPTIONS', 'portal/taxon/$0/useDescriptions');
+define('CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS', 'portal/taxon/$0/associatedRootUnits');
 define('CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS', 'portal/taxon/$0/toNameRelationships');
 define('CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS', 'portal/taxon/$0/fromNameRelationships');
 define('CDM_WS_PORTAL_TAXON_MEDIA', 'portal/taxon/$0/media');
@@ -144,8 +151,9 @@ define('CDM_WS_KML_TYPEDESIGNATIONS', 'kml/typeDesignations/$0');
 define('CDM_WS_KML_TAXON_OCCURRENCE', 'kml/taxonOccurrencesFor/$0');
 
 define('CDM_WS_OCCURRENCE', 'occurrence');
-define('CDM_WS_OCCURRENCE_FILEUNIT_DTO', 'occurrence/$0/fieldUnitDTO');
+define('CDM_WS_OCCURRENCE_ROOT_UNIT_DTOS', 'occurrence/$0/rootUnitDTOs');
 define('CDM_WS_PORTAL_OCCURRENCE', 'portal/occurrence');
+define('CDM_WS_PORTAL_OCCURRENCE_AS_DTO', 'portal/occurrence/$0/asDTO');
 define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumber');
 /**
  * url query parameters:
@@ -161,7 +169,7 @@ define('CDM_WS_OCCURRENCE_ACCESSION_NUMBER', 'occurrence/byGeneticAccessionNumbe
  * returns Pager<SpecimenOrObservationBase>
  */
 define('CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON', 'occurrence/byAssociatedTaxon');
-define('CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON', 'occurrence/specimensOrObservationsByAssociatedTaxon');
+define('CDM_WS_OCCURRENCE_ROOTUNIT_DTO_BY_ASSOCIATEDTAXON', 'occurrence/rootUnitDTOsByAssociatedTaxon');
 define('CDM_WS_DERIVEDUNIT_FACADE', 'derivedUnitFacade/$0');
 define('CDM_WS_PORTAL_DERIVEDUNIT_FACADE', 'portal/derivedUnitFacade/$0');
 
@@ -169,16 +177,25 @@ define('CDM_WS_IDENTIFICATIONKEY', 'identificationKey');
 define('CDM_WS_MEDIAKEY', 'mediaKey');
 define('CDM_WS_MULTIACCESSKEY', 'multiAccessKey');
 define('CDM_WS_POLYTOMOUSKEY', 'polytomousKey');
-define('CDM_WS_POLYTOMOUSKEY_NODE', 'polytomousKeyNode');
+define('CDM_WS_PORTAL_POLYTOMOUSKEY_NODE', 'portal/polytomousKeyNode');
 
 define('CDM_WS_MEDIA', 'media');
 define('CDM_WS_PORTAL_MEDIA', 'portal/media');
 
 define('CDM_WS_MEDIA_METADATA', 'media/$0/metadata');
 
+/**
+ * url query parameters:
+ *  - identifier (mandatory)
+ *
+ */
 define('CDM_WS_REGISTRATION_DTO', "registrationDTO");
-define('CDM_WS_REGISTRATION_DTO_BY_IDENTIFIER', "registrationDTO/identifier/");
-define('CDM_WS_REGISTRATION_STATUS_BY_IDENTIFIER', "registration/identifier/$0/status");
+/**
+ * url query parameters:
+ *  - identifier (mandatory)
+ *
+ */
+define('CDM_WS_REGISTRATION_STATUS', "registration/status");
 
 define('CDM_WS_MANAGE_REINDEX', 'manage/reindex');
 define('CDM_WS_MANAGE_PURGE', 'manage/purge');

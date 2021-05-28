@@ -1,0 +1,23 @@
+{
+    "name": "cybertaxonomy.org/cdm_dataportal",
+    "description": "The dataportal publishes CDM data hosted in a CommunityStore on the web.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "version": "7.5.22",
+    "authors": [
+        {
+            "name": "Andreas Kohlbecker",
+            "email": "a.kohlbecker@bgbm.org"
+        }
+    ],
+    "homepage": "https://cybertaxonomy.eu/portal/git",
+    "support": {
+        "issues": "https://dev.e-taxonomy.eu/redmine/projects/edit/issues?query_id=72",
+        "source": "https://github.com/cybertaxonomy/cdm-dataportal"
+    },
+    "require" : {
+        "drupal/drupal": "^7.11"
+    }
+}
+
+ 

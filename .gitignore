@@ -6,9 +6,13 @@
 /.settings
 target
 /screenshots
-/vendor
+/dist
+# composer files
+vendor
+/web
+/drush
 
-
+# IDE
 .idea/
 .classpath
 .settings/
@@ -16,3 +20,4 @@ composer.lock
 .attach*
 C:\\nppdf32Log\\debuglog.txt
 workbench.xmi
+new-site.sh

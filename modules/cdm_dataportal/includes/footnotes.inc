@@ -1,7 +1,8 @@
 <?php
 /**
  * @file
- * footnote functions.
+ * functions for annotation and sources handling which are to be rendered as
+ * footnotes.
  *
  * @copyright
  *   (C) 2007-2020 EDIT
@@ -34,8 +35,6 @@ const MEMBER_OF_FOOTNOTES = ' member-of-footnotes-';
  *
  * @param $cdm_entity
  *   A CDM entity
- * @param string $separator
- *   Optional parameter. The separator string to concatenate the footnote ids, default is ','
  * @param $footnote_list_key string
  *    Optional parameter. If this parameter is left empty (null, 0, "") the footnote key will be determined by the nested
  *    method calls by calling RenderHints::getFootnoteListKey().
@@ -50,18 +49,21 @@ const MEMBER_OF_FOOTNOTES = ' member-of-footnotes-';
  *    For original sources the $footnote_list_key will be overwritten
  *    by bibliography_footnote_list_key() when
  *    $is_bibliography_aware is set TRUE.
- * @return String
- *   The foot note keys as markup
+ * @param bool $add_annotations
+ *    Footnotes for annotations will not be created if this is FALSE
+ *
+ * @return array
+ *   An array of the footnote keys for the supplied cdm entity
  *
  * NOTE: Only used in @see handle_annotations_and_sources()
  */
-function render_entity_footnotes(
+function cdm_entity_footnotes(
   $cdm_entity,
-  $separator = ',',
-  $footnote_list_key = null,
+  $footnote_list_key = NULL,
   $do_link_to_reference = FALSE,
   $do_link_to_name_used_in_source = FALSE,
-  $is_bibliography_aware = FALSE
+  $is_bibliography_aware = FALSE,
+  $add_annotations = TRUE
 ){
 
   $sources = cdm_entity_sources_sorted($cdm_entity);
@@ -71,7 +73,9 @@ function render_entity_footnotes(
   }
 
   // Annotations as footnotes.
-  $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key);
+  if($add_annotations){
+    $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key);
+  }
 
   // Source references as footnotes.
   if($is_bibliography_aware){
@@ -102,7 +106,7 @@ function render_entity_footnotes(
   }
   // Sort and render footnote keys.
   asort($footnote_keys);
-  return render_footnote_keys($footnote_keys, $separator);
+  return $footnote_keys;
 }
 
 /**
@@ -139,6 +143,29 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
   }
 
   return $foot_note_keys;
+}
+
+/**
+ * Fetches the list of visible annotations for the cdm entity or for the comparable
+ * object and returns a list of the annotation texts
+ *
+ * @param stdClass $cdm_entity
+ *   A single CdmBase instance ore comparable object.
+ *
+ * @see cdm_fetch_visible_annotations()
+ */
+function cdm_entity_annotations_as_content(stdClass $cdm_entity) {
+
+  $annotation_texts = [];
+  $annotations = cdm_fetch_visible_annotations($cdm_entity);
+  if (is_array($annotations)) {
+    foreach ($annotations as $annotation) {
+      if($annotation->text){
+        $annotation_texts[] = $annotation->text;
+      }
+    }
+  }
+  return $annotation_texts;
 }
 
 /**
@@ -279,27 +306,26 @@ function bibliography_footnote_list_key($key_suggestion = null) {
  *
  * @param $name_rel
  *   The cdm name relationship
- * @return string
- *  The markup for the footnote key
+ * @return \FootnoteKey
+ *  The FootnoteKey
  */
 function handle_name_relationship_as_footnote($name_rel)
 {
   $footnote_markup = '';
-  $footnote_key_markup = '';
+  $fnkey = null;
   if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered) {
     $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span> ';
   }
-  if (isset($name_rel->citation)) {
-    $footnote_markup .= '<span class="reference">' . $name_rel->citation->titleCache . '</span>';
+  if (isset($name_rel->source->citation)) {
+    $footnote_markup .= '<span class="reference">' . $name_rel->source->citation->titleCache . '</span>';
   }
-  if (isset($name_rel->citationMicroReference) && $name_rel->citationMicroReference) {
-    $footnote_markup .= (isset($name_rel->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->citationMicroReference . '</span>';
+  if (isset($name_rel->source->citationMicroReference) && $name_rel->source->citationMicroReference) {
+    $footnote_markup .= (isset($name_rel->source->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->source->citationMicroReference . '</span>';
   }
   if ($footnote_markup) {
     $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = render_footnote_key($fnkey,',',TRUE);
   }
-  return $footnote_key_markup;
+  return $fnkey;
 }
 
 /**
@@ -308,8 +334,8 @@ function handle_name_relationship_as_footnote($name_rel)
  * key is returned as markup.
  *
  * @param $nom_status
- * @return string
- *  The markup for the footnote key
+ * @return \FootnoteKey
+ *  The FootnoteKey
  */
 function handle_nomenclatural_status_as_footnote($nom_status)
 {
@@ -325,24 +351,283 @@ function handle_nomenclatural_status_as_footnote($nom_status)
  *
  * @param $name
  * The name whose nomenclatural reference is to be shown as footnote
- * @return string
- *  The markup for the footnote key
+ * @return \FootnoteKey
+ *  The FootnoteKey
  */
 function handle_nomenclatural_reference_as_footnote($name)
 {
   $footnote_markup = '';
   $footnote_key_markup = '';
-  if (isset($name->nomenclaturalReference) && $name->nomenclaturalReference) {
-    $footnote_markup .= '<span class="reference">' . $name->nomenclaturalReference->titleCache . '</span>';
+  if (isset($name->nomenclaturalSource->citation) && $name->nomenclaturalSource->citation) {
+    $footnote_markup .= '<span class="reference">' . $name->nomenclaturalSource->citation->titleCache . '</span>';
   }
-  if (isset($name->nomenclaturalMicroReference)) {
-    $footnote_markup .= ($footnote_key_markup ? ':' : '') . '<span class="reference_detail">' . $name->nomenclaturalMicroReference . '</span>';
+  if (isset($name->nomenclaturalSource->citationMicroReference)) {
+    $footnote_markup .= ($footnote_key_markup ? ':' : '') . '<span class="reference_detail">' . $name->nomenclaturalSource->citationMicroReference . '</span>';
   }
+  $fnkey = null;
   if ($footnote_markup) {
     $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-    $footnote_key_markup = render_footnote_key($fnkey, ',',TRUE);
   }
-  return $footnote_key_markup;
+  return $fnkey;
+}
+
+/* ============ annotations_and_sources handling =================== */
+const ANNOTATIONS_AND_SOURCE_CONFIG_DEFAULT = [
+  'sources_as_content' => FALSE,
+  'annotations_as_content' => FALSE,
+  'link_to_name_used_in_source' => TRUE,
+  'link_to_reference' => TRUE,
+  'add_footnote_keys' => TRUE,
+  'bibliography_aware' => FALSE
+];
+
+/**
+ * Provides the default configuration for handle_annotations_and_sources() in the
+ * synonymy.
+ *
+ * @return bool[]
+ */
+function synonymy_annotations_and_source_config() {
+  static $annotations_and_sources_config = null;
+  if(!$annotations_and_sources_config){
+    $bibliography_settings = get_bibliography_settings();
+    $annotations_and_sources_config = [
+      'sources_as_content' => FALSE,
+      'link_to_name_used_in_source' => TRUE,
+      'link_to_reference' => TRUE,
+      'add_footnote_keys' => TRUE,
+      'bibliography_aware' => $bibliography_settings['enabled'] == 1
+    ];
+  }
+  return $annotations_and_sources_config;
+}
+
+/**
+ * Provides the default configuration for typedesignations which
+ * are passed to the handle_annotations_and_sources()
+ * function:
+ * - 'sources_as_content' => TRUE,
+ * - 'link_to_name_used_in_source' => FALSE,
+ * - 'link_to_reference' => TRUE,
+ * - 'add_footnote_keys' => FALSE,
+ * - 'bibliography_aware' => FALSE
+ *
+ * @return array
+ */
+function annotations_and_sources_config_typedesignations() {
+  static $annotations_and_sources_config = [
+    'sources_as_content' => TRUE,
+    'link_to_name_used_in_source' => FALSE,
+    'link_to_reference' => TRUE,
+    'add_footnote_keys' => FALSE,
+    'bibliography_aware' => FALSE
+  ];
+  return $annotations_and_sources_config;
+}
+
+/**
+ * Provides the default configuration for occurrences which
+ * are passed to the handle_annotations_and_sources()
+ * function:
+ * - 'sources_as_content' => TRUE,
+ * - 'link_to_name_used_in_source' => TRUE,
+ * - 'link_to_reference' => FALSE,
+ * - 'add_footnote_keys' => FALSE,
+ * - 'bibliography_aware' => FALSE
+ *
+ * @return array
+ */
+function annotations_and_sources_config_occurrences() {
+  static $annotations_and_sources_config = [
+    'sources_as_content' => TRUE,
+    'link_to_name_used_in_source' => TRUE,
+    'link_to_reference' => FALSE,
+    'add_footnote_keys' => FALSE,
+    'bibliography_aware' => FALSE
+  ];
+  return $annotations_and_sources_config;
+}
+
+function annotation_and_source_config_taxon_node() {
+  static $conf = null;
+  if(!$conf){
+    $bibliography_settings = get_bibliography_settings();
+    $conf = [
+      'sources_as_content' => false,
+      'link_to_name_used_in_source' => false,
+      'link_to_reference' => true,
+      'add_footnote_keys' => true,
+      'bibliography_aware' => $bibliography_settings['enabled'] == 1
+    ];
+  }
+  return $conf;
+}
+
+/**
+ * Creates a handle_annotations_and_sources configuration array from feature_block_settings.
+ *
+ * The handle_annotations_and_sources configuration array is meant to be used for the
+ * method handle_annotations_and_sources().
+ *
+ * @param $feature_block_settings array
+ *
+ * @return array
+ *   The configuration array for handle_annotations_and_sources()
+ */
+function handle_annotations_and_sources_config($feature_block_settings){
+
+  $config = [
+    'sources_as_content' => $feature_block_settings['sources_as_content'] == 1,
+    'link_to_name_used_in_source' => $feature_block_settings['link_to_name_used_in_source'] == 1,
+    'link_to_reference' => $feature_block_settings['link_to_reference'] == 1,
+    'add_footnote_keys' => (
+      $feature_block_settings['sources_as_content'] !== 1 ||
+      $feature_block_settings['sources_as_content_to_bibliography'] == 1
+    ),
+    'bibliography_aware' => TRUE // FIXME shouldn't this be retrieved from the settings?
+  ];
+  return $config;
+}
+
+/**
+ * @param $entity
+ *    The cdm entity for which the annotations and sources are to be handled.
+ * @param $inline_text_prefix
+ *   Only used to decide if the source references should be enclosed in
+ *   brackets or not when displayed inline. This text will not be included into
+ *   the response.
+ * @param $footnote_list_key_suggestion string
+ *   Optional parameter. If this parameter is left empty (null, 0, "") the
+ *   footnote key will be determined by the nested method calls by calling
+ *   RenderHints::getFootnoteListKey().
+ *
+ * @return AnnotationsAndSources
+ *  an object with the following elements:
+ *   - foot_note_keys: all footnote keys as markup
+ *   - source_references: an array of the source references citations
+ *   - names used in source: an associative array of the names in source,
+ *        the name in source strings are de-duplicated
+ *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
+ */
+function handle_annotations_and_sources($entity, $inline_text_prefix = null, $footnote_list_key_suggestion = null, AnnotationsAndSources $annotationsAndSources = null) {
+
+  if($annotationsAndSources == null){
+    $annotationsAndSources = new AnnotationsAndSources();
+  }
+
+  // some entity types only have single sources:
+  $sources = cdm_entity_sources_sorted($entity);
+
+  $config = RenderHints::getAnnotationsAndSourceConfig();
+
+  if ($config['sources_as_content']) {
+    foreach ($sources as $source) {
+      if (_is_original_source_type($source)) {
+        $reference_citation = render_original_source(
+          $source,
+          $config['link_to_reference'],
+          $config['link_to_name_used_in_source']
+        );
+
+        if ($reference_citation) {
+          if (empty($inline_text_prefix)) {
+            $annotationsAndSources->addSourceReferencesCitation($reference_citation);
+          } else {
+            $annotationsAndSources->addSourceReferencesCitation(' (' . $reference_citation . ')');
+          }
+        }
+
+        // also put the name in source into the array, these are already included in the $reference_citation but are
+        // still required to be available separately in some contexts.
+        $name_in_source_render_array = compose_name_in_source(
+          $source,
+          $config['link_to_name_used_in_source']
+        );
+
+        if (!empty($name_in_source_render_array)) {
+          $annotationsAndSources->putNamesUsedInSource($name_in_source_render_array['#_plaintext'], drupal_render($name_in_source_render_array));
+        }
+      }
+    } // END of loop over sources
+
+    // annotations footnotes separate from sources
+    $footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
+    $annotationsAndSources->addAllFootNoteKeys($footnote_keys);
+
+  } // END of references inline
+
+  // footnotes for sources and annotations or put into into bibliography if requested ...
+  $do_foonotes_as_content = isset($config['annotations_as_content']) && $config['annotations_as_content'];
+  if($do_foonotes_as_content){
+    $annotationsAndSources->setAnnotations(cdm_entity_annotations_as_content($entity));
+  }
+  if ($config['add_footnote_keys']) {
+    $annotationsAndSources->addAllFootNoteKeys(cdm_entity_footnotes(
+      $entity,
+      $footnote_list_key_suggestion,
+      $config['link_to_reference'],
+      $config['link_to_name_used_in_source'],
+      (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE),
+      !$do_foonotes_as_content
+    ));
+  }
+  return $annotationsAndSources;
+}
+
+/**
+ * Get the source or the sources from a cdm entity and return them ordered by see compare_original_sources()
+ * (Some entity types only have single sources)
+ * @param $entity
+ *
+ * @return array
+ */
+function cdm_entity_sources_sorted($entity) {
+  if (isset($entity->source) && is_object($entity->source)) {
+    $sources = [$entity->source];
+  }
+  else if (isset($entity->sources)) {
+    $sources = $entity->sources;
+  }
+  else {
+    // try to load the sources
+    if(isset_not_empty($entity->uuid)){
+      $sources = cdm_ws_fetch_all(cdm_compose_url('portal/' . cdm_ws_base_uri($entity->class), [ $entity->uuid, 'sources']));
+    } else {
+      // this may happen with DerivedUnitFaced, also with others?
+      $sources = [];
+    }
+  }
+  usort($sources, 'compare_original_sources');
+  return $sources;
+}
+
+/**
+ * Compare two different footnotes objects.
+ *
+ * The comparison is based on the footnote key. The one which is
+ * displayed as footnote number.
+ *
+ * @param mixed $a
+ *   Footnote object $a.
+ * @param mixed $b
+ *   Footnote object $b.
+ *
+ * @return int
+ *
+ * @deprecated seems to be unused: TODO remove!
+ */
+function footnotes_key_compare($a, $b) {
+  $res = 0;
+  if (empty($a) || empty($b)) {
+    return $res;
+  }
+  if ($a->keyStr < $b->keyStr) {
+    $res = -1;
+  }
+  elseif ($a->keyStr > $b->keyStr) {
+    $res = 1;
+  }
+  return $res;
 }
 
 

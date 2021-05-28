@@ -82,6 +82,9 @@ function theme_cdm_heterotypicSynonymyGroup($variables) {
  *   - accepted_taxon_uuid: the uuid of the accepted taxon
  *   - prependedSynonyms: further synonyms which should be prepended
  *      before the actual list of synonyms
+ *
+ * @return string the markup
+ * @throws \Exception
  */
 function theme_cdm_homotypicSynonymyGroup($variables) {
   $synonymList = $variables['synonymList'];

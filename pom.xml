@@ -9,7 +9,7 @@
         see also  maven-jar-plugin & maven-deploy-plugin where artifact are skipped
     -->
     <packaging>jar</packaging>
-    <version>5.17.0</version>
+    <version>5.24.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,7 +33,7 @@
             
         -->
         <selenium.htmlunit.version>2.52.0</selenium.htmlunit.version>
-        <jackson.version>2.9.2</jackson.version>
+        <jackson.version>[2.9.10.7,)</jackson.version>
     </properties>
     <scm>
       <connection>scm:git:https://dev.e-taxonomy.eu/git/cdm-dataportal.git</connection>

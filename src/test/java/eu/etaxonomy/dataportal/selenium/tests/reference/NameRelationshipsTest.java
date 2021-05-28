@@ -59,68 +59,94 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1",
+                "Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2",
                 regItem.getNameElement().getText());
         assertEquals(
-                "published in: Lem, Nonsens species of the developers Vol1. 2001",
+                "published in: Lem 2001: Nonsens species of the developers Vol1.",
                 regItem.getCitation().getText());
 
         List<BaseElement> nameRelationshipElements = regItem.getNameRelationsipsElements();
         assertEquals(5,  nameRelationshipElements.size());
         assertEquals("is new combination for Nepenthes alata Blanco, Fl. Filip., ed. 1: 805. 1837", nameRelationshipElements.get(0).getText());
         assertEquals("is new name for Nepenthes blancoi Blume in Mus. Bot. Lugd.-Bat. 2: 10. 1852", nameRelationshipElements.get(1).getText());
-        assertEquals("is validating2 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.", nameRelationshipElements.get(2).getText());
-        assertEquals("non Nodosilinea blockensis, New Species in the solar system nec Nodosilinea sensensia, Plantas vasculares de Oz nec Nodosilinea sensensia, Species solaris", nameRelationshipElements.get(3).getText());
+        assertEquals("is validating3 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.4", nameRelationshipElements.get(2).getText());
+        assertEquals("non Nodosilinea blockensis, New Species in the solar system5 nec Nodosilinea sensensia, Plantas vasculares de Oz6 nec Nodosilinea sensensia, Species solaris7", nameRelationshipElements.get(3).getText());
         BaseElement orthVarElement = nameRelationshipElements.get(4);
-        assertEquals("orth. var.3 Nodosilinea sensensi4", orthVarElement.getText());
+        assertEquals("orth. var.8 Nodosilinea sensensi9", orthVarElement.getText());
         assertEquals("has orthographic variant", orthVarElement.getElement().findElement(By.className("symbol")).getAttribute("title"));
 
         List<BaseElement> footnotes = regItem.getRegistrationFootnotes();
-        assertEquals(4, footnotes.size());
+        assertEquals(9, footnotes.size());
         assertEquals(
                 "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes .get(0).getText());
         assertEquals(
-                "2. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
+                "2. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                 footnotes .get(1).getText());
         assertEquals(
-                "3. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
+                "3. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
                 footnotes .get(2).getText());
         assertEquals(
-                "4. Lem, Nonsens species of the developers Vol1. 2001",
+                "4. Editorial note on Nodosilinea radiophila",
                 footnotes .get(3).getText());
+        assertEquals(
+                "5. Editorial annotation on Nodosilinea blockensis, New Species in the solar system",
+                footnotes .get(4).getText());
+        assertEquals(
+                "6. Editorial annotation on Nodosilinea sensensia, Plantas vasculares de Oz",
+                footnotes .get(5).getText());
+        assertEquals(
+                "7. Editorial annotation on Nodosilinea sensensia, Species solaris",
+                footnotes .get(6).getText());
+        assertEquals(
+                "8. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
+                footnotes .get(7).getText());
+        assertEquals(
+                "9. Editorial annotation on Nodosilinea sensensi",
+                footnotes .get(8).getText());
+
     }
 
     @Test
-    public void testNodosilinea_sensensia_SynonymPage() throws MalformedURLException, UnsupportedEncodingException {
+    public void testNodosilinea_sensensia_SynonymPage() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensensia_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1 [non Nodosilinea sensensia nec Nodosilinea sensensia nec Nodosilinea blockensis orth. var.2 Nodosilinea sensensi3]", accName.getText());
+        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2 [non Nodosilinea sensensia3 "
+                + "nec Nodosilinea sensensia4 nec Nodosilinea blockensis5 orth. var.6 Nodosilinea sensensi7]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
-        assertEquals(3, footnotes.size());
+        assertEquals(7, footnotes.size());
         assertEquals(
                 "1. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes .get(0).getText());
         assertEquals(
-                "2. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
+                "2. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                 footnotes.get(1).getText());
         assertEquals(
-                "3. Lem, Nonsens species of the developers Vol1. 2001",
+                "3. Editorial annotation on Nodosilinea sensensia, Plantas vasculares de Oz",
                 footnotes.get(2).getText());
+        assertEquals(
+                "4. Editorial annotation on Nodosilinea sensensia, Species solaris",
+                footnotes.get(3).getText());
+        assertEquals(
+                "5. Editorial annotation on Nodosilinea blockensis, New Species in the solar system",
+                footnotes.get(4).getText());
+        assertEquals(
+                "6. Art. 88.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
+                footnotes.get(5).getText());
+        assertEquals(
+                "7. Editorial annotation on Nodosilinea sensensi",
+                footnotes.get(6).getText());
 
     }
 
     /**
      * Test for https://dev.e-taxonomy.eu/redmine/issues/5697
-     *
-     * @throws MalformedURLException
-     * @throws UnsupportedEncodingException
      */
     @Test
-    public void testIssue5697() throws MalformedURLException, UnsupportedEncodingException {
+    public void testIssue5697() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_bulbostylis_pauciflora_uuid);
 
@@ -133,12 +159,12 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
      * Test for https://dev.e-taxonomy.eu/redmine/issues/6523
      */
     @Test
-    public void testIssue6523() throws MalformedURLException, UnsupportedEncodingException {
+    public void testIssue6523() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nepenthes_gracilis_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Nepenthes gracilis Korth., Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840", accName.getText());
+        assertEquals("Nepenthes gracilis Korth., Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840 [& (J. T. K.) Spock & Scotty in Bot. Jahrb. Sol. 211: 591. 2194]1,2, [some typification note].", accName.getText());
 
         WebElement synonym1 = p.getHeterotypicalGroupSynonym(1, 1);
         assertEquals("=\nNepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858", synonym1.getText());

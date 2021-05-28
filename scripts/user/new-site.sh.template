@@ -1,0 +1,84 @@
+#!/bin/bash
+#set -x
+################################################################
+# Automation script for creating a new drupal site
+#
+# Supports single and multisite installations. 
+# !! Mutisite support ist still experimental !!
+# 
+# 
+# See ../../README.md
+#
+################################################################
+## Configure below variables
+
+SITE_NAME='test-site'
+
+# HOST_NAME and PROTOCOL determine the base URL of the new site
+# The default values will form the base URL like http://dataportal.test
+# See also MULTI_SITE below
+HOST_NAME='dataportal.test'
+PROTOCOL='https' # values 'http' ot https'
+# For MULTI_SITE=0 the site will be installed at the base BASE_URL
+# In multisite setups (MULTI_SITE=1), however, the site URL results 
+# in http://dataportal.test/test-site
+# !! Mutisite support ist still experimental !!
+MULTI_SITE=0 # values: 1 = true, 0 or other = false
+
+ADMIN_USR='admin'
+ADMIN_PWD='change--me'
+ADMIN_EMAIL='admin@dataportal.test'
+
+MYSQL_USR='root'
+MYSQL_PWD='change--me'
+DB_PREFIX='drupal7_dataportal_'
+
+
+################################################################
+## The values of below variables are determined automatically
+## usually it should not be neede to touch these lines
+
+BASE_URL="$PROTOCOL://$HOST_NAME/"
+
+DRUPAL_ROOT=../../web
+set +x
+MYSQL_URL="mysql://${MYSQL_USR}:${MYSQL_PWD}@localhost/${DB_PREFIX}"$(echo ${SITE_NAME} | tr ' -' '_')
+
+if [ $MULTI_SITE -eq 1 ]; then 
+    SITES_SUBDIR=$SITE_NAME
+else 
+    SITES_SUBDIR="default"
+fi
+
+if [ -d $DRUPAL_ROOT/sites/$SITES_SUBDIR ]; then 
+    chmod -R ug+w $DRUPAL_ROOT/sites/$SITES_SUBDIR
+fi 
+
+
+drush -r $DRUPAL_ROOT -l $BASE_URL/$SITE_NAME site-install "cdm_portal" \
+    --site-name=$SITE_NAME  \
+    --sites-subdir=$SITES_SUBDIR \
+    --account-name=$ADMIN_USR  \
+    --account-pass=$ADMIN_PWD  \
+    --account-mail=$ADMIN_EMAIL \
+    --db-prefix=$DB_PREFIX \
+    --db-su=$MYSQL_USR \
+    --db-su-pw=$MYSQL_PWD \
+    --db-url=$MYSQL_URL \
+    --no-clean-url \
+    install_configure_form.update_status_module='array(FALSE,FALSE)'
+
+    
+echo "Your new site $SITE_NAME has been installed in $DRUPAL_ROOT/sites/$SITES_SUBDIR."
+if [ $MULTI_SITE -eq 1 ]; then 
+    if [ ! -f $DRUPAL_ROOT/sites/sites.php ]; then 
+        cp $DRUPAL_ROOT/sites/example.sites.php $DRUPAL_ROOT/sites/sites.php 
+    fi
+    if [ -z "$(grep ''$SITES_SUBDIR'' $DRUPAL_ROOT/sites/sites.php)" ]; then
+        echo "\$sites['$HOST_NAME.$SITE_NAME'] = '$SITES_SUBDIR';" >> $DRUPAL_ROOT/sites/sites.php
+        echo "The site has been added to $DRUPAL_ROOT/sites/sites.php."
+    fi
+    echo "To make it available at $BASE_URL$SITE_NAME it is required to complete the configiration by editing the $DRUPAL_ROOT/.htaccess file accordingly"
+else
+    echo "It is available at $BASE_URL"
+fi

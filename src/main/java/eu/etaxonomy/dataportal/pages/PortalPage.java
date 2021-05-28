@@ -1,6 +1,7 @@
 package eu.etaxonomy.dataportal.pages;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +9,11 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,9 +51,6 @@ import eu.etaxonomy.dataportal.selenium.UrlLoaded;
  */
 public abstract class PortalPage {
 
-    /**
-     *
-     */
     public static final int WAIT_SECONDS = 25;
 
     public static final Logger logger = Logger.getLogger(PortalPage.class);
@@ -68,6 +70,21 @@ public abstract class PortalPage {
     public WebDriverWait getWait() {
         return wait;
     }
+
+    public static enum HealthChecks {
+        NO_ERROR, NO_WARNING;
+    }
+
+    public EnumSet<HealthChecks> getAciveHealthChecks() {
+        return activeHealthChecks;
+    }
+
+
+    public void setAciveHealthChecks(EnumSet<HealthChecks> activeHealthChecks) {
+        this.activeHealthChecks = activeHealthChecks;
+    }
+
+    private EnumSet<HealthChecks> activeHealthChecks = EnumSet.allOf(HealthChecks.class);
 
 
     /**
@@ -117,6 +134,7 @@ public abstract class PortalPage {
         return isZenTheme.booleanValue();
     }
 
+
     /**
      * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
      * implementing the method {@link #getDrupalPageBase()}. The constructor argument <code>pagePathSuffix</code>
@@ -125,10 +143,10 @@ public abstract class PortalPage {
      * <li>{@link #getDrupalPageBase()} returns <code>/cdm_dataportal/taxon</code></li>
      * <li><code>pagePathSuffix</code> gives <code>7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code></li>
      * </ol>
-     * Both are combined to form the URL pathelement <code>/cdm_dataportal/taxon/7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code>
+     * Both are combined to form the URL path element <code>/cdm_dataportal/taxon/7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code>
      *
      */
-    public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix) throws MalformedURLException {
+    public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix, Map<String, String> queryParameters) throws MalformedURLException {
 
         this.driver = driver;
 
@@ -138,7 +156,13 @@ public abstract class PortalPage {
 
         this.initialDrupalPagePath = getDrupalPageBase() + (pagePathSuffix != null ? "/" + pagePathSuffix: "");
 
-        this.pageUrl = new URL(context.getSiteUri().toString() + "?" + DRUPAL_PAGE_QUERY + initialDrupalPagePath);
+        StringBuilder queryStringB = new StringBuilder();
+        if(queryParameters != null && !queryParameters.isEmpty()) {
+            for(Entry<String, String> entry : queryParameters.entrySet()) {
+                queryStringB.append("&").append(entry.getKey()).append("=").append(entry.getValue());
+            }
+        }
+        this.pageUrl = new URL(context.getSiteUri().toString() + "?" + DRUPAL_PAGE_QUERY + initialDrupalPagePath + queryStringB.toString());
 
         // tell browser to navigate to the page
         logger.info("loading " + pageUrl);
@@ -151,13 +175,41 @@ public abstract class PortalPage {
         PageFactory.initElements(driver, this);
 
         pageHealthChecks();
+    }
 
+    /**
+     * Creates a new PortaPage. Implementations of this class will provide the base path of the page by
+     * implementing the method {@link #getDrupalPageBase()}. The constructor argument <code>pagePathSuffix</code>
+     * specifies the specific page to navigate to. For example:
+     * <ol>
+     * <li>{@link #getDrupalPageBase()} returns <code>/cdm_dataportal/taxon</code></li>
+     * <li><code>pagePathSuffix</code> gives <code>7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code></li>
+     * </ol>
+     * Both are combined to form the URL path element <code>/cdm_dataportal/taxon/7fe8a8b6-b0ba-4869-90b3-177b76c1753f</code>
+     *
+     */
+    public PortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix) throws MalformedURLException {
+        this(driver, context, pagePathSuffix, null);
     }
 
     /**
      *
      */
     protected void pageHealthChecks() {
+        try {
+            if(getAciveHealthChecks().contains(HealthChecks.NO_ERROR)) {
+                String ignore_error = null;
+                List<String> errors = getErrors().stream().filter(str -> ignore_error == null || !str.startsWith(ignore_error)).collect(Collectors.toList());
+                assertTrue("The page must not show an error box: (" + String.join(" | ", errors) + ")", errors.size() == 0);
+            }
+            if(getAciveHealthChecks().contains(HealthChecks.NO_WARNING)) {
+                String ignore_warning = null;
+                List<String> warnings = getWarnings().stream().filter(str -> ignore_warning == null || !str.startsWith(ignore_warning)).collect(Collectors.toList());
+                assertTrue("The page must not show an warning box: (" + String.join(" | ", warnings) + ")", warnings.size() == 0);
+            }
+        } catch (NoSuchElementException e) {
+            //IGNORE since this is expected!
+        }
         assertFalse("The default footnote list key PAGE_GLOBAL must not occur in the page.", driver.getPageSource().contains("member-of-footnotes-PAGE_GLOBAL"));
     }
 
@@ -297,8 +349,11 @@ public abstract class PortalPage {
         if(messages != null){
             for(WebElement m : messages){
                 if(m.getAttribute("class").contains(messageType.name())){
+                    // need to check for two optional layouts
+                    // 1. multiple messages in a list
                     List<WebElement> messageItems = m.findElements(By.cssSelector("ul.messages__list li"));
                     if(messageItems.size() == 0 && !m.getText().isEmpty()) {
+                        // 2. one message only
                         // we have only one item which is not shown as list.
                         messageItems.add(m);
 
@@ -360,6 +415,17 @@ public abstract class PortalPage {
         }
 
         return tabs;
+    }
+
+    /**
+     * @return the active primary tab
+     */
+    public Optional<LinkElement> getActivePrimaryTab() {
+        List<LinkElement> primaryTabs = getPrimaryTabs();
+        return primaryTabs.stream()
+                .filter(we -> we.getClassAttributes().stream().anyMatch(ca -> ca.equals("active")))
+                .findFirst();
+
     }
 
     /**

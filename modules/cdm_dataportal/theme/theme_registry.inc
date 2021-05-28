@@ -37,7 +37,6 @@ function cdm_dataportal_theme() {
     'radio_options_suffix' => array('render element' => 'element'),
 
     // Themes in cdm_dataportal.common.theme.
-    'cdm_marker' => array('variables' => array('label' => NULL, 'attributes' => NULL)),
     'cdm_pager' => array('variables' => array('pager' => NULL, 'path' => NULL, 'parameters' => NULL)),
     'cdm_pager_link' => array('variables' => array(
         'text' => NULL,

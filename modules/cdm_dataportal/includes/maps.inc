@@ -350,7 +350,7 @@ function compose_distribution_map($query_string) {
     // The $query_string is empty if there are no distribution areas defined.
     return null;
   }
-
+  
   /* ------ choose the display mode, either openlayers or static image ------ */
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);

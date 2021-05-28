@@ -55,12 +55,10 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
     UUID_PROPARTE_MISAPPLIEDNAME_FOR => 0,
     UUID_PARTIAL_MISAPPLIEDNAME_FOR => 0,
     //
-    UUID_INVALID_DESIGNATION_FOR  => 1,
+    UUID_MISAPPLIED_NAME_FOR  => 1,
     //
-    UUID_MISAPPLIED_NAME_FOR  => 2,
-    //
-    UUID_PROPARTE_SYNONYM_FOR  => 3,
-    UUID_PARTIAL_SYNONYM_FOR  => 3
+    UUID_PROPARTE_SYNONYM_FOR  => 2,
+    UUID_PARTIAL_SYNONYM_FOR  => 2
   ];
 
   if (!$taxonRelationshipsDTO || $taxonRelationshipsDTO->size < 1) {
@@ -69,7 +67,6 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
   static $dedup_rel_type_uuids = array(
     UUID_MISAPPLIED_NAME_FOR,
-    UUID_INVALID_DESIGNATION_FOR,
     UUID_PARTIAL_MISAPPLIEDNAME_FOR,
     UUID_PROPARTE_MISAPPLIEDNAME_FOR
   );
@@ -315,7 +312,7 @@ function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misa
  *
  * @throws Exception
  */
-function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $reltype_representation = NULL, $doubtful=false, $doLinkTaxon = FALSE) {
+function cdm_related_taxon($taxon, $reltype_uuid = NULL) {
   static $relsign_homo = '≡';
   static $relsign_hetero = '=';
   static $relsign_invalid = '&ndash;';
@@ -329,39 +326,32 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   // 'taxonRelationships';
   $footnoteListKey = NULL;
 
-  $skip_tags = array();
+  $skip_render_template_keys = array();
 
   $is_invalid = false;
 
-  if (!$relsign) {
 
-    switch ($reltype_uuid) {
-      case UUID_HETEROTYPIC_SYNONYM_OF:
-      case UUID_SYNONYM_OF:
-        $relsign = $relsign_hetero;
-        break;
+  switch ($reltype_uuid) {
+    case UUID_HETEROTYPIC_SYNONYM_OF:
+    case UUID_SYNONYM_OF:
+      $relsign = $relsign_hetero;
+      break;
 
-      case UUID_HOMOTYPIC_SYNONYM_OF:
-        $relsign = $relsign_homo;
-        break;
+    case UUID_HOMOTYPIC_SYNONYM_OF:
+      $relsign = $relsign_homo;
+      break;
 
-      case UUID_MISAPPLIED_NAME_FOR:
-      case UUID_INVALID_DESIGNATION_FOR:
-        $skip_tags[] = 'authors';
-        $is_invalid = true;
-        $relsign = $relsign_invalid;
+    case UUID_MISAPPLIED_NAME_FOR:
+      $skip_render_template_keys[] = 'nameAuthorPart';
+      $is_invalid = true;
+      $relsign = $relsign_invalid;
 
-        break;
+      break;
 
-      default:
-        $relsign = $relsign_invalid;
-    }
-
+    default:
+      $relsign = $relsign_invalid;
   }
 
-  if($doubtful) {
-    $relsign = '?' . $relsign;
-  }
 
   /*
   Names with status invalid or nudum are to be displayed with the
@@ -380,28 +370,21 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
   // Now rendering starts ..
   RenderHints::pushToRenderStack('related_taxon');
 
-  if (isset($taxon->name->nomenclaturalReference)) {
-    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+  if (isset($taxon->name->nomenclaturalSource->citation)) {
+    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
   }
   $taxonUri = '';
-  if ($doLinkTaxon) {
-    $taxonUri = url(path_to_taxon($taxon->uuid, "synonymy"));
-  }
+
   // Printing the taxonName and the handling the special case of annotations.
   if (!isset($referenceUri)) {
     $referenceUri = FALSE;
   }
-  $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_tags, $is_invalid);
-
-  // must come before the rendering the relationships so that the footnote key
-  // numbers are in correct order
-  $taxon_and_name_footnotes = render_taxon_and_name_footnotes($taxon);
-
+  $out_taxon_part = render_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
   $name_relations = cdm_name_relationships_for_taxon($taxon);
   $name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
 
-  $out = '<span class="relation_sign" title="' . $reltype_representation . '">' . $relsign . '</span>'
-    . $out_taxon_part . $taxon_and_name_footnotes;
+  $out = '<span class="relation_sign">' . $relsign . '</span>'
+    . $out_taxon_part;
   if(isset($name_relations_render_array['list']['items'][0])){
     $out .= ' '  . drupal_render($name_relations_render_array);
   }
@@ -412,37 +395,6 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL, $relsign = NULL, $relty
 
   return $out;
 }
-
-/**
- * Convenience function to create footnotes of annotations and sources for a
- * taxon and name at the same time. Calls handle_annotations_and_sources()
- * internally twice and combines the resulting footnote markup
- *
- * @param $taxon
- *
- * @return string
- *
- * @see synonymy_annotations_and_source_config()
- */
-function render_taxon_and_name_footnotes($taxon) {
-  $annotations_and_sources_taxon = handle_annotations_and_sources(
-    $taxon,
-    synonymy_annotations_and_source_config(),
-    '',
-    RenderHints::getFootnoteListKey()
-  );
-  $annotations_and_sources_name = handle_annotations_and_sources(
-    $taxon->name,
-    synonymy_annotations_and_source_config(),
-    '',
-    RenderHints::getFootnoteListKey()
-  );
-  $footnotes = $annotations_and_sources_taxon['foot_note_keys'] .
-    ($annotations_and_sources_taxon['foot_note_keys'] && $annotations_and_sources_name['foot_note_keys'] ? ',' : '') .
-    $annotations_and_sources_name['foot_note_keys'];
-  return $footnotes;
-}
-
 
 /**
  * Creates markup for a taxon which is the accepted of another one
@@ -464,16 +416,13 @@ function cdm_accepted_for($accepted_for_uuid) {
     $out .= '<span class="acceptedFor">';
     $out .= t('is accepted for ');
     $referenceUri = null;
-    if (isset($synonym->name->nomenclaturalReference)) {
-      $referenceUri = url(path_to_reference($synonym->name->nomenclaturalReference->uuid));
+    if (isset($synonym->name->nomenclaturalSource->citation)) {
+      $referenceUri = url(path_to_reference($synonym->name->nomenclaturalSource->citation->uuid));
     }
     $out .= render_taxon_or_name($synonym->name, NULL, $referenceUri);
-    $annotations_and_sources = handle_annotations_and_sources(
-      $synonym,
-      annotations_and_source_config(),
-      '',
-      RenderHints::getFootnoteListKey());
-    $out .= $annotations_and_sources['foot_note_keys'];
+    RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
+    $annotations_and_sources = handle_annotations_and_sources($synonym);
+    $out .= $annotations_and_sources->footNoteKeysMarkup();
     $out .= '</span>';
   }
   RenderHints::popFromRenderStack();
@@ -497,8 +446,6 @@ function cdm_accepted_for($accepted_for_uuid) {
  *
  */
 function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $show_classification = false) {
-
-  $unclassified_snippet = '<span class="unclassified">' . t('unclassified') . '</span>';
 
   RenderHints::pushToRenderStack('list_of_taxa');
 
@@ -549,9 +496,11 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
     $taxonRelations = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, array(
       $relatedUuid,
     ));
-    foreach ($taxonRelations as $relation) {
-      if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_acceptedByCurrentView($relation->toTaxon)) {
-        $table_of_accepted[$relatedUuid][] = $relation->toTaxon;
+    if($taxonRelations){
+      foreach ($taxonRelations as $relation) {
+        if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_acceptedByCurrentView($relation->toTaxon)) {
+          $table_of_accepted[$relatedUuid][] = $relation->toTaxon;
+        }
       }
     }
   }
@@ -560,6 +509,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   $itemCnt = -1;
   foreach ($taxon_list as $taxon) {
     $itemCnt++;
+
     if (isset($table_of_accepted[$taxon->uuid])) {
       // Its a synonym or misapplied name.
       $is_synonym = isset($synonym_uuids[$taxon->uuid]); //TODO better use the $taxon->class attribute?
@@ -576,35 +526,24 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
 
           $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
           $referenceUri = '';
-          if (isset($acceptedTaxon->name->nomenclaturalReference)) {
-            $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalReference->uuid));
+          if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
+            $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
           }
-          $taxon_or_name = $is_synonym ? $taxon->name : $taxon;
+          $skip_render_template_parts = $is_synonym ? ['secReferencePart'] : [];
           // $taxon_or_name this is a trick to suppress the sec reference for synonyms
           // supplying the name will cause render_taxon_or_name() to not show the sec reference
-          $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon_or_name, $taxonUri, $referenceUri);
-          if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && is_object($taxon->sec)){
-            if(isset($taxon->sec->authorship)){
-              $authorship = $taxon->sec->authorship->titleCache;
+          $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon, $taxonUri, $referenceUri, true, false, $skip_render_template_parts);
+          if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && isset_not_empty($taxon->secSource->citation)){
+            if(isset($taxon->secSource->citation->authorship)){
+              $authorship = $taxon->secSource->citation->authorship->titleCache;
             } else {
-              $authorship = $taxon->sec->titleCache;
+              $authorship = $taxon->secSource->citation->titleCache;
             }
             $out .=  ' sensu ' . $authorship;
           }
           if ($show_classification) {
-            $classifications = get_classifications_for_taxon($taxon);
-            $classification_titles = array();
-            foreach ($classifications as $classification) {
-              if (isset($classification->titleCache)) {
-                $classification_titles[] = $classification->titleCache;
-              }
-            }
-            if (count($classification_titles) == 0) {
-              $classification_titles[] = $unclassified_snippet;
-            }
-            $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
+            $out .= render_classifications_for_taxon($taxon);
           }
-          $out .= render_taxon_and_name_footnotes($taxon);
           if ($showMedia_synonyms) {
             $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
           }
@@ -615,25 +554,13 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       // Its a Taxon.
       $taxonUri = url(path_to_taxon($taxon->uuid));
       $referenceUri = '';
-      if (isset($taxon->name->nomenclaturalReference)) {
-        $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+      if (isset($taxon->name->nomenclaturalSource->citation)) {
+        $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
       }
       $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri);
       if ($show_classification) {
-        $classifications = get_classifications_for_taxon($taxon);
-        $classification_titles = array();
-        foreach ($classifications as $classification) {
-          if (isset($classification->titleCache)) {
-            $classification_titles[] = $classification->titleCache;
-          }
-        }
-        if(count($classification_titles) == 0){
-          $classification_titles[] = $unclassified_snippet;
-        }
-        $out .= '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
+        $out .= render_classifications_for_taxon($taxon);
       }
-      $out .= render_taxon_and_name_footnotes($taxon);
-
       if ($showMedia_taxa) {
         $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
       }
@@ -672,6 +599,21 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   return markup_to_render_array($out); // TODO create render array of all list items in function
 }
 
+
+function render_classifications_for_taxon($taxon) {
+  $unclassified_snippet = '<span class="unclassified">' . t('unclassified') . '</span>';
+  $classifications = get_classifications_for_taxon($taxon);
+  $classification_titles = array();
+  foreach ($classifications as $classification) {
+    if (isset($classification->titleCache)) {
+      $classification_titles[] = $classification->titleCache;
+    }
+  }
+  if (count($classification_titles) == 0) {
+    $classification_titles[] = $unclassified_snippet;
+  }
+  return '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
+}
 
 /**
  * Compose function for the taxonomic children

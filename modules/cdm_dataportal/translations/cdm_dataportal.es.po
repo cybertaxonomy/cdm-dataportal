@@ -1763,7 +1763,7 @@ msgstr ""
 
 #: cdm_mediauri/cdm_mediauri.module:281 theme/cdm_dataportal.name.theme:153
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: cdm_mediauri/cdm_mediauri.module:284
 msgid "Preview Quality"

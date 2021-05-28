@@ -1,0 +1,23 @@
+{
+    "name": "cybertaxonomy.org/cdm_portal",
+    "description": "CDM DataPortal installation profile",
+    "type": "drupal-profile",
+    "license": "GPL-2.0-or-later",
+    "version" : "7.3.0",
+    "authors": [
+        {
+            "name": "Andreas Kohlbecker",
+            "email": "a.kohlbecker@bgbm.org"
+        }
+    ],
+    "homepage": "https://cybertaxonomy.eu/portal/git",
+    "support": {
+        "issues": "https://dev.e-taxonomy.eu/redmine/projects/edit/issues?query_id=72",
+        "source": "https://github.com/cybertaxonomy/cdm-dataportal"
+    },
+    "require" : {
+        "cybertaxonomy.org/cdm_dataportal": "^7.5.20"
+    }
+}
+
+ 

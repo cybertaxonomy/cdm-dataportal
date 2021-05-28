@@ -60,7 +60,7 @@ function getimagesize_remote($image_url) {
  * @param $descriptionElement
  *    the DescriptionElement instance
  * @param $mimeTypePreference array
- *    An array of mime type strings. the order of the mimetpes is the oerder of preference.
+ *    An array of mime type strings. the order of the mimetypes is the order of preference.
  *    E.g.: array('application/pdf','image/jpeg')
  *
  * @return string
@@ -225,16 +225,15 @@ function theme_cdm_media_caption($variables) {
 
   // handle sources and annotations
   cdm_lazyload_array_field('media', 'annotations', $media);
-  $annotations_and_sources = handle_annotations_and_sources(
-    $media,
-    array(
+  RenderHints::setAnnotationsAndSourceConfig([
       'sources_as_content' => $sources_as_content,
-      'link_to_name_used_in_source' => 1,
-      'link_to_reference' => 0,
-      'add_footnote_keys' => $sources_as_content ? 0 : 1
-    ),
-     NULL,
-     $footnote_list_key
+      'link_to_name_used_in_source' => TRUE,
+      'link_to_reference' => FALSE,
+      'add_footnote_keys' => !$sources_as_content,
+      'bibliography_aware' => FALSE
+    ]);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $media, NULL, $footnote_list_key
   );
 
   $out = '';
@@ -242,7 +241,7 @@ function theme_cdm_media_caption($variables) {
   // Title.
   if ($doTitle) {
     $title_string = $media_metadata['title']
-      . $annotations_and_sources['foot_note_keys']; // placing the footnote keys here is not optimal, see #6329 A.1.
+      . $annotations_and_sources->footNoteKeysMarkup(); // placing the footnote keys here is not optimal, see #6329 A.1.
     $title_string = trim($title_string);
     if (empty($title_string) && !($doDescription && $media_metadata['description'])) {
       // Use filename as fallback option if no description and no source citations are available.
@@ -294,9 +293,9 @@ function theme_cdm_media_caption($variables) {
     $groups = array_merge($groups, cdm_rights_as_dl_groups($media_metadata['rights']));
   }
 
-  if(!empty($annotations_and_sources['source_references'])){
-    $sources_label = count($annotations_and_sources['source_references']) > 1 ? t('Sources') : t('Source');
-    _description_list_group_add($groups, $sources_label . ':', markup_to_render_array(join('; ', $annotations_and_sources['source_references'])) );
+  if($annotations_and_sources->hasSourceReferences()){
+    $sources_label = count($annotations_and_sources->getSourceReferences()) > 1 ? t('Sources') : t('Source');
+    _description_list_group_add($groups, $sources_label . ':', markup_to_render_array(join('; ', $annotations_and_sources->getSourceReferences())) );
   }
 
   // TODO add all other metadata elements generically.

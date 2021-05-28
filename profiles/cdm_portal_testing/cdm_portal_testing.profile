@@ -9,7 +9,7 @@
  *
  * Allows the profile to alter the site configuration form.
  */
-function CDM_Portal_Testing_form_install_configure_form_alter(&$form, $form_state) {
+function cdm_portal_testing_form_install_configure_form_alter(&$form, $form_state) {
   // Pre-populate the form.
   $form['site_information']['site_name']['#default_value'] = st('EDIT CDM DataPortal');
   $form['site_information']['site_mail']['#default_value'] = 'admin@edit.cdm.dataportal.eu';

@@ -80,18 +80,17 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         assertEquals(UTF8.EM_DASH_DOUBLE + "(part.)\nOssaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(2).getText());
 
-        // Test also invalid designation which is rendered with the misapplied names
-        assertEquals(UTF8.EN_DASH + "\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(3).getText());
-
         // no sensu but with Combination Authors:
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(4).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
         //
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(5).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(4).getText());
+
 
         // TODO the order of the MANs is not always defined please see #7766
         // with doubtful flag
-        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(6).getText());
+        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(5).getText());
 
+        assertEquals(UTF8.EM_DASH_DOUBLE + "\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
 
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());

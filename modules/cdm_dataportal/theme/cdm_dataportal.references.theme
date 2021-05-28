@@ -22,30 +22,28 @@
  * - cdm_reference_pager
  * - cdm_taxonRelationships
  *
- * @param array $variables
- *   An associative array containing:
- *   - reference
- *   - microReference
- *   - doTextLink:
+ *   @param reference
+ *      The entity to be rendered
+ *  @param string $citation_detail
+ *      The citation detail like page number
+ *  @param boolean do_text_link
  *      Show the citation string as link to the reference page. This option does not affect links to the reference URI or DOI.
  *      These links are always created when this data is available
- *   - doIconLink:
+ *  @param boolean do_icon_link
  *      Append an icon to the citation string which links to the reference page, links to the reference URI or DOI are always
  *      created when this data is available
  *
  * @return string
  *    the markup for the reference
- *
- * @ingroup themeable
  */
-function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = FALSE, $doIconLink = FALSE) {
+function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link = FALSE, $do_icon_link = FALSE) {
 
   $citation = trim($reference->titleCache);
-  $iconlink = "";
-  if((isset($doIconLink) && $doIconLink === TRUE)) {
-    $iconlink = l(custom_icon_font_markup('icon-interal-link-alt-solid', array('class' => array('superscript'))), path_to_reference($reference->uuid), array('html' => true));
+  $icon_link = "";
+  if((isset($do_icon_link) && $do_icon_link === TRUE)) {
+    $icon_link = cdm_internal_link(path_to_reference($reference->uuid));
   }
-  if (isset($doTextLink) && $doTextLink === TRUE) {
+  if (isset($do_text_link) && $do_text_link === TRUE) {
     $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
       'attributes' => array(
@@ -54,14 +52,14 @@ function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = 
       'absolute' => TRUE,
       'html' => TRUE,
     ));
-    $out .= $iconlink . '</span>';
+    $out .= $icon_link . '</span>';
   }
   else {
-    $out = '<span class="reference">' . $citation . $iconlink . '</span>';
+    $out = '<span class="reference">' . $citation . $icon_link . '</span>';
   }
 
-  if (!empty($microReference)) {
-    $out .= ": " . $microReference;
+  if (!empty($citation_detail)) {
+    $out .= ": " . $citation_detail;
   }
 
   if(isset($reference->doi)){
@@ -78,6 +76,45 @@ function cdm_reference_markup($reference, $microReference = NULL, $doTextLink = 
   }
 
   return $out;
+}
+
+/**
+ * Creates an internal link displayes as icon.
+ *
+ * @param $path
+ * The drupal path to create the link for
+ * @param string[] $class_attributes
+ *   Class attributes for the link element. By default ['superscript'] is being used.
+ *
+ * @return string
+ */
+function cdm_internal_link($path, $class_attributes = ['superscript']) {
+  return l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => $class_attributes]), $path, ['html' => true]);
+}
+
+/**
+ * Creates a HTML representations for a CDM ReferenceDTO object
+ *
+ * In terms of rendering the entity and dto are interchangeable,
+ * therefore this method simply delegates to the according entity method.
+ *
+ *  @param $reference_dto
+ *      The dto to be rendered
+ *  @param string $microReference
+ *      The citation detail like page number
+ *  @param boolean doTextLink
+ *      Show the citation string as link to the reference page. This option does not affect links to the reference URI or DOI.
+ *      These links are always created when this data is available
+ *  @param boolean doIconLink
+ *      Append an icon to the citation string which links to the reference page, links to the reference URI or DOI are always
+ *      created when this data is available
+ *
+ * @return string
+ *    the markup for the referenceDTO
+ *
+ */
+function cdm_reference_dto_markup($reference_dto, $microReference = NULL, $doTextLink = FALSE, $doIconLink = FALSE) {
+  return cdm_reference_markup($reference_dto, $microReference, $doTextLink, $doIconLink);
 }
 
 /**

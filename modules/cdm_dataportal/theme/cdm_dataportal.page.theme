@@ -32,145 +32,14 @@ function theme_cdm_taxon_page_title($variables) {
   RenderHints::pushToRenderStack('taxon_page_title');
   $referenceUri = '';
   $out = '';
-  if (isset($taxon->name->nomenclaturalReference)) {
-    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalReference->uuid));
+  if (isset($taxon->name->nomenclaturalSource->citation)) {
+    $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
   }
 
   $out .= render_taxon_or_name($taxon, NULL, $referenceUri, FALSE);
   RenderHints::popFromRenderStack();
 
   return '<span class="' . $taxon->class . '">' . $out . '</span>';
-}
-
-/**
- * Returns HTML for the default title of a specimen page.
- *  * The returned title is a the identifier of the specimen.
- *
- * @param object $pecimen: The CDM SpecimenOrObeservation instnce
- *     being formatted for the title.
- *
- * @return string
- *  Markup for the title of a specimen page
- *
- */
-function specimen_page_title($specimen)
-{
-
-    RenderHints::pushToRenderStack('specimen_page_title');
-    $referenceUri = '';
-    $out = '';
-
-    $collection = null;
-    if (!($specimen->class == 'FieldUnit')) {
-        if ($specimen->collection) {
-            if ($specimen->collection->code) {
-                $collection = $specimen->collection->code;
-            } elseif ($specimen->collection->name) {
-                $collection = $specimen->collection->name;
-            }
-        }
-        if ($specimen->accessionNumber) {
-            $specimenID = $specimen->accessionNumber;
-        } elseif ($specimen->barcode) {
-            $specimenID = $specimen->barcode;
-        } elseif ($specimen->catalogNumber) {
-            $specimenID = $specimen->catalogNumber;
-        } elseif ($specimen->titleCache) {
-            $specimenID = $specimen->titleCache;
-        }
-        if (!isset($specimenID) and !isset($collection)) {
-            $specimenID = $specimen->uuid;
-        }
-    }else{
-        if ($specimen->titleCache) {
-            $specimenID = $specimen->titleCache;
-        }
-        if (!isset($specimenID) and !isset($collection)) {
-            $specimenID = $specimen->uuid;
-        }
-    }
-
-    if ($specimen ->class == 'FieldUnit'){
-        $out .= '<span class="type-label">Field unit: </span>';
-    }else{
-        $out .= '<span class="type-label">Specimen:  </span>';
-    }
-
-    if($collection){
-        $out .= $collection." ";
-    }
-    $out .= $specimenID;
-
-    RenderHints::popFromRenderStack();
-
-    return '<span class="' . $specimen->class . '">' . $out . '</span>';
-}
-
-/**
- * Returns HTML for the default title of a specimen page.
- *  * The returned title is a the identifier of the specimen.
- *
- * @param array $variables
- *   An associative array containing:
- *   - specimen: The specimen being formatted for the title.
- *
- * @return string
- *  Markup for the title of a specimen page
- *
- * @ingroup themeable
- */
-function theme_cdm_specimen_dto_page_title($variables)
-{
-
-    $specimen = $variables['specimen'];
-    RenderHints::pushToRenderStack('specimen_page_title');
-    $referenceUri = '';
-    $out = '';
-
-    $collection = null;
-    if (!($specimen->class == 'FieldUnit')) {
-        if ($specimen->collection) {
-            if ($specimen->collection->code) {
-                $collection = $specimen->collection->code;
-            } elseif ($specimen->collection->name) {
-                $collection = $specimen->collection->name;
-            }
-        }
-        if ($specimen->accessionNumber) {
-            $specimenID = $specimen->accessionNumber;
-        } elseif ($specimen->barcode) {
-            $specimenID = $specimen->barcode;
-        } elseif ($specimen->catalogNumber) {
-            $specimenID = $specimen->catalogNumber;
-        } elseif ($specimen->titleCache) {
-            $specimenID = $specimen->titleCache;
-        }
-        if (!isset($specimenID) and !isset($collection)) {
-            $specimenID = $specimen->uuid;
-        }
-    }else{
-        if ($specimen->titleCache) {
-            $specimenID = $specimen->titleCache;
-        }
-        if (!isset($specimenID) and !isset($collection)) {
-            $specimenID = $specimen->uuid;
-        }
-    }
-
-    if ($specimen ->class == 'FieldUnit'){
-        $out .= "FieldUnit ";
-    }else{
-        $out .= "Specimen ";
-    }
-
-    if($collection){
-        $out .= $collection." ";
-    }
-    $out .= $specimenID;
-
-    RenderHints::popFromRenderStack();
-
-    return '<span class="' . $specimen->class . '">' . $out . '</span>';
 }
 
 /**
@@ -192,8 +61,8 @@ function theme_cdm_name_page_title($variables) {
   RenderHints::pushToRenderStack('name_page_title');
 
   $referenceUri = NULL;
-  if (isset($taxon_name->nomenclaturalReference)) {
-    $referenceUri = url(path_to_reference($taxon_name->nomenclaturalReference->uuid));
+  if (isset($taxon_name->nomenclaturalSource->citation)) {
+    $referenceUri = url(path_to_reference($taxon_name->nomenclaturalSource->citation->uuid));
   }
 
   $out = '<span class="' . html_class_attribute_ref($taxon_name) . '">'
@@ -237,7 +106,11 @@ function theme_cdm_search_taxa_results($variables)
     $taxa = array();
     // $highlightedFragments = array();
     foreach ($pager->records as $searchResult) {
-      $taxa[] = &$searchResult->entity;
+      if($searchResult->entity != null){
+        $taxa[] = &$searchResult->entity;
+      } else {
+        drupal_set_message("NULL entry in search results: The search index may not be up to date with the data base.", 'error');
+      }
       /*
        if(!isset($searchResult->fieldHighlightMap)){
       $searchResult->fieldHighlightMap = NULL;

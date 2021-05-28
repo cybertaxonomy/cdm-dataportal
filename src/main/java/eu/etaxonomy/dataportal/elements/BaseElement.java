@@ -32,6 +32,7 @@ import eu.etaxonomy.dataportal.ElementUtils;
 public class BaseElement {
 
     public static final Logger logger = Logger.getLogger(BaseElement.class);
+
     /**
      * Default tolerance for testing sizes and positions
      */
@@ -50,6 +51,21 @@ public class BaseElement {
 
     public WebElement getElement() {
         return element;
+    }
+
+    /**
+     * Null save factory method
+     *
+     * @param we
+     *  May be <code>null</code>
+     * @return
+     *  The new BaseElement or <code>null</code>.
+     */
+    public static BaseElement from(WebElement we) {
+        if(we != null) {
+            return new BaseElement(we);
+        }
+        return null;
     }
 
     public String getText() {
@@ -110,6 +126,20 @@ public class BaseElement {
                 getElement().findElements(By.xpath("//*[contains(@class, 'footnotes')]/span[contains(@class, 'footnote ')]"))
                 );
     }
+
+
+    public BaseElement getFootNoteForKey(LinkElement footNoteKey){
+        String key = footNoteKey.getText();
+        List<BaseElement> matchingFootnotes = ElementUtils.baseElementsFromFootNoteListElements(
+                // NOTE: the training space character in 'footnote ' is important. Without it would also match the footnote-anchor!
+                getElement().findElements(By.cssSelector("span.footnotes span.footnote-" + key)
+                        )
+                );
+        assert matchingFootnotes.size() == 1;
+        return matchingFootnotes.get(0);
+
+    }
+
 
     /**
      *

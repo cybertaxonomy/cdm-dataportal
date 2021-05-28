@@ -382,11 +382,9 @@ function compose_description_element($element, $feature_block_settings, $element
 
   );
 
+  RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
   $annotations_and_sources = handle_annotations_and_sources(
-    $element,
-    handle_annotations_and_sources_config($feature_block_settings),
-    $element_markup,
-    $footnote_list_key_suggestion
+    $element, $element_markup, $footnote_list_key_suggestion
   );
 
   $timescope_markup = '';
@@ -397,19 +395,19 @@ function compose_description_element($element, $feature_block_settings, $element
   // handle the special case were the TextData is used as container for original source with name
   // used in source information without any text stored in it.
   $names_used_in_source_markup = '';
-  if (!empty($annotations_and_sources['names_used_in_source']) && empty($element_markup)) {
-    $names_used_in_source_markup = join(', ', $annotations_and_sources['names_used_in_source']) . ': ';
+  if ($annotations_and_sources->hasNameUsedInSource() && empty($element_markup)) {
+    $names_used_in_source_markup = join(', ', $annotations_and_sources->getNameUsedInSource()) . ': ';
     // remove all <span class="nameUsedInSource">...</span> from all source_references
     // these are expected to be at the end of the strings
     $pattern = '/ <span class="nameUsedInSource">.*$/';
-    foreach( $annotations_and_sources['source_references'] as &$source_reference){
+    foreach( $annotations_and_sources->getSourceReferences() as &$source_reference){
       $source_reference = preg_replace($pattern , '', $source_reference);
     }
   }
 
   $source_references_markup = '';
-  if (!empty($annotations_and_sources['source_references'])) {
-    $source_references_markup = '<span class="sources">' . join(' ', $annotations_and_sources['source_references']) . '<span>';
+  if ($annotations_and_sources->hasSourceReferences()) {
+    $source_references_markup = '<span class="sources">' . join(' ', $annotations_and_sources->getSourceReferences()) . '<span>';
   }
 
   $feature_label = '';
@@ -425,32 +423,8 @@ function compose_description_element($element, $feature_block_settings, $element
   }
 
     $render_array['#value'] = $feature_label . $content_markup;
-    $render_array['#value_suffix'] = $annotations_and_sources['foot_note_keys'];
+    $render_array['#value_suffix'] = $annotations_and_sources->footNoteKeysMarkup();
   return $render_array;
-}
-
-/**
- * Creates a handle_annotations_and_sources configuration array from feature_block_settings.
- *
- * The handle_annotations_and_sources configuration array is meant to be used for the
- * method handle_annotations_and_sources().
- *
- * @param $feature_block_settings array
- *
- * @return array
- *   The configuration array for handle_annotations_and_sources()
- */
-function handle_annotations_and_sources_config($feature_block_settings){
-
-  $config = $feature_block_settings;
-  unset($config['sources_as_content_to_bibliography']);
-  $config['add_footnote_keys'] = 0;
-  if($feature_block_settings['sources_as_content'] !== 1 || $feature_block_settings['sources_as_content_to_bibliography'] == 1) {
-    $config['add_footnote_keys'] = 1;
-  }
-  $config['bibliography_aware'] = 1;
-
-  return $config;
 }
 
 /**
@@ -813,35 +787,10 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
     if(variable_get(DISTRIBUTION_CONDENSED) && isset($descriptionElements['DistributionInfoDTO']->condensedDistribution)){
       $condensed_distribution_markup = '<p class="condensed_distribution">';
 
-      $isFirst = true;
-      if(isset($descriptionElements['DistributionInfoDTO']->condensedDistribution->indigenous[0])){
-        foreach($descriptionElements['DistributionInfoDTO']->condensedDistribution->indigenous as $cdItem){
-          if(!$isFirst){
-            $condensed_distribution_markup .= ' ';
-          }
-          $condensed_distribution_markup .= '<span class="status_' . $cdItem->status->idInVocabulary . '">'
-          . $cdItem->areaStatusLabel . '</span>';
-          $isFirst = false;
-        }
-      }
-
-      if(isset($descriptionElements['DistributionInfoDTO']->condensedDistribution->foreign[0])) {
-        if(!$isFirst){
-          $condensed_distribution_markup .= ' ';
-        }
-        $isFirst = TRUE;
-        $condensed_distribution_markup .= '[';
-        foreach ($descriptionElements['DistributionInfoDTO']->condensedDistribution->foreign as $cdItem) {
-          if (!$isFirst) {
-            $condensed_distribution_markup .= ' ';
-          }
-          $condensed_distribution_markup .= '<span class="status_' . $cdItem->status->titleCache . '">'
-            . $cdItem->areaStatusLabel . '</span>';
-          $isFirst = false;
-        }
-        $condensed_distribution_markup .= ']';
-      }
-
+	  if(isset($descriptionElements['DistributionInfoDTO']->condensedDistribution->htmlString)){
+		$condensed_distribution_markup .= $descriptionElements['DistributionInfoDTO']->condensedDistribution->htmlString;
+	  }
+      
       $condensed_distribution_markup .= '&nbsp;' . l(
           font_awesome_icon_markup(
             'fa-info-circle',
@@ -1442,10 +1391,10 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
         // common name without a language or area, should not happen but is possible
         $language_area_key = '';
         if (isset($element->language->representation_L10n)) {
-          $language_area_key .= $element->language->representation_L10n ;
+          $language_area_key .= $element->language->representation_L10n;
         }
-        if(isset($element->area->titleCache) && strlen($element->area->titleCache) > 0){
-          $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->titleCache . ')';
+        if(isset($element->area->representation_L10n) && strlen($element->area->representation_L10n) > 0){
+          $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->representation_L10n . ')';
         }
         if($language_area_key){
           $language_area_key = '<span class="language-area-label">' . $language_area_key . '<span class="separator">: </span></span>';
@@ -1579,13 +1528,10 @@ function compose_description_elements_distribution($description_elements){
   $enclosingTag = cdm_feature_block_element_tag_name($feature_block_settings);
 
   foreach ($description_elements as $description_element) {
+    RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
     $annotations_and_sources = handle_annotations_and_sources(
-      $description_element,
-      handle_annotations_and_sources_config($feature_block_settings),
-      $description_element->area->representation_L10n,
-      UUID_DISTRIBUTION
+      $description_element, $description_element->area->representation_L10n, UUID_DISTRIBUTION
     );
-
 
     $status = distribution_status_label_and_markup([$description_element->status]);
 
@@ -1594,10 +1540,10 @@ function compose_description_elements_distribution($description_elements){
       . ' " title="' . $status['label']. '">'
       . $description_element->area->representation_L10n
       . $status['markup'];
-    if(!empty($annotations_and_sources['source_references'])){
-      $out .= ' ' . join(' ', $annotations_and_sources['source_references'] );
+    if($annotations_and_sources->hasSourceReferences()){
+      $out .= ' ' . join(' ', $annotations_and_sources->getSourceReferences());
     }
-    $out .= $annotations_and_sources['foot_note_keys']   . '</' . $enclosingTag . '>';
+    $out .= $annotations_and_sources->footNoteKeysMarkup() . '</' . $enclosingTag . '>';
     $markup_array[] = $out;
   }
 
@@ -1847,13 +1793,10 @@ function compose_description_elements_distribution($description_elements){
 
       $annotations_and_sources =  null;
       if($distribution_aggregate) {
+        RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
         $annotations_and_sources = handle_annotations_and_sources(
-          $distribution_aggregate,
-          handle_annotations_and_sources_config($feature_block_settings),
-          $label,
-          UUID_DISTRIBUTION
+          $distribution_aggregate, $label, UUID_DISTRIBUTION
         );
-
         $status = distribution_status_label_and_markup($distribution_aggregate->status, $level_style['status_glue']);
       }
 
@@ -1867,11 +1810,11 @@ function compose_description_elements_distribution($description_elements){
       ;
 
       if(isset($annotations_and_sources)){
-        if(!empty($annotations_and_sources['source_references'])){
-          $per_node_markup[$node_index] .= ' ' . join(', ' , $annotations_and_sources['source_references']);
+        if($annotations_and_sources->hasSourceReferences()){
+          $per_node_markup[$node_index] .= ' ' . join(', ' , $annotations_and_sources->getSourceReferences());
         }
-        if($annotations_and_sources['foot_note_keys']) {
-          $per_node_markup[$node_index] .= $annotations_and_sources['foot_note_keys'];
+        if($annotations_and_sources->hasFootnoteKeys()) {
+          $per_node_markup[$node_index] .= $annotations_and_sources->footNoteKeysMarkup();
         }
       }
 
@@ -1988,7 +1931,7 @@ function render_description_string($root_nodes, &$item_cnt = 0) {
       // remove last semicolon
       $description_strings[count($description_strings) - 1] = preg_replace('/;$/', '', $description_strings[count($description_strings) - 1]);
     }
-    $out  = join($description_strings,  ' ');
+    $out  = join(' ', $description_strings);
   }
   return $out;
 }

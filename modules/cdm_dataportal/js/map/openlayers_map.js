@@ -37,9 +37,10 @@
     defaultBaseLayerName: 'open_topomap',
     maxZoom: 15,
     minZoom: 0,
-      // hide the map when the data layer has no features
-      hideEmptyMap: true,
+    // hide the map when the data layer has no features
+    hideEmptyMap: true,
     debug: true,
+    layerLoadingTimeout: 1000, // ms
     /**
      * allows the map to display parts of the layers which are outside
      * the maxExtent if the aspect ratio of the map and of the baselayer
@@ -80,6 +81,7 @@
       specimenLinkText: 'Open unit'
   };
 })(jQuery);
+
 
 /**************************************************************************
  *                          CdmOpenLayers
@@ -285,9 +287,16 @@
             if (!textStatus) {
                 textStatus = "error";
             }
-            log(textStatus + " requesting  " + requestUrl + " filed after timeout " + errorThrown, true);
+            var errorMessage = errorThrown != undefined ? errorThrown : 'unspecified error';
+            log(textStatus + " requesting  " + requestUrl + " failed due to " + errorMessage, true);
             errorMessageCtl.show();
-            errorMessageCtl.add(textStatus + ":" + errorThrown);
+            errorMessageCtl.addErrorMessage(textStatus + ":" + errorThrown);
+        }
+
+        function reportWMSError(layer) {
+            log('Loading of WMS layer ' + layer.name + ' failed.', true);
+            errorMessageCtl.show();
+            errorMessageCtl.addErrorMessage('Loading of WMS layer ' + layer.name + ' failed');
         }
 
         /**
@@ -308,9 +317,11 @@
 
           initMap();
 
-
+          var boundingBoxEPSG4326 = null;
           if(opts.boundingBox){
             boundingBox = OpenLayers.Bounds.fromString(opts.boundingBox);
+            // no need to use readProjection(), for base layers the projection should always be in the layer data
+            boundingBoxEPSG4326 = boundingBox.transform(baseLayers[0].projection, CdmOpenLayers.projections.epsg_4326);
           }
 
           // -- Distribution Layer --
@@ -322,30 +333,32 @@
             if(typeof legendPosition === 'number'){
               distributionQuery = mergeQueryStrings(distributionQuery, 'legend=1&mlp=' + opts.legendPosition);
             }
-            if(opts.boundingBox){
-              distributionQuery = mergeQueryStrings(distributionQuery, 'bbox=' + boundingBox);
+            if(boundingBoxEPSG4326){
+              distributionQuery = mergeQueryStrings(distributionQuery, 'bbox=' + boundingBoxEPSG4326);
             }
 
             // distributionQuery = mergeQueryStrings(distributionQuery, 'callback=?');
             var legendFormatQuery = mapElement.attr('data-legendFormatQuery');
             if(legendFormatQuery !== undefined){
-              legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
+              legendImgSrc = mergeQueryStrings('/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic ', legendFormatQuery);
             }
 
             mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + distributionQuery;
+            log("area data map service request:" + mapServiceRequest);
 
             LAYER_DATA_CNT++;
             jQuery.ajax({
               url: mapServiceRequest,
               dataType: "json",
-                timeout: 5000,
+                // timeout: layerLoadingTimeout,
               success: function(data){
-                  var layers = createDataLayer(data, "AREA");
+                  var layers = createDataLayers(data, "AREA");
                   addLayers(layers);
-                // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
+                // layerDataLoaded(); will be called after reading the projection from the WFS
+                // for the data layer, see readProjection()
               },
               error: function(jqXHR, textStatus, errorThrown){
-                  reportAjaxError(textStatus, mapServiceRequest, errorThrown);
+                  reportAjaxError("Distribution Layer: " +textStatus, mapServiceRequest, errorThrown);
               }
             });
           }
@@ -364,23 +377,24 @@
 //              if(legendFormatQuery !== undefined){
 //              legendImgSrc = mergeQueryStrings('/GetLegendGraphic?SERVICE=WMS&VERSION=1.1.1', legendFormatQuery);
 //              }
-            if(opts.boundingBox){
-              occurrenceQuery = mergeQueryStrings(occurrenceQuery, 'bbox=' + boundingBox);
+            if(boundingBoxEPSG4326){
+              occurrenceQuery = mergeQueryStrings(occurrenceQuery, 'bbox=' + boundingBoxEPSG4326);
             }
 
             mapServiceRequest = mapserverBaseUrl + mapServicePath + '/' + mapserverVersion + '/rest_gen.php?' + occurrenceQuery;
+            log("Point data map service request:" + mapServiceRequest);
 
             LAYER_DATA_CNT++;
             jQuery.ajax({
               url: mapServiceRequest,
               dataType: "json",
               success: function(data){
-                  var layers = createDataLayer(data, "POINT");
+                  var layers = createDataLayers(data, "POINT");
                   addLayers(layers);
                   // layerDataLoaded(); will be called after reading the projection from the WFS for the data layer
               },
                 error: function(jqXHR, textStatus, errorThrown){
-                    reportAjaxError(textStatus, mapServiceRequest, errorThrown);
+                    reportAjaxError("Occurrence Layer: " + textStatus, mapServiceRequest, errorThrown);
                 }
             });
           }
@@ -690,28 +704,29 @@
           layers.forEach(function(layer){
             // layer.setVisibility(false);
           });
-
           map.addLayers(layers);
         };
 
         /**
          * add a distribution or occurrence layer
          *
-         * @param mapResponseObj
-         *   The reponse object returned by the edit map service
+         * @param mapResponseArray
+         *   The map service returns the mapResponseObj in an array with one element.
          * @param dataType
          *   either "AREA" or "POINT"
          */
-        var createDataLayer = function(mapResponseObj, dataType){
+        var createDataLayers = function(mapResponseArray, dataType){
 
-          console.log("createDataLayer() : creating data layer of type " + dataType);
+          console.log("createDataLayers() : creating data layer of type " + dataType);
 
-          dataLayerOptions = makeWMSLayerOptions();
+          var dataLayerOptions = makeWMSLayerOptions();
           dataLayerOptions.displayOutsideMaxExtent = true; // move into makeWMSLayerOptions?
 
           var layers = [];
           // add additional layers, get them from the mapResponseObj
-          if(mapResponseObj !== undefined){
+          if(mapResponseArray !== undefined){
+              var mapResponseObj = mapResponseArray[0];
+             // ----------- POINT  -----------
             if(dataType === "POINT" && mapResponseObj.points_sld !== undefined){
               var pointLayer;
               // it is a response for an point map
@@ -746,16 +761,15 @@
 
               layers.push(pointLayer);
             } else {
-              // it is a response from for a distribution map
-              console.log("createDataLayer() : start with adding distribution layers :");
+                // ----------- AREA  -----------
+                // it is a response from for a distribution map
               for ( var i in mapResponseObj.layers) {
                 var layerData = mapResponseObj.layers[i];
-
                 var layerName = fixLayerName(layerData);
-                console.log(" " + i +" -> " +layerName);
+                console.log(" " + i +" -> " + layerName);
                 var layer = new OpenLayers.Layer.WMS(
                   layerName,
-                  mapResponseObj.geoserver + "/wms",
+                  mapResponseObj.geoserver,
                   {
                       layers: fixLayerName(layerData),
                       transparent:"true",
@@ -765,7 +779,6 @@
                   );
                 layer.params.SLD = layerData.sld;
                 layer.setOpacity(opts.distributionOpacity);
-
                 layers.push(layer);
               }
             }
@@ -773,20 +786,28 @@
             if(layers.length > 0) {
               // calculate zoomBounds using the first layer
               if(mapResponseObj.bbox !== undefined){
-                var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox );
+                var newBounds =  OpenLayers.Bounds.fromString( mapResponseObj.bbox);
                 var projection;
-                if(dataType === "POINT"){
+                if(dataType === "POINT" || dataType === "AREA"){
                   projection = CdmOpenLayers.projections.epsg_4326;
-                  // mapResponseObj.bbox are bounds  are always returned in EPSG:4326 since the point service does not know about the projection
+                  // mapResponseObj.bbox bounds are always returned in EPSG:4326 since the point service does not know about the projection
                   // console.log("createDataLayer() POINT: referenceProjection()=" + referenceProjection() + ", map.getProjectionObject()=" + map.getProjectionObject() );
                   processDataBounds(projection, newBounds, dataType, layerDataLoaded);
                 } else {
-                  // Type == AREA
-                  // the bounds are in the projection of the data layer
-                  // here we expect that all data layers are in the same projection and will use the first data layer as reference
-                  // the edit map service is most probably working the same and is not expected to be able to handle multiple data layers
-                  // with different projections
-                  readProjection(layers[0], function(projection) {
+                    // IMPORTANT!!!!!!!
+                    // with the latest upgrade of Geoserver the bbox value as returned by area.php has changed.
+                    // Formerly areas.php did return the bbox in the projection of the layer now it seems to be
+                    // always in EPSG:4326, which is a progress in some sense. Now the point.php and area.php
+                    // behave consistently. (2020-10-20)
+                    //
+                    // the below code is kept anyway just in case something changes again.
+                    // --------------------------------------
+                    // dataType == AREA
+                    // the bounds are in the projection of the data layer
+                    // here we expect that all data layers are in the same projection and will use the first data layer as reference
+                    // the edit map service is most probably working the same and is not expected to be able to handle multiple data layers
+                    // with different projections
+                    readProjection(baseLayers[0], function(projection) {
                     processDataBounds(projection, newBounds, dataType, layerDataLoaded);
                   })
                 }
@@ -856,7 +877,6 @@
           if(!projection) {
             projection = layerProjections[layer.name];
           }
-
 
           if(projection) {
             callback(projection);
@@ -1136,15 +1156,22 @@
         var timestamp = '';
         if(addTimeStamp === true){
           var time = new Date();
-          timestamp = time.getSeconds() + '.' + time.getMilliseconds() + 's';
+          timestamp = '[' + time.getSeconds() + '.' + time.getMilliseconds() + ' s] ';
         }
         console.log(timestamp + message);
       };
 
       var makeWMSLayerOptions = function(projection, proj4js_def, maxExtent, units, untiled) {
         var wmsOptions = {
-          isBaseLayer: false,
-          displayInLayerSwitcher: true
+            isBaseLayer: false,
+            displayInLayerSwitcher: true,
+            tileOptions: {
+                eventListeners: {
+                    'loaderror': function (evt) {
+                        reportWMSError(evt.object.layer);
+                    }
+                }
+            }
         };
 
         if (projection) {
@@ -1171,9 +1198,9 @@
           wmsOptions.units = units;
         }
 
-        if (untiled) {
+        if (true || untiled) {
           wmsOptions.singleTile = true;
-          wmsOptions.ratio = 1;
+          wmsOptions.ratio = opts.aspectRatio;
         }
 
         return wmsOptions;
@@ -1323,6 +1350,7 @@
           var fa_class = document.createAttribute("class");
           fa_class.value = "fa fa-refresh fa-spin fa-sync-alt fa-5x";
           loadingIcon.attributes.setNamedItem(fa_class);
+          loadingIcon.style.color = "#3f3f3f"; // same gray as the other OL controls
 
           this.updateSize();
 
@@ -1354,7 +1382,7 @@
             OpenLayers.Util.extend(control, {
 
                 messageText: "The map is currently broken due to problems with the map server.",
-
+                id: 'OpenLayers_Control_ErrorMessages',
                 type: 'ErrorMessages',
                 title: 'Error messages',
 
@@ -1385,6 +1413,8 @@
                 },
                 show: function(){
                     this.div.style.display = 'flex';
+                    this.div.style.position = 'relative';
+                    this.div.style.padding = '10px 20px 20px 70px';
                 },
 
                 draw: function () {

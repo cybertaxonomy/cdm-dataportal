@@ -72,15 +72,10 @@
  */
 function get_nameRenderTemplate($render_path, $nameLink = NULL, $referenceLink = NULL) {
 
-  static $default_render_templates = NULL;
   static $split_render_templates = NULL;
 
-
-  if (!isset($default_render_templates)) {
-    $default_render_templates = unserialize(CDM_NAME_RENDER_TEMPLATES_DEFAULT);
-  }
   if($split_render_templates == NULL) {
-    $render_templates = variable_get(CDM_NAME_RENDER_TEMPLATES, $default_render_templates);
+    $render_templates = variable_get(NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES, NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES_DEFAULT);
     // needs to be converted to an array
     $render_templates = (object_to_array($render_templates));
 
@@ -222,14 +217,9 @@ function get_nameRenderTemplate($render_path, $nameLink = NULL, $referenceLink =
  */
 function get_partDefinition($taxonNameType) {
 
-  static $default_part_definitions = null;
-  if (!isset($default_part_definitions)) {
-    $default_part_definitions= unserialize(CDM_PART_DEFINITIONS_DEFAULT);
-  }
-
   static $part_definitions = null;
   if (!isset($part_definitions)) {
-    $part_definitions = object_to_array(variable_get(CDM_PART_DEFINITIONS, $default_part_definitions));
+    $part_definitions = object_to_array(variable_get(NameRenderConfiguration::CDM_PART_DEFINITIONS, NameRenderConfiguration::CDM_PART_DEFINITIONS_DEFAULT));
   }
 
   $dtype = nameTypeToDTYPE($taxonNameType);
@@ -251,46 +241,52 @@ function get_partDefinition($taxonNameType) {
  * part_definitions and render_templates (see get_partDefinition() and
  * get_nameRenderTemplate())
  *
- * @param $taxonName
- *    cdm TaxonName instance
+ * @param $taxon_name_or_taxon_base
+ *    A cdm TaxonBase or TaxonName entity
  * @param $name_link
- *    URI to the taxon, @see path_to_taxon(), must be processed by url() before passing to this method
+ *    URI to the taxon, the path provided by path_to_taxon() must be processed
+ *    by url() before passing to this method
  * @param $reference_link
- *    URI to the reference, @see path_to_reference(), must be processed by url() before passing to this method
- * @param $show_annotations
- *    turns the display of annotations on
- * @param $is_type_designation
+ *    URI to the reference, the path provided by path_to_reference() must be
+ *    processed by url() before passing to this method
+ * @param bool $show_taxon_name_annotations
+ *    Enable the display of footnotes for annotations on the taxon and name
+ *    (default: true)
+ * @param bool $is_type_designation
  *    To indicate that the supplied taxon name is a name type designation.
- * @param $skiptags
- *    an array of name elements tags like 'name', 'rank' to skip. The name part
- *          'authors' will not ber affected by this filter. This part is managed though the render template
- *          mechanism.
- * @param $is_invalid
+ *    (default: false)
+ * @param array $skip_render_template_parts
+ *    The render template elements matching these part names will bes skipped.
+ *    This parameter should only be used in rare cases like for suppressing
+ *    the sec reference of synonyms. Normally the configuration of the
+ *    name appearance should only be done via the render templates themselves. (default: [])
+ * @param bool $is_invalid
  *   Indicates that this taxon is invalid. In this case the name part will be shown in double quotes.
- *   This is useful when rendering taxon relation ships.
+ *   This is useful when rendering taxon relation ships. (default: false)
  *
  * @return string
  *  The markup for a taxon name.
- *
  */
 function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $reference_link = NULL,
-  $show_annotations = true, $is_type_designation = false, $skiptags = array(), $is_invalid = false) {
+  $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
 
   $is_doubtful = false;
-
+  $taxon_base = null;
+  $nom_status_fkey = null; // FootNoteKey
   if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
+    $taxon_base = $taxon_name_or_taxon_base;
     if(isset($taxon_name_or_taxon_base->name)){
-      $taxonName = $taxon_name_or_taxon_base->name;
+      $taxon_name = $taxon_name_or_taxon_base->name;
     } else {
-      $taxonName = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base->uuid));
+      $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base->uuid));
     }
     $is_doubtful = $taxon_name_or_taxon_base->doubtful;
     // use the TaxonBase.tagged_title so we have the secRef
     $tagged_title = $taxon_name_or_taxon_base->taggedTitle;
   } else {
     // assuming this is a TaxonName
-    $taxonName = $taxon_name_or_taxon_base;
-    if(isset($taxonName->taggedFullTitle)){
+    $taxon_name = $taxon_name_or_taxon_base;
+    if(isset($taxon_name->taggedFullTitle)){
       $tagged_title = $taxon_name_or_taxon_base->taggedFullTitle;
     } else {
       $tagged_title = $taxon_name_or_taxon_base->taggedName;
@@ -299,7 +295,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
 
   $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
-  $partDefinition = get_partDefinition($taxonName->nameType);
+  $partDefinition = get_partDefinition($taxon_name->nameType);
 
   // Apply definitions to template.
   foreach ($renderTemplate as $part => $uri) {
@@ -310,6 +306,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     if (is_array($uri) && isset($uri['#uri'])) {
       $renderTemplate[$part]['#uri'] = $uri['#uri'];
     }
+  }
+
+  foreach($skip_render_template_parts as $part){
+    unset($renderTemplate[$part]);
   }
 
   $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_title);
@@ -377,11 +377,11 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $taggedName = $taggedNameNew;
       unset($taggedNameNew);
     }
-    $name = '<span class="' . $taxonName->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName, $skiptags) . $name_encasement . '</span>';
+    $name = '<span class="' . $taxon_name->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
   }
   else {
     // use titleCache instead
-    $name = '<span class="' . $taxonName->class . '_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxonName->titleCache . $name_encasement . '</span>';
+    $name = '<span class="' . $taxon_name->class . '_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxon_name->titleCache . $name_encasement . '</span>';
   }
 
 
@@ -403,22 +403,21 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   // Fill with reference.
   if (isset($renderTemplate['referencePart']) && !$is_type_designation) {
 
-    $registrations = cdm_ws_get(CDM_WS_NAME, array($taxonName->uuid, "registrations"));
+    $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
     $registration_markup = render_registrations($registrations);
 
     // default separator
     $separator = '';
 
-    // [Eckhard]:"Komma nach dem Taxonnamen ist grunsätzlich falsch,
+    // [Eckhard]:"Komma nach dem Taxonnamen ist grundsätzlich falsch,
     // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
-    if (isset($renderTemplate['referencePart']['reference'])) {
-      $microreference = NULL;
-      if (isset($renderTemplate['referencePart']['microreference'])&& isset($taxonName->nomenclaturalMicroReference)) {
-        $microreference = $taxonName->nomenclaturalMicroReference;
-      }
-      if(count($nomref_tagged_text) == 0 && isset($taxonName->nomenclaturalReference)){
-        // TODO is this case still relevant? The tagged text should already contain all information!
-        $citation = cdm_ws_getNomenclaturalReference($taxonName->nomenclaturalReference->uuid, $microreference);
+    if (isset($renderTemplate['referencePart']['reference']) && isset($taxon_name->nomenclaturalSource)) {
+      $microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
+      if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation)){
+        // drupal message for debugging of #9599
+        // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
+        //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
+        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->citation->uuid, $microreference);
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
         if (str_beginsWith($citation, ", in")) {
@@ -433,10 +432,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         $referenceArray['#separator'] = $separator;
         $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
       } else {
-        // this ist the case for taxon names
+        // this is the case for taxon names
         $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text);
       }
-
 
       array_setr('reference', $referenceArray, $renderTemplate);
     }
@@ -451,7 +449,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $citation = '';
       if (!isset($renderTemplate['referencePart']['reference']) && isset($renderTemplate['referencePart']['microreference'])) {
         $separator = ": ";
-        $citation = $taxonName->nomenclaturalMicroReference;
+        $citation = $taxon_name->nomenclaturalMicroReference;
       }
       $referenceArray['#html'] = ' <span class="reference">' . $lastAuthorElementString . $separator . $citation . '</span>';
       array_setr('authors', $referenceArray, $renderTemplate);
@@ -460,8 +458,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
   $is_reference_year = false;
   if (isset($renderTemplate['referenceYearPart']['reference.year'])) {
-    if(isset($taxonName->nomenclaturalReference->datePublished)){
-      $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxonName->nomenclaturalReference->datePublished) . '</span>';
+    if(isset($taxon_name->nomenclaturalSource->citation->datePublished)){
+      $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxon_name->nomenclaturalSource->citation->datePublished) . '</span>';
       array_setr('reference.year', $referenceArray, $renderTemplate);
       $is_reference_year = true;
     }
@@ -475,7 +473,6 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
          if($tt->type == 'nomStatus'&& isset($tt->entityReference)) {
            $nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
            $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
-           $tt->text .= $nom_status_fkey;
            $tt_to_markup_options['html'] = true;
          }
         }
@@ -501,39 +498,60 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
 
   // Fill with protologues etc...
-  $descriptionHtml = '';
+  $protologue_links = [];
   if (array_setr('description', TRUE, $renderTemplate)) {
-    $descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxonName->uuid);
-    if($descriptions){
-      foreach ($descriptions as $description) {
-        if (!empty($description)) {
-          foreach ($description->elements as $description_element) {
-            $second_citation = '';
-            if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
-              if(isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION){
-                $prefix =  '& ';
-              } else {
-                $prefix = '';
-              }
-              $second_citation = ' [' . $prefix . $description_element->multilanguageText_L10n->text . '].';
-            }
-            $descriptionHtml .= $second_citation;
-            $descriptionHtml .= cdm_description_element_media(
-                $description_element,
-                array(
-                  'application/pdf',
-                  'image/png',
-                  'image/jpeg',
-                  'image/gif',
-                  'text/html',
-                )
-            );
-
+    $external_links = cdm_ws_get(CDM_WS_NAME_PROTOLOGUE_LINKS, $taxon_name->uuid);
+    if($external_links){
+      foreach ($external_links as $link) {
+        if (!empty($link->uri)) {
+          // for the link see also cdm_external_uri()
+          $protologue_links[] = l(font_awesome_icon_markup('fa-book'), $link->uri, ['html' => true]);
           }
         }
       }
-    }
-    array_setr('description', $descriptionHtml, $renderTemplate);
+
+    // ---------------
+
+    $additional_pub_markup = '';
+      $descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxon_name->uuid);
+      if($descriptions) {
+        foreach ($descriptions as $description) {
+          if (!empty($description)) {
+            $additional_citations = [];
+            $additional_data = [];
+            foreach ($description->elements as $description_element) {
+              if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
+                RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
+                $annotations_and_sources = handle_annotations_and_sources($description_element);
+                // synonymy_annotations_and_source_config() has 'sources_as_content' => FALSE, so no need to handle inline sources here
+                $element_media = cdm_description_element_media(
+                  $description_element,
+                  [
+                    'application/pdf',
+                    'image/png',
+                    'image/jpeg',
+                    'image/gif',
+                    'text/html',
+                  ]
+                );
+                if (isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION) {
+                   $additional_citations[] = ' [& ' . $description_element->multilanguageText_L10n->text . $element_media . ']' . $annotations_and_sources->footNoteKeysMarkup();
+                } else {
+                  $additional_data[] = ' [' . $description_element->multilanguageText_L10n->text . $element_media . ']' . $annotations_and_sources->footNoteKeysMarkup();
+                }
+              }
+            }
+            // merge
+            $additional_citations = array_merge($additional_citations, $additional_data);
+            $additional_pub_markup .= join(',', $additional_citations);
+          }
+        }
+      }
+      if($additional_pub_markup){
+        $additional_pub_markup = ' ' . $additional_pub_markup . '. '; // surround with space etc.
+      }
+      array_setr('description', $additional_pub_markup . join(', ', $protologue_links), $renderTemplate);
+      array_replace_keyr('description', 'protologue', $renderTemplate); // in preparation for #9319
   }
 
   // Render.
@@ -543,7 +561,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
   }
   $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base)
-    . '" data-cdm-ref="/name/' . $taxonName->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
+    . '" data-cdm-ref="/name/' . $taxon_name->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
 
   foreach ($renderTemplate as $partName => $part) {
     $separator = '';
@@ -556,7 +574,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $uri = $part['#uri'];
       unset($part['#uri']);
     }
-    foreach ($part as $key => $content) {
+    foreach ($part as $part => $content) {
       $html = '';
       if (is_array($content)) {
         $html = $content['#html'];
@@ -567,10 +585,12 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       elseif (is_string($content)) {
         $html = $content;
       }
-      $partHtml .= '<span class="' . $key . '">' . $html . '</span>';
+      if($html){ // skip empty elements
+        $partHtml .= '<span class="' . $part . '">' . $html . '</span>';
+      }
     }
     if ($uri) {
-      // cannot use l() here since the #uri aleady should have been processed through uri() at this point
+      // cannot use l() here since the #uri already should have been processed through uri() at this point
       $out .= $separator . '<a href="' . $uri . '" class="' . $partName . '">' . $partHtml . '</a>';
 
     }
@@ -579,9 +599,21 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     }
   }
   $out .= '</span>';
-  if ($show_annotations) {
-    // $out .= render_entities_annotations_as_footnote_keys([$taxonName]);
+
+  $annotations_and_sources = new AnnotationsAndSources();
+  if($nom_status_fkey){
+    // the nomenclatural status footnote key refers to the source citation
+    $annotations_and_sources->addFootNoteKey($nom_status_fkey);
   }
+  if ($show_taxon_name_annotations) {
+    if($taxon_base){
+      $annotations_and_sources = handle_annotations_and_sources($taxon_base,
+        null, null, $annotations_and_sources);
+    }
+    $annotations_and_sources = handle_annotations_and_sources($taxon_name,
+      null, null, $annotations_and_sources);
+  }
+  $out .= $annotations_and_sources->footNoteKeysMarkup();
   return $out;
 }
 
@@ -625,9 +657,13 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     '#suffix' => '</div>'
   );
 
+  $typified_name = null;
+
+  // Nomenclatural act block element
+  $last_footnote_listkey = RenderHints::setFootnoteListKey("nomenclatural_act");
   // name
   $name_relations = null;
-  if($registration_dto->nameRef){
+  if(isset($registration_dto->nameRef) && $registration_dto->nameRef){
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
     cdm_load_tagged_full_title($name);
     $render_array['nomenclatural_act']['published_name'] = markup_to_render_array('<div class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</div>', 0);
@@ -635,16 +671,17 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
     // need to create the name relationships later, so that the foot notes are in correct order, see section // name relations
   } else {
     // in this case the registration must have a
-    $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->typifiedNameRef->uuid);
-    $render_array['typified_name'] = markup_to_render_array('<p class="typified-name">for ' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</p>', 40);
+    // typified name will be rendered later
+    $typified_name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->typifiedNameRef->uuid);
+
   }
 
   // typedesignation in detail
-  if(is_object($registration_dto->orderdTypeDesignationWorkingSets)) {
+  if(is_object($registration_dto->orderedTypeDesignationWorkingSets)) {
     $field_unit_uuids = array();
     $specimen_type_designation_refs = array();
     $name_type_designation_refs = array();
-    foreach ((array)$registration_dto->orderdTypeDesignationWorkingSets as $workingset_ref => $obj) {
+    foreach ((array)$registration_dto->orderedTypeDesignationWorkingSets as $workingset_ref => $obj) {
       $tokens = explode("#", $workingset_ref);
       $types_in_fieldunit = get_object_vars($obj); // convert into associative array
 
@@ -703,6 +740,13 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
 
   $render_array['nomenclatural_act']['footnotes'] = markup_to_render_array(render_footnotes(),100);
 
+  // END of nomenclatural act block
+  RenderHints::setFootnoteListKey($last_footnote_listkey );
+
+  if($typified_name){
+    $render_array['typified_name'] = markup_to_render_array('<p class="typified-name">for ' . render_taxon_or_name($typified_name, url(path_to_name($typified_name->uuid))) . '</p>', 40);
+  }
+
   // registration date and office
   $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto);
   if($registration_date_insitute_markup){
@@ -711,6 +755,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
       100);
   }
 
+  $render_array['page_footnotes'] = markup_to_render_array(render_footnotes(), 110);
 
   return $render_array;
 }
@@ -724,7 +769,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
  * @param $registration_dto
  * @param $style string
  *   The style of how to compose the 'identifier' and 'registration_date_and_institute' part with the summary
- *   - 'citation': Similar to the arrearance of nomenclatural acts in print media
+ *   - 'citation': Similar to the appearance of nomenclatural acts in print media
  *   - 'list-item' : style suitable for result lists etc
  *
  * @return array
@@ -742,8 +787,8 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
     return $render_array;
   }
 
-  $registration_date_insitute_markup = render_registration_date_and_institute($registration_dto, 'span');
-  $itentifier_markup = l($registration_dto->identifier, path_to_registration($registration_dto->identifier), array('attributes' => array('class' => array('identifier'))));
+  $registration_date_institute_markup = render_registration_date_and_institute($registration_dto, 'span');
+  $identifier_markup = render_link_to_registration($registration_dto->identifier);
 
   $tagged_text_options = array();
   if(isset($registration_dto->nameRef)){
@@ -760,8 +805,9 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
     );
   }
   cdm_tagged_text_add_options($registration_dto->summaryTaggedText, $tagged_text_options);
-  $taggged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
-  foreach ($taggged_text_expanded  as $tagged_text){
+  tagged_text_extract_reference($registration_dto->summaryTaggedText);
+  $tagged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
+  foreach ($tagged_text_expanded  as $tagged_text){
     if(isset($tagged_text->entityReference->type) && $tagged_text->entityReference->type == 'SpecimenTypeDesignation') {
       $mediaDTOs = cdm_ws_get('typedesignation/$0/media', array($tagged_text->entityReference->uuid));
       if(isset($mediaDTOs[0]->uri)){
@@ -771,20 +817,19 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
       }
     }
   }
-  $registation_markup = cdm_tagged_text_to_markup($taggged_text_expanded);
+  $registation_markup = cdm_tagged_text_to_markup($tagged_text_expanded);
   foreach($media_link_map as $media_url_key => $link){
     $registation_markup = str_replace($media_url_key, $link, $registation_markup);
   }
   if($style == 'citation') {
-    $registation_markup = $registation_markup . ' ' . $itentifier_markup . ' ' . $registration_date_insitute_markup;
+    $registation_markup = $registation_markup . ' ' . $identifier_markup . ' ' . $registration_date_institute_markup;
   } else {
-    $render_array['registration-metadata'] = markup_to_render_array('<div class="registration-metadata">' . $itentifier_markup . ' ' . $registration_date_insitute_markup. "</div>", -10);
+    $render_array['registration-metadata'] = markup_to_render_array('<div class="registration-metadata">' . $identifier_markup . ' ' . $registration_date_institute_markup. "</div>", -10);
   }
   $render_array['summary'] = markup_to_render_array('<' . $tag_enclosing_summary . ' class="registration-summary">' . $registation_markup . '</' . $tag_enclosing_summary . '>', 0);
 
   return $render_array;
 }
-
 
 /**
  * Renders the registrationDate and institutionTitleCache of the $registration_dto as markup.
@@ -846,9 +891,9 @@ function render_registration($registration){
   if(isset($registration->identifier) && $registration->status == 'PUBLISHED'){
     $office_class_attribute = '';
     if(isset($registration->institution->titleCache)){
-      $office_class_attribute = registration_intitute_class_attribute($registration);
+      $office_class_attribute = registration_institution_class_attribute($registration);
     }
-    $markup = "<span class=\"registration $office_class_attribute\">" . l($registration->identifier, path_to_registration($registration->identifier)) . ', '
+    $markup = "<span class=\"registration $office_class_attribute\">" . render_link_to_registration($registration->identifier) . ', '
       .  preg_replace('/^([^T]*)(.*)$/', '${1}', $registration->registrationDate)
       . '</span>';
   }
@@ -859,7 +904,7 @@ function render_registration($registration){
  * @param $registration
  * @return string
  */
-function registration_intitute_class_attribute($registration_dto)
+function registration_institution_class_attribute($registration_dto)
 {
   if(isset($registration_dto->institutionTitleCache)){
     $institutionTitleCache = $registration_dto->institutionTitleCache;
@@ -878,7 +923,7 @@ function registration_intitute_class_attribute($registration_dto)
  *  - SpecimenTypeDesignation
  *  - TextualTypeDesignation
  *
- * @param object $type_designations an array of cdm TypeDesignation entities
+ * @param array $type_designations an array of cdm TypeDesignation entities
  *  to render
  * @param string $enclosing_tag the tag element type to enclose the whole list
  *  of type designation with. By default this DOM element is <ul>
@@ -930,22 +975,19 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         $link_to_name_page = url(path_to_name($name_type_designation->typeName->uuid));
         $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($name_type_designation) . '">' .  type_designation_status_label_markup($name_type_designation) ;
 
-        if (!empty($name_type_designation->citation)) {
+        if (!empty($name_type_designation->designationSource->citation)) {
           $out .= type_designation_citation_layout($name_type_designation, $separator); // TODO type_designation_citation_layout() needs most probably to be replaced
 
         }
         $referenceUri = '';
-        if (isset($name_type_designation->typeName->nomenclaturalReference)) {
-          $referenceUri = url(path_to_reference($name_type_designation->typeName->nomenclaturalReference->uuid));
+        if (isset($name_type_designation->typeName->nomenclaturalSource->citation)) {
+          $referenceUri = url(path_to_reference($name_type_designation->typeName->nomenclaturalSource->citation->uuid));
         }
         $out .= ': ' . render_taxon_or_name($name_type_designation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
       }
-      $annotations_and_sources = handle_annotations_and_sources(
-        $name_type_designation,
-        typedesignations_annotations_and_sources_config(),
-        '',
-        RenderHints::getFootnoteListKey());
-      $out .= $annotations_and_sources['foot_note_keys'];
+      RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+      $annotations_and_sources = handle_annotations_and_sources($name_type_designation);
+      $out .= $annotations_and_sources->footNoteKeysMarkup();
     }
   } // END NameTypeDesignation
 
@@ -955,15 +997,15 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
     foreach ($specimen_type_designations as $specimen_type_designation) {
       $type_citation_markup = '';
 
-      if (!empty($specimen_type_designation->citation)) {
+      if (!empty($specimen_type_designation->designationSource->citation)) {
 
-        $citation_footnote_str = cdm_reference_markup($specimen_type_designation->citation, null, false, true);
-        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $specimen_type_designation->citation->uuid);
+        $citation_footnote_str = cdm_reference_markup($specimen_type_designation->designationSource->citation, null, false, true);
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $specimen_type_designation->designationSource->citation->uuid);
 
         if (!empty($author_team->titleCache)) {
-          $year = @timePeriodToString($specimen_type_designation->citation->datePublished, true, 'YYYY');
+          $year = @timePeriodToString($specimen_type_designation->designationSource->citation->datePublished, true, 'YYYY');
           $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
-          if ($authorteam_str == $specimen_type_designation->citation->titleCache) {
+          if ($authorteam_str == $specimen_type_designation->designationSource->citation->titleCache) {
             $citation_footnote_str = '';
           }
         } else {
@@ -986,13 +1028,11 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         }
 
         $type_citation_markup .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">' . $authorteam_str . '</span>';
-        if (!empty($specimen_type_designation->citationMicroReference)) {
-          $type_citation_markup .= ': ' . trim($specimen_type_designation->citationMicroReference);
+        if (!empty($specimen_type_designation->designationSource->citationMicroReference)) {
+          $type_citation_markup .= ': ' . trim($specimen_type_designation->designationSource->citationMicroReference);
         }
         $type_citation_markup .= $footnote_key_markup . ')';
-
       }
-
 
       $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($specimen_type_designation) . '">';
       $out .= type_designation_status_label_markup($specimen_type_designation) . $type_citation_markup;
@@ -1008,19 +1048,15 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
           $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($specimen_type_designation->typeSpecimen->uuid)), $specimen_markup);
         }
-        $annotations_and_sources = handle_annotations_and_sources(
-          $derivedUnitFacadeInstance,
-          typedesignations_annotations_and_sources_config(),
-          '',
-          RenderHints::getFootnoteListKey()
-        );
+        RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+        $annotations_and_sources = handle_annotations_and_sources($derivedUnitFacadeInstance);
         $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
           . $specimen_markup
           . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
         if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
           $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
         }
-        $out .= $annotations_and_sources['foot_note_keys'];
+        $out .= $annotations_and_sources->footNoteKeysMarkup();
       }
       $out .= '</'. $element_tag .'>';
     }
@@ -1029,26 +1065,23 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
   // TextualTypeDesignation .........................
   usort($textual_type_designations, 'compare_textual_type_designation');
   if(!empty($textual_type_designations)) {
-    foreach ($textual_type_designations as $textual_type_designation) {
-      $annotations_and_sources = handle_annotations_and_sources(
-        $textual_type_designation,
-        array(
-          // these settings differ from those provided by typedesignations_annotations_and_sources_config()
+      RenderHints::setAnnotationsAndSourceConfig([
+          // these settings differ from those provided by annotations_and_sources_config_typedesignations()
           // TODO is this by purpose? please document the reason for the difference
           'sources_as_content' => false, // as footnotes
           'link_to_name_used_in_source' => false,
           'link_to_reference' => true,
           'add_footnote_keys' => true,
           'bibliography_aware' => false
-        ),
-        '',
-        RenderHints::getFootnoteListKey() // passing a defined key to avoid a separate annotation footnote key see https://dev.e-taxonomy.eu/redmine/issues/8543
+        ]
       );
+    foreach ($textual_type_designations as $textual_type_designation) {
+      $annotations_and_sources = handle_annotations_and_sources($textual_type_designation);
       $encasement =  $textual_type_designation->verbatim ? '"' : '';
       $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($textual_type_designation) . '">' . type_designation_status_label_markup(null)
-        . ': ' .  $encasement . trim($textual_type_designation->text_L10n->text) . $encasement .  $annotations_and_sources['foot_note_keys'] .'</' . $element_tag . '>';
-//      if(is_array( $annotations_and_sources['source_references'])){
-//        $citation_markup = join(', ', $annotations_and_sources['source_references']);
+        . ': ' .  $encasement . trim($textual_type_designation->text_L10n->text) . $encasement .  $annotations_and_sources->footNoteKeysMarkup() .'</' . $element_tag . '>';
+//      if($annotations_and_sources->hasSourceReferences())){
+//        $citation_markup = join(', ', getSourceReferences());
 //      }
 //      $out .= $citation_markup;
     }
@@ -1066,6 +1099,104 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
 
   RenderHints::popFromRenderStack();
 
+  return $out;
+}
+
+/**
+ * Creates markup for a list of SpecimenTypedesignationDTO
+ *
+ * @param array $specimen_typedesignation_dtos
+ *  The SpecimenTypedesignationDTOs to be rendered
+ *
+ * @param bool $show_type_specimen
+ *
+ * @param string $enclosing_tag
+ * @param string $element_tag
+ *
+ * @return string
+ *   The markup.
+ */
+function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $show_type_specimen = FALSE, $enclosing_tag = 'ul', $element_tag = 'li'){
+
+  // need to add element to render path since type designations
+  // need other name render template
+  RenderHints::pushToRenderStack('typedesignations');
+
+  $out = '<' . $enclosing_tag .' class="typeDesignations">';
+  $separator = ',';
+
+  if (!empty($specimen_typedesignation_dtos)) {
+    // usort($specimen_type_designations, "compare_specimen_type_designation"); // FIXME create compare function for SpecimenTypedesignationDTO
+    foreach ($specimen_typedesignation_dtos as $std_dto) {
+      $type_citation_markup = '';
+
+      if (!empty($std_dto->designationSource->citation)) {
+
+        $citation_footnote_str = cdm_reference_markup($std_dto->designationSource->citation, null, false, true);
+        $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std_dto->designationSource->citation->uuid);
+
+        if (!empty($author_team->titleCache)) {
+          $year = @timePeriodToString($std_dto->designationSource->citation->datePublished, true, 'YYYY');
+          $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
+          if ($authorteam_str == $std_dto->designationSource->citation->titleCache) {
+            $citation_footnote_str = '';
+          }
+        } else {
+          $authorteam_str = $citation_footnote_str;
+          // no need for a footnote in case in case it is used as replacement for missing author teams
+          $citation_footnote_str = '';
+        }
+
+        // for being registered a typedesignation MUST HAVE a citation, so it is save to handle the
+        // Registration output in the conditional block which has been checked that the citation is present
+        $registration_markup = render_registrations($std_dto->registrations);
+        $citation_footnote_str .= ($citation_footnote_str ? ' ' : '') . $registration_markup;
+
+        $footnote_key_markup = '';
+        if ($citation_footnote_str) {
+          // footnotes should be rendered in the parent element so we
+          // are relying on the FootnoteListKey set there
+          $_fkey2 = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $citation_footnote_str);
+          $footnote_key_markup = render_footnote_key($_fkey2, $separator, TRUE);
+        }
+
+        $type_citation_markup .= '&nbsp;(' . t('designated by') . '&nbsp;<span class="typeReference">' . $authorteam_str . '</span>';
+        if (!empty($std_dto->designationSource->citationMicroReference)) {
+          $type_citation_markup .= ': ' . trim($std_dto->designationSource->citationMicroReference);
+        }
+        $type_citation_markup .= $footnote_key_markup . ')';
+      }
+
+      $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($std_dto) . '">';
+      $out .= type_designation_dto_status_label_markup($std_dto) . $type_citation_markup;
+
+      if($show_type_specimen){
+        $derivedUnitFacadeInstance = null;
+        if (isset($std_dto->typeSpecimen)) {
+          $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std_dto->typeSpecimen->uuid);
+        }
+
+        if (!empty($derivedUnitFacadeInstance->titleCache)) {
+          $specimen_markup = $derivedUnitFacadeInstance->titleCache;
+          if(isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
+            $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($std_dto->typeSpecimen->uuid)), $specimen_markup);
+          }
+          RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+          $annotations_and_sources = handle_annotations_and_sources($derivedUnitFacadeInstance);
+          $out .= ': <span class="' . html_class_attribute_ref($std_dto->typeSpecimen) . '">'
+            . $specimen_markup
+            . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
+          if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
+            $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
+          }
+          $out .= $annotations_and_sources->footNoteKeysMarkup();
+        }
+      }
+
+      $out .= '</'. $element_tag .'>';
+    }
+    RenderHints::popFromRenderStack();
+  }
   return $out;
 }
 
@@ -1123,17 +1254,14 @@ function compose_name_type_designations($type_entity_refs_by_status){
         $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
       }
       // annotations and sources for the $derived_unit_facade_dto
-      $annotations_and_sources = handle_annotations_and_sources(
-        $name_type_entity_ref,
-        typedesignations_annotations_and_sources_config(),
-        '',
-        RenderHints::getFootnoteListKey()
-      );
+      RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+      $annotations_and_sources = handle_annotations_and_sources($name_type_entity_ref);
 
-      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  . '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
-        . $name_type_entity_ref->label
+      $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  .
+        '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
+        . cdm_tagged_text_to_markup($name_type_entity_ref->taggedText)
         . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
-        . $annotations_and_sources['foot_note_keys']
+        . $annotations_and_sources->footNoteKeysMarkup()
         . '</div>');
       }
   }
@@ -1178,14 +1306,10 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
       $media = '';
 
       // annotations and sources for the $derived_unit_facade_dto
-      $annotations_and_sources = handle_annotations_and_sources(
-        $derived_unit_facade_dto,
-        typedesignations_annotations_and_sources_config(),
-        '',
-        RenderHints::getFootnoteListKey()
-      );
-      $source_citations = $annotations_and_sources['source_references'];
-      $foot_note_keys = $annotations_and_sources['foot_note_keys'];
+      RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+      $annotations_and_sources = handle_annotations_and_sources($derived_unit_facade_dto);
+      $source_citations = $annotations_and_sources->getSourceReferences();
+      $foot_note_keys = $annotations_and_sources->footNoteKeysMarkup();
 
       // preferredStableUri
       if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
@@ -1211,17 +1335,13 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
           ));
         }
         // citation and detail for the media specimen
-        $annotations_and_sources = handle_annotations_and_sources(
-          $mediaSpecimen,
-          typedesignations_annotations_and_sources_config(),
-          '',
-          RenderHints::getFootnoteListKey()
-        );
-        if(is_array( $annotations_and_sources['source_references'])){
-          $source_citations = array_merge($source_citations, $annotations_and_sources['source_references']);
+        RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+        $annotations_and_sources = handle_annotations_and_sources($mediaSpecimen);
+        if($annotations_and_sources->hasSourceReferences()){
+          $source_citations = array_merge($source_citations, $annotations_and_sources->getSourceReferences());
         }
-        if($annotations_and_sources['foot_note_keys']){
-          $foot_note_keys .= ', ' . $annotations_and_sources['foot_note_keys'];
+        if($annotations_and_sources->hasFootnoteKeys()){
+          $foot_note_keys .= ', ' . $annotations_and_sources->footNoteKeysMarkup();
         }
       }
 
@@ -1255,66 +1375,67 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
 }
 
 /**
- * Provides the default configuration for typedesignations which
- * are passed to the handle_annotations_and_sources()
- * function:
- * - 'sources_as_content' => TRUE,
- * - 'link_to_name_used_in_source' => FALSE,
- * - 'link_to_reference' => TRUE,
- * - 'add_footnote_keys' => FALSE,
- * - 'bibliography_aware' => FALSE
+ * Creates the markup for the given name relationship.
  *
- * @return array
- */
-function typedesignations_annotations_and_sources_config() {
-  static $annotations_and_sources_config = [
-    'sources_as_content' => TRUE,
-    'link_to_name_used_in_source' => FALSE,
-    'link_to_reference' => TRUE,
-    'add_footnote_keys' => FALSE,
-    'bibliography_aware' => FALSE
-  ];
-  return $annotations_and_sources_config;
-}
-
-/**
- * @param $name_rel
- * @param $current_name_uuid
+ * For the footnotes see handle_annotations_and_sources().
+ *
+ * @param $other_name
+ *      The other name from the NameRelationship see get_other_name()
  * @param $current_taxon_uuid
- * @param $suppress_if_current_name_is_source // FIXME UNUSED !!!!
  * @param $show_name_cache_only
  *    The nameCache will be shown instead of the titleCache if this parameter is true.
  * @return null|string
  *    The markup or null
+ *
+ * @see \get_other_name
  */
-function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, $show_name_cache_only = false){
+function name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_uuid, $show_name_cache_only = false){
 
   $relationship_markup = null;
 
-  $current_name_is_toName = $current_name_uuid == $name_rel->toName->uuid;
+  $other_name = get_other_name($current_name_uuid, $name_rel);
 
-  if($current_name_is_toName){
-    $name = $name_rel->fromName;
-  } else {
-    $name = $name_rel->toName;
-  }
+  cdm_load_tagged_full_title($other_name);
 
-  cdm_load_tagged_full_title($name);
-
-  $highlited_synonym_uuid = isset ($name->taxonBases[0]->uuid) ? $name->taxonBases[0]->uuid : '';
-  if(!$show_name_cache_only){
-    $relationship_markup = render_taxon_or_name($name,
-      url(path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
-    );
-  } else {
+  $highlited_synonym_uuid = isset ($other_name->taxonBases[0]->uuid) ? $other_name->taxonBases[0]->uuid : '';
+  if($show_name_cache_only){
     $relationship_markup = l(
-      '<span class="' . html_class_attribute_ref($name) . '"">' . $name->nameCache . '</span>',
-      path_to_name($name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
+      '<span class="' . html_class_attribute_ref($other_name) . '"">' . $other_name->nameCache . '</span>',
+      path_to_name($other_name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
       array('html' => true)
+    );
+    $annotations_and_sources = handle_annotations_and_sources($other_name);
+    $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
+  } else {
+    $relationship_markup = render_taxon_or_name($other_name,
+      url(path_to_name($other_name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
     );
   }
 
   return $relationship_markup;
+}
+
+/**
+ * Determined the other name which is contained in the NameRelationship entity.
+ *
+ * @param $current_name_uuid
+ *   The uuid of this name.
+ * @param $name_rel
+ *   The cdm NameRelationship entity
+ *
+ * @return object
+ *   The other cdm Name entity.
+ */
+function get_other_name($current_name_uuid, $name_rel) {
+  $current_name_is_toName = $current_name_uuid == $name_rel->toName->uuid;
+
+  if ($current_name_is_toName) {
+    $name = $name_rel->fromName;
+  }
+  else {
+    $name = $name_rel->toName;
+  }
+  return $name;
 }
 
 
@@ -1356,7 +1477,7 @@ function name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_
 function compose_name_relationships_inline($name_relations, $current_name_uuid, $current_taxon_uuid, $suppress_if_current_name_is_source = true) {
 
   RenderHints::pushToRenderStack('homonym');
-  // the render stack element homonyms is being used in the default render templates !!!, see CDM_NAME_RENDER_TEMPLATES_DEFAULT
+  // the render stack element homonyms is being used in the default render templates !!!, see NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES_DEFAULT
 
   $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, unserialize(CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT));
   $name_rel_type_filter = array('direct' => array(), 'inverse' => array());
@@ -1505,14 +1626,14 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
     usort($name_relations, 'compare_name_relations_by_term_order_index');
 
     // compose
+    $show_name_cache_only = FALSE;
     foreach ($name_relations as $name_rel) {
 
       $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-
-      $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
-      $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
-
+      $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+      $relationship_markup = name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_uuid, $show_name_cache_only);
       $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
+
       $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
       $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup . ' ';
       $relationship_markup = $symbol_markup . $relationship_markup;
@@ -1527,11 +1648,14 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
     // name relationships to be displayed as non nec
     if (count($non_nec_name_rels) > 0) {
       $non_nec_markup = '';
+      $show_name_cache_only = FALSE;
       foreach ($non_nec_name_rels as $name_rel) {
+
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-        $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
-        $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid);
+        $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+        $relationship_markup = name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_uuid, $show_name_cache_only);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
+
         $symbol = $non_nec_markup ? ' nec ' : 'non';
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
         $non_nec_markup .= $symbol_markup . $relationship_markup;
@@ -1546,16 +1670,16 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
     // orthographic variants
     if (count($orthographic_variants) > 0) {
+      $show_name_cache_only = TRUE;
       foreach ($orthographic_variants as $name_rel) {
 
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
-        $rel_footnote_key_markup = handle_name_relationship_as_footnote($name_rel);
-        $relationship_markup = name_relationship_markup($name_rel, $current_name_uuid, $current_taxon_uuid, TRUE);
-        $nomref_footnote_key_markup = handle_nomenclatural_reference_as_footnote($name_rel->toName);
+        $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+        $relationship_markup = name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_uuid, $show_name_cache_only);
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
-        $relationship_markup = $symbol_markup . $relationship_markup . $nomref_footnote_key_markup;
+        $relationship_markup = $symbol_markup . $relationship_markup;
       }
       if (isset($relationship_markup) && $relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
@@ -1586,6 +1710,8 @@ function cdm_name_relationships_for_taxon($taxon)
 /**
  * Recursively searches the array for the $key and sets the given value.
  *
+ * Expects the key to be used only once in nested array structures.
+ *
  * @param mixed $key
  *   Key to search for.
  * @param mixed $value
@@ -1593,8 +1719,8 @@ function cdm_name_relationships_for_taxon($taxon)
  * @param array $array
  *   Array to search in.
  *
- * @return bool
- *   True if the key has been found.
+ * @return array
+ *   The array the key has been found.
  */
 function &array_setr($key, $value, array &$array) {
   $res = NULL;
@@ -1611,6 +1737,40 @@ function &array_setr($key, $value, array &$array) {
     }
   }
   return $res;
+}
+
+/**
+ * Recursively searches the array for the $key and sets is to $new_key
+ *
+ * Expects the key to be used only once in nested array structures.
+ *
+ * @param mixed $key
+ *   Key to search for.
+ * @param mixed $new_key
+ *   The new key to use
+ * @param array $array
+ *   Array to search in.
+ *
+ * @return bool
+ *   True if the key has been found.
+ */
+function array_replace_keyr($key, $new_key, array &$array) {
+  $res = NULL;
+  if(array_key_exists($key, $array)){
+    $value = $array[$key];
+    unset($array[$key]);
+    $array[$new_key] = $value;
+    return true;
+  } else {
+    // search in next level
+    foreach ($array as &$v) {
+        if (is_array($v)) {
+          array_replace_keyr($key, $new_key, $v);
+        }
+      }
+  }
+
+  return false;
 }
 
 /**
@@ -1726,7 +1886,7 @@ function registration_types($registration_dto){
       unset($reg_type_labels["taxon"]);
     }
   }
-  if(isset($registration_dto->orderdTypeDesignationWorkingSets)){
+  if(isset($registration_dto->orderedTypeDesignationWorkingSets)){
     $reg_type_labels[] = t("new nomenclatural type");
   }
   return $reg_type_labels;
@@ -1743,7 +1903,7 @@ function registration_types($registration_dto){
  *    in the $synonymy_group and must therefor passed in this second parameter.
  *
  * @return array
- *    The type designations
+ *    The CDM TypeDesignation entities
  */
 function type_designations_for_synonymy_group($synonymy_group, $accepted_taxon_name_uuid = null)
 {
@@ -1864,14 +2024,20 @@ function compare_type_designation_status_labels($a, $b) {
   $aQuantifier = FALSE;
   $bQuantifier = FALSE;
   if (isset($a) && isset($b)) {
-    $aQuantifier = array_search($a, $type_status_order);
-    $bQuantifier = array_search($b, $type_status_order);
+    $aQuantifier = array_search(ucfirst($a), $type_status_order);
+    $bQuantifier = array_search(ucfirst($b), $type_status_order);
   }
   return ($aQuantifier < $bQuantifier) ? -1 : 1;
 }
 
 /**
+ * Preliminary implementation of a preset to define a sort order for
+ * type designation status.
+ *
+ * TODO this is only preliminary and may break in future,
+ *      see https://dev.e-taxonomy.eu/redmine/issues/8402?issue_count=96&issue_position=4&next_issue_id=8351&prev_issue_id=7966#note-4
  * @return array
+ *   The array of orderd type labels
  */
 function type_status_order()
 {
@@ -1883,8 +2049,7 @@ function type_status_order()
     for comparison. This array has to be filled with the cdm- TypeDesignation
     states and the order should be parameterisable inside the dataportal.
     */
-  // Make that static for now.
-  $type_status_order = array(
+  static $type_status_order = array(
     'Epitype',
     'Holotype',
     'Isotype',
@@ -1910,8 +2075,8 @@ function type_status_order()
  */
 function type_designation_citation_layout($typeDesignation, $footnote_separator = ',') {
   $res = '';
-  $citation = $typeDesignation->citation;
-  $pages = $typeDesignation->citationMicroReference;
+  $citation = $typeDesignation->designationSource->citation;
+  $pages = $typeDesignation->designationSource->citationMicroReference;
   if(isset($typeDesignation->typeStatus->uuid) && isset($typeDesignation->typeStatus->representation_L10n)) {
     if ( $typeDesignation->typeStatus->uuid == UUID_NTD_ORIGINAL_DESIGNATION || $typeDesignation->typeStatus->uuid == UUID_NTD_MONOTYPY) {
       $res = ' (' . $typeDesignation->typeStatus->representation_L10n . ')';
@@ -1931,7 +2096,7 @@ function type_designation_citation_layout($typeDesignation, $footnote_separator 
 
     // footnotes should be rendered in the parent element so we
     // are relying on the FootnoteListKey set there
-    $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $typeDesignation->citation->titleCache);
+    $fkey_typeDesignation = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $citation->titleCache);
     $res .= render_footnote_key($fkey_typeDesignation, $footnote_separator,TRUE) . ')';
   }
   return $res;
@@ -1947,5 +2112,19 @@ function type_designation_status_label_markup($type_designation)
 {
   return '<span class="type-status">'
     . ((isset($type_designation->typeStatus->representation_L10n)) ? ucfirst($type_designation->typeStatus->representation_L10n) : t('Type')) . '</span>'
+    ;
+}
+
+/**
+ * Creates markup for the status of a type designation DTO.
+ * In case the status or its representation is missing the label will be set to "Type"
+ *
+ * @param $type_designation
+ * @return string
+ */
+function type_designation_dto_status_label_markup($type_designation)
+{
+  return '<span class="type-status">'
+    . ((isset($type_designation->typeStatus_L10n)) ? ucfirst($type_designation->typeStatus_L10n) : t('Type')) . '</span>'
     ;
 }
