@@ -45,7 +45,7 @@ else
     DRUSH=./vendor/drush/drush/drush
     if [[ ! -e $DRUSH ]]; then 
         echo "Need to install dependencies first ..."
-        composer install --no-dev
+        composer install --no-dev --ansi
     fi
 fi 
 
@@ -83,7 +83,7 @@ yes y | $DRUSH updatedb
 echo "-------------------------------------------------------------------"
 echo "Updating dependencies ..."
 
-composer update --no-dev | tee ${TMP}/composer.log
+composer update --no-dev --ansi | tee ${TMP}/composer.log
 
 echo "-------------------------------------------------------------------"
 echo "restoring settings and config files from temp backup ..."
