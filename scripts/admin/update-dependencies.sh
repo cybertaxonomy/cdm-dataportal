@@ -35,7 +35,7 @@ if [[ -z "$(grep 'cybertaxonomy.org/drupal-7-dataportal' composer.json)"  ]]; th
     exit -1
 fi
 
-# --- full backup befor any modification
+# --- full backup before any modification
 echo "creating full backup ..."
 archive_file=../drupal-7-cdm-dataportal-backup-$(date -I).tar.gz
 tar -czf $archive_file ./
