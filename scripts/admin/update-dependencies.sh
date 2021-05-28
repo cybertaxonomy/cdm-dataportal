@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 
 # -- options
@@ -96,8 +96,8 @@ cp -a ${TMP}/robots*.txt web/
 
 if (( deactivate_install == 1 )); then
     # hide the install.php 
-    rm install.php.off
-    mv install.php install.php.off 
+    rm -f web/install.php.off
+    mv web/install.php web/install.php.off 
 fi 
 
 echo "-------------------------------------------------------------------"
