@@ -17,14 +17,10 @@ import java.util.stream.Collectors;
  */
 public class DrushExecutionFailure extends Exception {
 
+    private static final long serialVersionUID = -4840009591742936935L;
+
     String out, error, commandLineString;
 
-    /**
-     * @param cmd
-     * @param out
-     * @param error
-     * @param matches
-     */
     public DrushExecutionFailure(List<String> cmd, String out, String error) {
         this.out = out;
         this.error = error;
@@ -43,8 +39,5 @@ public class DrushExecutionFailure extends Exception {
 
     }
 
-
-
-    private static final long serialVersionUID = -4840009591742936935L;
 
 }

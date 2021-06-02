@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
-import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.selenium.WebDriverFactory;
 import eu.etaxonomy.drush.DrushExecuter;
@@ -48,7 +47,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
 	}
 
 	/**
-     * Return the {@link DataPortalSite#getSiteUri()} of the currently active
+     * Return the URL of the currently active
      * context as String
      *
      * @return string representation of the DataPortal site URI
