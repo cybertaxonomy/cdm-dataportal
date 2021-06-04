@@ -11,37 +11,37 @@
   -->
   <entry key="dataPortalContext.cichorieae.siteUri">http://int.e-taxonomy.eu/dataportal/integration/cichorieae/</entry>
   <entry key="dataPortalContext.cichorieae.siteName">Cichorieae Portal</entry>
-  <entry key="dataPortalContext.cichorieae.drupalRoot">/var/www/drupal-7</entry>
+  <entry key="dataPortalContext.cichorieae.drupalRoot">/var/www/drupal-7-cdm-dataportal/web</entry>
 <!--   <entry key="dataPortalContext.cichorieae.sshHost">edit-int</entry> -->
 <!--   <entry key="dataPortalContext.cichorieae.sshUser">test-user</entry> -->
 
   <entry key="dataPortalContext.palmae.siteUri">http://int.e-taxonomy.eu/dataportal/integration/palmae/</entry>
   <entry key="dataPortalContext.palmae.siteName">PALMweb</entry>
-  <entry key="dataPortalContext.palmae.drupalRoot">/var/www/drupal-7</entry>
+  <entry key="dataPortalContext.palmae.drupalRoot">/var/www/drupal-7-cdm-dataportal/web</entry>
 <!--   <entry key="dataPortalContext.palmae.sshHost">edit-int</entry> -->
 <!--   <entry key="dataPortalContext.palmae.sshUser">test-user</entry> -->
   
   <entry key="dataPortalContext.cyprus.siteUri">http://int.e-taxonomy.eu/dataportal/integration/cyprus/</entry>
   <entry key="dataPortalContext.cyprus.siteName">Flora of Cyprus — a dynamic checklist</entry>
-  <entry key="dataPortalContext.cyprus.drupalRoot">/var/www/drupal-7</entry>
+  <entry key="dataPortalContext.cyprus.drupalRoot">/var/www/drupal-7-cdm-dataportal/web</entry>
 <!--   <entry key="dataPortalContext.cyprus.sshHost">edit-int</entry> -->
 <!--   <entry key="dataPortalContext.cyprus.sshUser">test-user</entry> -->
 
   <entry key="dataPortalContext.floramalesiana.siteUri">http://int.e-taxonomy.eu/dataportal/integration/flora-malesiana/</entry>
   <entry key="dataPortalContext.floramalesiana.siteName">Flora Malesiana</entry>
-  <entry key="dataPortalContext.floramalesiana.drupalRoot">/var/www/drupal-7</entry>
+  <entry key="dataPortalContext.floramalesiana.drupalRoot">/var/www/drupal-7-cdm-dataportal/web</entry>
 <!--   <entry key="dataPortalContext.floramalesiana.sshHost">edit-int</entry> -->
 <!--   <entry key="dataPortalContext.floramalesiana.sshUser">test-user</entry> -->
 
   <entry key="dataPortalContext.diptera.siteUri">http://int.e-taxonomy.eu/dataportal/integration/diptera/</entry>
   <entry key="dataPortalContext.diptera.siteName">Diptera Portal: Milichiidae</entry>
-  <entry key="dataPortalContext.diptera.drupalRoot">/var/www/drupal-7</entry>
+  <entry key="dataPortalContext.diptera.drupalRoot">/var/www/drupal-7-cdm-dataportal/web</entry>
 <!--   <entry key="dataPortalContext.diptera.sshHost">edit-int</entry> -->
 <!--   <entry key="dataPortalContext.diptera.sshUser">test-user</entry> -->
 
   <entry key="dataPortalContext.reference.siteUri">http://int.e-taxonomy.eu/dataportal/integration/reference</entry>
   <entry key="dataPortalContext.reference.siteName">Integration test reference</entry>
-  <entry key="dataPortalContext.reference.drupalRoot">/var/www/drupal-7</entry>
+  <entry key="dataPortalContext.reference.drupalRoot">/var/www/drupal-7-cdm-dataportal/web</entry>
 <!--   <entry key="dataPortalContext.reference.sshHost">edit-int</entry> -->
 <!--   <entry key="dataPortalContext.reference.sshUser">test-user</entry> -->
   
