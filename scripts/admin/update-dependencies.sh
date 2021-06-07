@@ -18,14 +18,30 @@ if [[ -n "$site_url" ]]; then
     unset multisite
 fi 
 
+if [[ -z "${site_url}${multisite}" ]]; then
+    print_help="1"
+fi
+
 # -- help
 if [[ "$print_help" == "1" ]]; then
-	echo "USAGE: update-dependencies.sh [--deactivate-install] [--multi-site] [--mailto <ADDRESS>]"
-	echo "  --deactivate-install :  The install.php will be hidden by appending '.off' to the filename"
-	echo "  -h, --help:  Print this help text"
-	echo "  --mailto <ADDRESS>:  send a email to the ADDRESS with a log of the update process"
-	echo "  --multi-site:  Do a multi-site update. Requires dataportals-drush. See https://dev.e-taxonomy.eu/svn/trunk/server-scripts/dataportal-admin/"
-	echo "  --site-url:  The site url to be used with drush. This option disables the --multi-site option"
+    
+cat << "EOF"
+Upadates all composer dependencies including the drupal core code as well as modules.
+Prior starting the upgrade process a backup of the drupal-cdm-dataportal installation 
+is created in $HOME/drupal-cdm-dataportal-backups/.
+Some files in ./web/ which may be modified for specific setups are preserved during the 
+update process:
+ * web/.haccess*
+ * web/robots*.txt
+ * all symbolic links except for web/polyfills as this is managed through composer.  
+
+USAGE: update-dependencies.sh [--deactivate-install] [--multi-site] [--mailto <ADDRESS>]
+  --deactivate-install :  The install.php will be hidden by appending '.off' to the filename
+  -h, --help:  Print this help text    
+  --mailto <ADDRESS>:  send a email to the ADDRESS with a log of the update process
+  --multi-site:  Do a multi-site update. Requires dataportals-drush. See https://dev.e-taxonomy.eu/svn/trunk/server-scripts/dataportal-admin/
+  --site-url:  The site url to be used with drush. This option disables the --multi-site option
+EOF
 	exit 0
 fi
 
@@ -51,6 +67,8 @@ cp -a web/.htaccess* ${TMP}/
 # .htaccess.dist is provided by the drupal/drupal package und must not be in the backup
 rm -f ${TMP}/.htaccess.dist
 cp -a web/robots*.txt ${TMP}/
+# preserve all symlinks
+find web/ -maxdepth 1 -type l -exec cp -a {} ${TMP}/ \;
 
 # -- setup 
 
@@ -95,6 +113,7 @@ rm -f .htaccess.dist
 cp web/.htaccess web/.htaccess.dist
 cp -a ${TMP}/.htaccess* web/
 cp -a ${TMP}/robots*.txt web/
+find ${TMP} -maxdepth 1 -type l -exec cp -a {} web/ \;
 
 if (( deactivate_install == 1 )); then
     # hide the install.php 
