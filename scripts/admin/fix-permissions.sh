@@ -52,7 +52,7 @@ fi
 if [[ "$web_user" ]]; then
     echo "Permissions for the web-user $admin_user ..."
     chown -R $web_user:$web_user ./web
-    chown -R $web_user ./modules ./themes
+    chown -R :$web_user ./modules ./themes
 fi
 
 echo "DONE"
