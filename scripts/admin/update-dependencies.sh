@@ -70,7 +70,7 @@ TMP=$(mktemp -d)
 echo "creating full backup ..."
 backups_folder=$HOME/drupal-cdm-dataportal-backups
 mkdir -p $backups_folder
-archive_file=$backups_folder/drupal-cdm-dataportal-backup-$(date -I).tar.gz
+archive_file=$backups_folder/drupal-cdm-dataportal-backup-$(date +%F_%T).tar.gz
 tar -czf $archive_file ./
 echo "backup archive created at "$(readlink -f $archive_file)
 
