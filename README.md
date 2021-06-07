@@ -61,11 +61,11 @@ wget https://cybertaxonomy.eu/download/dataportal/stable/drupal-7-cdm-dataportal
 This archive contains a shallow clone of the whole project together with a ready to use drupal 7 installation with the 
 cdm-dataportal module, zen_dataportal theme and other requirements. The drupal-7 installation is in the sub folder `./web`
 
-extract and adapt the ownership of the `./web` sub folder:
+extract and adapt the ownership of the some folders:
 
 ~~~
 tar -xzf drupal-7-cdm-dataportal-5.23.0.tar.gz
-sudo chown -R :www-data drupal-7-cdm-dataportal/web
+scripts/admin/fix-permissions --web-user www-data
 ~~~
 
 ##### Apache2 configuration
@@ -229,6 +229,7 @@ Checkout the release tag. For example to checkout the release `5.23.0`:
 
 ~~~
 git checkout 5.23.0
+scripts/admin/fix-permissions --web-user www-data
 ~~~
 
 Git will respond with a warning that "*You are in 'detached HEAD' state.*", this is OK and no need to be concerned.

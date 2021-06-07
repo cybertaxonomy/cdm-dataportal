@@ -41,7 +41,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
 
     private static final String DETAIL_IMAGE_DERIVATE_ICON = "cdm_dataportal/images/detail_image_derivate-16x16-32.png";
 
-    private static final String STEP_DONE_ICON = "modules/cdm_dataportal/images/step_done.gif";
+    private static final String STEP_DONE_ICON = "cdm_dataportal/images/step_done.gif";
 
     public static final Logger logger = Logger.getLogger(DrushExecuter.class);
 
