@@ -41,13 +41,16 @@ if [[ -z "$(grep 'cybertaxonomy.org/drupal-7-dataportal' composer.json)"  ]]; th
     exit -1
 fi
 
+echo "making root folder executable ..."
 chmod ugo+x ./
 
 if [[ "$admin_user" ]]; then
+    echo "$admin_user as owner of the installation package ..."
     chown -R $admin_user ./
 fi
 
 if [[ "$web_user" ]]; then
+    echo "Permissions for the web-user $admin_user ..."
     chown -R $web_user:$web_user ./web
     chown -R $web_user ./modules ./themes
 fi
