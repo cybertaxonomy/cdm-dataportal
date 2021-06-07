@@ -118,7 +118,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
                         footnote5.getText());
         List<LinkElement> linksInFootnote5 = footnote5.getLinksInElement();
         assertEquals(2, linksInFootnote5.size());
-        assertTrue(linksInFootnote5.get(0).getUrl().endsWith("/cdm_dataportal/reference/f2e43411-2564-42c7-816e-7e6046adbefa"));
+        assertTrue(linksInFootnote5.get(0).getUrl().endsWith("cdm_dataportal/reference/f2e43411-2564-42c7-816e-7e6046adbefa"));
         assertEquals("", linksInFootnote5.get(0).getText());
         assertEquals("http://testbank.org/100004", linksInFootnote5.get(1).getText());
         assertTrue("unexpected url in footnote: " + linksInFootnote5.get(1).getUrl(), linksInFootnote5.get(1).getUrl().endsWith("cdm_dataportal/registration?identifier=http%3A//testbank.org/100004"));

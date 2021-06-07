@@ -97,7 +97,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         // ---- sub node 1
         subNode1.getHeader().getElement().click(); // make the  content visible
         LinkElement pageLink = subNode1.getHeader().getLinksInElement().get(0);
-        assertTrue(pageLink.getUrl().endsWith("/cdm_dataportal/occurrence/2d424df6-f927-472a-8fb5-4c2d2eeb4484"));
+        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/2d424df6-f927-472a-8fb5-4c2d2eeb4484"));
 
         // THIS THE THE MOST IMORTANT detail to test here
         assertEquals("Preparation: Liebm., Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM), 2020-01-03", subNode1.getDerivationEvent());
@@ -184,7 +184,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         // --- Root note
         rootNode.getHeader().getElement().click(); // make the  content visible
         LinkElement pageLink = rootNode.getHeader().getLinksInElement().get(0);
-        assertTrue(pageLink.getUrl().endsWith("/cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
+        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/89d36e79-3e80-4468-986e-411ca391452e"));
 
         DetailsTable fieldUnitTable = rootNode.getDetailsTable(DetailsTable.tableClassAttrFrom("Field Unit"));
         assertEquals("Field Unit", fieldUnitTable.getHeaderText());
@@ -202,7 +202,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         // --- node 1
 
         subNode1.getHeader().getElement().click();
-        assertTrue(subNode1.getHeader().getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/occurrence/8585081c-b73b-440b-b349-582845cf3fb4"));
+        assertTrue(subNode1.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/8585081c-b73b-440b-b349-582845cf3fb4"));
 
         assertEquals("Gathering in-situ", subNode1.getDerivationEvent());
 
@@ -214,7 +214,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("http://testid.org/2017E68", preserverdSpecimenTable_1.getDetailsValueCell("Preferred stable uri").getLinksInElement().get(0).getUrl());
         assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", preserverdSpecimenTable_1.getDetailsValueCellText("Collection"));
         assertEquals("Glenodinium apiculatum", preserverdSpecimenTable_1.getDetailsValueCellText("Stored under"));
-        assertTrue(preserverdSpecimenTable_1.getDetailsValueCell("Stored under").getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/name/758a9b10-6817-496b-b5a3-dd66b38c13b0/null/null/"));
+        assertTrue(preserverdSpecimenTable_1.getDetailsValueCell("Stored under").getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/name/758a9b10-6817-496b-b5a3-dd66b38c13b0/null/null/"));
         assertEquals("D. Veloper", preserverdSpecimenTable_1.getDetailsValueCellText("Exsiccatum"));
         assertEquals("CE_2017E68", preserverdSpecimenTable_1.getDetailsValueCellText("Catalog number"));
         assertEquals("E2017E68", preserverdSpecimenTable_1.getDetailsValueCellText("Barcode"));
@@ -226,12 +226,12 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DetailsTable identificationsTable_1 = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Identification"));
         assertEquals("Glenodinium apiculatum, 2016-12-01, Kohlbecker, A.",
                 identificationsTable_1.getBodyCellText(0, 0));
-        assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/taxon/d245083e-3bda-435f-9bb3-bdc2249ff23c"));
+        assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/taxon/d245083e-3bda-435f-9bb3-bdc2249ff23c"));
 
         // --- --- node_1_1
 
         subNode1_1.getHeader().getElement().click();
-        assertTrue(subNode1_1.getHeader().getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/occurrence/a825bdad-6854-4868-98f5-7e6ebe3b6271"));
+        assertTrue(subNode1_1.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/a825bdad-6854-4868-98f5-7e6ebe3b6271"));
 
         assertEquals("Accessioning", subNode1_1.getDerivationEvent());
 
@@ -248,7 +248,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         // --- --- node_1_2
 
         subNode1_2.getHeader().getElement().click();
-        assertTrue(subNode1_2.getHeader().getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/occurrence/c2495af1-251b-42e9-b5ab-2e3e0df9ea3f"));
+        assertTrue(subNode1_2.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/c2495af1-251b-42e9-b5ab-2e3e0df9ea3f"));
 
         assertEquals("Accessioning", subNode1_2.getDerivationEvent());
 
@@ -265,7 +265,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         // --- node_2
 
         subNode2.getHeader().getElement().click();
-        assertTrue(subNode2.getHeader().getLinksInElement().get(0).getUrl().endsWith("/cdm_dataportal/occurrence/e86c5acd-de55-44af-99f7-484207657264"));
+        assertTrue(subNode2.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/e86c5acd-de55-44af-99f7-484207657264"));
 
         assertEquals("Gathering in-situ", subNode2.getDerivationEvent());
 
