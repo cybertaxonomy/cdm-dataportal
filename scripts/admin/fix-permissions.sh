@@ -6,7 +6,7 @@ while [[ "$#" -gt 0 ]]; do
     case $1 in
         -h|--help) print_help=1;;
         --web-user) web_user="$2"; shift ;;
-        --admin-user) admin_user=$2 ;;
+        --admin-user) admin_user=$2; shift;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
