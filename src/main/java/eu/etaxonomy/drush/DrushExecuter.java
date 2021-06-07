@@ -361,7 +361,7 @@ public class DrushExecuter {
             }
             // testing remote execution via ssh
             dex.sshHost = "edit-int";
-            dex.setDrupalRoot(new File("/var/www/drupal-7"));
+            dex.setDrupalRoot(new File("/var/www/drupal-7-cdm-dataportal/web"));
             dex.setSiteURI(new URI("http://int.e-taxonomy.eu/dataportal/integration/cyprus"));
             results = dex.execute(variableGet, "cdm_webservice_url");
             if (!results.get(0).equals("http://int.e-taxonomy.eu/cdmserver/integration_cyprus/")) {

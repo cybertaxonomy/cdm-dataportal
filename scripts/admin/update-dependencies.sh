@@ -18,14 +18,30 @@ if [[ -n "$site_url" ]]; then
     unset multisite
 fi 
 
+if [[ -z "${site_url}${multisite}" ]]; then
+    print_help="1"
+fi
+
 # -- help
 if [[ "$print_help" == "1" ]]; then
-	echo "USAGE: update-dependencies.sh [--deactivate-install] [--multi-site] [--mailto <ADDRESS>]"
-	echo "  --deactivate-install :  The install.php will be hidden by appending '.off' to the filename"
-	echo "  -h, --help:  Print this help text"
-	echo "  --mailto <ADDRESS>:  send a email to the ADDRESS with a log of the update process"
-	echo "  --multi-site:  Do a multi-site update. Requires dataportals-drush. See https://dev.e-taxonomy.eu/svn/trunk/server-scripts/dataportal-admin/"
-	echo "  --site-url:  The site url to be used with drush. This option disables the --multi-site option"
+    
+cat << "EOF"
+Upadates all composer dependencies including the drupal core code as well as modules.
+Prior starting the upgrade process a backup of the drupal-cdm-dataportal installation 
+is created in $HOME/drupal-cdm-dataportal-backups/.
+Some files in ./web/ which may be modified for specific setups are preserved during the 
+update process:
+ * web/.haccess*
+ * web/robots*.txt
+ * all symbolic links except for web/polyfills as this is managed through composer.  
+
+USAGE: update-dependencies.sh [--deactivate-install] [--multi-site] [--mailto <ADDRESS>]
+  --deactivate-install :  The install.php will be hidden by appending '.off' to the filename
+  -h, --help:  Print this help text    
+  --mailto <ADDRESS>:  send a email to the ADDRESS with a log of the update process
+  --multi-site:  Do a multi-site update. Requires dataportals-drush. See https://dev.e-taxonomy.eu/svn/trunk/server-scripts/dataportal-admin/
+  --site-url:  The site url to be used with drush. This option disables the --multi-site option
+EOF
 	exit 0
 fi
 
@@ -35,13 +51,26 @@ if [[ -z "$(grep 'cybertaxonomy.org/drupal-7-dataportal' composer.json)"  ]]; th
     exit -1
 fi
 
-# --- backups before any modification
+# -- requirements
+
+COMPOSER=$(which composer)
+if [[ -z "$COMPOSER" ]]; then
+    # try local composer
+    if [[ -x ./composer ]]; then
+        COMPOSER=./composer
+    else
+        echo "composer not found. Please see https://github.com/cybertaxonomy/cdm-dataportal#preparation"
+        exit -1
+    fi
+fi
+
+# -- backups before any modification
 TMP=$(mktemp -d)
 
 echo "creating full backup ..."
 backups_folder=$HOME/drupal-cdm-dataportal-backups
 mkdir -p $backups_folder
-archive_file=$backups_folder/drupal-cdm-dataportal-backup-$(date -I).tar.gz
+archive_file=$backups_folder/drupal-cdm-dataportal-backup-$(date +%F_%T).tar.gz
 tar -czf $archive_file ./
 echo "backup archive created at "$(readlink -f $archive_file)
 
@@ -51,6 +80,8 @@ cp -a web/.htaccess* ${TMP}/
 # .htaccess.dist is provided by the drupal/drupal package und must not be in the backup
 rm -f ${TMP}/.htaccess.dist
 cp -a web/robots*.txt ${TMP}/
+# preserve all symlinks
+find web/ -maxdepth 1 -type l -exec cp -a {} ${TMP}/ \;
 
 # -- setup 
 
@@ -60,7 +91,7 @@ else
     DRUSH=./vendor/drush/drush/drush
     if [[ ! -e $DRUSH ]]; then 
         echo "Need to install dependencies first ..."
-        composer install --no-dev --ansi
+        $COMPOSER install --no-dev --ansi
     fi
 fi 
 
@@ -85,7 +116,7 @@ yes y | $DRUSH updatedb
 echo "-------------------------------------------------------------------"
 echo "Updating dependencies ..."
 
-composer update --no-dev --ansi | tee ${TMP}/composer.log
+$COMPOSER update --no-dev --ansi | tee ${TMP}/composer.log
 
 echo "-------------------------------------------------------------------"
 echo "restoring settings and config files from temp backup ..."
@@ -95,6 +126,7 @@ rm -f .htaccess.dist
 cp web/.htaccess web/.htaccess.dist
 cp -a ${TMP}/.htaccess* web/
 cp -a ${TMP}/robots*.txt web/
+find ${TMP} -maxdepth 1 -type l -exec cp -a {} web/ \;
 
 if (( deactivate_install == 1 )); then
     # hide the install.php 
