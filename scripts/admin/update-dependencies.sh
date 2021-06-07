@@ -51,7 +51,20 @@ if [[ -z "$(grep 'cybertaxonomy.org/drupal-7-dataportal' composer.json)"  ]]; th
     exit -1
 fi
 
-# --- backups before any modification
+# -- requirements
+
+COMPOSER=$(which composer)
+if [[ -z "$COMPOSER" ]]; then
+    # try local composer
+    if [[ -x ./composer ]]; then
+        COMPOSER=./composer
+    else
+        echo "composer not found. Please see https://github.com/cybertaxonomy/cdm-dataportal#preparation"
+        exit -1
+    fi
+fi
+
+# -- backups before any modification
 TMP=$(mktemp -d)
 
 echo "creating full backup ..."
