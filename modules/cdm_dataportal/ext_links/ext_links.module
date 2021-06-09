@@ -68,21 +68,20 @@ function ext_links_menu() {
     'weight' => 1,
     'file' => 'ext_links.admin.inc',
   ];
-  $items['admin/config/cdm_dataportal/ext_links/%link_template'] = [
-    'title callback' => 'ext_links_admin_extlink_title',
-    'title arguments' => [4],
+  $items['admin/config/cdm_dataportal/ext_links/%ext_links'] = [ // %ext_links refers to ext_links_load
+    'title' => 'Edit external link',
     'page callback' => 'ext_links_admin_link_template_page',
     'page arguments' => [4],
     'access arguments' => ['access administration pages'],
     'file' => 'ext_links.admin.inc',
   ];
-  $items['admin/config/cdm_dataportal/ext_links/%link_template/status/%value'] = [
-    'title' => 'Disable external link',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => ['ext_links_admin_disable', 4],
-    'access arguments' => ['access administration pages'],
-    'file' => 'ext_links.admin.inc',
-  ];
+//  $items['admin/config/cdm_dataportal/ext_links/%link_template/status/%value'] = [
+//    'title' => 'Disable external link',
+//    'page callback' => 'drupal_get_form',
+//    'page arguments' => ['ext_links_admin_disable', 4],
+//    'access arguments' => ['access administration pages'],
+//    'file' => 'ext_links.admin.inc',
+//  ];
   return $items;
 }
 
@@ -151,8 +150,15 @@ function ext_links_templates_reset() {
  * @see ext_links_exists()
  */
 function ext_links_load($extlink_id) {
-  $formats = ext_links_templates();
-  return isset($formats[$extlink_id]) ? $formats[$extlink_id] : FALSE;
+  $test = TRUE;
+  if($test) {
+    $defaults = ext_links_template_defaults();
+    return isset($defaults[$extlink_id]) ? (object)$defaults[$extlink_id] : FALSE;
+  }
+  else {
+   $formats = ext_links_templates();
+    return isset($formats[$extlink_id]) ? $formats[$extlink_id] : FALSE;
+  }
 }
 
 /**
@@ -798,7 +804,7 @@ function ext_links_template_defaults() {
     'category' => 'Classification',
   );
   $ext_links_default["eol"] = array(
-    'nme' => "eol",
+    'id' => "eol",
     'link' => 'http://eol.org/search/?q=',
     'title' => 'Search Encyclopaedia of Life...',
     'glue' => '+',

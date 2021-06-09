@@ -28,7 +28,7 @@ function ext_links_admin_overview($form) {
       '#href' => 'admin/config/cdm_dataportal/ext_links/' . $link_template->id . '/status/' . ($link_template->status == 1 ? '0' : '1'));
     $form['link_templates'][$id]['weight'] = array(
       '#type' => 'weight',
-      '#title' => t('Weight for @title', array('@title' => $link_template->name)),
+      '#title' => t('Weight for @title', array('@title' => $link_template->id)),
       '#title_display' => 'invisible',
       '#default_value' => $link_template->weight,
     );
@@ -79,7 +79,7 @@ function ext_links_admin_overview_submit($form, &$form_state) {
  * @see filter_menu()
  */
 function ext_links_admin_link_template_page($link_template = NULL) {
-  if (!isset($link_template->name)) {
+  if (!isset($link_template->id)) {
     drupal_set_title(t('Add external link'));
     $link_template = (object) array(
       'title' => NULL,
@@ -115,12 +115,9 @@ function ext_links_admin_link_template_page($link_template = NULL) {
  * @ingroup forms
  */
 function ext_links_admin_link_template_form($form, &$form_state, $link_template) {
-  $is_fallback = ($link_template->format == filter_fallback_format());
 
   $form['#format'] = $link_template;
   $form['#tree'] = TRUE;
-//  $form['#attached']['js'][] = drupal_get_path('module', 'filter') . '/filter.admin.js';
-//  $form['#attached']['css'][] = drupal_get_path('module', 'filter') . '/filter.css';
 
   $form['id'] = array(
     '#type' => 'machine_name',
@@ -231,7 +228,7 @@ function theme_ext_links_admin_overview($variables) {
       'class' => $row_class_attributes,
     );
   }
-  $header = array(t('Title'), t('Link'), t('Glue'), t('Weight'), t('Category'), array('data' => t('Operations'), 'colspan' => 2));
+  $header = array(t('Title'), t('Link'), t('Glue'), t('Category'), t('Weight'), array('data' => t('Operations'), 'colspan' => 2));
   $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'text-format-order')));
   $output .= drupal_render_children($form);
 
