@@ -75,16 +75,8 @@ function ext_links_menu() {
     'access arguments' => ['access administration pages'],
     'file' => 'ext_links.admin.inc',
   ];
-//  $items['admin/config/cdm_dataportal/ext_links/%link_template/status/%value'] = [
-//    'title' => 'Disable external link',
-//    'page callback' => 'drupal_get_form',
-//    'page arguments' => ['ext_links_admin_disable', 4],
-//    'access arguments' => ['access administration pages'],
-//    'file' => 'ext_links.admin.inc',
-//  ];
   return $items;
 }
-
 
 /**
  * Retrieves a list of External Link templates, ordered by weight.
