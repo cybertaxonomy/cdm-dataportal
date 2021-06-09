@@ -76,7 +76,7 @@ function ext_links_menu() {
     'access arguments' => ['access administration pages'],
     'file' => 'ext_links.admin.inc',
   ];
-  $items['admin/config/cdm_dataportal/ext_links/%link_template/disable'] = [
+  $items['admin/config/cdm_dataportal/ext_links/%link_template/status/%value'] = [
     'title' => 'Disable external link',
     'page callback' => 'drupal_get_form',
     'page arguments' => ['ext_links_admin_disable', 4],
@@ -86,26 +86,6 @@ function ext_links_menu() {
   return $items;
 }
 
-
-/**
- * Returns the genus and the first epithet from the object taxon.
- */
-function getSpeciesName($taxon) {
-  $speciesName = array();
-  $i = 0;
-  while (isset($taxon->name->taggedName[$i]) && !isset($speciesName['species'])) {
-    if ($taxon->name->taggedName[$i]->type == "name") {
-      if (!isset($speciesName['genus'])) {
-        $speciesName['genus'] = $taxon->name->taggedName[$i]->text;
-      }
-      else {
-        $speciesName['species'] = $taxon->name->taggedName[$i]->text;
-      }
-    }
-    $i++;
-  }
-  return $speciesName;
-}
 
 /**
  * Retrieves a list of External Link templates, ordered by weight.
@@ -134,10 +114,10 @@ function ext_links_templates() {
           $link_templates[] = (object)$a;
         }
       } else {
-        $link_templates = db_select('ext_links_templates', 'ff')
+        $link_templates = db_select('ext_links', 'elt')
           ->addTag('translatable')
-          ->fields('ff')
-        //  ->condition('status', 1)
+          ->fields('elt')
+          ->condition('status', 1)
           ->orderBy('weight')
           ->execute();
       }
@@ -145,6 +125,128 @@ function ext_links_templates() {
     }
   }
   return $link_templates;
+}
+
+/**
+ * Resets the text format caches.
+ *
+ * @see filter_formats()
+ */
+function ext_links_templates_reset() {
+  cache_clear_all('ext_links_templates', 'cache', TRUE);
+  drupal_static_reset('ext_links_templates');
+}
+
+/**
+ * Loads a text format object from the database.
+ *
+ * @param $extlink_id
+ *   The external link ID. ($link->id)
+ *
+ * @return
+ *   A fully-populated text format object, if the requested format exists and
+ *   is enabled. If the format does not exist, or exists in the database but
+ *   has been marked as disabled, FALSE is returned.
+ *
+ * @see ext_links_exists()
+ */
+function ext_links_load($extlink_id) {
+  $formats = ext_links_templates();
+  return isset($formats[$extlink_id]) ? $formats[$extlink_id] : FALSE;
+}
+
+/**
+ * Saves a text format object to the database.
+ *
+ * @param $link_template
+ *   A link template object having the properties:
+ *   - id: The machine name of the external link. If this corresponds
+ *     to an existing external link, this one will be updated;
+ *     otherwise, a new external link will be created.
+ *   - title: The link title
+ *   - link: The link url template.
+ *   - glue: The string to concatenate name parts in the URL query string.
+ *   - status: (optional) An integer indicating whether the ext link is
+ *     enabled (1) or not (0). Defaults to 1.
+ *   - weight: (optional) The weight of the external link, which controls its
+ *     placement in external link block. If omitted, the weight is set to 0.
+ *     Defaults to NULL.
+ *
+ * @return
+ *   SAVED_NEW or SAVED_UPDATED.
+ */
+function ext_links_save($link_template) {
+  $link_template->title = trim($link_template->title);
+  $link_template->cache = true;
+  if (!isset($link_template->status)) {
+    $link_template->status = 1;
+  }
+  if (!isset($link_template->weight)) {
+    $link_template->weight = 0;
+  }
+
+  // Insert or update the text format.
+  $return = db_merge('ext_links')
+    ->key(array('format' => $link_template->title))
+    ->fields(array(
+      'id' => $link_template->id,
+      'title' => $link_template->title,
+      'link' => $link_template->link,
+      'glue' => $link_template->glue,
+      'status' => (int) $link_template->status,
+      'weight' => (int) $link_template->weight,
+    ))
+    ->execute();
+
+  if ($return != SAVED_NEW) {
+    // Clear the filter cache whenever an external link is updated.
+    cache_clear_all($link_template->format . ':', 'cache_filter', TRUE);
+  }
+  ext_links_templates_reset();
+  return $return;
+}
+
+/**
+ * Determines if a external link exists.
+ *
+ * @param $ext_link_name
+ *   The ID of the external link to check.
+ *
+ * @return
+ *   TRUE if the external link exists, FALSE otherwise.
+ *
+ * @see ext_links_load()
+ */
+function ext_links_exists($ext_link_name) {
+  return (bool) db_query_range('SELECT 1 FROM {ext_links} WHERE name = :name', 0, 1, array(':name' => $ext_link_name))->fetchField();
+}
+
+
+/**
+ * Returns the genus and the first epithet from the object taxon.
+ *
+ * @param $taxon
+ *   A CDM Taxon instance object
+ * @return array
+ *  An associate array with two elements:
+ *     - genus: the uninomial
+ *     - species: the species epithet
+ */
+function ext_link_species_name($taxon) {
+  $speciesName = array();
+  $i = 0;
+  while (isset($taxon->name->taggedName[$i]) && !isset($speciesName['species'])) {
+    if ($taxon->name->taggedName[$i]->type == "name") {
+      if (!isset($speciesName['genus'])) {
+        $speciesName['genus'] = $taxon->name->taggedName[$i]->text;
+      }
+      else {
+        $speciesName['species'] = $taxon->name->taggedName[$i]->text;
+      }
+    }
+    $i++;
+  }
+  return $speciesName;
 }
 
 /**
@@ -174,7 +276,7 @@ function ext_links_block_view($delta) {
         // var_export()
         if (!empty($taxon)) {
           drupal_add_js(drupal_get_path('module', 'ext_links') . '/ext_links.js');
-          $speciesName = getSpeciesName($taxon);
+          $speciesName = ext_link_species_name($taxon);
 
           $genus = $taxon->name->taggedName[0]->text;
           $species = null;
@@ -261,7 +363,7 @@ function theme_ext_links_list_grouped($variables) {
   $species = $variables['species'];
   $block_content = '';
   $categories = NULL;
-  $ext_links_default = ext_links_get_default();
+  $ext_links_default = ext_links_templates();
 
 
   /*
@@ -561,6 +663,7 @@ function ext_links_theme() {
  */
 function ext_links_template_defaults() {
   $ext_links_default["gbif"] = array(
+    'id' => "gbif",
     'link' => 'http://www.gbif.org/species/search?q=',
     'title' => 'Search GBIF...',
     'glue' => ' ',
@@ -569,6 +672,7 @@ function ext_links_template_defaults() {
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["biocase"] = array(
+    'id' => "biocase",
     'link' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=',
     'title' => 'Search BioCASE...',
     'glue' => ' ',
@@ -577,6 +681,7 @@ function ext_links_template_defaults() {
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["nybg"] = array(
+    'id' => "nybg",
     'link' => 'http://sweetgum.nybg.org/science/vh/specimen_list.php?SummaryData=',
     'title' => 'Search NYBG...',
     'glue' => '+AND+',
@@ -585,6 +690,7 @@ function ext_links_template_defaults() {
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["tropicos"] = array(
+    'id' => "tropicos",
     'link' => 'http://www.tropicos.org/NameSearch.aspx?name=',
     'title' => 'Search Tropicos...',
     'glue' => '+',
@@ -593,6 +699,7 @@ function ext_links_template_defaults() {
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["ncbi"] = array(
+    'id' => "ncbi",
     'link' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=',
     'title' => 'Search NCBI...',
     'glue' => '+AND+',
@@ -601,6 +708,7 @@ function ext_links_template_defaults() {
     'category' => 'Molecular Resources',
   );
   $ext_links_default["google"] = array(
+    'id' => "google",
     'link' => 'http://images.google.com/images?q=',
     'title' => 'Search Google Images...',
     'glue' => '+',
@@ -609,6 +717,7 @@ function ext_links_template_defaults() {
     'category' => 'Images',
   );
   $ext_links_default["flickr"] = array(
+    'id' => "flickr",
     'link' => 'http://www.flickr.com/search/?w=all&q=',
     'title' => 'Search flickr...',
     'glue' => '+',
@@ -617,6 +726,7 @@ function ext_links_template_defaults() {
     'category' => 'Images',
   );
   $ext_links_default["scholar"] = array(
+    'id' => "scholar",
     'link' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
     'title' => 'Search Google scholar...',
     'glue' => '+',
@@ -625,6 +735,7 @@ function ext_links_template_defaults() {
     'category' => 'Literature',
   );
   $ext_links_default["bhl"] = array(
+    'id' => "bhl",
     'link' => 'http://www.biodiversitylibrary.org/Search.aspx?searchCat=&searchTerm=',
     'title' => 'Search BHL...',
     'glue' => ' ',
@@ -633,6 +744,7 @@ function ext_links_template_defaults() {
     'category' => 'Literature',
   );
   $ext_links_default["arkive"] = array(
+    'id' => "arkive",
     'link' => 'http://www.arkive.org/search.html?q=',
     'title' => 'Search ARKive...',
     'glue' => '+',
@@ -641,6 +753,7 @@ function ext_links_template_defaults() {
     'category' => 'Images',
   );
   $ext_links_default["herbcat"] = array(
+    'id' => "herbcat",
     'link' => 'http://apps.kew.org/herbcat/getHomePageResults.do?homePageSearchText=',
     'title' => 'Search Kew Herbarium Catalogue...',
     'glue' => '+',
@@ -649,6 +762,7 @@ function ext_links_template_defaults() {
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["iucn"] = array(
+    'id' => "iucn",
     'link' => 'http://www.iucnredlist.org/',
     'title' => 'Go to IUCN Red List...',
     'glue' => ' ',
@@ -657,6 +771,7 @@ function ext_links_template_defaults() {
     'category' => 'Conservation',
   );
   $ext_links_default["ipni"] = array(
+    'id' => "ipni",
     'link' => 'http://www.ipni.org/ipni/advPlantNameSearch.do?',
     'title' => 'Search IPNI...',
     'glue' => '&',
@@ -665,6 +780,7 @@ function ext_links_template_defaults() {
     'category' => 'Classification',
   );
   $ext_links_default["wcsp"] = array(
+    'id' => "wcsp",
     'link' => 'http://wcsp.science.kew.org/qsearch.do?plantName=',
     'title' => 'Search World Checklist Monocots...',
     'glue' => ' ',
@@ -673,6 +789,7 @@ function ext_links_template_defaults() {
     'category' => 'Classification',
   );
   $ext_links_default["tpl"] = array(
+    'id' => "tpl",
     'link' => 'http://www.theplantlist.org/tpl/search?q=',
     'title' => 'Search The Plant List...',
     'glue' => '+',
@@ -681,6 +798,7 @@ function ext_links_template_defaults() {
     'category' => 'Classification',
   );
   $ext_links_default["eol"] = array(
+    'nme' => "eol",
     'link' => 'http://eol.org/search/?q=',
     'title' => 'Search Encyclopaedia of Life...',
     'glue' => '+',
@@ -689,6 +807,7 @@ function ext_links_template_defaults() {
     'category' => 'General',
   );
   $ext_links_default["jstor"] = array(
+    'id' => "jstor",
     'link' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=',
     'title' => 'Search JSTOR Plant Science...',
     'glue' => ' ',
@@ -697,6 +816,7 @@ function ext_links_template_defaults() {
     'category' => 'General',
   );
   $ext_links_default["epic"] = array(
+    'id' => "epic",
     'link' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=',
     'title' => 'Search ePIC...',
     'glue' => '+',
@@ -704,18 +824,17 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'General',
   );
-  /*
-   * hidden since Fairchild Guide To Palms seems to be down
   $ext_links_default["fairchild"] = array(
+    'id' => "fairchild",
     'link' => 'http://palmguide.org/palmsearch.php?query=',
     'title' => 'Search Fairchild Guide To Palms...',
     'glue' => '+',
     'weight' => 0,
-    'status' => 1,
+    'status' => 0, //disabled since Fairchild Guide To Palms seems to be down
     'category' => 'Specimens/Occurrences',
   );
-  */
   $ext_links_default["ggbn"] = array(
+    'id' => "ggbn",
     'link' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=',
     'title' => 'Search GGBN...',
     'glue' => '+',
