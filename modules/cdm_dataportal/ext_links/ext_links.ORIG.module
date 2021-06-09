@@ -29,63 +29,332 @@
  *   Help text for the path.
  */
 function ext_links_help($path, $arg) {
+  $output = '';
   switch ($path) {
     case 'admin/help#ext_links':
+      // TODO.
       $output = '<p>' . t("Link to external sources like ## for taxa.") . '</p>';
-      return $output;
-    case 'admin/config/cdm_dataportal/ext_links':
-      $output = '<p>' . t('The external links module allows to configure URL templates for links to external data sources.');
-      return $output;
-    case 'admin/config/cdm_dataportal/ext_links/%':
-      $output = '<p>' . t('An external link template.');
-      return $output;
+      break;
   }
-}
+  return $output;
+} // function ext_links_help
+
+/**
+ * Generate the HTML text for the ext_link login block.
+ */
+function ext_links_admin($form, &$form_state) {
+  // Default values for the external links.
+  $ext_links_default = ext_links_get_default();
+
+  $ext_links[0] = array(
+    'form' => 'gbif',
+    'form_title' => 'GBIF',
+    'check_title' => 'GBIF',
+    'link_title' => 'GBIF link',
+    'link_description' => 'The link to GBIF without the taxon name.',
+    'concat_default_value' => ' ',
+    'text_title' => 'GBIF text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[1] = array(
+    'form' => 'biocase',
+    'form_title' => 'BioCASE',
+    'check_title' => 'Display BioCASE link?',
+    'link_title' => 'BioCASE link',
+    'link_description' => 'The link to BioCASE without the taxon name.',
+    'concat_default_value' => ' ',
+    'text_title' => 'BioCASE text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[2] = array(
+    'form' => 'nybg',
+    'form_title' => 'The New York Botanical Garden',
+    'check_title' => 'Display NYBG link?',
+    'link_title' => 'NYBG link',
+    'link_description' => 'The link to NCBI without the taxon name.',
+    'concat_default_value' => '+AND+',
+    'text_title' => 'NYBG text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[3] = array(
+    'form' => 'tropicos',
+    'form_title' => 'Tropicos',
+    'check_title' => 'Display Tropicos link?',
+    'link_title' => 'Tropicos link',
+    'link_description' => 'The link to Tropicos without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'Tropicos text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[4] = array(
+    'form' => 'ncbi',
+    'form_title' => 'NCBI',
+    'check_title' => 'Display NCBI link?',
+    'link_title' => 'NCBI link',
+    'link_description' => 'The link to NCBI without the taxon name.',
+    'concat_default_value' => '+AND+',
+    'text_title' => 'NCBI text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[5] = array(
+    'form' => 'google',
+    'form_title' => 'Google Images',
+    'check_title' => 'Display Google Images link?',
+    'link_title' => 'Google Images link',
+    'link_description' => 'The link to Google Images without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'Google Images text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[6] = array(
+    'form' => 'flickr',
+    'form_title' => 'flickr',
+    'check_title' => 'Display flickr link?',
+    'link_title' => 'flickr link',
+    'link_description' => 'The link to flickr without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'flickr text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[7] = array(
+    'form' => 'scholar',
+    'form_title' => 'Google scholar',
+    'check_title' => 'Display Google scholar link?',
+    'link_title' => 'Google scholar link',
+    'link_description' => 'The link to Google scholar without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'Google scholar text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[8] = array(
+    'form' => 'bhl',
+    'form_title' => 'Biodiversity Heritage Library (BHL)',
+    'check_title' => 'Display BHL link?',
+    'link_title' => 'BHL link',
+    'link_description' => 'The link to BHL without the taxon name.',
+    'concat_default_value' => ' ',
+    'text_title' => 'BHL text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[9] = array(
+    'form' => 'arkive',
+    'form_title' => 'ARKive',
+    'check_title' => 'Display ARKive link?',
+    'link_title' => 'ARKive link',
+    'link_description' => 'The link to ARKive without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'ARKive text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[10] = array(
+    'form' => 'herbcat',
+    'form_title' => 'Kew Herbarium Catalogue',
+    'check_title' => 'Display Kew Herbarium Catalogue link?',
+    'link_title' => 'Kew Herbarium Catalogue link',
+    'link_description' => 'The link to Kew Herbarium Catalogue without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'Kew Herbarium Catalogue text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[11] = array(
+    'form' => 'iucn',
+    'form_title' => 'IUCN Red List',
+    'check_title' => 'Display IUCN Red List link?',
+    'link_title' => 'IUCN Red List link',
+    'link_description' => 'The link to IUCN Red List without the taxon name.',
+    'concat_default_value' => ' ',
+    'text_title' => 'IUCN Red List text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[12] = array(
+    'form' => 'ipni',
+    'form_title' => 'IPNI',
+    'check_title' => 'Display IPNI link?',
+    'link_title' => 'IPNI link',
+    'link_description' => 'The link to IPNI without the taxon name.',
+    'concat_default_value' => '&',
+    'text_title' => 'IPNI text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[13] = array(
+    'form' => 'wcsp',
+    'form_title' => 'World Checklist of Monocots',
+    'check_title' => 'Display World Checklist of Monocots link?',
+    'link_title' => 'World Checklist of Monocots link',
+    'link_description' => 'The link to World Checklist of Monocots without the taxon name.',
+    'concat_default_value' => ' ',
+    'text_title' => 'World Checklist of Monocots text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[14] = array(
+    'form' => 'tpl',
+    'form_title' => 'The Plant List',
+    'check_title' => 'Display The Plant List link?',
+    'link_title' => 'The Plant List link',
+    'link_description' => 'The link to The Plant List without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'The Plant List text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[15] = array(
+    'form' => 'eol',
+    'form_title' => 'Encyclopaedia of Life',
+    'check_title' => 'Display Encyclopaedia of Life link?',
+    'link_title' => 'Encyclopaedia of Life link',
+    'link_description' => 'The link to Encyclopaedia of Life without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'Encyclopaedia of Life text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[16] = array(
+    'form' => 'jstor',
+    'form_title' => 'JSTOR Plant Science',
+    'check_title' => 'Display JSTOR Plant Science link?',
+    'link_title' => 'JSTOR Plant Science link',
+    'link_description' => 'The link to JSTOR Plant Science without the taxon name.',
+    'concat_default_value' => ' ',
+    'text_title' => 'JSTOR Plant Science text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+  $ext_links[17] = array(
+    'form' => 'epic',
+    'form_title' => 'ePIC',
+    'check_title' => 'Display ePIC link?',
+    'link_title' => 'ePIC link',
+    'link_description' => 'The link to ePIC without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'ePIC text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+
+  $ext_links[18] = array(
+    'form' => 'fairchild',
+    'form_title' => 'Fairchild Guide To Palms',
+    'check_title' => 'Display Fairchild Guide To Palms link?',
+    'link_title' => 'Fairchild Guide To Palms link',
+    'link_description' => 'The link to Fairchild Guide To Palms without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'Fairchild Guide To Palms text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+    'disabled' => true // programatically disabled since this link does no longer exist.
+  );
+
+  $ext_links[19] = array(
+    'form' => 'ggbn',
+    'form_title' => 'Global Genome Biodiversity Network',
+    'check_title' => 'Display Global Genome Biodiversity Network Link?',
+    'link_title' => 'Global Genome Biodiversity Network link',
+    'link_description' => 'The link to GGBN search without the taxon name.',
+    'concat_default_value' => '+',
+    'text_title' => 'Global Genome Biodiversity Network text',
+    'text_description' => 'The text of the link that is displayed..',
+    'category' => 'Category',
+  );
+
+
+  foreach (array_keys($ext_links) as $i) {
+    if(isset($ext_links[$i]['disabled'])){
+      continue;
+    }
+    $form[$ext_links[$i]['form']] = array(
+      '#type' => 'fieldset',
+      '#title' => t('@title', array('@title' => $ext_links[$i]['form_title'])),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+    );
+    $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_check'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('@title', array('@title' => $ext_links[$i]['check_title'])),
+      '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_check', 1),
+    );
+    $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_link'] = array(
+      '#type' => 'textfield',
+      '#title' => t('@title :', array('@title' => $ext_links[$i]['link_title'])),
+      '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_link', $ext_links_default[$ext_links[$i]['form']]['link_default_value']),
+      '#size' => 70,
+      '#maxlength' => 255,
+      '#description' => t('@description', array('@description' => $ext_links[$i]['link_description'])),
+    );
+    $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_concat'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Concatenate string') . ':',
+      '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_concat', $ext_links[$i]['concat_default_value']),
+      '#size' => 70,
+      '#maxlength' => 255,
+      '#description' => t('Concatenate string between genus and species'),
+    );
+    $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_text'] = array(
+      '#type' => 'textfield',
+      '#title' => t('@title :', array('@title' => $ext_links[$i]['text_title'])),
+      '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_text', $ext_links_default[$ext_links[$i]['form']]['text_default_value']),
+      '#size' => 70,
+      '#maxlength' => 255,
+      '#description' => t('@description', array('@description' => $ext_links[$i]['text_description'])),
+    );
+    $form[$ext_links[$i]['form']]['ext_links_' . $ext_links[$i]['form'] . '_category'] = array(
+      '#type' => 'textfield',
+      '#title' => t('@title :', array('@title' => $ext_links[$i]['category'])),
+      '#default_value' => variable_get('ext_links_' . $ext_links[$i]['form'] . '_category', $ext_links_default[$ext_links[$i]['form']]['category_default_value']),
+      '#size' => 70,
+      '#maxlength' => 255,
+      '#description' => t('@description', array('@description' => $ext_links[$i]['category'])),
+    );
+  }
+  $form['ext_links_options'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable sorted list with headings'),
+    '#default_value' => variable_get('ext_links_options', 0),
+    '#prefix' => "<div class = \"sorted_list_option\"",
+    '#suffix' => "</div>",
+  );
+  // @WA: D7 form api does not support reset buttons,
+  // so to mimic the D5 reset button we add one like this.
+  $form['actions']['reset'] = array(
+    '#markup' => '<input id="reset" type="reset" class="form-submit" value="' . t('Reset to defaults') . '" />',
+    '#weight' => 1000,
+  );
+
+  return system_settings_form($form);
+} // function ext_links_admin()
+
 
 /**
  * Implements hook_menu().
  */
 function ext_links_menu() {
-  $items = [];
+  $items = array();
 
-  $items['admin/config/cdm_dataportal/ext_links'] = [
+  $items['admin/config/cdm_dataportal/extlinks'] = array(
     'title' => 'External links',
-    'description' => 'Configure external links templates.',
+    'description' => 'Description of your External links.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => ['ext_links_admin_overview'],
-    'access arguments' => ['access administration pages'],
-    'file' => 'ext_links.admin.inc'
-  ];
-  $items['admin/config/cdm_dataportal/ext_links/list'] = [
-    'title' => 'List',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  ];
-  $items['admin/config/cdm_dataportal/ext_links/add'] = [
-    'title' => 'Add external link',
-    'page callback' => 'ext_links_admin_link_template_page',
-    'access arguments' => ['access administration pages'],
-    'type' => MENU_LOCAL_ACTION,
-    'weight' => 1,
-    'file' => 'ext_links.admin.inc',
-  ];
-  $items['admin/config/cdm_dataportal/ext_links/%link_template'] = [
-    'title callback' => 'ext_links_admin_extlink_title',
-    'title arguments' => [4],
-    'page callback' => 'ext_links_admin_link_template_page',
-    'page arguments' => [4],
-    'access arguments' => ['access administration pages'],
-    'file' => 'ext_links.admin.inc',
-  ];
-  $items['admin/config/cdm_dataportal/ext_links/%link_template/disable'] = [
-    'title' => 'Disable external link',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => ['ext_links_admin_disable', 4],
-    'access arguments' => ['access administration pages'],
-    'file' => 'ext_links.admin.inc',
-  ];
-  return $items;
-}
+    'page arguments' => array('ext_links_admin'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' =>30,
+  );
 
+  return $items;
+} /* function ext_links_menu() */
 
 /**
  * Returns the genus and the first epithet from the object taxon.
@@ -105,46 +374,6 @@ function getSpeciesName($taxon) {
     $i++;
   }
   return $speciesName;
-}
-
-/**
- * Retrieves a list of External Link templates, ordered by weight.
- *
- * @return
- *   An array of external link template objects, keyed by the format ID and ordered by
- *   weight.
- *
- */
-function ext_links_templates() {
-  global $language;
-  $link_templates = &drupal_static(__FUNCTION__, array());
-
-  // cache_clear_all("ext_links_templates:{$language->language}");
-  // All available link_templates are cached for performance.
-  if (!is_array($link_templates) || !count($link_templates)) {
-    if ($cache = cache_get("ext_links_templates:{$language->language}")) {
-      $link_templates = $cache->data;
-    }
-    else {
-      $test = true;
-      if($test){
-        $link_templates = [];
-        $link_templates_arrays = ext_links_template_defaults();
-        foreach($link_templates_arrays as $a){
-          $link_templates[] = (object)$a;
-        }
-      } else {
-        $link_templates = db_select('ext_links_templates', 'ff')
-          ->addTag('translatable')
-          ->fields('ff')
-        //  ->condition('status', 1)
-          ->orderBy('weight')
-          ->execute();
-      }
-      // cache_set("ext_links_templates:{$language->language}", $link_templates);
-    }
-  }
-  return $link_templates;
 }
 
 /**
@@ -541,15 +770,6 @@ function ext_links_theme() {
       'genus' => NULL,
       'species' => NULL,
       )),
-    // theme_ext_links_admin_overview
-    'ext_links_admin_overview' => array(
-      'render element' => 'form',
-      'file' => 'ext_links.admin.inc',
-    ),
-//    'ext_links_link_template_filter_order' => array(
-//      'render element' => 'element',
-//      'file' => 'ext_links.admin.inc',
-//    ),
   );
 }
 
@@ -559,169 +779,110 @@ function ext_links_theme() {
  * @return array
  *   Returns an array with default external links values.
  */
-function ext_links_template_defaults() {
+function ext_links_get_default() {
   $ext_links_default["gbif"] = array(
-    'link' => 'http://www.gbif.org/species/search?q=',
-    'title' => 'Search GBIF...',
-    'glue' => ' ',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Specimens/Occurrences',
+    'link_default_value' => 'http://www.gbif.org/species/search?q=',
+    'text_default_value' => 'Search GBIF...',
+    'category_default_value' => 'Specimens/Occurrences',
   );
   $ext_links_default["biocase"] = array(
-    'link' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=',
-    'title' => 'Search BioCASE...',
-    'glue' => ' ',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Specimens/Occurrences',
+    'link_default_value' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=',
+    'text_default_value' => 'Search BioCASE...',
+    'category_default_value' => 'Specimens/Occurrences',
   );
   $ext_links_default["nybg"] = array(
-    'link' => 'http://sweetgum.nybg.org/science/vh/specimen_list.php?SummaryData=',
-    'title' => 'Search NYBG...',
-    'glue' => '+AND+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Specimens/Occurrences',
+    'link_default_value' => 'http://sweetgum.nybg.org/science/vh/specimen_list.php?SummaryData=',
+    'text_default_value' => 'Search NYBG...',
+    'category_default_value' => 'Specimens/Occurrences',
   );
   $ext_links_default["tropicos"] = array(
-    'link' => 'http://www.tropicos.org/NameSearch.aspx?name=',
-    'title' => 'Search Tropicos...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Specimens/Occurrences',
+    'link_default_value' => 'http://www.tropicos.org/NameSearch.aspx?name=',
+    'text_default_value' => 'Search Tropicos...',
+    'category_default_value' => 'Specimens/Occurrences',
   );
   $ext_links_default["ncbi"] = array(
-    'link' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=',
-    'title' => 'Search NCBI...',
-    'glue' => '+AND+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Molecular Resources',
+    'link_default_value' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=',
+    'text_default_value' => 'Search NCBI...',
+    'category_default_value' => 'Molecular Resources',
   );
   $ext_links_default["google"] = array(
-    'link' => 'http://images.google.com/images?q=',
-    'title' => 'Search Google Images...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Images',
+    'link_default_value' => 'http://images.google.com/images?q=',
+    'text_default_value' => 'Search Google Images...',
+    'category_default_value' => 'Images',
   );
   $ext_links_default["flickr"] = array(
-    'link' => 'http://www.flickr.com/search/?w=all&q=',
-    'title' => 'Search flickr...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Images',
+    'link_default_value' => 'http://www.flickr.com/search/?w=all&q=',
+    'text_default_value' => 'Search flickr...',
+    'category_default_value' => 'Images',
   );
   $ext_links_default["scholar"] = array(
-    'link' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
-    'title' => 'Search Google scholar...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Literature',
+    'link_default_value' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
+    'text_default_value' => 'Search Google scholar...',
+    'category_default_value' => 'Literature',
   );
   $ext_links_default["bhl"] = array(
-    'link' => 'http://www.biodiversitylibrary.org/Search.aspx?searchCat=&searchTerm=',
-    'title' => 'Search BHL...',
-    'glue' => ' ',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Literature',
+    'link_default_value' => 'http://www.biodiversitylibrary.org/Search.aspx?searchCat=&searchTerm=',
+    'text_default_value' => 'Search BHL...',
+    'category_default_value' => 'Literature',
   );
   $ext_links_default["arkive"] = array(
-    'link' => 'http://www.arkive.org/search.html?q=',
-    'title' => 'Search ARKive...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Images',
+    'link_default_value' => 'http://www.arkive.org/search.html?q=',
+    'text_default_value' => 'Search ARKive...',
+    'category_default_value' => 'Images',
   );
   $ext_links_default["herbcat"] = array(
-    'link' => 'http://apps.kew.org/herbcat/getHomePageResults.do?homePageSearchText=',
-    'title' => 'Search Kew Herbarium Catalogue...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Specimens/Occurrences',
+    'link_default_value' => 'http://apps.kew.org/herbcat/getHomePageResults.do?homePageSearchText=',
+    'text_default_value' => 'Search Kew Herbarium Catalogue...',
+    'category_default_value' => 'Specimens/Occurrences',
   );
   $ext_links_default["iucn"] = array(
-    'link' => 'http://www.iucnredlist.org/',
-    'title' => 'Go to IUCN Red List...',
-    'glue' => ' ',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Conservation',
+    'link_default_value' => 'http://www.iucnredlist.org/',
+    'text_default_value' => 'Go to IUCN Red List...',
+    'category_default_value' => 'Conservation',
   );
   $ext_links_default["ipni"] = array(
-    'link' => 'http://www.ipni.org/ipni/advPlantNameSearch.do?',
-    'title' => 'Search IPNI...',
-    'glue' => '&',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Classification',
+    'link_default_value' => 'http://www.ipni.org/ipni/advPlantNameSearch.do?',
+    'text_default_value' => 'Search IPNI...',
+    'category_default_value' => 'Classification',
   );
   $ext_links_default["wcsp"] = array(
-    'link' => 'http://wcsp.science.kew.org/qsearch.do?plantName=',
-    'title' => 'Search World Checklist Monocots...',
-    'glue' => ' ',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Classification',
+    'link_default_value' => 'http://wcsp.science.kew.org/qsearch.do?plantName=',
+    'text_default_value' => 'Search World Checklist Monocots...',
+    'category_default_value' => 'Classification',
   );
   $ext_links_default["tpl"] = array(
-    'link' => 'http://www.theplantlist.org/tpl/search?q=',
-    'title' => 'Search The Plant List...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Classification',
+    'link_default_value' => 'http://www.theplantlist.org/tpl/search?q=',
+    'text_default_value' => 'Search The Plant List...',
+    'category_default_value' => 'Classification',
   );
   $ext_links_default["eol"] = array(
-    'link' => 'http://eol.org/search/?q=',
-    'title' => 'Search Encyclopaedia of Life...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'General',
+    'link_default_value' => 'http://eol.org/search/?q=',
+    'text_default_value' => 'Search Encyclopaedia of Life...',
+    'category_default_value' => 'General',
   );
   $ext_links_default["jstor"] = array(
-    'link' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=',
-    'title' => 'Search JSTOR Plant Science...',
-    'glue' => ' ',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'General',
+    'link_default_value' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=',
+    'text_default_value' => 'Search JSTOR Plant Science...',
+    'category_default_value' => 'General',
   );
   $ext_links_default["epic"] = array(
-    'link' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=',
-    'title' => 'Search ePIC...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'General',
+    'link_default_value' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=',
+    'text_default_value' => 'Search ePIC...',
+    'category_default_value' => 'General',
   );
   /*
    * hidden since Fairchild Guide To Palms seems to be down
   $ext_links_default["fairchild"] = array(
-    'link' => 'http://palmguide.org/palmsearch.php?query=',
-    'title' => 'Search Fairchild Guide To Palms...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Specimens/Occurrences',
+    'link_default_value' => 'http://palmguide.org/palmsearch.php?query=',
+    'text_default_value' => 'Search Fairchild Guide To Palms...',
+    'category_default_value' => 'Specimens/Occurrences',
   );
   */
   $ext_links_default["ggbn"] = array(
-    'link' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=',
-    'title' => 'Search GGBN...',
-    'glue' => '+',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Molecular Resources',
+    'link_default_value' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=',
+    'text_default_value' => 'Search GGBN...',
+    'category_default_value' => 'Molecular Resources',
   );
+  //
   return $ext_links_default;
 }
