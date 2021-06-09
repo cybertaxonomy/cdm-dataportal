@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the ext_links module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function ext_links_schema() {
+  $schema['ext_links'] = [
+    'description' => 'Table external link templates.',
+    'fields' => [
+      'id' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Name of the ext_link being referenced.',
+      ],
+      'title' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The link title',
+      ],
+      'link' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The link url template',
+      ],
+      'glue' => [
+        'type' => 'varchar',
+        'length' => 10,
+        'not null' => TRUE,
+        'description' => 'The string to concatenate name parts in the URL query string',
+      ],
+      'weight' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Weight of filter within format.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'External link enabled status. (1 = enabled, 0 = disabled)',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'list' => ['weight', 'id'],
+    ],
+  ];
+
+  return $schema;
+}
