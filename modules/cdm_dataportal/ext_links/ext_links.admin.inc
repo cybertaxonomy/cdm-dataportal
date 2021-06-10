@@ -23,6 +23,9 @@ function ext_links_admin_overview($form) {
     $form['link_templates'][$id]['glue'] = array('#markup' => check_plain($link_template->glue));
     $form['link_templates'][$id]['category'] = array('#markup' => check_plain($link_template->category));
     $form['link_templates'][$id]['configure'] = array('#type' => 'link', '#title' => t('configure'), '#href' => 'admin/config/cdm_dataportal/ext_links/' . $link_template->id);
+    $form['link_templates'][$id]['status'] = array('#type' => 'link',
+      '#title' => $link_template->status == 1 ? t('disable') : t('enable'),
+      '#href' => 'admin/config/cdm_dataportal/ext_links/' . $link_template->id . '/status/' . ($link_template->status == 1 ? '0' : '1'));
     $form['link_templates'][$id]['weight'] = array(
       '#type' => 'weight',
       '#title' => t('Weight for @title', array('@title' => $link_template->id)),
@@ -219,12 +222,13 @@ function theme_ext_links_admin_overview($variables) {
         drupal_render($form['link_templates'][$id]['glue']),
         drupal_render($form['link_templates'][$id]['category']),
         drupal_render($form['link_templates'][$id]['weight']),
-        drupal_render($form['link_templates'][$id]['configure'])
+        drupal_render($form['link_templates'][$id]['configure']),
+        drupal_render($form['link_templates'][$id]['status']),
       ),
       'class' => $row_class_attributes,
     );
   }
-  $header = array(t('Title'), t('Link'), t('Glue'), t('Category'), t('Weight'), array('data' => t('Operations'), 'colspan' => 1));
+  $header = array(t('Title'), t('Link'), t('Glue'), t('Category'), t('Weight'), array('data' => t('Operations'), 'colspan' => 2));
   $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'text-format-order')));
   $output .= drupal_render_children($form);
 
