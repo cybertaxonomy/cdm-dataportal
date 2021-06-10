@@ -611,10 +611,20 @@ function theme_ext_links_list_plain($variables) {
     $postURL = '&output=xml_no_dtd&client=arkive-images&site=arkive-images&ie=utf8&oe=utf8&num=20&proxystylesheet=tng-search&filter=0&getfields=*';
     $block_content .= '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_arkive_link', $ext_links_default['arkive']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_arkive_concat', ' ') . str_replace('"', '%22', $speciesName['species']) . $postURL . '\')">' . variable_get('ext_links_arkive_text', $ext_links_default['arkive']['text_default_value']) . '</a><br />';
   }
-  if (variable_get('ext_links_herbcat_check', 1)) {
+
+  //--------------------
+  $ext_link_id = 'herbcat';
+  if (variable_get("ext_links_${ext_link_id}_check", 1)) {
     $postURL = '&x=11&y=13&homePageSearchOption=scientific_name&nameOfSearchPage=home_page';
-    $block_content .= '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_herbcat_link', $ext_links_default['herbcat']['link_default_value']) . str_replace('"', '%22', $speciesName['genus']) . variable_get('ext_links_herbcat_concat', '+') . str_replace('"', '%22', $speciesName['species']) . $postURL . '\')">' . variable_get('ext_links_herbcat_text', $ext_links_default['herbcat']['text_default_value']) . '</a><br />';
+    $block_content .= '<a href="JavaScript:popupExternalLinks(\'' .
+      variable_get("ext_links_${ext_link_id}_link", $ext_links_default[$ext_link_id]['link_default_value']) .
+      str_replace('"', '%22', $speciesName['genus']) .
+      variable_get("ext_links_${ext_link_id}_concat", '+') .
+      str_replace('"', '%22', $speciesName['species']) . $postURL . '\')">' .
+      variable_get("ext_links_${ext_link_id}_text", $ext_links_default[$ext_link_id]['text_default_value']) .
+      '</a><br />';
   }
+  //--------------------
   if (variable_get('ext_links_iucn_check', 1)) {
     $block_content .= '<a href="JavaScript:popupExternalLinks(\'' . variable_get('ext_links_iucn_link', $ext_links_default['iucn']['link_default_value']) . '\')">' . variable_get('ext_links_iucn_text', $ext_links_default['iucn']['text_default_value']) . '</a><br />';
 
