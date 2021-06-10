@@ -909,7 +909,9 @@ function icon_link($path, $fragment = '', $superscript = FALSE) {
 }
 
 /**
- * Determine if a variable is set and is not NULL an is not empty.
+ * Determine if the variable is set and is not NULL and not empty.
+ *
+ * Arrays with at least one element are not empty.
  *
  * @param $var
  *  The variable to test

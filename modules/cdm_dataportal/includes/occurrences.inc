@@ -421,7 +421,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
 
                         foreach ($value as $determinationEvent) {
                             $timeperiod_string = NULL;
-                            if (isset($determinationEvent->timeperiod)) {
+                            if (isset_not_empty($determinationEvent->timeperiod)) {
                                 $timeperiod_string = timePeriodToString($determinationEvent->timeperiod);
                             }
                             $weight = isset($determinationEvent->preferred) && $determinationEvent->preferred == 1 ? '0' : ($timeperiod_string ? $timeperiod_string : '1');
@@ -446,16 +446,16 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 $taxon_html = l($taxon_name->titleCache, $name_link);
                                 $dd_elements[$weight] = $taxon_html;
                             }
-                            if (isset($determinationEvent->modifier)) {
+                            if (isset_not_empty($determinationEvent->modifier)) {
                                 $dd_elements[$weight] .= cdm_term_representation($determinationEvent->modifier);
                             }
                             if ($timeperiod_string) {
                                 $dd_elements[$weight] .= $glue . $timeperiod_string;
                             }
-                            if (isset($determinationEvent->actor->titleCache)) {
+                            if (isset_not_empty($determinationEvent->actor->titleCache)) {
                                 $dd_elements[$weight] .= $glue . $determinationEvent->actor->titleCache;
                             }
-                            if (isset($determinationEvent->description)) {
+                            if (isset_not_empty($determinationEvent->description)) {
                                 $dd_elements[$weight] .= $glue . $determinationEvent->description;
                             }
                         }
@@ -629,19 +629,19 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('locality'), $value->locality->text, '', 10);
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('country'), $value->country->representation_L10n, '', 4);
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label('collectingMethod'), $value->collectingMethod,'',5);
-                        if (isset($value->absoluteElevation)) {
+                        if (isset_not_empty($value->absoluteElevation)) {
                             $min_max_markup = statistical_values_from_gathering_event($value, 'absoluteElevation');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('absoluteElevation'), $min_max_markup, '',6);
                         }
-                        if (isset($value->distanceToGround)) {
+                        if (isset_not_empty($value->distanceToGround)) {
                             $min_max_markup = statistical_values_from_gathering_event($value, 'distanceToGround');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToGround'), $min_max_markup,'',7);
                         }
-                        if (isset($value->distanceToWaterSurface)) {
+                        if (isset_not_empty($value->distanceToWaterSurface)) {
                             $min_max_markup = statistical_values_from_gathering_event($value, 'distanceToWaterSurface');
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('distanceToWaterSurface'), $min_max_markup, '',8);
                         }
-                        if (isset($value->collectingAreas) && count($value->collectingAreas) > 0) {
+                        if (isset_not_empty($value->collectingAreas)) {
                             $area_representations = array();
                             foreach ($value->collectingAreas as $area) {
                                 $area_representations[] = l($area->representation_L10n, path_to_named_area($area->uuid));
@@ -652,7 +652,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 ),'',9
                             );
                         }
-                        if ($value->exactLocation->sexagesimalString) {
+                        if (isset_not_empty($value->exactLocation->sexagesimalString)) {
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('exactLocation'),
                                 array(
                                     array('#markup' => render_point($value->exactLocation)),
