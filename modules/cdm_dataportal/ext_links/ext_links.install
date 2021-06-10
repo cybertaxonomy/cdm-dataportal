@@ -37,6 +37,12 @@ function ext_links_schema() {
         'not null' => TRUE,
         'description' => 'The string to concatenate name parts in the URL query string',
       ],
+      'category' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The link category',
+      ],
       'weight' => [
         'type' => 'int',
         'not null' => TRUE,
@@ -57,4 +63,11 @@ function ext_links_schema() {
   ];
 
   return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function hook_uninstall() {
+  db_drop_table('ext_links');
 }

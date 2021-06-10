@@ -81,7 +81,11 @@ function ext_links_menu() {
 /**
  * Retrieves a list of External Link templates, ordered by weight.
  *
- * @return
+ * Empty 'ext_links' tables will be initialized with the default templates.
+ *
+ * @see ext_links_template_defaults()
+ *
+ * @return array
  *   An array of external link template objects, keyed by the format ID and ordered by
  *   weight.
  *
@@ -93,11 +97,11 @@ function ext_links_templates() {
   // cache_clear_all("ext_links_templates:{$language->language}");
   // All available link_templates are cached for performance.
   if (!is_array($link_templates) || !count($link_templates)) {
-    if ($cache = cache_get("ext_links_templates:{$language->language}")) {
+    if ($cache = cache_get("ext_links:{$language->language}")) {
       $link_templates = $cache->data;
     }
     else {
-      $test = true;
+      $test = false;
       if($test){
         $link_templates = [];
         $link_templates_arrays = ext_links_template_defaults();
@@ -108,11 +112,29 @@ function ext_links_templates() {
         $link_templates = db_select('ext_links', 'elt')
           ->addTag('translatable')
           ->fields('elt')
-          ->condition('status', 1)
+          ->orderBy('category')
           ->orderBy('weight')
-          ->execute();
+          ->execute()
+          ->fetchAllAssoc('id');
       }
-      // cache_set("ext_links_templates:{$language->language}", $link_templates);
+      if(!count($link_templates)) {
+        $link_templates_arrays = ext_links_template_defaults();
+        $query = db_insert('ext_links')
+          ->fields(array_keys(array_values($link_templates_arrays)[0]));
+        foreach($link_templates_arrays as $a){
+          $query->values($a);
+        }
+        try {
+          $query->execute();
+        } catch (Exception $e) {
+          drupal_set_message("Error while initializing ext_links database: " . $e->getMessage(), "error");
+        }
+        $link_templates = [];
+        foreach($link_templates_arrays as $a){
+          $link_templates[] = (object)$a;
+        }
+      }
+      // cache_set("ext_links:{$language->language}", $link_templates);
     }
   }
   return $link_templates;
@@ -124,8 +146,8 @@ function ext_links_templates() {
  * @see filter_formats()
  */
 function ext_links_templates_reset() {
-  cache_clear_all('ext_links_templates', 'cache', TRUE);
-  drupal_static_reset('ext_links_templates');
+  cache_clear_all('ext_links', 'cache', TRUE);
+  drupal_static_reset('ext_links');
 }
 
 /**
@@ -142,14 +164,14 @@ function ext_links_templates_reset() {
  * @see ext_links_exists()
  */
 function ext_links_load($extlink_id) {
-  $test = TRUE;
+  $test = false;
   if($test) {
     $defaults = ext_links_template_defaults();
     return isset($defaults[$extlink_id]) ? (object)$defaults[$extlink_id] : FALSE;
   }
   else {
-   $formats = ext_links_templates();
-    return isset($formats[$extlink_id]) ? $formats[$extlink_id] : FALSE;
+   $link_templates = ext_links_templates();
+    return isset($link_templates[$extlink_id]) ? $link_templates[$extlink_id] : FALSE;
   }
 }
 
@@ -174,6 +196,7 @@ function ext_links_load($extlink_id) {
  *   SAVED_NEW or SAVED_UPDATED.
  */
 function ext_links_save($link_template) {
+
   $link_template->title = trim($link_template->title);
   $link_template->cache = true;
   if (!isset($link_template->status)) {
@@ -185,7 +208,7 @@ function ext_links_save($link_template) {
 
   // Insert or update the text format.
   $return = db_merge('ext_links')
-    ->key(array('format' => $link_template->title))
+    ->key(array('id' => $link_template->id))
     ->fields(array(
       'id' => $link_template->id,
       'title' => $link_template->title,
@@ -196,10 +219,6 @@ function ext_links_save($link_template) {
     ))
     ->execute();
 
-  if ($return != SAVED_NEW) {
-    // Clear the filter cache whenever an external link is updated.
-    cache_clear_all($link_template->format . ':', 'cache_filter', TRUE);
-  }
   ext_links_templates_reset();
   return $return;
 }

@@ -116,7 +116,7 @@ function ext_links_admin_link_template_page($link_template = NULL) {
  */
 function ext_links_admin_link_template_form($form, &$form_state, $link_template) {
 
-  $form['#format'] = $link_template;
+  $form['#link_template'] = $link_template;
   $form['#tree'] = TRUE;
 
   $form['id'] = array(
@@ -193,6 +193,8 @@ function ext_links_admin_link_template_form_submit($form, &$form_state) {
       drupal_set_message(t('The text link_template %link_template has been updated.', array('%link_template' => $link_template->id)));
       break;
   }
+
+  drupal_goto('admin/config/cdm_dataportal/ext_links');
 }
 
 /**
