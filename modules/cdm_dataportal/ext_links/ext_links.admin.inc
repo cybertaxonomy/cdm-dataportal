@@ -198,6 +198,22 @@ function ext_links_admin_link_template_form_submit($form, &$form_state) {
 }
 
 /**
+ * Sets the status of a link_template.
+ *
+ * Used as page callback in menu items.
+ *
+ * @param $link_template
+ *    The link template
+ * @param $status
+ *    The status value to set (values: 1 or 0)
+ */
+function ext_links_admin_link_template_set_status($link_template, $status){
+    $link_template->status = $status === 1 ? 1 : 0;
+    ext_links_save($link_template);
+    drupal_goto("admin/config/cdm_dataportal/ext_links");
+}
+
+/**
  * Returns HTML for the text format administration overview form.
  *
  * @param $variables
