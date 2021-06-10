@@ -66,6 +66,18 @@ function ext_links_schema() {
 }
 
 /**
+ * implements hook_install()
+ */
+function ext_links_install() {
+  $links_templates = migrate_old_ext_links();
+  foreach ($links_templates as $ext_link){
+    db_delete('variable')
+      ->condition('name', "ext_links_" . $ext_link->id . '_%', 'LIKE')
+      ->execute();
+  }
+}
+
+/**
  * Implements hook_uninstall().
  */
 function hook_uninstall() {
@@ -73,10 +85,15 @@ function hook_uninstall() {
 }
 
 /**
- * Migrates
+ * Migrates old ext link templates from drupal vars to the ext_link table.
  */
 function migrate_old_ext_links(){
-  
+  $links_templates = ext_links_templates();
+  foreach ($links_templates as $ext_link){
+    $ext_link = _ext_links_merge_old_vars($ext_link);
+    ext_links_save($ext_link);
+  }
+  return $links_templates;
 }
 
 /**
@@ -88,9 +105,9 @@ function migrate_old_ext_links(){
  */
 function _ext_links_merge_old_vars($ext_link){
   $ext_link_id = $ext_link->id;
-  $ext_link_id->status = variable_get("ext_links_${ext_link_id}_check", $ext_link_id->is);
-  $ext_link_id->link =  variable_get("ext_links_${ext_link_id}_link", $ext_link_id->link);
-  $ext_link_id->glue = variable_get("ext_links_${ext_link_id}_concat",   $ext_link_id->glue);
-  $ext_link_id->title = variable_get("ext_links_${ext_link_id}_text", $ext_link->title);
+  $ext_link->status = variable_get("ext_links_${ext_link_id}_check", $ext_link->id);
+  $ext_link->link =  variable_get("ext_links_${ext_link_id}_link", $ext_link->link);
+  $ext_link->glue = variable_get("ext_links_${ext_link_id}_concat",   $ext_link->glue);
+  $ext_link->title = variable_get("ext_links_${ext_link_id}_text", $ext_link->title);
   return $ext_link;
 }
