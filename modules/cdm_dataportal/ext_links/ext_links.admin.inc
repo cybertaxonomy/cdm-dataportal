@@ -92,6 +92,25 @@ function ext_links_admin_link_template_page($link_template = NULL) {
   return drupal_get_form('ext_links_admin_link_template_form', $link_template);
 }
 
+function ext_links_admin_appearance_page(){
+
+  drupal_set_title(t('Configure the appearance of external links'));
+
+  $form['ext_links_options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('External links appearance options'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE
+  );
+  $form['ext_links_options']['ext_links_appearance_grouped'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Show external links grouped by category with headings.'),
+    '#default_value' => variable_get('ext_links_appearance_grouped', 1)
+  ];
+
+  return system_settings_form($form);
+}
+
 
 /**
  * Form constructor for the External Link add/edit form.

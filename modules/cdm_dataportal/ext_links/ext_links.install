@@ -75,6 +75,8 @@ function ext_links_install() {
       ->condition('name', "ext_links_" . $ext_link->id . '_%', 'LIKE')
       ->execute();
   }
+  variable_set('ext_links_appearance_grouped', variable_get('ext_links_options', 0) != 1 ? 1 : 0 );
+  variable_del('ext_links_options');
 }
 
 /**
