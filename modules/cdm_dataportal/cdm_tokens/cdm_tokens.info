@@ -1,0 +1,6 @@
+name = "CDM Tokens"
+description = "Provides tokens for taxa, names, references, etc."
+version = 7.x-0.1
+package = "CDM"
+core = 7.x
+dependencies[] = cdm_api

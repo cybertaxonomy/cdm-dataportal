@@ -1,0 +1,118 @@
+<?php
+/**
+ * @file
+ * Provides tokens for taxa, names, references, etc.
+ *
+ * @copyright
+ *   (C) 2021 EDIT
+ *   European Distributed Institute of Taxonomy
+ *   http://www.cybertaxonopmy.org
+ *
+ *   The contents of this module are subject to the Mozilla
+ *   Public License Version 1.1.
+ * @see http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * @author
+ *   - Andreas Kohlbecker <a.kohlbecker@BGBM.org>
+ */
+
+/**
+ * Implements hook_token_info().
+ */
+function cdm_tokens_token_info() {
+  $info = array();
+
+  $info['tokens']['cdm']['taxon_name'] = t('The taxon name consisting of all name parts and sub species rank. (Only present on a cdm_dataportal/taxon/ or cdm_dataportal/name/* page)');
+  $info['tokens']['cdm']['taxon_name:uninomial'] = t('The taxon names uninomial or genus name. (Only present on a cdm_dataportal/taxon/ or cdm_dataportal/name/* page)');
+  $info['tokens']['cdm']['taxon_name:epithet'] = t('The taxon names specific epithet. (Only present on a cdm_dataportal/taxon/ or cdm_dataportal/name/* page');
+  $info['tokens']['cdm']['taxon_name:infraspecific_epithet'] = t('The taxon names specific epithet. (Only present on a cdm_dataportal/taxon/ or cdm_dataportal/name/* page');
+  $info['tokens']['cdm']['taxon_name:reference'] = t('The taxon name nomenclatural reference. (Only present on a cdm_dataportal/taxon/ or cdm_dataportal/name/* page');
+ // $info['tokens']['cdm']['taxon_name:reference:doi'] = t('The taxon name nomenclatural reference. (Only present on a cdm_dataportal/taxon/ or cdm_dataportal/name/* page');
+  $info['tokens']['cdm']['taxon_name:authorship'] = t('The author(s) of taxon name. (Only present on a cdm_dataportal/taxon/ or cdm_dataportal/name/* page');
+  $info['tokens']['cdm']['taxon_name:rank'] = t('The names rank. (Only present on a cdm_dataportal/taxon/ or cdm_dataportal/name/* page');
+
+  return $info;
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function cdm_tokens_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  $replacements = array();
+
+  if ($type == 'cdm') {
+    $token_values = _cdm_tokens_taxon_or_name();
+    foreach ($tokens as $name => $original) {
+      // Find the desired token by name
+      switch ($name) {
+        case 'taxon_name':
+          if($token_values['taxon_name']){
+            $replacements[$original] = $token_values['taxon_name'];
+          }
+          break;
+        case 'taxon_name:uninomial':
+        case 'taxon_name:epithet':
+        case 'taxon_name:infraspecific_epithet':
+        case 'taxon_name:rank':
+        case 'taxon_name:reference':
+        case 'taxon_name:authorship':
+          if($token_values[$name]){
+            $replacements[$original] = $token_values[$name];
+          }
+          break;
+      }
+    }
+  }
+
+  // Return the replacements.
+  return $replacements;
+}
+
+
+function _cdm_tokens_taxon_or_name(){
+  static $current_token_values;
+  if(!isset($current_token_values)){
+    $current_token_values = [
+      'taxon_name' => null,
+      'uninomial' => null,
+      'epithet' => null,
+      'infraspecific_epithet' => null,
+      'rank' => null,
+      'reference' => null,
+   //   'reference:doi' => null,
+      'authorship' => null
+    ];
+    $taxon_name = null;
+
+    $taxon_uuid = get_current_taxon_uuid();
+    if($taxon_uuid){
+      // this is request is made anyway. Practically we only query the L1 cache here.
+      $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, [$taxon_uuid]);
+      if(isset_not_empty($taxon)){
+        $taxon_name = $taxon->name;
+      }
+    } else {
+     $name_uuid = get_current_name_uuid();
+      $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, [$name_uuid]);
+    }
+
+    if(isset_not_empty($taxon_name)){
+      $current_token_values['taxon_name'] = $taxon_name->nameCache;
+      $current_token_values['uninomial'] = $taxon_name->genusOrUninomial;
+      $current_token_values['epithet'] = $taxon_name->specificEpithet;
+      $current_token_values['infraspecific_epithet'] = $taxon_name->infraSpecificEpithet;
+      if(isset_not_empty($taxon_name->rank->representation_L10n)) {
+        $current_token_values['rank'] = $taxon_name->rank->representation_L10n;
+      }
+      if(isset_not_empty($taxon_name->nomenclaturalSource->citation->titleCache)) {
+        $current_token_values['reference'] = $taxon_name->nomenclaturalSource->citation->titleCache;
+      }
+      if(isset_not_empty($taxon_name->nomenclaturalSource->citation->authorship->titleCache)) {
+        $current_token_values['authorship'] = $taxon_name->nomenclaturalSource->citation->authorship->titleCache;
+      }
+    }
+  }
+
+  return $current_token_values;
+}
+
