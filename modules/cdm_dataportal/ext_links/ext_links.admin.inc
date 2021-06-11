@@ -227,7 +227,7 @@ function ext_links_admin_link_template_form_submit($form, &$form_state) {
  *    The status value to set (values: 1 or 0)
  */
 function ext_links_admin_link_template_set_status($link_template, $status){
-    $link_template->status = $status === 1 ? 1 : 0;
+    $link_template->status = $status == 1 ? 1 : 0;
     ext_links_save($link_template);
     drupal_goto("admin/config/cdm_dataportal/ext_links");
 }
@@ -269,7 +269,7 @@ function theme_ext_links_admin_overview($variables) {
   $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'link-templates-order')));
   $output .= drupal_render_children($form);
 
-  drupal_add_tabledrag('link-templates-order', 'order', 'sibling', 'text-format-order-weight');
+  drupal_add_tabledrag('link-templates-order', 'order', 'sibling', 'text-format-order-weight', null, null, TRUE);
 
   return $output;
 }
