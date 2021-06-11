@@ -1115,8 +1115,26 @@ function get_current_taxon_uuid()
       $taxon_uuid = null;
     }
   }
-
   return $taxon_uuid;
+}
+
+/**
+ * Provides the uuid of the name for pages with the path ./name/{name_uuid}
+ *
+ * @return string
+ *   the name uuid or NULL
+ */
+function get_current_name_uuid()
+{
+  static $name_uuid;
+  if(!isset($name_uuid)){
+    if(arg(1) == 'name' && is_uuid(arg(2))) {
+      $name_uuid = arg(2);
+    } else {
+      $name_uuid = null;
+    }
+  }
+  return $name_uuid;
 }
 
 /**
