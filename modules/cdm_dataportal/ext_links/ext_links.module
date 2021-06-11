@@ -135,8 +135,7 @@ function ext_links_templates($enabled_only = FALSE) {
           $query = $query->condition('status', '1');
         }
         $link_templates =
-          $query->orderBy('category')
-          ->orderBy('weight')
+          $query->orderBy('weight')
           ->execute()
           ->fetchAllAssoc('id');
       }

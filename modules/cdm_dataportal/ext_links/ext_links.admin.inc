@@ -43,15 +43,15 @@ function ext_links_admin_overview($form) {
 }
 
 /**
- * Form submission handler for filter_admin_overview().
+ * Form submission handler for ext_links_admin_overview().
  */
 function ext_links_admin_overview_submit($form, &$form_state) {
-  foreach ($form_state['values']['formats'] as $id => $data) {
+  foreach ($form_state['values']['link_templates'] as $id => $data) {
     if (is_array($data) && isset($data['weight'])) {
       // Only update if this is a form element with weight.
-      db_update('filter_format')
+      db_update('ext_links')
         ->fields(array('weight' => $data['weight']))
-        ->condition('format', $id)
+        ->condition('id', $id)
         ->execute();
     }
   }
@@ -266,10 +266,10 @@ function theme_ext_links_admin_overview($variables) {
     );
   }
   $header = array(t('Title'), t('Link'), t('Glue'), t('Category'), t('Weight'), array('data' => t('Operations'), 'colspan' => 2));
-  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'text-format-order')));
+  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'link-templates-order')));
   $output .= drupal_render_children($form);
 
-  drupal_add_tabledrag('text-format-order', 'order', 'sibling', 'text-format-order-weight');
+  drupal_add_tabledrag('link-templates-order', 'order', 'sibling', 'text-format-order-weight');
 
   return $output;
 }
