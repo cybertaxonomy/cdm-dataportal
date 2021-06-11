@@ -4,6 +4,6 @@ description = A block module for listing external links to taxa information.
 version = "7.x-2.0"
 package = "CDM"
 dependencies[] = cdm_dataportal
+dependencies[] = cdm_tokens
 core = 7.x
-
 configure = admin/config/cdm_dataportal/extlinks

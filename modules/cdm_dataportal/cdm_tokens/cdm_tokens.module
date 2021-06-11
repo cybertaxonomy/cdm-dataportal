@@ -39,7 +39,6 @@ function cdm_tokens_token_info() {
  */
 function cdm_tokens_tokens($type, $tokens, array $data = array(), array $options = array()) {
   $replacements = array();
-
   if ($type == 'cdm') {
     $token_values = _cdm_tokens_taxon_or_name();
     foreach ($tokens as $name => $original) {

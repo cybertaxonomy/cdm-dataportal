@@ -422,11 +422,11 @@ function make_ext_link($ext_link, $species_name) {
       $query = 'find_genus=' . $species_name['genus'] . '&find_species=' . $species_name['species'];
       break;
     default:
-      $query = str_replace('"', '%22', $species_name['genus']) . $ext_link->glue . str_replace('"', '%22', $species_name['species']);
+      $query = rawurlencode($species_name['genus']) . $ext_link->glue . rawurlencode($species_name['species']);
   }
   $ext_link_array = [
     'title' => $ext_link->title,
-    'url' => $ext_link->link . $query
+    'url' => token_replace($ext_link->link) /* . $query */
   ];
   return $ext_link_array;
 }
