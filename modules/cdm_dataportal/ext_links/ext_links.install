@@ -82,8 +82,21 @@ function ext_links_install() {
 /**
  * Implements hook_uninstall().
  */
-function hook_uninstall() {
+function ext_links_uninstall() {
   db_drop_table('ext_links');
+}
+
+/**
+ * Update function to migrate previous versions
+ */
+function ext_links_update_7001(){
+    foreach(ext_links_schema() as $table_name => $schema){
+      if(!db_table_exists($table_name)){
+        db_create_table($table_name, $schema);
+      }
+    }
+    ext_links_install();
+    return "ext_links table crated and old settings migrated.";
 }
 
 /**

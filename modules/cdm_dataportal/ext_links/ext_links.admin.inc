@@ -73,7 +73,7 @@ function ext_links_admin_overview_submit($form, &$form_state) {
  *     placement in external link block. If omitted, the weight is set to 0.
  *     Defaults to NULL.
  *
- * @return
+ * @return array
  *   A form array.
  *
  * @see filter_menu()
