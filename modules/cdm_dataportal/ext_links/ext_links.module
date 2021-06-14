@@ -302,148 +302,64 @@ function ext_links_block_info() {
  * Implements hook_block_view().
  */
 function ext_links_block_view($delta) {
-  // TODO Rename block deltas (e.g. '0') to readable strings.
   switch ($delta) {
     case '0':
       $block['subject'] = 'External links';
-
-      $uuid = get_current_taxon_uuid();
-      if ($uuid) {
-        $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $uuid);
-
-        // $taxon->titleCache;
-        // var_export()
-        if (!empty($taxon)) {
-          drupal_add_js(drupal_get_path('module', 'ext_links') . '/ext_links.js');
-          $speciesName = ext_link_species_name($taxon);
-
-          $genus = $taxon->name->taggedName[0]->text;
-          $species = null;
-          if(isset($taxon->name->taggedName[1])){
-            $species = $taxon->name->taggedName[1]->text;
-          }
-          $block_content = '';
-          $grouped = variable_get('ext_links_appearance_grouped', 1);
-          if ($grouped) {
-            $block['content'] = theme('ext_links_list_grouped', array('speciesName' => $speciesName, 'genus' => $genus, 'species' => $species));
-          }
-          else {
-            $block['content'] = theme('ext_links_list_plain', array('speciesName' => $speciesName, 'genus' => $genus, 'species' => $species ));
-          }
-
-          // if(variable_get('ext_links_gbif_check', TRUE)) {
-          // $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_gbif_link', $ext_links_default[gbif][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_gbif_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_gbif_text', $ext_links_default[gbif][text_default_value]).'</a><br />';
-          /*
-           $block_content .=
-           /* TODO
-           Please manually fix the parameters on the l() or url() function on the next line.
-           Typically, this was not changed because of a function call inside an array call like
-           array('title' => t('View user profile.')).
-           l(variable_get('ext_links_gbif_text', $ext_links_default[gbif][text_default_value]),
-           'JavaScript:popupExternalLinks('.variable_get('ext_links_gbif_link', $ext_links_default[gbif][link_default_value]).$speciesName[genus].variable_get('ext_links_gbif_concat', ' ').$speciesName[species],
-           array(), null, null, true);
-           */
-          /*}
-           if(variable_get('ext_links_biocase_check', 1)) {
-           $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_biocase_link', $ext_links_default[biocase][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_biocase_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_biocase_text', $ext_links_default[biocase][text_default_value]).'</a><br />';
-           }
-           if(variable_get('ext_links_nybg_check', 1)) {
-           $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_nybg_link', $ext_links_default[nybg][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_nybg_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_nybg_text', $ext_links_default[nybg][text_default_value]).'</a><br />';
-           }
-           if(variable_get('ext_links_tropicos_check', 1)) {
-           $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_tropicos_link', $ext_links_default[tropicos][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_tropicos_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_tropicos_text', $ext_links_default[tropicos][text_default_value]).'</a><br />';
-           }
-           if(variable_get('ext_links_ncbi_check', 1)) {
-           $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_ncbi_link', $ext_links_default[ncbi][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_ncbi_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_ncbi_text', $ext_links_default[ncbi][text_default_value]).'</a><br />';
-           }
-           if(variable_get('ext_links_google_check', 1)) {
-           $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_google_link', $ext_links_default[google][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_google_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_google_text', $ext_links_default[google][text_default_value]).'</a><br />';
-           }
-           if(variable_get('ext_links_flickr_check', 1)) {
-           $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_flickr_link', $ext_links_default[flickr][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_flickr_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_flickr_text', $ext_links_default[flickr][text_default_value]).'</a><br />';
-           }
-           if(variable_get('ext_links_scholar_check', 1)) {
-           $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_scholar_link', $ext_links_default[scholar][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_scholar_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_scholar_text', $ext_links_default[scholar][text_default_value]).'</a><br />';
-           }
-           if(variable_get('ext_links_bhl_check', 1)) {
-           $block_content .= '<a href="JavaScript:popupExternalLinks(\''.variable_get('ext_links_bhl_link', $ext_links_default[bhl][link_default_value]).str_replace('"','%22',$speciesName[genus]).variable_get('ext_links_bhl_concat', ' ').str_replace('"','%22',$speciesName[species]).'\')">'.variable_get('ext_links_bhl_text', $ext_links_default[bhl][text_default_value]).'</a><br />';
-           }
-
-           $block['content'] = $block_content;
-           $block['content'] = theme('ext_links_list_plain');
-
-           }
-
-           }*/
-          // if taxon
-        }
+      drupal_add_js(drupal_get_path('module', 'ext_links') . '/ext_links.js');
+      if (variable_get('ext_links_appearance_grouped', 1)) {
+        $block['content'] = render_ext_links_list_grouped();
+      } else {
+        $block['content'] = render_ext_links_list_plain();
       }
-      // If path.
+    }
       return $block;
-  } /* switch */
-
 }
 
 /**
  * Applies the name tokens to the external link templates.
  *
- * @param $ext_link
- * @param $species_name
+ * @param $ext_link_template
  *
  * @return array
  *  Array with the keys:
  *     - title: the title of the link
  *     - url: the url of the link
  */
-function make_ext_link($ext_link, $species_name) {
-  switch ($ext_link->id) {
-    case 'nybg':
-      if ($species_name['genus'] != NULL) {
-        $query = 'DetFiledAsGenusLocal+%3D+\%27' . $species_name['genus'] . '\%27';
-      }
-      if ($species_name['species'] != NULL) {
-        $query .= $ext_link->glue . 'DetFiledAsSpeciesLocal+%3D+\%27' . $species_name['species'] . '\%27';
-      }
-      break;
-    case 'arkive':
-      $postURL = '&output=xml_no_dtd&client=arkive-images&site=arkive-images&ie=utf8&oe=utf8&num=20&proxystylesheet=tng-search&filter=0&getfields=*';
-      $query = str_replace('"', '%22', $species_name['genus']) . variable_get('ext_links_arkive_concat', '+') . str_replace('"', '%22', $species_name['species']) . $postURL;
-      break;
-    case 'herbcat':
-      $postURL = '&x=11&y=13&homePageSearchOption=scientific_name&nameOfSearchPage=home_page';
-      $query = str_replace('"', '%22', $species_name['genus']) . variable_get('ext_links_herbcat_concat', '+') . str_replace('"', '%22', $species_name['species']) . $postURL;
-      break;
-    case 'iucn':
-    case 'wcsp':
-      // apparently no search api, thus plain link without genus and species
-      $query = '';
-      break;
-    case 'ipni':
-      $query = 'find_genus=' . $species_name['genus'] . '&find_species=' . $species_name['species'];
-      break;
-    default:
-      $query = rawurlencode($species_name['genus']) . $ext_link->glue . rawurlencode($species_name['species']);
-  }
-  $ext_link_array = [
-    'title' => $ext_link->title,
-    'url' => token_replace($ext_link->link) /* . $query */
-  ];
+function ext_links_apply_template($ext_link_template) {
+      $ext_link_array = [
+        'title' => $ext_link_template->title,
+        'url' => token_replace($ext_link_template->link, [],
+          [
+            'callback' => 'ext_links_token_replacement_urlencode',
+            'clear' => true
+          ])
+      ];
   return $ext_link_array;
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Callback function to be passed to token_replace() to urlencode the token replacements.
+ *
+ * @param array $replacements
+ *   The replacements for the tokens
+ * @param array $data
+ *    Unused, see token_replace()
+ * @param array $options
+ *    Unused, see token_replace()
+ *
+ * @see token_replace()
  */
-function theme_ext_links_list_grouped($variables) {
+function ext_links_token_replacement_urlencode(array &$replacements, array $data = [], array $options = []){
+  foreach ($replacements as &$repl){
+    $repl = rawurlencode($repl);
+  }
 
-  $species_name = $variables['speciesName'];
-  if(!isset($species_name['genus'])) {
-    $species_name['genus'] = '';
-  }
-  if(!isset($species_name['species'])) {
-    $species_name['species'] = '';
-  }
+}
+
+/**
+ * Creates html markup of ext_links grouped by category
+ */
+function render_ext_links_list_grouped() {
 
   $ext_links = ext_links_templates(true);
 
@@ -453,7 +369,7 @@ function theme_ext_links_list_grouped($variables) {
     if(!array_key_exists($ext_link->category, $ext_links_by_category)){
       $ext_links_by_category[$ext_link->category] = [];
     }
-    $ext_link_render_array = make_ext_link($ext_link, $species_name);
+    $ext_link_render_array = ext_links_apply_template($ext_link);
     $ext_links_by_category[$ext_link->category][] = $ext_link_render_array;
   }
 
@@ -470,52 +386,29 @@ function theme_ext_links_list_grouped($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Creates html markup of ext_links as plain list
  */
-function theme_ext_links_list_plain($variables) {
-  $speciesName = $variables['speciesName'];
-  if (!isset($speciesName['genus'])) {
-    $speciesName['genus'] = '';
-  }
-  if (!isset($speciesName['species'])) {
-    $speciesName['species'] = '';
-  }
+function render_ext_links_list_plain() {
 
   $ext_links_templates = ext_links_templates(true);
   $block_content = '';
   foreach ($ext_links_templates as $ext_link) {
-    $ext_link = make_ext_link($ext_link, $speciesName);
+    $ext_link = ext_links_apply_template($ext_link);
     $block_content .= l($ext_link['title'], 'JavaScript:popupExternalLinks(\'' . $ext_link['url'] . '\')', ['external' => TRUE]) .'<br />';
   }
   return $block_content;
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implements hook_theme()
  */
 function ext_links_theme() {
   return array(
-    'ext_links_list_grouped' => array('variables' => array(
-      'speciesName' => NULL,
-      'genus' => NULL,
-      'species' => NULL,
-      )),
-    'ext_links_list_plain' => array('variables' => array(
-      'speciesName' => NULL,
-      'genus' => NULL,
-      'species' => NULL,
-      )),
     // theme_ext_links_admin_overview
     'ext_links_admin_overview' => array(
       'render element' => 'form',
       'file' => 'ext_links.admin.inc',
-    ),
-//    'ext_links_link_template_filter_order' => array(
-//      'render element' => 'element',
-//      'file' => 'ext_links.admin.inc',
-//    ),
+    )
   );
 }
 
@@ -528,180 +421,163 @@ function ext_links_theme() {
 function ext_links_template_defaults() {
   $ext_links_default["gbif"] = array(
     'id' => "gbif",
-    'link' => 'http://www.gbif.org/species/search?q=',
+    'link' => 'http://www.gbif.org/species/search?q=[cdm:taxon_name]',
     'title' => 'Search GBIF...',
-    'glue' => ' ',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["biocase"] = array(
     'id' => "biocase",
-    'link' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=',
+    'link' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=[cdm:taxon_name]',
     'title' => 'Search BioCASE...',
-    'glue' => ' ',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["nybg"] = array(
     'id' => "nybg",
-    'link' => 'http://sweetgum.nybg.org/science/vh/specimen_list.php?SummaryData=',
+    'link' => 'http://sweetgum.nybg.org/science/vh/specimen_list.php?SummaryData=[cdm:taxon_name]',
     'title' => 'Search NYBG...',
-    'glue' => '+AND+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["tropicos"] = array(
     'id' => "tropicos",
-    'link' => 'http://www.tropicos.org/NameSearch.aspx?name=',
+    'link' => 'http://www.tropicos.org/NameSearch.aspx?name=[cdm:taxon_name]',
     'title' => 'Search Tropicos...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["ncbi"] = array(
     'id' => "ncbi",
-    'link' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=',
+    'link' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=%22[cdm:taxon_name]%22',
     'title' => 'Search NCBI...',
-    'glue' => '+AND+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Molecular Resources',
   );
   $ext_links_default["google"] = array(
     'id' => "google",
-    'link' => 'http://images.google.com/images?q=',
+    'link' => 'http://images.google.com/images?q=%22[cdm:taxon_name]%22',
     'title' => 'Search Google Images...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Images',
   );
   $ext_links_default["flickr"] = array(
     'id' => "flickr",
-    'link' => 'http://www.flickr.com/search/?w=all&q=',
+    'link' => 'http://www.flickr.com/search/?w=all&q=%22[cdm:taxon_name]%22',
     'title' => 'Search flickr...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Images',
   );
   $ext_links_default["scholar"] = array(
     'id' => "scholar",
-    'link' => 'http://scholar.google.de/scholar?hl=de&btnG=Suche&lr=&as_ylo=&as_vis=0&q=',
+    'link' => 'http://scholar.google.de/scholar?q=%22[cdm:taxon_name]%22',
     'title' => 'Search Google scholar...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Literature',
   );
   $ext_links_default["bhl"] = array(
     'id' => "bhl",
-    'link' => 'http://www.biodiversitylibrary.org/Search.aspx?searchCat=&searchTerm=',
+    // BHL does not normalize rank terms, ssp., sub., subsp. are not unified, therefore we skip that part:
+    'link' => 'https://www.biodiversitylibrary.org/search?searchTerm=[cdm:taxon_name:genus_or_uninomial]+[cdm:taxon_name:epithet]+[cdm:taxon_name:infraspecific_epithet]&stype=F#/names',
     'title' => 'Search BHL...',
-    'glue' => ' ',
     'weight' => 0,
     'status' => 1,
     'category' => 'Literature',
   );
   $ext_links_default["arkive"] = array(
+    // domain no longer exists! Remove extlink?
     'id' => "arkive",
-    'link' => 'http://www.arkive.org/search.html?q=',
+    'link' => 'http://www.arkive.org/search.html?q=[cdm:taxon_name]&output=xml_no_dtd&client=arkive-images&site=arkive-images&ie=utf8&oe=utf8&num=20&proxystylesheet=tng-search&filter=0&getfields=*',
     'title' => 'Search ARKive...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 0,
     'category' => 'Images',
   );
   $ext_links_default["herbcat"] = array(
     'id' => "herbcat",
-    'link' => 'http://apps.kew.org/herbcat/getHomePageResults.do?homePageSearchText=',
+    'link' => 'http://apps.kew.org/herbcat/getSearchPageResults.do?typeSpecimen=false&imageSpecimen=false&currentName=false&typeOfCollection=all_collection&&genus=[cdm:taxon_name:genus_or_uninomial]&&species=[cdm:taxon_name:epithet]&infraspecificName=[cdm:taxon_name:infraspecific_epithet]',
     'title' => 'Search Kew Herbarium Catalogue...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["iucn"] = array(
     'id' => "iucn",
-    'link' => 'http://www.iucnredlist.org/',
-    'title' => 'Go to IUCN Red List...',
-    'glue' => ' ',
+    'link' => 'https://www.iucnredlist.org/search?query=[cdm:taxon_name]',
+    'title' => 'Search IUCN Red List...',
     'weight' => 0,
     'status' => 1,
     'category' => 'Conservation',
   );
   $ext_links_default["ipni"] = array(
     'id' => "ipni",
-    'link' => 'http://www.ipni.org/ipni/advPlantNameSearch.do?',
+    'link' => 'https://www.ipni.org/?q=[cdm:taxon_name]',
     'title' => 'Search IPNI...',
-    'glue' => '&',
     'weight' => 0,
     'status' => 1,
     'category' => 'Classification',
   );
   $ext_links_default["wcsp"] = array(
     'id' => "wcsp",
-    'link' => 'http://wcsp.science.kew.org/qsearch.do?plantName=',
+    'link' => 'http://wcsp.science.kew.org/qsearch.do?plantName=[cdm:taxon_name]',
     'title' => 'Search World Checklist Monocots...',
-    'glue' => ' ',
     'weight' => 0,
     'status' => 1,
     'category' => 'Classification',
   );
   $ext_links_default["tpl"] = array(
     'id' => "tpl",
-    'link' => 'http://www.theplantlist.org/tpl/search?q=',
+    'link' => 'http://www.theplantlist.org/tpl/search?q=[cdm:taxon_name]',
     'title' => 'Search The Plant List...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Classification',
   );
   $ext_links_default["eol"] = array(
     'id' => "eol",
-    'link' => 'http://eol.org/search/?q=',
+    'link' => 'http://eol.org/search/?q=[cdm:taxon_name]',
     'title' => 'Search Encyclopaedia of Life...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'General',
   );
   $ext_links_default["jstor"] = array(
     'id' => "jstor",
-    'link' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=',
+    'link' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=[cdm:taxon_name]',
     'title' => 'Search JSTOR Plant Science...',
-    'glue' => ' ',
     'weight' => 0,
     'status' => 1,
     'category' => 'General',
   );
   $ext_links_default["epic"] = array(
     'id' => "epic",
-    'link' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=',
+    'link' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=[cdm:taxon_name]&searchAll=true&categories=names&categories=bibl&categories=colln&categories=taxon&categories=flora',
     'title' => 'Search ePIC...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'General',
   );
   $ext_links_default["fairchild"] = array(
+    //disabled since Fairchild Guide To Palms seems to be down
     'id' => "fairchild",
     'link' => 'http://palmguide.org/palmsearch.php?query=',
     'title' => 'Search Fairchild Guide To Palms...',
-    'glue' => '+',
     'weight' => 0,
-    'status' => 0, //disabled since Fairchild Guide To Palms seems to be down
+    'status' => 0,
     'category' => 'Specimens/Occurrences',
   );
   $ext_links_default["ggbn"] = array(
     'id' => "ggbn",
-    'link' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=',
+    'link' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=[cdm:taxon_name]',
     'title' => 'Search GGBN...',
-    'glue' => '+',
     'weight' => 0,
     'status' => 1,
     'category' => 'Molecular Resources',
