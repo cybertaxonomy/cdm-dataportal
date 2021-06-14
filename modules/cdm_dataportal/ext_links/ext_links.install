@@ -27,7 +27,7 @@ function ext_links_schema() {
       ],
       'link' => [
         'type' => 'varchar',
-        'length' => 255,
+        'length' => 2048,
         'not null' => TRUE,
         'description' => 'The link url template',
       ],
@@ -90,14 +90,38 @@ function ext_links_uninstall() {
  * Update function to migrate previous versions
  */
 function ext_links_update_7001(){
+    $connection_info = Database::parseConnectionInfo();
+    $db_prefix = $connection_info['default']['default']['prefix'];
     foreach(ext_links_schema() as $table_name => $schema){
-      if(!db_table_exists($table_name)){
-        db_create_table($table_name, $schema);
+
+      if(!db_table_exists($db_prefix . $table_name)){
+        db_create_table($db_prefix . $table_name, $schema);
       }
     }
     ext_links_install();
-    return "ext_links table crated and old settings migrated.";
+    return "ext_links table created and old settings migrated.";
 }
+
+/**
+ * Update ext_link to cdm_tokens functionality
+ */
+function ext_links_update_7002(){
+  $tasks_performed = [];
+  $column_glue_exists = db_query("SHOW COLUMNS FROM {ext_links} LIKE 'glue';")->rowCount();
+
+  if($column_glue_exists){
+    db_query("ALTER TABLE {ext_links} DROP COLUMN glue;");
+    $tasks_performed[] = "ext_links table: Column glue removed.";
+  }
+
+  db_query("ALTER TABLE {ext_links} MODIFY COLUMN link varchar(2048) NOT NULL COMMENT 'The link url template';");
+  $tasks_performed[] = "ext_links.link modified to varchar 2048.";
+  ext_links_template_links_update();
+  $tasks_performed[] = "ext_link template links updated.";
+
+  return join("; \n", $tasks_performed);
+}
+
 
 /**
  * Migrates old ext link templates from drupal vars to the ext_link table.
@@ -110,6 +134,22 @@ function migrate_old_ext_links(){
   }
   return $links_templates;
 }
+
+/**
+ * Updates the ext_links.link column with new urls from the default templates.
+ */
+function ext_links_template_links_update(){
+  $template_default_arrays = ext_links_template_defaults();
+  foreach ($template_default_arrays as $template_array) {
+    $return = db_merge('ext_links')
+      ->key(['id' => $template_array['id']])
+      ->fields([
+        'link' => $template_array['link'],
+      ])
+      ->execute();
+  }
+}
+
 
 /**
  * Merge the old settings stored in drupal vars into the ext_link template object
