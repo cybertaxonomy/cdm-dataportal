@@ -374,8 +374,8 @@ function render_ext_links_list_grouped() {
   }
 
   $block_content = '';
-  foreach ($ext_links_by_category as $categoryTitle => $ext_links) {
-    $block_content .= "<div class=\"category\"><h5>" . $categoryTitle . "</h5>\n";
+  foreach ($ext_links_by_category as $category => $ext_links) {
+    $block_content .= "<label class=\"category-label\">" . $category . "</label><div class=\"category category-$category\">";
     foreach($ext_links as $ext_link){
       $block_content .= l($ext_link['title'], 'JavaScript:popupExternalLinks(\'' . $ext_link['url'] . '\')', ['external' => TRUE]) .'<br />';
     }
