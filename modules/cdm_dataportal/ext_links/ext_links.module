@@ -207,7 +207,6 @@ function ext_links_load($extlink_id) {
  *     otherwise, a new external link will be created.
  *   - title: The link title
  *   - link: The link url template.
- *   - glue: The string to concatenate name parts in the URL query string.
  *   - status: (optional) An integer indicating whether the ext link is
  *     enabled (1) or not (0). Defaults to 1.
  *   - weight: (optional) The weight of the external link, which controls its
@@ -235,7 +234,6 @@ function ext_links_save($link_template) {
       'id' => $link_template->id,
       'title' => $link_template->title,
       'link' => $link_template->link,
-      'glue' => $link_template->glue,
       'status' => (int) $link_template->status,
       'weight' => (int) $link_template->weight,
     ))
@@ -294,6 +292,8 @@ function ext_link_species_name($taxon) {
 function ext_links_block_info() {
   if (TRUE) {
     $block[0]["info"] = t("CDM - External Links");
+    $block[0]["visibility"] = BLOCK_VISIBILITY_LISTED;
+    $block[0]["pages"] = "cdm_dataportal/taxon/*\ncdm_dataportal/name/*";
     return $block;
   }
 }

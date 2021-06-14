@@ -20,7 +20,6 @@ function ext_links_admin_overview($form) {
   foreach ($link_templates as $id => $link_template) {
     $form['link_templates'][$id]['title'] = array('#markup' => check_plain($link_template->title));
     $form['link_templates'][$id]['link'] = array('#markup' => check_plain($link_template->link));
-    $form['link_templates'][$id]['glue'] = array('#markup' => check_plain($link_template->glue));
     $form['link_templates'][$id]['category'] = array('#markup' => check_plain($link_template->category));
     $form['link_templates'][$id]['configure'] = array('#type' => 'link', '#title' => t('configure'), '#href' => 'admin/config/cdm_dataportal/ext_links/' . $link_template->id);
     $form['link_templates'][$id]['status'] = array('#type' => 'link',
@@ -66,7 +65,6 @@ function ext_links_admin_overview_submit($form, &$form_state) {
  *   (optional) An object representing an external link template, with the following properties:
  *   - title: The link title
  *   - link: The link url template.
- *   - glue: The string to concatenate name parts in the URL query string.
  *   - status: (optional) An integer indicating whether the ext link is
  *     enabled (1) or not (0). Defaults to 1.
  *   - weight: (optional) The weight of the external link, which controls its
@@ -84,7 +82,6 @@ function ext_links_admin_link_template_page($link_template = NULL) {
     $link_template = (object) array(
       'title' => NULL,
       'link' => 'https://',
-      'glue' => '',
       'weight' => 0,
       'status' => 1
     );
@@ -122,7 +119,6 @@ function ext_links_admin_appearance_page(){
  *     updated; otherwise, a new external link will be created.
  *   - title: The link title
  *   - link: The link url template.
- *   - glue: The string to concatenate name parts in the URL query string.
  *   - status: (optional) An integer indicating whether the ext link is
  *     enabled (1) or not (0). Defaults to 1.
  *   - weight: (optional) The weight of the external link, which controls its
@@ -155,23 +151,22 @@ function ext_links_admin_link_template_form($form, &$form_state, $link_template)
     '#description' => t('The text of the link that will be displayed.'),
     '#required' => TRUE,
   );
+  $token_info = cdm_tokens_token_info();
+  $cdm_tokens = [];
+  foreach(array_keys($token_info['tokens']['cdm']) as $token_key){
+    $cdm_tokens[] = '[cdm:' . $token_key . ']';
+  }
   $form['link'] = array(
     '#type' => 'textfield',
     '#title' => t('Link'),
-    '#description' => t('The URL of the link to the external resource or service. 
-    The species name parts will be appended to this string.<p>E.g. 
-    <code>https://external-service.test/images?q=</code> will result in 
-    <code>https://external-service.test/images?q=Bellis+perennis</code> when the glue string is set to "+"</p>'),
+    '#description' => t('The URL template for the link to the external resource or service.
+        The following <i>cdm tokens</i> can be used here: <ul> !cdm_tokens </ul>',
+      ['!cdm_tokens' => '<li><code>' . join('</code></li><li><code>', $cdm_tokens) . '</code></li>']
+    ),
     '#default_value' => $link_template->link,
     '#required' => TRUE,
   );
-  $form['glue'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Glue'),
-    '#description' => t('The string used to concatenate genus and species name parts in the query string.'),
-    '#default_value' => $link_template->glue,
-    '#required' => false,
-  );
+
   $form['status'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enabled'),
@@ -256,7 +251,6 @@ function theme_ext_links_admin_overview($variables) {
       'data' => array(
         drupal_render($form['link_templates'][$id]['title']),
         drupal_render($form['link_templates'][$id]['link']),
-        drupal_render($form['link_templates'][$id]['glue']),
         drupal_render($form['link_templates'][$id]['category']),
         drupal_render($form['link_templates'][$id]['weight']),
         drupal_render($form['link_templates'][$id]['configure']),
@@ -265,7 +259,7 @@ function theme_ext_links_admin_overview($variables) {
       'class' => $row_class_attributes,
     );
   }
-  $header = array(t('Title'), t('Link'), t('Glue'), t('Category'), t('Weight'), array('data' => t('Operations'), 'colspan' => 2));
+  $header = array(t('Title'), t('Link'), t('Category'), t('Weight'), array('data' => t('Operations'), 'colspan' => 2));
   $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'link-templates-order')));
   $output .= drupal_render_children($form);
 

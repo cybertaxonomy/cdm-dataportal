@@ -31,16 +31,9 @@ function ext_links_schema() {
         'not null' => TRUE,
         'description' => 'The link url template',
       ],
-      'glue' => [
-        'type' => 'varchar',
-        'length' => 10,
-        'not null' => TRUE,
-        'description' => 'The string to concatenate name parts in the URL query string',
-      ],
       'category' => [
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
         'description' => 'The link category',
       ],
       'weight' => [
@@ -162,7 +155,6 @@ function _ext_links_merge_old_vars($ext_link){
   $ext_link_id = $ext_link->id;
   $ext_link->status = variable_get("ext_links_${ext_link_id}_check", $ext_link->status);
   $ext_link->link =  variable_get("ext_links_${ext_link_id}_link", $ext_link->link);
-  $ext_link->glue = variable_get("ext_links_${ext_link_id}_concat",   $ext_link->glue);
   $ext_link->title = variable_get("ext_links_${ext_link_id}_text", $ext_link->title);
   return $ext_link;
 }
