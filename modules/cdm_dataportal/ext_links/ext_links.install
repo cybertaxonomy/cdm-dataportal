@@ -112,6 +112,15 @@ function ext_links_update_7002(){
   ext_links_template_links_update();
   $tasks_performed[] = "ext_link template links updated.";
 
+  $block_info = ext_links_block_info();
+  db_update("block")
+    ->fields([
+      'pages' => $block_info['0']['pages'],
+      'visibility' => 1
+    ])
+    ->condition('module', 'ext_links')
+    ->execute();
+  $tasks_performed[] = "ext_links block configuration updated.";
   return join("; \n", $tasks_performed);
 }
 
