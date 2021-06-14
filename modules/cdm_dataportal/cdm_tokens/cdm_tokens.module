@@ -106,7 +106,7 @@ function _cdm_tokens_taxon_or_name(){
     }
 
     if(isset_not_empty($taxon_name)){
-      $current_token_values['taxon_name:taxon_name'] = $taxon_name->nameCache;
+      $current_token_values['taxon_name'] = $taxon_name->nameCache;
       $current_token_values['taxon_name:family'] = $taxon_name->rank->isFamily ? $taxon_name->genusOrUninomial : null;
       $current_token_values['taxon_name:genus_or_uninomial'] = $taxon_name->genusOrUninomial;
       $current_token_values['taxon_name:genus'] = !$taxon_name->rank->isSupraGeneric ? $taxon_name->genusOrUninomial : null;
