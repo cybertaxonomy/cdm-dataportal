@@ -1206,17 +1206,17 @@ function cdm_ws_fetch_all($resourceURI, array $query = array(), $method = 'GET',
   $page_size = 500;
   $entities = [];
 
-  while ($page_index !== FALSE){
+  while (true){
     $pager =  cdm_ws_page($resourceURI, $page_size, $page_index, $query,  $method, $absoluteURI);
     if(isset($pager->records) && is_array($pager->records)) {
       $entities = array_merge($entities, $pager->records);
-      if(!empty($pager->nextIndex) && $page_index != $pager->nextIndex){
+      if(is_numeric($pager->nextIndex) && $page_index < $pager->nextIndex){
         $page_index = $pager->nextIndex;
       } else {
-        $page_index = FALSE;
+        break;
       }
     } else {
-      $page_index = FALSE;
+      break;
     }
   }
   return $entities;
