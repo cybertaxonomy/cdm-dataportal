@@ -90,7 +90,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
         assertEquals("B B-923845", subNode1.getHeader().getText());
         assertEquals("B DNA-9098080", subNode2.getHeader().getText());
-        assertEquals("B_SP-99999.png", subNode3.getHeader().getText());
+        assertEquals("B_SP-99999", subNode3.getHeader().getText());
 
         // NOTE we are only testing subnode 1 here as all other details are tested in other methods
 
