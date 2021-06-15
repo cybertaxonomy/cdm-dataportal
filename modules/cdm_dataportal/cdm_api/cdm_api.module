@@ -1210,7 +1210,7 @@ function cdm_ws_fetch_all($resourceURI, array $query = array(), $method = 'GET',
     $pager =  cdm_ws_page($resourceURI, $page_size, $page_index, $query,  $method, $absoluteURI);
     if(isset($pager->records) && is_array($pager->records)) {
       $entities = array_merge($entities, $pager->records);
-      if(!empty($pager->nextIndex)){
+      if(!empty($pager->nextIndex) && $page_index != $pager->nextIndex){
         $page_index = $pager->nextIndex;
       } else {
         $page_index = FALSE;
