@@ -1049,7 +1049,7 @@ function cdm_dataportal_block_view($delta) {
       return $block;
     case 'back_to_search_results':
       $block['subject'] = '<none>';
-      if (isset($_SESSION['cdm']['search'])) {
+      if (isset_not_empty($_SESSION['cdm']['last_search'])) {
         $block['content'] = l(t('Back to search result'), "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['cdm']['last_search']);
       }
       return $block;
