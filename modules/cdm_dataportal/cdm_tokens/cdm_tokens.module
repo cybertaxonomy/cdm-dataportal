@@ -107,12 +107,12 @@ function _cdm_tokens_taxon_or_name(){
 
     if(isset_not_empty($taxon_name)){
       $current_token_values['taxon_name'] = $taxon_name->nameCache;
-      $current_token_values['taxon_name:family'] = $taxon_name->rank->isFamily ? $taxon_name->genusOrUninomial : null;
-      $current_token_values['taxon_name:genus_or_uninomial'] = $taxon_name->genusOrUninomial;
-      $current_token_values['taxon_name:genus'] = !$taxon_name->rank->isSupraGeneric ? $taxon_name->genusOrUninomial : null;
-      $current_token_values['taxon_name:infrageneric_epithet'] = $taxon_name->rank->isInfraGeneric ? $taxon_name->infraGenericEpithet : null;
-      $current_token_values['taxon_name:epithet'] = $taxon_name->rank->isSpecies || $taxon_name->rank->isInfraSpecific ? $taxon_name->specificEpithet : null;
-      $current_token_values['taxon_name:infraspecific_epithet'] = $taxon_name->rank->isInfraSpecific ? $taxon_name->infraSpecificEpithet : null;
+      $current_token_values['taxon_name:family'] = $taxon_name->rank->isFamily & isset_not_empty($taxon_name->genusOrUninomial)? $taxon_name->genusOrUninomial : null;
+      $current_token_values['taxon_name:genus_or_uninomial'] = isset_not_empty($taxon_name->genusOrUninomial) ?  $taxon_name->genusOrUninomial : NULL;
+      $current_token_values['taxon_name:genus'] = !$taxon_name->rank->isSupraGeneric & isset_not_empty($taxon_name->genusOrUninomial) ? $taxon_name->genusOrUninomial : null;
+      $current_token_values['taxon_name:infrageneric_epithet'] = $taxon_name->rank->isInfraGeneric & isset_not_empty($taxon_name->infraGenericEpithet) ? $taxon_name->infraGenericEpithet : null;
+      $current_token_values['taxon_name:epithet'] = ( $taxon_name->rank->isSpecies || $taxon_name->rank->isInfraSpecific ) & isset_not_empty($taxon_name->specificEpithet) ? $taxon_name->specificEpithet : null;
+      $current_token_values['taxon_name:infraspecific_epithet'] = $taxon_name->rank->isInfraSpecific & isset_not_empty($taxon_name->infraSpecificEpithet) ? $taxon_name->infraSpecificEpithet : null;
       if(@isset_not_empty($taxon_name->rank->representation_L10n)) {
         $current_token_values['taxon_name:rank'] = $taxon_name->rank->representation_L10n;
       }
