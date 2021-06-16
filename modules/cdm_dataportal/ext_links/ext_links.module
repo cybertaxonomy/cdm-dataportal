@@ -304,7 +304,7 @@ function ext_links_block_info() {
 function ext_links_block_view($delta) {
   switch ($delta) {
     case '0':
-      $block['subject'] = 'External links';
+      $block['subject'] = t('Search name in') . ' ...';
       drupal_add_js(drupal_get_path('module', 'ext_links') . '/ext_links.js');
       if (variable_get('ext_links_appearance_grouped', 1)) {
         $block['content'] = render_ext_links_list_grouped();
@@ -422,7 +422,7 @@ function ext_links_template_defaults() {
   $ext_links_default["gbif"] = array(
     'id' => "gbif",
     'link' => 'http://www.gbif.org/species/search?q=[cdm:taxon_name]',
-    'title' => 'Search GBIF...',
+    'title' => 'GBIF',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
@@ -430,7 +430,7 @@ function ext_links_template_defaults() {
   $ext_links_default["biocase"] = array(
     'id' => "biocase",
     'link' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=[cdm:taxon_name]',
-    'title' => 'Search BioCASE...',
+    'title' => 'BioCASE',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
@@ -438,7 +438,7 @@ function ext_links_template_defaults() {
   $ext_links_default["nybg"] = array(
     'id' => "nybg",
     'link' => 'http://sweetgum.nybg.org/science/vh/specimen_list.php?SummaryData=[cdm:taxon_name]',
-    'title' => 'Search NYBG...',
+    'title' => 'NYBG',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
@@ -446,7 +446,7 @@ function ext_links_template_defaults() {
   $ext_links_default["tropicos"] = array(
     'id' => "tropicos",
     'link' => 'http://www.tropicos.org/NameSearch.aspx?name=[cdm:taxon_name]',
-    'title' => 'Search Tropicos...',
+    'title' => 'Tropicos',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
@@ -454,7 +454,7 @@ function ext_links_template_defaults() {
   $ext_links_default["ncbi"] = array(
     'id' => "ncbi",
     'link' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=%22[cdm:taxon_name]%22',
-    'title' => 'Search NCBI...',
+    'title' => 'NCBI',
     'weight' => 0,
     'status' => 1,
     'category' => 'Molecular Resources',
@@ -462,7 +462,7 @@ function ext_links_template_defaults() {
   $ext_links_default["google"] = array(
     'id' => "google",
     'link' => 'http://images.google.com/images?q=%22[cdm:taxon_name]%22',
-    'title' => 'Search Google Images...',
+    'title' => 'Google Images',
     'weight' => 0,
     'status' => 1,
     'category' => 'Images',
@@ -470,7 +470,7 @@ function ext_links_template_defaults() {
   $ext_links_default["flickr"] = array(
     'id' => "flickr",
     'link' => 'http://www.flickr.com/search/?w=all&q=%22[cdm:taxon_name]%22',
-    'title' => 'Search flickr...',
+    'title' => 'flickr',
     'weight' => 0,
     'status' => 1,
     'category' => 'Images',
@@ -478,7 +478,7 @@ function ext_links_template_defaults() {
   $ext_links_default["scholar"] = array(
     'id' => "scholar",
     'link' => 'http://scholar.google.de/scholar?q=%22[cdm:taxon_name]%22',
-    'title' => 'Search Google scholar...',
+    'title' => 'Google scholar',
     'weight' => 0,
     'status' => 1,
     'category' => 'Literature',
@@ -487,7 +487,7 @@ function ext_links_template_defaults() {
     'id' => "bhl",
     // BHL does not normalize rank terms, ssp., sub., subsp. are not unified, therefore we skip that part:
     'link' => 'https://www.biodiversitylibrary.org/search?searchTerm=[cdm:taxon_name:genus_or_uninomial]+[cdm:taxon_name:epithet]+[cdm:taxon_name:infraspecific_epithet]&stype=F#/names',
-    'title' => 'Search BHL...',
+    'title' => 'BHL',
     'weight' => 0,
     'status' => 1,
     'category' => 'Literature',
@@ -496,7 +496,7 @@ function ext_links_template_defaults() {
     // domain no longer exists! Remove extlink?
     'id' => "arkive",
     'link' => 'http://www.arkive.org/search.html?q=[cdm:taxon_name]&output=xml_no_dtd&client=arkive-images&site=arkive-images&ie=utf8&oe=utf8&num=20&proxystylesheet=tng-search&filter=0&getfields=*',
-    'title' => 'Search ARKive...',
+    'title' => 'ARKive',
     'weight' => 0,
     'status' => 0,
     'category' => 'Images',
@@ -504,7 +504,7 @@ function ext_links_template_defaults() {
   $ext_links_default["herbcat"] = array(
     'id' => "herbcat",
     'link' => 'http://apps.kew.org/herbcat/getSearchPageResults.do?typeSpecimen=false&imageSpecimen=false&currentName=false&typeOfCollection=all_collection&&genus=[cdm:taxon_name:genus_or_uninomial]&&species=[cdm:taxon_name:epithet]&infraspecificName=[cdm:taxon_name:infraspecific_epithet]',
-    'title' => 'Search Kew Herbarium Catalogue...',
+    'title' => 'Kew Herbarium Catalogue',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
@@ -512,7 +512,7 @@ function ext_links_template_defaults() {
   $ext_links_default["iucn"] = array(
     'id' => "iucn",
     'link' => 'https://www.iucnredlist.org/search?query=[cdm:taxon_name]',
-    'title' => 'Search IUCN Red List...',
+    'title' => 'IUCN Red List',
     'weight' => 0,
     'status' => 1,
     'category' => 'Conservation',
@@ -520,7 +520,7 @@ function ext_links_template_defaults() {
   $ext_links_default["ipni"] = array(
     'id' => "ipni",
     'link' => 'https://www.ipni.org/?q=[cdm:taxon_name]',
-    'title' => 'Search IPNI...',
+    'title' => 'IPNI',
     'weight' => 0,
     'status' => 1,
     'category' => 'Classification',
@@ -528,7 +528,7 @@ function ext_links_template_defaults() {
   $ext_links_default["wcsp"] = array(
     'id' => "wcsp",
     'link' => 'http://wcsp.science.kew.org/qsearch.do?plantName=[cdm:taxon_name]',
-    'title' => 'Search World Checklist Monocots...',
+    'title' => 'World Checklist Monocots',
     'weight' => 0,
     'status' => 1,
     'category' => 'Classification',
@@ -536,7 +536,7 @@ function ext_links_template_defaults() {
   $ext_links_default["tpl"] = array(
     'id' => "tpl",
     'link' => 'http://www.theplantlist.org/tpl/search?q=[cdm:taxon_name]',
-    'title' => 'Search The Plant List...',
+    'title' => 'The Plant List',
     'weight' => 0,
     'status' => 1,
     'category' => 'Classification',
@@ -544,7 +544,7 @@ function ext_links_template_defaults() {
   $ext_links_default["eol"] = array(
     'id' => "eol",
     'link' => 'http://eol.org/search/?q=[cdm:taxon_name]',
-    'title' => 'Search Encyclopaedia of Life...',
+    'title' => 'Encyclopaedia of Life',
     'weight' => 0,
     'status' => 1,
     'category' => 'General',
@@ -552,7 +552,7 @@ function ext_links_template_defaults() {
   $ext_links_default["jstor"] = array(
     'id' => "jstor",
     'link' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=[cdm:taxon_name]',
-    'title' => 'Search JSTOR Plant Science...',
+    'title' => 'JSTOR Plant Science',
     'weight' => 0,
     'status' => 1,
     'category' => 'General',
@@ -560,7 +560,7 @@ function ext_links_template_defaults() {
   $ext_links_default["epic"] = array(
     'id' => "epic",
     'link' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=[cdm:taxon_name]&searchAll=true&categories=names&categories=bibl&categories=colln&categories=taxon&categories=flora',
-    'title' => 'Search ePIC...',
+    'title' => 'ePIC',
     'weight' => 0,
     'status' => 1,
     'category' => 'General',
@@ -569,7 +569,7 @@ function ext_links_template_defaults() {
     //disabled since Fairchild Guide To Palms seems to be down
     'id' => "fairchild",
     'link' => 'http://palmguide.org/palmsearch.php?query=',
-    'title' => 'Search Fairchild Guide To Palms...',
+    'title' => 'Fairchild Guide To Palms',
     'weight' => 0,
     'status' => 0,
     'category' => 'Specimens/Occurrences',
@@ -577,7 +577,7 @@ function ext_links_template_defaults() {
   $ext_links_default["ggbn"] = array(
     'id' => "ggbn",
     'link' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=[cdm:taxon_name]',
-    'title' => 'Search GGBN...',
+    'title' => 'GGBN',
     'weight' => 0,
     'status' => 1,
     'category' => 'Molecular Resources',

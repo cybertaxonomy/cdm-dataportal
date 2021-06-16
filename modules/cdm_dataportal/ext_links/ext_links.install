@@ -147,6 +147,7 @@ function ext_links_template_links_update(){
       ->key(['id' => $template_array['id']])
       ->fields([
         'link' => $template_array['link'],
+        'title' => $template_array['title'],
       ])
       ->execute();
   }
