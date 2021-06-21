@@ -1343,8 +1343,8 @@ function cdm_dataportal_view_reference($uuid, $arg2 = NULL) {
  *
  * This function is used at the path cdm_dataportal/reference/list
  */
-function cdm_dataportal_view_reference_list($pageNumber) {
-  $referencePager = cdm_ws_page(CDM_WS_REFERENCE, variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT), $pageNumber);
+function cdm_dataportal_view_reference_list($page_index) {
+  $referencePager = cdm_ws_page(CDM_WS_REFERENCE, variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT), $page_index);
   cdm_reference_pager($referencePager, 'cdm_dataportal/reference/list/');
 }
 

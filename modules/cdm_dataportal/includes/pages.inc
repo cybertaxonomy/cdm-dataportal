@@ -96,7 +96,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
         $pager_root_units = cdm_ws_page(
           cdm_compose_url(CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS, [$taxon->uuid]),
           variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT) * 2,
-          isset($_REQUEST['pager']['pageNumber']) ? isset($_REQUEST['pager']['pageNumber']) : 0
+          isset($_REQUEST['pager']['pageIndex']) ? isset($_REQUEST['pager']['pageIndex']) : 0
         );
 
         if (isset($pager_root_units->records[0])) {

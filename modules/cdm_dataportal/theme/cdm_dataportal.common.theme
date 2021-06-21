@@ -239,7 +239,7 @@ function theme_cdm_pager_link($variables) {
   // but this is already in the path variable
   unset($parameters['q']);
 
-  $parameters['pager']['pageNumber'] = $linkIndex;
+  $parameters['pager']['pageIndex'] = $linkIndex;
   if ($linkIndex == $pager->currentIndex) {
     $out = '<strong>' . $text . '</strong>';
   }

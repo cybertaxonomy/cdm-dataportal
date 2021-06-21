@@ -1084,7 +1084,7 @@ function cdm_ws_base_uri($cdm_type_simple)
  */
 function cdm_ws_page($resource_uri, $page_size, $page_index, array $query = array(), $method = 'GET', $absolute_uri = FALSE) {
 
-  $query['pageNumber'] = $page_index;
+  $query['pageIndex'] = $page_index;
   $query['pageSize'] = $page_size;
 
   $pager = cdm_ws_get($resource_uri, NULL, queryString($query), $method, $absolute_uri);

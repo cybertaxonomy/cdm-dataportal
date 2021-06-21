@@ -812,7 +812,7 @@ function formatParams($params) {
         $keys =array_keys($params);
         $paramString = '';
         foreach ($keys as $k ){
-            if ($k != 'pageNumber' && $k != 'pageSize'){
+            if ($k != 'pageIndex' && $k != 'pageSize'){
                 $paramString .= ' -'.$k.'='.urlencode($params[$k]);
             }
         }
@@ -826,7 +826,7 @@ function formatWSParams($params) {
         $keys =array_keys($params);
         $paramString = '';
         foreach ($keys as $k ){
-            if ($k != 'pageNumber' && $k != 'pageSize'){
+            if ($k != 'pageIndex' && $k != 'pageSize'){
                 $paramString .= '&'.$k.'='.urlencode($params[$k]);
             }
         }

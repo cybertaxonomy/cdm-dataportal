@@ -130,7 +130,7 @@ function cdm_dataportal_taxon_autosuggest($classificationUuid = NULL, $areaUuid 
   if($status){
     $queryParams['status'] = $status ;
   }
-  $queryParams['pageNumber'] = '0';
+  $queryParams['pageIndex'] = '0';
   $queryParams['pageSize'] = '10';
   $queryParams['doTaxa'] = true;
   $queryParams['doSynonyms'] = true;
@@ -200,7 +200,7 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
     '#value' => variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT),
   );
 
-  $form['search']['pageNumber'] = array(
+  $form['search']['pageIndex'] = array(
     '#weight' => -1,
     '#type' => 'hidden',
     '#value' => 0,
@@ -433,7 +433,7 @@ function cdm_dataportal_search_blast_form($form, &$form_state) {
         '#value' => variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT),
     );
 
-    $form['search']['pageNumber'] = array(
+    $form['search']['pageIndex'] = array(
         '#weight' => -1,
         '#type' => 'hidden',
         '#value' => 0,
@@ -1028,8 +1028,8 @@ function cdm_dataportal_search_request_params($session_key, $query_param_map)
         $request_params[$query_param] = $request[$filter_key];
       }
     }
-    if (isset($request['pager']['pageNumber'])) {
-      $request_params['pageNumber'] = $request['pager']['pageNumber'];
+    if (isset($request['pager']['pageIndex'])) {
+      $request_params['pageIndex'] = $request['pager']['pageIndex'];
     }
   }
 
@@ -1039,8 +1039,8 @@ function cdm_dataportal_search_request_params($session_key, $query_param_map)
         $request_params[$query_param] = $_SESSION['cdm'][$session_key][$filter_key];
       }
     }
-    if (isset($_SESSION['cdm'][$session_key]['pager']['pageNumber'])) {
-      $request_params['pageNumber'] = $_SESSION['cdm'][$session_key]['pager']['pageNumber'];
+    if (isset($_SESSION['cdm'][$session_key]['pager']['pageIndex'])) {
+      $request_params['pageIndex'] = $_SESSION['cdm'][$session_key]['pager']['pageIndex'];
     }
   }
   return $request_params;
@@ -1284,8 +1284,8 @@ function cdm_dataportal_search_agent_execute()
     $type_restriction = $query_param_map['class'];
   }
   $page_index = 0;
-  if(isset($_REQUEST['pager']['pageNumber'])){
-    $page_index = $_REQUEST['pager']['pageNumber'];
+  if(isset($_REQUEST['pager']['pageIndex'])){
+    $page_index = $_REQUEST['pager']['pageIndex'];
   }
   $pager = cdm_ws_page_by_restriction('AgentBase', $type_restriction, $restrictions, $init_strategy, 50, $page_index);
 
