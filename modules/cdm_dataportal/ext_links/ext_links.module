@@ -565,6 +565,15 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Classification/Nomenclature',
   );
+  $ext_links_default["col"] = array(
+    'id' => "col",
+    'link' => 'https://www.catalogueoflife.org/data/search?facet=rank&facet=issue&facet=status&facet=nomStatus&facet=nameType&facet=field&limit=50&offset=0&q=[cdm:taxon_name]&sortBy=taxonomic&type=EXACT',
+    'title' => 'Catalogue of Life',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Classification/Nomenclature',
+  );
+  //
   $ext_links_default["tpl"] = array(
     'id' => "tpl",
     'link' => 'http://www.theplantlist.org/tpl/search?q=[cdm:taxon_name]',
