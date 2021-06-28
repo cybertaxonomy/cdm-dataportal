@@ -419,6 +419,93 @@ function ext_links_theme() {
  *   Returns an array with default external links values.
  */
 function ext_links_template_defaults() {
+
+  // --- General ---
+  $ext_links_default["eol"] = array(
+    'id' => "eol",
+    'link' => 'http://eol.org/search/?q=[cdm:taxon_name]',
+    'title' => 'Encyclopaedia of Life',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'General',
+  );
+  $ext_links_default["epic"] = array(
+    'id' => "epic",
+    'link' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=[cdm:taxon_name]&searchAll=true&categories=names&categories=bibl&categories=colln&categories=taxon&categories=flora',
+    'title' => 'ePIC',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'General',
+  );
+  $ext_links_default["jstor"] = array(
+    'id' => "jstor",
+    'link' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=[cdm:taxon_name]',
+    'title' => 'JSTOR Plant Science',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'General',
+  );
+
+  // --- Classification/Nomenclature ---
+  $ext_links_default["col"] = array(
+    'id' => "col",
+    'link' => 'https://www.catalogueoflife.org/data/search?facet=rank&facet=issue&facet=status&facet=nomStatus&facet=nameType&facet=field&limit=50&offset=0&q=[cdm:taxon_name]&sortBy=taxonomic&type=EXACT',
+    'title' => 'Catalogue of Life',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Classification/Nomenclature',
+  );
+  $ext_links_default["ipni"] = array(
+    'id' => "ipni",
+    'link' => 'https://www.ipni.org/?q=[cdm:taxon_name]',
+    'title' => 'IPNI',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Classification/Nomenclature',
+  );
+  $ext_links_default["tpl"] = array(
+    'id' => "tpl",
+    'link' => 'http://www.theplantlist.org/tpl/search?q=[cdm:taxon_name]',
+    'title' => 'The Plant List',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Classification/Nomenclature',
+  );
+  $ext_links_default["wcsp"] = array(
+    'id' => "wcsp",
+    'link' => 'http://wcsp.science.kew.org/qsearch.do?plantName=[cdm:taxon_name]',
+    'title' => 'World Checklist Monocots',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Classification/Nomenclature',
+  );
+  $ext_links_default["wfo"] = array(
+    'id' => "wfo",
+    'link' => 'http://www.worldfloraonline.org/search?query=[cdm:taxon_name]',
+    'title' => 'World Flora Online',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Classification/Nomenclature',
+  );
+
+  // --- Specimens/Occurrences ---
+  $ext_links_default["biocase"] = array(
+    'id' => "biocase",
+    'link' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=[cdm:taxon_name]',
+    'title' => 'BioCASE',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Specimens/Occurrences',
+  );
+  $ext_links_default["fairchild"] = array(
+    //disabled since Fairchild Guide To Palms seems to be down
+    'id' => "fairchild",
+    'link' => 'http://palmguide.org/palmsearch.php?query=',
+    'title' => 'Fairchild Guide To Palms',
+    'weight' => 0,
+    'status' => 0,
+    'category' => 'Specimens/Occurrences',
+  );
   $ext_links_default["gbif"] = array(
     'id' => "gbif",
     'link' => 'http://www.gbif.org/species/search?q=[cdm:taxon_name]',
@@ -427,10 +514,10 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Specimens/Occurrences',
   );
-  $ext_links_default["biocase"] = array(
-    'id' => "biocase",
-    'link' => 'http://search.biocase.org/edit/search/units/simpleSearch/query1?unitName=[cdm:taxon_name]',
-    'title' => 'BioCASE',
+  $ext_links_default["herbcat"] = array(
+    'id' => "herbcat",
+    'link' => 'http://apps.kew.org/herbcat/getSearchPageResults.do?typeSpecimen=false&imageSpecimen=false&currentName=false&typeOfCollection=all_collection&&genus=[cdm:taxon_name:genus_or_uninomial]&&species=[cdm:taxon_name:epithet]&infraspecificName=[cdm:taxon_name:infraspecific_epithet]',
+    'title' => 'Kew Herbarium Catalogue',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
@@ -451,6 +538,24 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Specimens/Occurrences',
   );
+  $ext_links_default["wfo-specimens"] = array(
+    'id' => "wfo-specimens",
+    'link' => 'http://wfospecimens.cybertaxonomy.org/search/result?fullScientificName=[cdm:taxon_name]',
+    'title' => 'World Flora Online - Specimens',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Specimens/Occurrences',
+  );
+
+  // --- Molecular Resources ---
+  $ext_links_default["ggbn"] = array(
+    'id' => "ggbn",
+    'link' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=[cdm:taxon_name]',
+    'title' => 'GGBN',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Molecular Resources',
+  );
   $ext_links_default["ncbi"] = array(
     'id' => "ncbi",
     'link' => 'http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi?term=%22[cdm:taxon_name]%22',
@@ -459,26 +564,12 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Molecular Resources',
   );
-  $ext_links_default["google"] = array(
-    'id' => "google",
-    'link' => 'http://images.google.com/images?q=%22[cdm:taxon_name]%22',
-    'title' => 'Google Images',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Images',
-  );
+
+  // --- Images ---
   $ext_links_default["europeana"] = array(
     'id' => "europeana",
     'link' => 'https://www.europeana.eu/en/search?query=[cdm:taxon_name]',
     'title' => 'Europeana',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Images',
-  );
-  $ext_links_default["morphbank"] = array(
-    'id' => "morphbank",
-    'link' => 'https://www.morphbank.net/Browse/ByImage/index.php?keywords=&tsnKeywords=[cdm:taxon_name]',
-    'title' => 'Morphbank',
     'weight' => 0,
     'status' => 1,
     'category' => 'Images',
@@ -491,6 +582,43 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Images',
   );
+  $ext_links_default["google"] = array(
+    'id' => "google",
+    'link' => 'http://images.google.com/images?q=%22[cdm:taxon_name]%22',
+    'title' => 'Google Images',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Images',
+  );
+  $ext_links_default["morphbank"] = array(
+    'id' => "morphbank",
+    'link' => 'https://www.morphbank.net/Browse/ByImage/index.php?keywords=&tsnKeywords=[cdm:taxon_name]',
+    'title' => 'Morphbank',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Images',
+  );
+  //  $ext_links_default["arkive"] = array(
+  //    // domain no longer exists! Remove extlink?
+  //    'id' => "arkive",
+  //    'link' => 'http://www.arkive.org/search.html?q=[cdm:taxon_name]&output=xml_no_dtd&client=arkive-images&site=arkive-images&ie=utf8&oe=utf8&num=20&proxystylesheet=tng-search&filter=0&getfields=*',
+  //    'title' => 'ARKive',
+  //    'weight' => 0,
+  //    'status' => 0,
+  //    'category' => 'Images',
+  //  );
+
+  // --- Conservation ---
+  $ext_links_default["iucn"] = array(
+    'id' => "iucn",
+    'link' => 'https://www.iucnredlist.org/search?query=[cdm:taxon_name]',
+    'title' => 'IUCN Red List',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Conservation',
+  );
+
+  // --- Literature ---
   $ext_links_default["scholar"] = array(
     'id' => "scholar",
     'link' => 'http://scholar.google.de/scholar?q=%22[cdm:taxon_name]%22',
@@ -508,120 +636,11 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Literature',
   );
-  $ext_links_default["arkive"] = array(
-    // domain no longer exists! Remove extlink?
-    'id' => "arkive",
-    'link' => 'http://www.arkive.org/search.html?q=[cdm:taxon_name]&output=xml_no_dtd&client=arkive-images&site=arkive-images&ie=utf8&oe=utf8&num=20&proxystylesheet=tng-search&filter=0&getfields=*',
-    'title' => 'ARKive',
-    'weight' => 0,
-    'status' => 0,
-    'category' => 'Images',
-  );
-  $ext_links_default["herbcat"] = array(
-    'id' => "herbcat",
-    'link' => 'http://apps.kew.org/herbcat/getSearchPageResults.do?typeSpecimen=false&imageSpecimen=false&currentName=false&typeOfCollection=all_collection&&genus=[cdm:taxon_name:genus_or_uninomial]&&species=[cdm:taxon_name:epithet]&infraspecificName=[cdm:taxon_name:infraspecific_epithet]',
-    'title' => 'Kew Herbarium Catalogue',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Specimens/Occurrences',
-  );
-  $ext_links_default["wfo-specimens"] = array(
-    'id' => "wfo-specimens",
-    'link' => 'http://wfospecimens.cybertaxonomy.org/search/result?fullScientificName=[cdm:taxon_name]',
-    'title' => 'World Flora Online - Specimens',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Specimens/Occurrences',
-  );
-  $ext_links_default["wfo"] = array(
-    'id' => "wfo",
-    'link' => 'http://www.worldfloraonline.org/search?query=[cdm:taxon_name]',
-    'title' => 'World Flora Online',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Classification/Nomenclature',
-  );
-  $ext_links_default["iucn"] = array(
-    'id' => "iucn",
-    'link' => 'https://www.iucnredlist.org/search?query=[cdm:taxon_name]',
-    'title' => 'IUCN Red List',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Conservation',
-  );
-  $ext_links_default["ipni"] = array(
-    'id' => "ipni",
-    'link' => 'https://www.ipni.org/?q=[cdm:taxon_name]',
-    'title' => 'IPNI',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Classification/Nomenclature',
-  );
-  $ext_links_default["wcsp"] = array(
-    'id' => "wcsp",
-    'link' => 'http://wcsp.science.kew.org/qsearch.do?plantName=[cdm:taxon_name]',
-    'title' => 'World Checklist Monocots',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Classification/Nomenclature',
-  );
-  $ext_links_default["col"] = array(
-    'id' => "col",
-    'link' => 'https://www.catalogueoflife.org/data/search?facet=rank&facet=issue&facet=status&facet=nomStatus&facet=nameType&facet=field&limit=50&offset=0&q=[cdm:taxon_name]&sortBy=taxonomic&type=EXACT',
-    'title' => 'Catalogue of Life',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Classification/Nomenclature',
-  );
-  //
-  $ext_links_default["tpl"] = array(
-    'id' => "tpl",
-    'link' => 'http://www.theplantlist.org/tpl/search?q=[cdm:taxon_name]',
-    'title' => 'The Plant List',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Classification/Nomenclature',
-  );
-  $ext_links_default["eol"] = array(
-    'id' => "eol",
-    'link' => 'http://eol.org/search/?q=[cdm:taxon_name]',
-    'title' => 'Encyclopaedia of Life',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'General',
-  );
-  $ext_links_default["jstor"] = array(
-    'id' => "jstor",
-    'link' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=[cdm:taxon_name]',
-    'title' => 'JSTOR Plant Science',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'General',
-  );
-  $ext_links_default["epic"] = array(
-    'id' => "epic",
-    'link' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=[cdm:taxon_name]&searchAll=true&categories=names&categories=bibl&categories=colln&categories=taxon&categories=flora',
-    'title' => 'ePIC',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'General',
-  );
-  $ext_links_default["fairchild"] = array(
-    //disabled since Fairchild Guide To Palms seems to be down
-    'id' => "fairchild",
-    'link' => 'http://palmguide.org/palmsearch.php?query=',
-    'title' => 'Fairchild Guide To Palms',
-    'weight' => 0,
-    'status' => 0,
-    'category' => 'Specimens/Occurrences',
-  );
-  $ext_links_default["ggbn"] = array(
-    'id' => "ggbn",
-    'link' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=[cdm:taxon_name]',
-    'title' => 'GGBN',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'Molecular Resources',
-  );
+
+  $weight = -10;
+  foreach($ext_links_default as &$template){
+    $template['weight'] = $weight++;
+  }
+
   return $ext_links_default;
 }
