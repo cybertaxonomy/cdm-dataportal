@@ -467,6 +467,22 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Images',
   );
+  $ext_links_default["europeana"] = array(
+    'id' => "europeana",
+    'link' => 'https://www.europeana.eu/en/search?query=[cdm:taxon_name]',
+    'title' => 'Europeana',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Images',
+  );
+  $ext_links_default["morphbank"] = array(
+    'id' => "morphbank",
+    'link' => 'https://www.morphbank.net/Browse/ByImage/index.php?keywords=&tsnKeywords=[cdm:taxon_name]',
+    'title' => 'Morphbank',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Images',
+  );
   $ext_links_default["flickr"] = array(
     'id' => "flickr",
     'link' => 'http://www.flickr.com/search/?w=all&q=%22[cdm:taxon_name]%22',
@@ -505,6 +521,14 @@ function ext_links_template_defaults() {
     'id' => "herbcat",
     'link' => 'http://apps.kew.org/herbcat/getSearchPageResults.do?typeSpecimen=false&imageSpecimen=false&currentName=false&typeOfCollection=all_collection&&genus=[cdm:taxon_name:genus_or_uninomial]&&species=[cdm:taxon_name:epithet]&infraspecificName=[cdm:taxon_name:infraspecific_epithet]',
     'title' => 'Kew Herbarium Catalogue',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Specimens/Occurrences',
+  );
+  $ext_links_default["wfo"] = array(
+    'id' => "wfo",
+    'link' => 'http://wfospecimens.cybertaxonomy.org/search/result?fullScientificName=[cdm:taxon_name]',
+    'title' => 'World Flora Online',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
