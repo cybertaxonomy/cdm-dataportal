@@ -525,13 +525,21 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Specimens/Occurrences',
   );
-  $ext_links_default["wfo"] = array(
-    'id' => "wfo",
+  $ext_links_default["wfo-specimens"] = array(
+    'id' => "wfo-specimens",
     'link' => 'http://wfospecimens.cybertaxonomy.org/search/result?fullScientificName=[cdm:taxon_name]',
-    'title' => 'World Flora Online',
+    'title' => 'World Flora Online - Specimens',
     'weight' => 0,
     'status' => 1,
     'category' => 'Specimens/Occurrences',
+  );
+  $ext_links_default["wfo"] = array(
+    'id' => "wfo",
+    'link' => 'http://www.worldfloraonline.org/search?query=[cdm:taxon_name]',
+    'title' => 'World Flora Online',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Classification/Nomenclature',
   );
   $ext_links_default["iucn"] = array(
     'id' => "iucn",
@@ -547,7 +555,7 @@ function ext_links_template_defaults() {
     'title' => 'IPNI',
     'weight' => 0,
     'status' => 1,
-    'category' => 'Classification',
+    'category' => 'Classification/Nomenclature',
   );
   $ext_links_default["wcsp"] = array(
     'id' => "wcsp",
@@ -555,7 +563,7 @@ function ext_links_template_defaults() {
     'title' => 'World Checklist Monocots',
     'weight' => 0,
     'status' => 1,
-    'category' => 'Classification',
+    'category' => 'Classification/Nomenclature',
   );
   $ext_links_default["tpl"] = array(
     'id' => "tpl",
@@ -563,7 +571,7 @@ function ext_links_template_defaults() {
     'title' => 'The Plant List',
     'weight' => 0,
     'status' => 1,
-    'category' => 'Classification',
+    'category' => 'Classification/Nomenclature',
   );
   $ext_links_default["eol"] = array(
     'id' => "eol",
