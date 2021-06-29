@@ -23,8 +23,11 @@
         <!--
             will add all *Test classes that are found in *Test.php files when the tests directory is
             recursively traversed -->
-        <testsuite name="phpunit.unit">
+        <testsuite name="cdm_dataportal.unit">
             <directory>src/unit/</directory>
+        </testsuite>
+        <testsuite name="cdm_tokens.unit">
+            <directory>../../cdm_tokens/test/src/unit/</directory>
         </testsuite>
     </testsuites>
 

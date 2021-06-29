@@ -86,6 +86,8 @@ To run the test suite:
 php vendor/phpunit/phpunit/phpunit --configuration modules/cdm_dataportal/test/phpUnit/phpUnit.xml
 ~~~
 
+For development or debugging you may want to add the ` --debug` option. 
+
 To execute a single test class
 ~~~
 php vendor/phpunit/phpunit/phpunit --configuration modules/cdm_dataportal/test/phpUnit/phpUnit.xml modules/cdm_dataportal/test/phpUnit/src/unit/StatisticalValuesTest.php 
