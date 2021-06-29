@@ -99,7 +99,10 @@ function ext_links_update_7001(){
  * Update ext_link to cdm_tokens functionality
  */
 function ext_links_update_7002(){
+
   $tasks_performed = [];
+  module_enable(['cdm_tokens'], TRUE);
+  $tasks_performed[] = "cdm_tokens module enabled.";
   $column_glue_exists = db_query("SHOW COLUMNS FROM {ext_links} LIKE 'glue';")->rowCount();
 
   if($column_glue_exists){
