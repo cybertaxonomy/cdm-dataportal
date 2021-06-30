@@ -636,6 +636,14 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Literature',
   );
+  $ext_links_default["pubmed"] = array(
+    'id' => "pubmed",
+    'link' => 'https://pubmed.ncbi.nlm.nih.gov/?term=[cdm:taxon_name]',
+    'title' => 'PubMed',
+    'weight' => 0,
+    'status' => 1,
+    'category' => 'Literature',
+  );
 
   $weight = -10;
   foreach($ext_links_default as &$template){
