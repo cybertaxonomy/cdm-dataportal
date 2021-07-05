@@ -75,9 +75,9 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals(5, footnotes.size());
         assertEquals("1. Editorial note on Nodosilinea radiophila", footnotes.get(0).getText());
         assertEquals("2. editorial note on the fieldunit", footnotes.get(1).getText());
-        assertEquals("3. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
+        assertEquals("3. Art. 77.7; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
                 footnotes.get(2).getText());
-        assertEquals("4. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+        assertEquals("4. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes.get(3).getText());
         assertEquals("5. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                 footnotes.get(4).getText());
@@ -107,9 +107,9 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals(6, footnotes.size());
         assertEquals("1. Editorial note on Nodosilinea radiophila",
                 footnotes.get(0).getText());
-        assertEquals("2. Art. 77.7 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
+        assertEquals("2. Art. 77.7; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
                 footnotes.get(1).getText());
-        assertEquals("3. Art. 99.9 Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+        assertEquals("3. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes.get(2).getText());
         assertEquals("4. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                         footnotes.get(3).getText());
