@@ -548,9 +548,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         }
       }
       if($additional_pub_markup){
-        $additional_pub_markup = ' ' . $additional_pub_markup ; // no dot after this markup, see https://dev.e-taxonomy.eu/redmine/issues/9674#note-4
+        $additional_pub_markup = ' ' . $additional_pub_markup . '. '; // surround with space etc.
       }
-      array_setr('description', $additional_pub_markup . (count($protologue_links) ? '. ' . join(', ', $protologue_links) : ''), $renderTemplate);
+      array_setr('description', $additional_pub_markup . join(', ', $protologue_links), $renderTemplate);
       array_replace_keyr('description', 'protologue', $renderTemplate); // in preparation for #9319
   }
 
