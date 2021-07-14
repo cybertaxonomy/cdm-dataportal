@@ -535,9 +535,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
                   ]
                 );
                 if (isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION) {
-                   $additional_citations[] = ' [& ' . $description_element->multilanguageText_L10n->text . $element_media . $annotations_and_sources->footNoteKeysMarkup() .']';
+                   $additional_citations[] = ' [& ' . trim($description_element->multilanguageText_L10n->text) . $element_media . $annotations_and_sources->footNoteKeysMarkup() .']';
                 } else {
-                  $additional_data[] = ' [' . $description_element->multilanguageText_L10n->text . $element_media . $annotations_and_sources->footNoteKeysMarkup() .']';
+                  $additional_data[] = ' [' . trim($description_element->multilanguageText_L10n->text) . $element_media . $annotations_and_sources->footNoteKeysMarkup(). ']';
                 }
               }
             }

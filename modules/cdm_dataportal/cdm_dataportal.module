@@ -1680,6 +1680,7 @@ function cdm_dataportal_view_polytomousKey($polytomousKeyUuid) {
 function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all') {
 
   cdm_check_valid_taxon_page($chapter);
+
   cdm_dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
 
 
