@@ -44,6 +44,8 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
  const CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE = 'derivate_table';
  const CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE = 'derivate_tree';
  const CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH = 'derivate_path';
+ const CDM_SPECIMEN_DERIVATE_TREE_OPTIONS = 'cdm_specimen_derivate_tree_options';
+ const CDM_SPECIMEN_DERIVATE_TREE_OPTIONS_DEFAULT = ['field_unit_short_label' => 0];
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE', 'cdm_synonymy_accepted_taxon_sec_separate');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL', 'cdm_synonymy_accepted_taxon_sec_separate_label');
@@ -2477,7 +2479,7 @@ ie	introduced: formerly introduced
 
   $form['taxon_specimens'][CDM_SPECIMEN_LIST_VIEW_MODE] = array(
       '#type' => 'radios',
-      '#title' => t('View mode for lists of specimens or occurrences.'),
+      '#title' => 'View mode for lists of specimens or occurrences.',
       '#default_value' => variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT),
       '#options' => [
         CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE => 'Compressed derivate table',
@@ -2492,6 +2494,24 @@ ie	introduced: formerly introduced
          <li>' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH . ': As the path of derivatives from the specimen to the field unit</li>
        </ul>'
   );
+
+  $specimen_derivate_tree_options = get_array_variable_merged(CDM_SPECIMEN_DERIVATE_TREE_OPTIONS, CDM_SPECIMEN_DERIVATE_TREE_OPTIONS_DEFAULT);
+  $form['taxon_specimens'][CDM_SPECIMEN_DERIVATE_TREE_OPTIONS] = [
+    '#type' => 'fieldset',
+    '#tree' => TRUE,
+    '#title' => 'Derivate tree options',
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#description' => t('These setting only apply to the <i>Derivate tree</i> view mode (see above).'),
+  ];
+
+  $form['taxon_specimens'][CDM_SPECIMEN_DERIVATE_TREE_OPTIONS]['field_unit_short_label'] = [
+    '#type' => 'checkbox',
+    '#title' => 'Field unit short label',
+    '#default_value' => $specimen_derivate_tree_options['field_unit_short_label'],
+    '#description' => t('Use the short collecting string for field units 
+    instead of the long summary label, which also includes location information.'),
+  ];
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE);
   $profile_feature_tree_uuid = variable_get(CDM_OCCURRENCE_FEATURETREE_UUID, UUID_DEFAULT_FEATURETREE);

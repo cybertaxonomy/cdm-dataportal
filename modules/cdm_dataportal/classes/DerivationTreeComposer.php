@@ -7,6 +7,7 @@ class DerivationTreeComposer {
   private $focused_unit_uuid = null;
   private $with_details = false;
   private $collapsible = false;
+  private $use_field_unit_short_label = null;
 
   /**
    * @return bool
@@ -27,6 +28,15 @@ class DerivationTreeComposer {
    */
   public function isWithDetails() {
     return $this->with_details;
+  }
+
+  private function useFieldUnitShortLabel() {
+      if($this->use_field_unit_short_label === null){
+        $specimen_derivate_tree_options = get_array_variable_merged(CDM_SPECIMEN_DERIVATE_TREE_OPTIONS, CDM_SPECIMEN_DERIVATE_TREE_OPTIONS_DEFAULT);
+        $this->use_field_unit_short_label = $specimen_derivate_tree_options['field_unit_short_label'];
+      } else {
+        return $this->use_field_unit_short_label;
+      }
   }
 
   public function collapsibleItemClassAttribute($has_sub_derivatives) {
@@ -240,7 +250,11 @@ class DerivationTreeComposer {
       $unit_header_wrapper_sub_items_class_attr = ' unit-header-wrapper-with-sub-items';
     }
     if( $sob_dto->type == 'FieldUnit' ){
-      $label = $sob_dto->label;
+      if($this->useFieldUnitShortLabel() && isset_not_empty($sob_dto->collectingString)){
+        $label = $sob_dto->collectingString;
+      } else {
+        $label = $sob_dto->label;
+      }
     } else {
       $label = $sob_dto->specimenShortTitle;
     }
