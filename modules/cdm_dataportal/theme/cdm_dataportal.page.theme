@@ -331,7 +331,7 @@ function theme_cdm_media_page($variables) {
         }
 
         $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $representation->uuid, $active_part_index)) . '">'
-          . cdm_media_gallerie_image($part, $thumbnailMaxExtend, TRUE);
+          . cdm_media_gallerie_entry_image($part, $thumbnailMaxExtend, TRUE);
         $active_part_index++;
       }
       $out .= '</table>';

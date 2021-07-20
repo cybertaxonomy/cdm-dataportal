@@ -391,10 +391,18 @@ function compose_cdm_media_gallerie($configuration) {
           // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
           $contentTypeDirectory = media_content_type_dir($thumbnail_representation, 'application');
 
-          $mediaPartHtml = call_user_func_array(
-              'cdm_media_gallerie_' . $contentTypeDirectory,
-              array($thumbnail_representation->parts[0], $maxExtend, TRUE)
-          );
+          switch($contentTypeDirectory) {
+            case 'image':
+              $mediaPartHtml = cdm_media_gallerie_entry_image($thumbnail_representation->parts[0], $maxExtend, TRUE);
+              break;
+            case 'video':
+            case 'audio':
+            case 'video':
+            case 'application':
+            case 'text':
+            default:
+              $mediaPartHtml = cdm_media_gallerie_entry_webapp($thumbnail_representation->parts[0], $maxExtend, TRUE);
+          }
           // --- Compose Media Link.
           $mediaLinkUri = FALSE;
           if ($alternativeMediaUri) {
@@ -517,7 +525,7 @@ function compose_cdm_media_gallerie($configuration) {
  * @return string
  *   The markup for the media representation
  */
-function cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
+function cdm_media_gallerie_entry_image($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
 
   $out = '';
 
@@ -593,7 +601,7 @@ function cdm_media_gallerie_image($mediaRepresentationPart, $maxExtend, $addPass
  * @return string
  *   The markup for the media representation
  */
-function cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
+function cdm_media_gallerie_entry_webapp($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
 
   $out = '';
 
@@ -605,20 +613,6 @@ function cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $a
   }
 
   return $out;
-}
-
-/**
- * Creates markup for a CDM MediaRepresentation which is referencing an web application.
- *
- * @param $mediaRepresentationPart
- * @param $maxExtend
- * @param $addPassePartout
- * @param $attributes
- * @return string
- *   The markup for the media representation
- */
-function cdm_media_gallerie_text($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
-  return cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $addPassePartout);
 }
 
 /**

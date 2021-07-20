@@ -544,7 +544,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
     }
 
     if (isset($representationPart->uri)) {
-      $profile_image = cdm_media_gallerie_image($representationPart, $taxon_profile_image_settings['maxextend'], FALSE, $attributes);
+      $profile_image = cdm_media_gallerie_entry_image($representationPart, $taxon_profile_image_settings['maxextend'], FALSE, $attributes);
       // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
       $max_extend_with = $taxon_profile_image_settings['maxextend'] . 'px';
       $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $max_extend_with . '">' . $profile_image . '</div>',
