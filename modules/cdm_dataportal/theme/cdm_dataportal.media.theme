@@ -84,7 +84,13 @@ function cdm_description_element_media($descriptionElement, $mimeTypePreference)
 
       $contentTypeDirectory = media_content_type_dir($mediaRepresentation);
 
-      $out .= theme('cdm_media_mime_' . $contentTypeDirectory, array('mediaRepresentation' => $mediaRepresentation, 'feature' => $feature));
+      switch($contentTypeDirectory){
+        case 'application':
+          $out .= compose_cdm_media_mime_application($mediaRepresentation, $feature);
+        case 'text':
+        case 'image':
+        $out .= compose_cdm_media_mime_image($mediaRepresentation, $feature);
+      }
     }
     else {
       // Media has empty or corrupt representation
@@ -97,45 +103,50 @@ function cdm_description_element_media($descriptionElement, $mimeTypePreference)
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Compose function to create markup for a media item with mime type directory 'application'
+ *
+ * @param $media_representation
+ *  A cdm MediaRepresentation object
+ * @param $feature
+ *  A cdm feature term
+ *
+ * @ingroup compose
  */
-function theme_cdm_media_mime_application($variables) {
-  $mediaRepresentation = $variables['mediaRepresentation'];
-  $feature = $variables['feature'];
+function compose_cdm_media_mime_application($media_representation, $feature) {
+
   $out = '';
-  foreach ($mediaRepresentation->parts as $part) {
-    $attributes = array(
-      'title' => theme('cdm_feature_name', array('feature_name' => $feature->representation_L10n)),
-      'target' => '_blank',
-    );
-    /*
-    $attributes = array('title'=>$feature->representation_L10n,'target'=>'_blank');
-    $attributes = array('title'=>'original publication', 'target'=>'_blank');
-    */
-    $out .= l(media_feature_icon($feature, $part->uri), $part->uri, array(
-      'attributes' => $attributes,
-      'absolute' => TRUE,
-      'html' => TRUE,
-    ));
+  if (!empty($representation->parts)) {
+    foreach ($media_representation->parts as $part) {
+      $attributes = [
+        'title' => theme('cdm_feature_name', ['feature_name' => $feature->representation_L10n]),
+        'target' => '_blank',
+      ];
+      /*
+      $attributes = array('title'=>$feature->representation_L10n,'target'=>'_blank');
+      $attributes = array('title'=>'original publication', 'target'=>'_blank');
+      */
+      $out .= l(media_feature_icon($feature, $part->uri), $part->uri, [
+        'attributes' => $attributes,
+        'absolute' => TRUE,
+        'html' => TRUE,
+      ]);
+    }
   }
   return $out;
 }
 
 
 /**
- * Creates the markup for a CDM Media instance.
+ * Compose function to create markup for a media item with mime type directory 'image'
  *
- * (This method is currently only called from within theme_cdm_media())
- *
- * @param $variables
- *    An associative array
- * @return string
- *    The markup
+ * @param $media_representation
+ *  A cdm MediaRepresentation object
+ * @param $feature
+ *  A cdm feature term
+ * @ingroup compose
  */
-function theme_cdm_media_mime_image($variables) {
-  $media_representation = $variables['mediaRepresentation'];
-  $feature = $variables['feature'];
+function compose_cdm_media_mime_image($media_representation, $feature) {
+
   $out = '';
   // TODO thickbox is not used anymore -> delete?
   $attributes = array(
@@ -162,55 +173,26 @@ function theme_cdm_media_mime_image($variables) {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function theme_cdm_media_mime_text($variables) {
-  $representation = $variables['mediaRepresentation'];
-  $feature = $variables['feature'];
-  $out = '';
-  if (!empty($representation->parts)) {
-    foreach ($representation->parts as $part) {
-      $attributes = array(
-        'title' => theme('cdm_feature_name', array('feature_name' => $feature->representation_L10n)),
-        'target' => '_blank',
-      );
-      // $attributes = array('title'=>t('original publication'),
-      // 'target'=>'_blank');
-      $out .= l(media_feature_icon($feature, $part->uri), $part->uri, array(
-        'attributes' => $attributes,
-        'absolute' => TRUE,
-        'html' => TRUE,
-      ));
-    }
-  }
-  return $out;
-}
-
-
-/**
- * Theme function for captions of media elements. This method is usually called from
- * within the theme_cdm_media_gallerie() function or indirectly via AHAH.
+ * Compose function for captions of media elements. This method is usually called from
+ * within the cdm_media_gallerie() function or indirectly via AHAH.
  *
- * @param array $variables
- *   an associative array with the following elements:
- *   - 'media': the cdm media object to show the captions for
- *   - 'elements':
+ * @param media
+ * the cdm media object to show the captions for
+ * @param elements
  *         an array which defining the caption elements to show up
  *         example:
  *          Show 'title', 'description', 'file', 'filename' in the caption:
  *          array('title', 'description', 'file', 'filename')
- *
  * @return string
- *   the themed html output
+ *   the markup
  *
- * TODO turn into compose method
+ * @ingroup compose
  */
-function theme_cdm_media_caption($variables) {
+function compose_cdm_media_caption($media, $elements = null, $sources_as_content = FALSE) {
 
-  $media = $variables['media'];
-  $elements = $variables['elements'];
-  $sources_as_content = $variables['sources_as_content'];
+  if($elements === null){
+    $elements = ['title', 'description', 'artist', 'location', 'rights'];
+  }
   $media_metadata = read_media_metadata($media);
 
   $doTitle = !$elements || array_search('title', $elements) !== FALSE;

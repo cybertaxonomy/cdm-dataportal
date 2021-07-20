@@ -24,8 +24,8 @@
  * Used in:
  *  - theme_cdm_feature_nodesTOC()
  *  - theme_cdm_feature_nodes()
- *  - theme_cdm_media_mime_application()
- *  - theme_cdm_media_mime_text()
+ *  - compose_cdm_media_mime_application()
+ *  - compose_cdm_media_mime_text()
  *
  * TODO delete this function? (a.kohlbecker feb 2013)
  *

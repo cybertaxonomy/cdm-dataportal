@@ -61,15 +61,6 @@ function cdm_dataportal_theme() {
     'cdm_list_IdentificationKeys' => array('variables' => array('type' => NULL, 'taxonUuid' => NULL)),
     'cdm_block_IdentificationKeys' => array('variables' => array('taxonUuid' => NULL)),
 
-    // Themes in cdm_dataportal.media.theme.
-    'cdm_media_mime_application' => array('variables' => array('mediaRepresentation' => NULL, 'feature' => NULL)),
-    'cdm_media_mime_image' => array('variables' => array('mediaRepresentation' => NULL, 'feature' => NULL)),
-    'cdm_media_mime_text' => array('variables' => array('mediaRepresentation' => NULL, 'feature' => NULL)),
-    'cdm_media_caption' => array('variables' => array(
-        'media' => NULL,
-        'elements' => array('title', 'description', 'artist', 'location', 'rights'),
-        'sources_as_content' => FALSE
-    )),
     // Themes in cdm_dataportal.name.theme.
     'cdm_nameRelationships' => array('variables' => array('nameRelationships' => NULL, 'skipTypes' => FALSE)),
     'cdm_homotypicSynonymLine' => array('variables' => array('taxon' => NULL)),

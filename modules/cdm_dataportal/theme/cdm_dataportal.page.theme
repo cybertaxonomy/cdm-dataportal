@@ -297,7 +297,7 @@ function theme_cdm_media_page($variables) {
   $out .= '</div>';
 
   // General media metadata.
-  $metadataToPrint = theme('cdm_media_caption', array('media' => $media, 'sources_as_content' => true));
+  $metadataToPrint = compose_cdm_media_caption($media, null, true);
   $out .= $metadataToPrint;
 
   $cdm_standard_image_viewer_settings = get_array_variable_merged(CDM_STANDARD_IMAGE_VIEWER, CDM_STANDARD_IMAGE_VIEWER_DEFAULT);
