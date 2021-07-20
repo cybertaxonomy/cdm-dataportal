@@ -598,14 +598,9 @@ function cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $a
   $out = '';
 
   if (isset($mediaRepresentationPart)) {
-
+    $out = '<div class="application">Link to external media resource or web application</div>';
     if ($addPassePartout) {
-      $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
-    }
-    $out .= '<div class="application">Link to external media resource or web application</div>';
-
-    if ($addPassePartout) {
-      $out .= '</div>';
+      $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">' . $out .'</div>';
     }
   }
 
@@ -623,22 +618,7 @@ function cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $a
  *   The markup for the media representation
  */
 function cdm_media_gallerie_text($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
-
-  $out = '';
-
-  if (isset($mediaRepresentationPart)) {
-    if ($addPassePartout) {
-      $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
-    }
-
-    $out .= '<div class="application">Web Application</div>';
-
-    if ($addPassePartout) {
-      $out .= '</div>';
-    }
-  }
-
-  return $out;
+  return cdm_media_gallerie_application($mediaRepresentationPart, $maxExtend, $addPassePartout);
 }
 
 /**
