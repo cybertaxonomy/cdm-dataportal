@@ -41,7 +41,6 @@
   module_load_include('inc', 'cdm_dataportal', 'theme/theme_registry');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.common');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.descriptions');
-  module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.media');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.page');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.taxon');
   module_load_include('theme', 'cdm_dataportal', 'theme/cdm_dataportal.name');

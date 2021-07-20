@@ -847,6 +847,56 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
     return $block;
   }
 
+/**
+ * Creates the markup for the media associated a DescriptionElement instance.
+ *
+ * @param $descriptionElement
+ *    the DescriptionElement instance
+ * @param $mimeTypePreference array
+ *    An array of mime type strings. the order of the mimetypes is the order of preference.
+ *    E.g.: array('application/pdf','image/jpeg')
+ *
+ * @return string
+ *    The markup
+ * 
+ * @ingroup compose
+ */
+function cdm_description_element_media($descriptionElement, $mimeTypePreference) {
+
+  $out = '';
+
+  _add_js_thickbox();
+
+  $feature = $descriptionElement->feature;
+  $medias = $descriptionElement->media;
+
+  foreach ($medias as $media) {
+    $pref_representations = cdm_preferred_media_representations($media, $mimeTypePreference, 300, 400);
+    $media_representation = array_shift($pref_representations);
+    if ($media_representation) {
+
+      $content_type_directory = media_content_type_dir($media_representation);
+
+      switch($content_type_directory){
+        case 'image':
+          $out .= compose_cdm_media_mime_image($media_representation, $feature);
+          break;
+        case 'application':
+        case 'text':
+        default:
+          $out .= compose_cdm_media_mime_application($media_representation, $feature);
+      }
+    }
+    else {
+      // Media has empty or corrupt representation
+      if(user_is_logged_in()){
+        drupal_set_message('The media entity (' . l($media->uuid, path_to_media($media->uuid)) .') has empty or corrupt representation parts. Maybe the URI is empty.' , 'warning');
+      }
+    }
+  }
+  return $out;
+}
+
 
   /**
    * Composes a drupal render array for single CDM TextData description element.

@@ -865,4 +865,233 @@ function taxon_media_query_parameters() {
   return $mediaQueryParameters;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function media_content_type_dir($media_representation, $default = FALSE) {
+  if ($media_representation->mimeType) {
+    return substr($media_representation->mimeType, 0, stripos($media_representation->mimeType, '/'));
+  }
+  else {
+    return $default;
+  }
+}
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function getimagesize_remote($image_url) {
+  $response = cdm_http_request($image_url);
+  $contents = NULL;
+  if (isset($response->data)) {
+    $contents = $response->data;
+  } else {
+    return FALSE;
+  }
+
+  $last_level = error_reporting (E_ERROR); // suppress warnings from the imagecreatefromstring() method,
+  $im = imagecreatefromstring($contents);
+  error_reporting($last_level); // reset the error_reporting level
+
+  if (!$im) {
+    return FALSE;
+  }
+  $gis[0] = ImageSX($im);
+  $gis[1] = ImageSY($im);
+  // Array member 3 is used below to keep with current getimagesize standards.
+  $gis[3] = "width={$gis[0]} height={$gis[1]}";
+  ImageDestroy($im);
+  return $gis;
+}
+
+/**
+ * Compose function to create markup for a media item with mime type directory 'application'
+ *
+ * @param $media_representation
+ *  A cdm MediaRepresentation object
+ * @param $feature
+ *  A cdm feature term
+ *
+ * @ingroup compose
+ */
+function compose_cdm_media_mime_application($media_representation, $feature) {
+
+  $out = '';
+  if (!empty($representation->parts)) {
+    foreach ($media_representation->parts as $part) {
+      $attributes = [
+        'title' => theme('cdm_feature_name', ['feature_name' => $feature->representation_L10n]),
+        'target' => '_blank',
+      ];
+      /*
+      $attributes = array('title'=>$feature->representation_L10n,'target'=>'_blank');
+      $attributes = array('title'=>'original publication', 'target'=>'_blank');
+      */
+      $out .= l(media_feature_icon($feature, $part->uri), $part->uri, [
+        'attributes' => $attributes,
+        'absolute' => TRUE,
+        'html' => TRUE,
+      ]);
+    }
+  }
+  return $out;
+}
+
+
+/**
+ * Compose function to create markup for a media item with mime type directory 'image'
+ *
+ * @param $media_representation
+ *  A cdm MediaRepresentation object
+ * @param $feature
+ *  A cdm feature term
+ * @ingroup compose
+ */
+function compose_cdm_media_mime_image($media_representation, $feature) {
+
+  $out = '';
+  // TODO thickbox is not used anymore -> delete?
+  $attributes = array(
+    'class' => 'thickbox',
+    'rel' => 'representation-' . $media_representation->uuid,
+    'title' => $feature->representation_L10n,
+  );
+  for ($i = 0; $part = $media_representation->parts[$i]; $i++) {
+    if ($i == 0) {
+      $out .= l(media_feature_icon($feature, $part->uri), $part->uri, array(
+        'attributes' => $attributes,
+        'absolute' => TRUE,
+        'html' => TRUE,
+      ));
+    }
+    else {
+      $out .= l('', $part->uri, array(
+        'attributes' => $attributes,
+        'absolute' => TRUE,
+      ));
+    }
+  }
+  return $out;
+}
+
+/**
+ * Compose function for captions of media elements. This method is usually called from
+ * within the cdm_media_gallerie() function or indirectly via AHAH.
+ *
+ * @param media
+ * the cdm media object to show the captions for
+ * @param elements
+ *         an array which defining the caption elements to show up
+ *         example:
+ *          Show 'title', 'description', 'file', 'filename' in the caption:
+ *          array('title', 'description', 'file', 'filename')
+ * @return string
+ *   the markup
+ *
+ * @ingroup compose
+ */
+function compose_cdm_media_caption($media, $elements = null, $sources_as_content = FALSE) {
+
+  if($elements === null){
+    $elements = ['title', 'description', 'artist', 'location', 'rights'];
+  }
+  $media_metadata = read_media_metadata($media);
+
+  $doTitle = !$elements || array_search('title', $elements) !== FALSE;
+  $doDescription = !$elements || array_search('description', $elements) !== FALSE;
+  $doArtist = !$elements || array_search('artist', $elements) !== FALSE;
+  $doMediacreated = true; //!$elements || array_search('mediacreated', $elements) !== FALSE;
+  $doLocation = !$elements || array_search('location', $elements) !== FALSE;
+  $doRights = !$elements || array_search('rights', $elements) !== FALSE;
+
+  $descriptionPrefix = "";
+  $footnote_list_key = 'media-' . $media->uuid;
+
+  // handle sources and annotations
+  cdm_lazyload_array_field('media', 'annotations', $media);
+  RenderHints::setAnnotationsAndSourceConfig([
+    'sources_as_content' => $sources_as_content,
+    'link_to_name_used_in_source' => TRUE,
+    'link_to_reference' => FALSE,
+    'add_footnote_keys' => !$sources_as_content,
+    'bibliography_aware' => FALSE
+  ]);
+  $annotations_and_sources = handle_annotations_and_sources(
+    $media, NULL, $footnote_list_key
+  );
+
+  $out = '';
+
+  // Title.
+  if ($doTitle) {
+    $title_string = $media_metadata['title']
+      . $annotations_and_sources->footNoteKeysMarkup(); // placing the footnote keys here is not optimal, see #6329 A.1.
+    $title_string = trim($title_string);
+    if (empty($title_string) && !($doDescription && $media_metadata['description'])) {
+      // Use filename as fallback option if no description and no source citations are available.
+      $title_string = $media_metadata['filename'];
+    }
+    $out .= '<div class="title">' . $title_string . '</div>';
+  }
+
+  // Description.
+  if ($media_metadata['description'] && $doDescription) {
+    $out .= '<p class="description">' . $media_metadata['description'] . '</p>';
+  }
+
+  $groups = array();
+
+  $out .= '<dl class="media-caption">';
+  // Artist.
+  if ($media_metadata['artist'] && $doArtist) {
+    _description_list_group_add($groups, t('Artist') . ':', $media_metadata['artist'] );
+  }
+  // MediaCreated
+  if ($media_metadata['mediacreated'] && $doMediacreated) {
+    _description_list_group_add($groups, t('Created') . ':', $media_metadata['mediacreated'] );
+  }
+  // Location.
+  if ($doLocation) {
+    $location = '';
+    $location .= $media_metadata['location']['sublocation'];
+    if ($location && $media_metadata['location']['city']) {
+      $location .= ', ';
+    }
+    $location .= $media_metadata['location']['city'];
+    if ($location && $media_metadata['location']['province']) {
+      $location .= ', ';
+    }
+    $location .= $media_metadata['location']['province'];
+    if ($location && $media_metadata['location']['country']) {
+      $location .= ' (' . $media_metadata['location']['country'] . ')';
+    }
+    else {
+      $location .= $media_metadata['location']['country'];
+    }
+    if ($location) {
+      _description_list_group_add($groups, t('Location') . ':', $location );
+    }
+  }
+  // Rights.
+  if ($doRights) {
+    $groups = array_merge($groups, cdm_rights_as_dl_groups($media_metadata['rights']));
+  }
+
+  if($annotations_and_sources->hasSourceReferences()){
+    $sources_label = count($annotations_and_sources->getSourceReferences()) > 1 ? t('Sources') : t('Source');
+    _description_list_group_add($groups, $sources_label . ':', markup_to_render_array(join('; ', $annotations_and_sources->getSourceReferences())) );
+  }
+
+  // TODO add all other metadata elements generically.
+
+  $description_list_item = array(
+    '#theme' => 'description_list',
+    '#groups' => $groups,
+    '#attributes' => array('class' => 'media-caption')
+  );
+  $out .= drupal_render($description_list_item);
+  $out .= render_footnotes($footnote_list_key);
+  return $out;
+}
