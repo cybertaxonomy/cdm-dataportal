@@ -78,18 +78,20 @@ function cdm_description_element_media($descriptionElement, $mimeTypePreference)
   $medias = $descriptionElement->media;
 
   foreach ($medias as $media) {
-    $prefRepresentations = cdm_preferred_media_representations($media, $mimeTypePreference, 300, 400);
-    $mediaRepresentation = array_shift($prefRepresentations);
-    if ($mediaRepresentation) {
+    $pref_representations = cdm_preferred_media_representations($media, $mimeTypePreference, 300, 400);
+    $media_representation = array_shift($pref_representations);
+    if ($media_representation) {
 
-      $contentTypeDirectory = media_content_type_dir($mediaRepresentation);
+      $content_type_directory = media_content_type_dir($media_representation);
 
-      switch($contentTypeDirectory){
-        case 'application':
-          $out .= compose_cdm_media_mime_application($mediaRepresentation, $feature);
-        case 'text':
+      switch($content_type_directory){
         case 'image':
-        $out .= compose_cdm_media_mime_image($mediaRepresentation, $feature);
+          $out .= compose_cdm_media_mime_image($media_representation, $feature);
+          break;
+        case 'application':
+        case 'text':
+        default:
+          $out .= compose_cdm_media_mime_application($media_representation, $feature);
       }
     }
     else {
