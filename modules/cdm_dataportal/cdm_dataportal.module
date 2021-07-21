@@ -34,7 +34,7 @@
   module_load_include('inc', 'cdm_dataportal', 'includes/media');
   module_load_include('inc', 'cdm_dataportal', 'includes/maps');
   module_load_include('inc', 'cdm_dataportal', 'includes/occurrences');
-  module_load_include('inc', 'cdm_dataportal', 'includes/occurrences_new'); // tmp file, shoud be merged later with occurrences.inc
+  module_load_include('inc', 'cdm_dataportal', 'includes/occurrences_new'); // tmp file, should be merged later with occurrences.inc
   module_load_include('inc', 'cdm_dataportal', 'includes/descriptions');
   module_load_include('inc', 'cdm_dataportal', 'includes/pre-drupal8');
 
@@ -50,7 +50,6 @@
   module_load_include('php', 'cdm_dataportal', 'classes/footnote');
   module_load_include('php', 'cdm_dataportal', 'classes/footnotekey');
   module_load_include('php', 'cdm_dataportal', 'classes/renderhints');
-
 
   /* ============================ java script functions ============================= */
 

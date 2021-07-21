@@ -1326,7 +1326,7 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
             'elements' => array('-none-'),
             'sources_as_content' => true
           );
-          $media = compose_cdm_media_gallerie(array(
+          $media = compose_cdm_media_gallery(array(
             'mediaList' => array($mediaSpecimen),
             'galleryName' => CDM_DATAPORTAL_TYPE_SPECIMEN_GALLERY_NAME . '_' . $type_designation_entity_ref->uuid,
             'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],

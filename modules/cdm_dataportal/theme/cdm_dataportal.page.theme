@@ -297,8 +297,8 @@ function theme_cdm_media_page($variables) {
   $out .= '</div>';
 
   // General media metadata.
-  $metadataToPrint = compose_cdm_media_caption($media, null, true);
-  $out .= $metadataToPrint;
+  $media_caption_render_array = compose_cdm_media_caption($media, null, true);
+  $out .= drupal_render($media_caption_render_array);
 
   $cdm_standard_image_viewer_settings = get_array_variable_merged(CDM_STANDARD_IMAGE_VIEWER, CDM_STANDARD_IMAGE_VIEWER_DEFAULT);
   if ($cdm_standard_image_viewer_settings['media_representation_details_enabled'] == 1){
@@ -329,9 +329,9 @@ function theme_cdm_media_page($variables) {
           default:
             $out .= $part->size . 'k';
         }
-
+        $imageMediaItem = ImageMediaItem::fromMediaRepresentationPart($part);
         $out .= '</td><td><a href="' . url(path_to_media($media->uuid, $representation->uuid, $active_part_index)) . '">'
-          . cdm_media_gallerie_entry_image($part, $thumbnailMaxExtend, TRUE);
+          . cdm_media_gallery_entry_image($imageMediaItem, $thumbnailMaxExtend, TRUE);
         $active_part_index++;
       }
       $out .= '</table>';

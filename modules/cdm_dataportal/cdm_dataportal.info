@@ -16,5 +16,9 @@ files[] = classes/AgentComposeHandler.php
 files[] = classes/AnnotationsAndSources.php
 files[] = classes/NameRenderConfiguration.php
 files[] = classes/DerivationTreeComposer.php
+files[] = classes/GalleryItemMedia.php
+files[] = classes/MediaSize.php
+files[] = classes/ImageMediaItem.php
+files[] = lib/FaviconDownloader.php
 
 configure = admin/config/cdm_dataportal/settings

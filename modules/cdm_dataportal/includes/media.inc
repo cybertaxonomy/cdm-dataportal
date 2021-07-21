@@ -254,7 +254,7 @@ function read_media_metadata($media)
  *   A render array for the image gallery
  * @ingroup: compose
  */
-function compose_cdm_media_gallerie($configuration) {
+function compose_cdm_media_gallery($configuration) {
 
   $mediaList = $configuration['mediaList'];
 
@@ -269,30 +269,37 @@ function compose_cdm_media_gallerie($configuration) {
     array(
       'mediaList' => NULL,
       'galleryName' => NULL,
-      'maxExtend' => 150,
+      'max_extend' => 150,
       'cols' => 4,
       'maxRows' => FALSE,
       'captionElements' => array('title'),
       'mediaLinkType' => 'LIGHTBOX',
-      'alternativeMediaUri' => NULL,
+      'alternative_media_uri' => NULL,
       'galleryLinkUri' => NULL,
       'showCaption' => TRUE,
     ),
     $configuration);
 
+    $image_mime_type_list = [
+      'image/jpg',
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+    ];
+
   $galleryName = $configuration['galleryName'];
-  $maxExtend = $configuration['maxExtend'];
+  $max_extend = $configuration['max_extend'];
   $cols = $configuration['cols'];
   $maxRows = $configuration['maxRows'];
   $captionElements = $configuration['captionElements'];
   $mediaLinkType = $configuration['mediaLinkType'];
-  $alternativeMediaUri = $configuration['alternativeMediaUri'];
+  $alternative_media_uri = $configuration['alternative_media_uri'];
   $galleryLinkUri = $configuration['galleryLinkUri'];
   $showCaption = $configuration['showCaption'];
 
-  $caption_link_uri = '';
+  $do_link_to_media = '';
   if(isset($captionElements['#uri'])){
-    $caption_link_uri = $captionElements['#uri'];
+    $do_link_to_media = $captionElements['#uri'];
     unset($captionElements['#uri']);
   }
   if (!is_array($captionElements) || count($captionElements) == 0) {
@@ -354,145 +361,101 @@ function compose_cdm_media_gallerie($configuration) {
       $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
       if (isset($complete_media->representations[0]->parts[0])) {
 
-          //
-          // Find preferred representation.
-          //
+        $gallery_media_item = new GalleryItemMedia($complete_media, $max_extend, $max_extend);
 
-          $thumbnail_representations = cdm_preferred_media_representations($complete_media, array(
-              'image/jpg',
-              'image/jpeg',
-              'image/png',
-              'image/gif',
-          ),
-              $maxExtend,
-              $maxExtend
-          );
-          // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
-          // which only contains the thumbnail representation even if the height and width filters are not set.
-          // --> #6970
-          // to get hold of the full resolution images we send a separate request :
-          // $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
-          $full_size_representations = cdm_preferred_media_representations($complete_media, array(
-                  'image/jpg',
-                  'image/jpeg',
-                  'image/png',
-                  'image/gif',
-              )
-          );
-          if (count($thumbnail_representations) == 0) {
-              // Fallback to using the first one in the list.
-              $thumbnail_representations = $media->representations;
-              $full_size_representations = $media->representations;
-          }
-          $thumbnail_representation = array_shift($thumbnail_representations);
-          $full_size_representation = array_shift($full_size_representations);
+//        if($gallery_media_item->hasWebAppItem()) {
+//            $media_part_markup = cdm_media_gallerie_entry_webapp($gallery_media_item, $max_extend, TRUE);
+//        } else {
+        $thumbnail_item = $gallery_media_item->getThumbnailImageMediaItem();
+            $media_part_markup = cdm_media_gallery_entry_image($thumbnail_item, $max_extend, TRUE);
+//        }
 
-          // $preferred_media_representation->parts[0]->uri =
-          // "http://127.0.0.1/images/palmae/palm_tc_14415_1.jpg";
-          $contentTypeDirectory = media_content_type_dir($thumbnail_representation, 'application');
-
-          switch($contentTypeDirectory) {
-            case 'image':
-              $mediaPartHtml = cdm_media_gallerie_entry_image($thumbnail_representation->parts[0], $maxExtend, TRUE);
-              break;
-            case 'video':
-            case 'audio':
-            case 'video':
-            case 'application':
-            case 'text':
-            default:
-              $mediaPartHtml = cdm_media_gallerie_entry_webapp($thumbnail_representation->parts[0], $maxExtend, TRUE);
-          }
-          // --- Compose Media Link.
-          $mediaLinkUri = FALSE;
-          if ($alternativeMediaUri) {
-              if (isset($alternativeMediaUri[$mediaIndex])) {
-                  $mediaLinkUri = $alternativeMediaUri[$mediaIndex];
-              }
-              if (is_string($alternativeMediaUri)) {
-                  $mediaLinkUri = $alternativeMediaUri;
-              }
-          } else {
-              $mediaLinkUri = $full_size_representation->parts[0]->uri;
-          }
-          $mediaIndex++;
-
-          // media captions will be loaded via AHAH
-          _add_js_ahah();
-          $content_url = cdm_compose_ws_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
-          //if $captionElements == null, set $captionPartHtml = '' otherwise the loading image is shown but nothing is loaded.
-          if ($captionElements) {
-
-              $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
-              $ahah_media_caption = '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
-                  . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
-
-            // preparing the part link (= click on image itself) which can be handled in two ways
-            //
-            //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
-            //  2. open the media in a new window with target 'specimen'
-            if ($mediaLinkType == 'LIGHTBOX' && $contentTypeDirectory == 'image') {
-              $mediaPartLinkAttributes['class'] = array('lightbox');
-            } else {
-              $mediaPartLinkAttributes['target'] = "specimen";
-              $openMediaLinkAttributes['target'] = "specimen";
+        // --- Compose Media Link.
+        $media_link_uri = FALSE;
+        if ($alternative_media_uri) {
+            if (isset($alternative_media_uri[$mediaIndex])) {
+                $media_link_uri = $alternative_media_uri[$mediaIndex];
             }
-            $mediaPartLinkAttributes['alt'] = htmlentities($ahah_media_caption);
+            if (is_string($alternative_media_uri)) {
+                $media_link_uri = $alternative_media_uri;
+            }
+        } else {
+            $media_link_uri = $gallery_media_item->getOpenItemUrl();
+        }
+        $mediaIndex++;
 
-            // --- preparing the media caption
+        // media captions will be loaded via AHAH
+        _add_js_ahah();
+        $content_url = cdm_compose_ws_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
+        //if $captionElements == null, set $caption_part_markup = '' otherwise the loading image is shown but nothing is loaded.
+        if ($captionElements) {
+          $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
+          $ahah_media_caption = '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
+              . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
 
-            /* old comment: "no caption elements to show up here except the $caption_link_uri, if at all"
-             *
-             * a.kohlbecker 2013-03-14 :
-             *   It is unclear why no caption elements should be shown, Was it a technical reason?
-             *   see commit r16723 740177eb-a1d8-4ec3-a630-accd905eb3da
-             *   If not problems arise with this remove it after some weeks
-             */
-            $captionPartHtml = $ahah_media_caption;
-          }else{
-              $captionPartHtml = '';
-          }
-          if ($caption_link_uri) {
-              if ($contentTypeDirectory == 'image') {
-                // it is an image, so open it in the media page
+        // preparing the part link (= click on image itself) which can be handled in two ways
+        //
+        //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
+        //  2. open the media in a new window with target 'specimen'
+        if ($mediaLinkType == 'LIGHTBOX' && $gallery_media_item->hasFullSizeImage()) {
+          $mediaPartLinkAttributes['class'] = array('lightbox');
+        } else {
+          $mediaPartLinkAttributes['target'] = "specimen";
+          $openMediaLinkAttributes['target'] = "specimen";
+        }
+        $mediaPartLinkAttributes['alt'] = htmlentities($ahah_media_caption);
 
-                $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, path_to_media($media->uuid), array(
-                    'attributes' => array(), 'html' => TRUE,
-                        )) . '</div>';
+        // --- preparing the media caption
 
-
-              }
-              else {
-                // otherwise open it directly and let the the browser handle the media type
-                $openMediaLinkAttributes['absolute'] = TRUE;
-                $captionPartHtml .= '<div class="media-caption-link">' . l($caption_link_uri, $mediaLinkUri, array(
-                    'attributes' => $openMediaLinkAttributes, 'html' => TRUE,
-                  )) . '</div>';
-              }
-          }
-
-          $captionParts[] = $captionPartHtml;
-
-            // --- Surround imagePart with link, this .
-          if ($doLink) {
-            $mediaPartHtml = l($mediaPartHtml, $mediaLinkUri, array(
-                'attributes' => $mediaPartLinkAttributes, 'html' => TRUE,
-            ));
-          }
+        /* old comment: "no caption elements to show up here except the $caption_link_uri, if at all"
+         *
+         * a.kohlbecker 2013-03-14 :
+         *   It is unclear why no caption elements should be shown, Was it a technical reason?
+         *   see commit r16723 740177eb-a1d8-4ec3-a630-accd905eb3da
+         *   If not problems arise with this remove it after some weeks
+         */
+        $caption_part_markup = $ahah_media_caption;
+      }else{
+          // no caption_elements --> empty caption
+          $caption_part_markup = '';
       }
-      else {
-        $mediaPartHtml = '';
+        if ($do_link_to_media) {
+          if ($gallery_media_item->hasFullSizeImage()) {
+            // it is an image, so open it in the media page
+            $caption_part_markup .= '<div class="media-caption-link">' . l("Open in viewer " . custom_icon_font_markup('icon-interal-link-alt-solid'), path_to_media($media->uuid), array(
+                'attributes' => array(), 'html' => TRUE,
+                    )) . '</div>';
+          }
+          if ($gallery_media_item->hasWebAppItem()) {
+            // otherwise open it directly and let the the browser handle the media type
+            $openMediaLinkAttributes['absolute'] = TRUE;
+            $caption_part_markup .= '<div class="media-caption-link">' . l("Open external page " . font_awesome_icon_markup('fa-external-link-alt', array('class' => array('superscript'))), $gallery_media_item->getWebAppUrl(), array(
+                'attributes' => $openMediaLinkAttributes, 'html' => TRUE,
+              )) . '</div>';
+          }
+        }
+
+      $captionParts[] = $caption_part_markup;
+
+      // --- Surround imagePart with link, this .
+        if ($doLink) {
+          $media_part_markup = l($media_part_markup, $gallery_media_item->getOverlayImageUrl(), array(
+              'attributes' => $mediaPartLinkAttributes, 'html' => TRUE,
+          ));
+        }
+      } else {
+        $media_part_markup = '';
         $captionParts[] = '';
       }
-      $out .= '<td class="media">' . $mediaPartHtml . '</td>';
+      $out .= '<td class="media">' . $media_part_markup . '</td>';
     }
     $out .= '</tr>'; // End of media parts.
     if ($showCaption) {
-      if ( (is_array($captionElements) && count($captionElements) > 0) || $caption_link_uri) {
+      if ( (is_array($captionElements) && count($captionElements) > 0) || $do_link_to_media) {
         $out .= '<tr class="caption-row">';
         // Add caption row.
-        foreach ($captionParts as $captionPartHtml) {
-          $out .= '<td class="caption">' . $captionPartHtml . '</td>';
+        foreach ($captionParts as $caption_part_markup) {
+          $out .= '<td class="caption">' . $caption_part_markup . '</td>';
         }
         $out .= '</tr>';
       }
@@ -517,29 +480,32 @@ function compose_cdm_media_gallerie($configuration) {
 /**
  * Creates markup for a CDM MediaRepresentation which is referencing an image.
  *
- * @param $mediaRepresentationPart
+ * @param \ImageMediaItem $thumbnailImage
  * @param $maxExtend
  * @param $addPassePartout
  * @param $attributes
  *   An array of attributes for the img tag.
+ *
  * @return string
  *   The markup for the media representation
  */
-function cdm_media_gallerie_entry_image($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
+function cdm_media_gallery_entry_image($thumbnailImage, $maxExtend, $addPassePartout, $attributes = array()) {
 
   $out = '';
 
   // TODO merge with theme_cdm_media_mime_image?
-  if (isset($mediaRepresentationPart)) {
+  if (isset($thumbnailImage)) {
 
-    $h = @$mediaRepresentationPart->height;
-    $w = @$mediaRepresentationPart->width;
+    $size = $thumbnailImage->getSize();
+    $h = @$size->height;
+    $w = @$size->width;
+    $thumbnail_image_uri = $thumbnailImage->getUrl();
     if (!($w && $h)) {
       // Take url and replace spaces.
-      $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri);
-      $imageDimensions = getimagesize_remote($image_uri);
+      // TODO this should go into the ImageMediaItem
+      $imageDimensions = getimagesize_remote(str_replace(' ', '%20', $thumbnail_image_uri));
       if (!$imageDimensions) {
-        return '<div>' . t('Image unavailable, uri: ') . $mediaRepresentationPart->uri . '</div>';
+        return '<div>' . t('Image unavailable, uri: ') . $thumbnail_image_uri . '</div>';
       }
       $w = $imageDimensions[0];
       $h = $imageDimensions[1];
@@ -564,7 +530,7 @@ function cdm_media_gallerie_entry_image($mediaRepresentationPart, $maxExtend, $a
       $attributes = array();
     }
     if(!isset($attributes['alt'])){
-      $attributes['alt'] = check_plain($mediaRepresentationPart->uri);
+      $attributes['alt'] = check_plain($thumbnail_image_uri);
     }
     $attrStr = ' ';
     // $attributes['title'] = 'h:'.$h.', w:'.$w.',ratio:'.$ratio;
@@ -576,13 +542,11 @@ function cdm_media_gallerie_entry_image($mediaRepresentationPart, $maxExtend, $a
 
     if ($addPassePartout) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">';
-    }
-    else {
-      // Do not add margins if no pass partout is shown.
+    } else {
+      // Do not add margins if no pass-partout is shown.
       $margins = '';
     }
-    $out .= '<img src="' . $mediaRepresentationPart->uri . '" width="' . $displayWidth . '" height="' . $displayHeight . '" style="' . $margins . '"' . $attrStr . ' />';
-
+    $out .= '<img src="' . $thumbnail_image_uri . '" width="' . $displayWidth . '" height="' . $displayHeight . '" style="' . $margins . '"' . $attrStr . ' />';
     if ($addPassePartout) {
       $out .= '</div>';
     }
@@ -594,19 +558,20 @@ function cdm_media_gallerie_entry_image($mediaRepresentationPart, $maxExtend, $a
 /**
  * Creates markup for a CDM MediaRepresentation which is referencing an web application.
  *
- * @param $mediaRepresentationPart
+ * @param ImageMediaItem $galleryItemMedia
  * @param $maxExtend
  * @param $addPassePartout
  * @param $attributes
+ *
  * @return string
  *   The markup for the media representation
  */
-function cdm_media_gallerie_entry_webapp($mediaRepresentationPart, $maxExtend, $addPassePartout, $attributes = array()) {
+function cdm_media_gallerie_entry_webapp($galleryItemMedia, $maxExtend, $addPassePartout, $attributes = array()) {
 
   $out = '';
 
-  if (isset($mediaRepresentationPart)) {
-    $out = '<div class="application">Link to external media resource or web application</div>';
+  if (isset($galleryItemMedia)) {
+    $out = '<div class="application"><image src="' . $galleryItemMedia->getUrl() . '"></div>';
     if ($addPassePartout) {
       $out .= '<div class="image-passe-partout" style="width:' . $maxExtend . 'px; height:' . $maxExtend . 'px;">' . $out .'</div>';
     }
@@ -760,7 +725,7 @@ function taxon_media_gallery_default($taxon, $media) {
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_TAXON_MEDIA_GALLERY_NAME_TAB);
 
     $out = '<div class="image-gallerie">';
-    $out .= compose_cdm_media_gallerie(array(
+    $out .= compose_cdm_media_gallery(array(
       'mediaList' => $media,
       'galleryName' => $gallery_name,
       'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -866,14 +831,14 @@ function taxon_media_query_parameters() {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Extracts the content type directory from the mime type of the passed
+ * CDM MediaRepresentation.
  */
 function media_content_type_dir($media_representation, $default = FALSE) {
-  if ($media_representation->mimeType) {
-    return substr($media_representation->mimeType, 0, stripos($media_representation->mimeType, '/'));
-  }
-  else {
+  if (isset_not_empty($media_representation->mimeType)) {
+    $ctd = substr($media_representation->mimeType, 0, stripos($media_representation->mimeType, '/'));
+    return $ctd;
+  } else {
     return $default;
   }
 }
@@ -987,8 +952,8 @@ function compose_cdm_media_mime_image($media_representation, $feature) {
  *         example:
  *          Show 'title', 'description', 'file', 'filename' in the caption:
  *          array('title', 'description', 'file', 'filename')
- * @return string
- *   the markup
+ * @return array
+ *   A drupal render array
  *
  * @ingroup compose
  */
@@ -1007,7 +972,7 @@ function compose_cdm_media_caption($media, $elements = null, $sources_as_content
   $doRights = !$elements || array_search('rights', $elements) !== FALSE;
 
   $descriptionPrefix = "";
-  $footnote_list_key = 'media-' . $media->uuid;
+  $footnote_list_key = cdm_media_foot_note_key($media);
 
   // handle sources and annotations
   cdm_lazyload_array_field('media', 'annotations', $media);
@@ -1022,7 +987,8 @@ function compose_cdm_media_caption($media, $elements = null, $sources_as_content
     $media, NULL, $footnote_list_key
   );
 
-  $out = '';
+  $render_array = [];
+
 
   // Title.
   if ($doTitle) {
@@ -1033,17 +999,17 @@ function compose_cdm_media_caption($media, $elements = null, $sources_as_content
       // Use filename as fallback option if no description and no source citations are available.
       $title_string = $media_metadata['filename'];
     }
-    $out .= '<div class="title">' . $title_string . '</div>';
+    $render_array['title'] = markup_to_render_array('<div class="title">' . $title_string . '</div>');
   }
 
   // Description.
   if ($media_metadata['description'] && $doDescription) {
-    $out .= '<p class="description">' . $media_metadata['description'] . '</p>';
+    $render_array['description'] = markup_to_render_array('<p class="description">' . $media_metadata['description'] . '</p>');
   }
 
-  $groups = array();
+  //  $render_array['dl']  = markup_to_render_array('<dl class="media-caption">');
 
-  $out .= '<dl class="media-caption">';
+  $groups = array();
   // Artist.
   if ($media_metadata['artist'] && $doArtist) {
     _description_list_group_add($groups, t('Artist') . ':', $media_metadata['artist'] );
@@ -1086,12 +1052,23 @@ function compose_cdm_media_caption($media, $elements = null, $sources_as_content
 
   // TODO add all other metadata elements generically.
 
-  $description_list_item = array(
+  $description_list = array(
     '#theme' => 'description_list',
     '#groups' => $groups,
     '#attributes' => array('class' => 'media-caption')
   );
-  $out .= drupal_render($description_list_item);
-  $out .= render_footnotes($footnote_list_key);
-  return $out;
+  $render_array['description_list'] = $description_list;
+  $render_array['footnotes'] = markup_to_render_array(render_footnotes(cdm_media_foot_note_key($media)));
+
+  return $render_array;
 }
+
+/**
+ * @param $media
+ *
+ * @return string
+ */
+function cdm_media_foot_note_key($media) {
+  return 'media-' . $media->uuid;
+}
+

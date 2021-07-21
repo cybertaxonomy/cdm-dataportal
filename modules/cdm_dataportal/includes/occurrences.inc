@@ -193,7 +193,7 @@ function addImageGallery($galleryName, $imageUuids)
 
 
 
-        $gallery_html = compose_cdm_media_gallerie(array(
+        $gallery_html = compose_cdm_media_gallery(array(
             'mediaList' => $images,
             'galleryName' => $galleryName,
             'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -482,7 +482,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             $captionElements = array(
                                 '#uri' => t('open media'),
                             );
-                            $gallery_html = compose_cdm_media_gallerie(array(
+                            $gallery_html = compose_cdm_media_gallery(array(
                                 'mediaList' => $value, // WARNING: this is either a List<Media> or List<MediaDTO>, see above ~line 361
                                 'galleryName' => $specimen_or_observation->titleCache,
                                 'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -887,7 +887,7 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
                 case 'chromatograms':
                     @_description_list_group_add($groups, cdm_occurrence_field_name_label($field),
                         array(
-                            '#markup' => compose_cdm_media_gallerie(array('medialist' => $value)),
+                            '#markup' => compose_cdm_media_gallery(array('medialist' => $value)),
                         ),
                         NULL,
                         11);
@@ -1255,7 +1255,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                         'title',
                         '#uri' => t('open media'),
                     );
-                    $gallery_html = compose_cdm_media_gallerie(array(
+                    $gallery_html = compose_cdm_media_gallery(array(
                         'mediaList' => $value,
                         'galleryName' => $specimen_or_observation_dto->uuid,
                         'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -1562,7 +1562,7 @@ function compose_specimens_table_bottom_up($specimensOrObservations)
           '#uri' => t('open media'),
         );
 
-        $gallery_html = compose_cdm_media_gallerie(array(
+        $gallery_html = compose_cdm_media_gallery(array(
           'mediaList' => $mediaList,
           'galleryName' => $gallery_name,
           'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -1596,7 +1596,7 @@ function compose_specimens_table_bottom_up($specimensOrObservations)
           '#uri' => t('open media'),
         );
 
-        $gallery_html = compose_cdm_media_gallerie(array(
+        $gallery_html = compose_cdm_media_gallery(array(
           'mediaList' => $mediaList,
           'galleryName' => $gallery_name,
           'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],

@@ -314,26 +314,27 @@ function get_last_taxon_page_tab() {
  * eu.etaxonomy.cdm.model.media.MediaUtils.filterAndOrderMediaRepresentations()
  *
  * @param object $media
- * @param array $mimeTypes
+ * @param array $mime_types
  *    an array of mimetypes in their order of preference. e.g:
  *    array('application/pdf', 'image/png', 'image/jpeg', 'image/gif', 'text/html')
  * @param int $width
  *    The width of the optimal image. If null, the method will return the representation with the biggest expansion
  * @param int $height
  *    The height of the optimal image. If null, the method will return the representation with the biggest expansion
- *
+ * @param bool $mime_types_filter_excludes
+ *    Toggles the mode of the $mime_types filter to exclude when set to TRUE
+ * @param bool $strict_size_limit
+ *    Width an height parameters are treated as maximum values when this parameter is enabled.
  * @return array
  *   An array with preferred media representations or else an empty array.
  */
-function cdm_preferred_media_representations($media, array $mimeTypes, $width = NULL, $height = NULL) {
-  $prefRepr = array();
+function cdm_preferred_media_representations($media, array $mime_types, $width = NULL, $height = NULL, $mime_types_filter_excludes = FALSE, $strict_size_limit = FALSE) {
+  $matching_representations_by_rank = [];
   if (!isset($media->representations[0])) {
-    return $prefRepr;
+    return $matching_representations_by_rank;
   }
 
-  while (count($mimeTypes) > 0) {
-    // getRepresentationByMimeType
-    $mimeType = array_shift($mimeTypes);
+
 
     foreach ($media->representations as &$representation) {
       // If the mimetype is not known, try inferring it.
@@ -342,12 +343,10 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
           $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
         }
       }
-
-      if ($representation->mimeType == $mimeType) {
-        // Preferred mimetype found -> erase all remaining mimetypes
-        // to end loop.
-        $mimeTypes = array();
-        $expansionDeltaSum = 0;
+      $mime_type_match = array_search($representation->mimeType, $mime_types);
+      $match_per_mime_type_filter = $mime_types_filter_excludes ? !$mime_type_match : $mime_type_match;
+      if ($match_per_mime_type_filter) {
+        $expansion_delta_sum = 0;
         $valid_parts_cnt = 0;
         // Look for part with the best matching size.
         foreach ($representation->parts as $part) {
@@ -355,33 +354,41 @@ function cdm_preferred_media_representations($media, array $mimeTypes, $width = 
             // skip part if URI is missing
             continue;
           }
-          $valid_parts_cnt++;
-          $expansionDelta = PHP_INT_MAX; // biggest delta for unknown sizes
-
-          // determine the optimal size
-          if (isset($part->width) && isset($part->height)) {
-            $expansion = $part->width * $part->height;
-            if ($width != null && $height != null) {
-              $optimalExpansion = $height * $width;
-            } else {
-              $optimalExpansion = PHP_INT_MAX;
+          if($strict_size_limit){
+            if (isset($part->width) && isset($part->height) && $part->width <= $width && $part->height <= $height) {
+              $valid_parts_cnt++;
             }
-            // determine the difference
-            $expansionDelta = $expansion > $optimalExpansion ? $expansion - $optimalExpansion : $optimalExpansion - $expansion;
+          } else {
+            // calculate expansion delta
+            $valid_parts_cnt++;
+            $expansion_delta = PHP_INT_MAX; // biggest delta for unknown sizes
+
+            // determine the optimal size
+            if (isset($part->width) && isset($part->height)) {
+              $expansion = $part->width * $part->height;
+              if ($width != null && $height != null) {
+                $optimalExpansion = $height * $width;
+              } else {
+                $optimalExpansion = PHP_INT_MAX;
+              }
+              // determine the difference
+              $expansion_delta = $expansion > $optimalExpansion ? $expansion - $optimalExpansion : $optimalExpansion - $expansion;
+            }
+            // sum up the expansionDeltas of all parts contained in the representation
+            $expansion_delta_sum += $expansion_delta;
           }
-          // sum up the expansionDeltas of all parts contained in the representation
-          $expansionDeltaSum += $expansionDelta;
         }
         if($valid_parts_cnt > 0){
-          $expansionDeltaSum = $expansionDeltaSum / $valid_parts_cnt;
-          $prefRepr[$expansionDeltaSum] = $representation;
+          $expansion_delta_sum = $expansion_delta_sum / $valid_parts_cnt;
+          $matching_representations_by_rank[$expansion_delta_sum] = $representation;
         }
       }
+
     }
-  }
+
   // Sort the array so that the smallest key value is the first in the array
-  ksort($prefRepr);
-  return $prefRepr;
+  ksort($matching_representations_by_rank);
+  return $matching_representations_by_rank;
 }
 
 /**
@@ -811,14 +818,14 @@ function proxy_content($uri, $hook = NULL) {
       $obj = NULL;
     }
 
-    $reponse_data = NULL;
+    $response_data = NULL;
 
     if (function_exists('compose_' . $hook)){
       // call compose hook
 
       $elements =  call_user_func('compose_' . $hook, $obj);
       // pass the render array to drupal_render()
-      $reponse_data = drupal_render($elements);
+      $response_data = drupal_render($elements);
     } else {
       // call theme hook
 
@@ -833,7 +840,7 @@ function proxy_content($uri, $hook = NULL) {
             'tree_node_callback' => isset($args[2]) ? $args[2] : FALSE,
             'element_name'=> isset($args[3]) ? $args[3] : FALSE,
             );
-          $reponse_data = theme($hook, $variables);
+          $response_data = theme($hook, $variables);
           break;
 
         case 'cdm_list_of_taxa':
@@ -841,15 +848,8 @@ function proxy_content($uri, $hook = NULL) {
               'records' => $obj,
               'freetextSearchResults' => isset($args[0]) ? $args[0] : array(),
               'show_classification' => isset($args[1]) ? $args[1] : FALSE);
-            $reponse_data = theme($hook, $variables);
+            $response_data = theme($hook, $variables);
             break;
-
-        case 'cdm_media_caption':
-          $variables = $arg;
-          $variables['media'] = $obj;
-
-          $reponse_data = theme($hook, $variables);
-          break;
 
         default:
           drupal_set_message(t(
@@ -863,13 +863,13 @@ function proxy_content($uri, $hook = NULL) {
 
 
     if($do_gzip){
-      $reponse_data = gzencode($reponse_data, 2, FORCE_GZIP);
+      $response_data = gzencode($response_data, 2, FORCE_GZIP);
       drupal_add_http_header('Content-Encoding', 'gzip');
     }
     drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
-    drupal_add_http_header('Content-Length', strlen($reponse_data));
+    drupal_add_http_header('Content-Length', strlen($response_data));
 
-    print $reponse_data;
+    print $response_data;
   } // END of handle $hook either as compose ot theme hook
 
 }

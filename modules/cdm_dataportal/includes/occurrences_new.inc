@@ -546,7 +546,7 @@ function cdm_sob_dto_media_table(array $listOfMedia, $sob_dto, $heading) {
     'title',
     '#uri' => t('open media'),
   );
-  $gallery_markup = compose_cdm_media_gallerie(array(
+  $gallery_markup = compose_cdm_media_gallery(array(
     'mediaList' => $listOfMedia,
     'galleryName' => $sob_dto->uuid,
     'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],

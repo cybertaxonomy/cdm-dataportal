@@ -681,7 +681,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
     $captionElements = array('title', 'rights');
 
     if (isset($media_list[0]) && isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
-      $gallery = compose_cdm_media_gallerie(array(
+      $gallery = compose_cdm_media_gallery(array(
         'mediaList' => $media_list,
         'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $feature_node->term->uuid,
         'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
@@ -858,7 +858,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
  *
  * @return string
  *    The markup
- * 
+ *
  * @ingroup compose
  */
 function cdm_description_element_media($descriptionElement, $mimeTypePreference) {
