@@ -90,6 +90,7 @@ public class DrushExecuter {
      * <ol>
      */
     public static DrushCommand variableGet = new DrushCommand(Arrays.asList("vget", "--exact", "--format=json", "%s"), true);
+
     /**
      * Executes {@code drush vset --exact <variable-key> <variable-value>}
      * <p>
@@ -98,6 +99,16 @@ public class DrushExecuter {
      * The command will fail with an {@link DrushExecutionFailure} if setting the variable was not successful.
      */
     public static DrushCommand variableSet = new DrushCommand(Arrays.asList("--yes", "vset", "%s", "%s"), false);
+
+    /**
+     * Executes {@code drush vset --exact <variable-key> <variable-value>}
+     * <p>
+     * The execution of this command via
+     * <code>DrushExecuter.execute({@linkplain DrushExecuter#variableSet})</code> will not return any values.
+     * The command will fail with an {@link DrushExecutionFailure} if setting the variable was not successful.
+     */
+    public static DrushCommand variableSetJson = new DrushCommand(Arrays.asList("--yes", "vset", "--exact", "--format=json", "%s", "%s"), false);
+
 
     /**
      * @throws IOException
