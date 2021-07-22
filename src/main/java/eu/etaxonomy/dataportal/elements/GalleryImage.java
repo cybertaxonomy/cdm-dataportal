@@ -32,7 +32,7 @@ public class GalleryImage extends ImgElement {
 		if(captionCell == null){
 			return null;
 		}
-		return captionCell.findElement(By.tagName("dl")).getText();
+		return captionCell.getText();
 	}
 
 	public LinkElement getCaptionLink() {
