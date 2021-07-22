@@ -172,15 +172,15 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("http://testid.org/2017E68" ,linksInDetails.get(1).getText());
         assertEquals("http://testid.org/2017E68", linksInDetails.get(1).getUrl());
         assertEquals("Epitype of Glenodinium apiculatum Ehrenb.", detailsLines[3]);
-        assertEquals("Specimen Scans: CEDiT 2017E68", detailsLines[4]);
+        assertEquals("Specimen Scans: IMG 99999 (Sisymbrium_aegyptiacum_C1), M0093531 (Erigeron annus), 10.5555 (JSTOR image viewer)", detailsLines[4]);
         assertEquals("Detail Images: Masks", detailsLines[5]);
-        assertEquals("Masks" ,linksInDetails.get(3).getText());
-        assertEquals("https://imgs.xkcd.com/comics/masks_2x.png", linksInDetails.get(3).getUrl());
+        assertEquals("Masks", linksInDetails.get(5).getText());
+        assertEquals("https://imgs.xkcd.com/comics/masks_2x.png", linksInDetails.get(5).getUrl());
 
         assertEquals("Specimen summary: M M-0289351", detailsLines[6]);
         assertEquals("Preferred stable URI: http://herbarium.bgbm.org/object/B400042045", detailsLines[7]);
         assertEquals("Isolectotype of Glenodinium apiculatum Ehrenb.", detailsLines[8]);
-        assertEquals(6, linksInDetails.size());
+        assertEquals(8, linksInDetails.size());
 
     }
 
