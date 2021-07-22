@@ -88,8 +88,12 @@ public class ElementUtils {
                 if(captionCells != null && captionCells.size() > cellId){
                     captionCell = captionCells.get(cellId);
                     wait.until(new AllTrue(
-                            new ChildElementVisible(imageCell, By.tagName("img")),
-                            new ChildElementVisible(captionCell, By.tagName("dl"))
+                        // image must be visible
+                        new ChildElementVisible(imageCell, By.tagName("img")),
+                        // metadata should be loaded but may be empty, therefore we are tesing
+                        // for the existence of the element attribute data-cdm-ahah-url-loaded
+                        // in the <div class="ahah-content" ...
+                        new ChildElementVisible(captionCell, By.xpath("div[@data-cdm-ahah-url-loaded]"))
                     ));
 
                 } else {
