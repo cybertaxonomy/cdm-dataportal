@@ -99,6 +99,17 @@ public abstract class CdmDataPortalTestBase extends Assert{
         result = dex.execute(DrushExecuter.variableSet, varKey, varValue);
     }
 
+    protected void setDrupalVarJson(String varKey, String varValue) throws IOException, InterruptedException, DrushExecutionFailure {
+        DrushExecuter dex = getContext().drushExecuter();
+        List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
+        assertEquals(1, result.size());
+        if(!drupalVarsBeforeTest.containsKey(varKey)) {
+            // stored original values must not be replaced
+            drupalVarsBeforeTest.put(varKey, result.get(0));
+        }
+        result = dex.execute(DrushExecuter.variableSetJson, varKey, varValue);
+    }
+
     protected void restoreOriginalVars() throws IOException, InterruptedException, DrushExecutionFailure {
         DrushExecuter dex = getContext().drushExecuter();
         boolean fail = false;

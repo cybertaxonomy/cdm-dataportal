@@ -52,6 +52,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         Logger.getLogger(DrushExecuter.class).setLevel(Level.DEBUG);
         setDrupalVar(DrupalVars.CDM_DATAPORTAL_TAXONPAGE_TABS, "1");
         setDrupalVar(DrupalVars.CDM_SPECIMEN_LIST_VIEW_MODE, "derivate_tree");
+        setDrupalVarJson(DrupalVars.CDM_SPECIMEN_DERIVATE_TREE_OPTIONS, "{\"field_unit_short_label\":1}");
         loadPage();
     }
 
