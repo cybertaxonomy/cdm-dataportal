@@ -23,10 +23,8 @@ public class ChildElementVisible implements Function<WebDriver, Boolean> {
 		this.parent = parent;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.google.common.base.Function#apply(java.lang.Object)
-	 */
-	public Boolean apply(WebDriver driver) {
+	@Override
+    public Boolean apply(WebDriver driver) {
 		parent.findElement(this.findCondition);
 		return Boolean.valueOf(true);
 	}
