@@ -71,7 +71,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
         assertEquals("Germany, Berlin, 2 Apr 1835.", rootNodeHeader2.getText());
         BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
-        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", rootNodeHeader3.getText());
+        assertEquals("Ehrenberg, C.G. D047", rootNodeHeader3.getText());
     }
 
 
@@ -165,9 +165,11 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
         DerivedUnitTreeNode subNode1_1 = subNode1.getSubNodes().get(0);
         DerivedUnitTreeNode subNode1_2 = subNode1.getSubNodes().get(1);
+        DerivedUnitTreeNode subNode1_3 = subNode1.getSubNodes().get(2);
+        DerivedUnitTreeNode subNode1_4 = subNode1.getSubNodes().get(3);
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
 
-        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047.", rootNode.getHeader().getText());
+        assertEquals("Ehrenberg, C.G. D047", rootNode.getHeader().getText());
 
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
@@ -177,8 +179,10 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertFalse("sub node 1 initially invisible", subNode1_1.getElement().isDisplayed());
         subNode1.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1_1.getElement().isDisplayed());
-        assertEquals("B IMG 99999", subNode1_1.getHeader().getText());
-        assertEquals("XKCD MASKS 2X (Masks)", subNode1_2.getHeader().getText());
+        assertEquals("10.5555 (JSTOR image viewer)", subNode1_1.getHeader().getText());
+        assertEquals("B IMG 99999", subNode1_2.getHeader().getText());
+        assertEquals("M M0093531 (Erigeron annus)", subNode1_3.getHeader().getText());
+        assertEquals("XKCD MASKS 2X (Masks)", subNode1_4.getHeader().getText());
         assertEquals("M M-0289351", subNode2.getHeader().getText());
 
         // --- Root note
@@ -228,38 +232,54 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
                 identificationsTable_1.getBodyCellText(0, 0));
         assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/taxon/d245083e-3bda-435f-9bb3-bdc2249ff23c"));
 
-        // --- --- node_1_1
-
-        subNode1_1.getHeader().getElement().click();
-        assertTrue(subNode1_1.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/a825bdad-6854-4868-98f5-7e6ebe3b6271"));
-
-        assertEquals("Accessioning", subNode1_1.getDerivationEvent());
-
-        DetailsTable imageTable_1_1 = subNode1_1.getDetailsTable(DetailsTable.tableClassAttrFrom("Still Image"));
-        assertEquals("Still Image", imageTable_1_1.getHeaderText());
-        assertEquals("Specimen scan", imageTable_1_1.getDetailsValueCellText("Kind of unit"));
-        assertEquals("IMG 99999", imageTable_1_1.getDetailsValueCellText("Accession number"));
-        assertEquals("B", imageTable_1_1.getDetailsValueCellText("Collection"));
-
-        DetailsTable mediaTable_1_1 = subNode1_1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
-        assertTrue(mediaTable_1_1.getBodyCell(0, 0).getText().contains("?fn%3dIMG%2099999.jpg%26mo%3dfile"));
-
-
         // --- --- node_1_2
 
         subNode1_2.getHeader().getElement().click();
-        assertTrue(subNode1_2.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/c2495af1-251b-42e9-b5ab-2e3e0df9ea3f"));
+        assertTrue(subNode1_2.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/a825bdad-6854-4868-98f5-7e6ebe3b6271"));
 
         assertEquals("Accessioning", subNode1_2.getDerivationEvent());
 
         DetailsTable imageTable_1_2 = subNode1_2.getDetailsTable(DetailsTable.tableClassAttrFrom("Still Image"));
         assertEquals("Still Image", imageTable_1_2.getHeaderText());
-        assertEquals("Detail image", imageTable_1_2.getDetailsValueCellText("Kind of unit"));
-        assertEquals("MASKS 2X", imageTable_1_2.getDetailsValueCellText("Accession number"));
-        assertEquals("XKCD", imageTable_1_2.getDetailsValueCellText("Collection"));
+        assertEquals("Specimen scan", imageTable_1_2.getDetailsValueCellText("Kind of unit"));
+        assertEquals("IMG 99999", imageTable_1_2.getDetailsValueCellText("Accession number"));
+        assertEquals("B", imageTable_1_2.getDetailsValueCellText("Collection"));
 
         DetailsTable mediaTable_1_2 = subNode1_2.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
-        assertTrue(mediaTable_1_2.getBodyCell(0, 0).getText().contains("Ink drawing"));
+        assertTrue(mediaTable_1_2.getBodyCell(0, 0).getText().contains("Sisymbrium_aegyptiacum_C1.jpg&mo=file"));
+
+
+        // --- --- node_1_3
+
+        subNode1_3.getHeader().getElement().click();
+        assertTrue(subNode1_3.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/04936f1c-41be-47db-99ed-33ed30bd7c01"));
+
+        assertEquals("Accessioning", subNode1_3.getDerivationEvent());
+
+        DetailsTable imageTable_1_3 = subNode1_3.getDetailsTable(DetailsTable.tableClassAttrFrom("Still Image"));
+        assertEquals("Still Image", imageTable_1_3.getHeaderText());
+        assertEquals("Specimen scan", imageTable_1_3.getDetailsValueCellText("Kind of unit"));
+        assertEquals("M0093531", imageTable_1_3.getDetailsValueCellText("Accession number"));
+        assertEquals("M", imageTable_1_3.getDetailsValueCellText("Collection"));
+
+        DetailsTable mediaTable_1_3 = subNode1_3.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
+        assertTrue(mediaTable_1_3.getBodyCell(0, 0).getText().contains("Erigeron annus"));
+
+        // --- --- node_1_4
+
+        subNode1_4.getHeader().getElement().click();
+        assertTrue(subNode1_4.getHeader().getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/occurrence/c2495af1-251b-42e9-b5ab-2e3e0df9ea3f"));
+
+        assertEquals("Accessioning", subNode1_4.getDerivationEvent());
+
+        DetailsTable imageTable_1_4 = subNode1_4.getDetailsTable(DetailsTable.tableClassAttrFrom("Still Image"));
+        assertEquals("Still Image", imageTable_1_4.getHeaderText());
+        assertEquals("Detail image", imageTable_1_4.getDetailsValueCellText("Kind of unit"));
+        assertEquals("MASKS 2X", imageTable_1_4.getDetailsValueCellText("Accession number"));
+        assertEquals("XKCD", imageTable_1_4.getDetailsValueCellText("Collection"));
+
+        DetailsTable mediaTable_1_4 = subNode1_4.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
+        assertTrue(mediaTable_1_4.getBodyCell(0, 0).getText().contains("Ink drawing"));
 
 
         // --- node_2
