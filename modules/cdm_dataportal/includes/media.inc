@@ -992,13 +992,13 @@ function compose_cdm_media_caption($media, $elements = null, $sources_as_content
 
   // Title.
   if ($doTitle) {
-    $title_string = $media_metadata['title']
-      . $annotations_and_sources->footNoteKeysMarkup(); // placing the footnote keys here is not optimal, see #6329 A.1.
+    $title_string = $media_metadata['title'];
     $title_string = trim($title_string);
-    if (empty($title_string) && !($doDescription && $media_metadata['description'])) {
+    if (!isset_not_empty($title_string) && !($doDescription && isset_not_empty($media_metadata['description']))) {
       // Use filename as fallback option if no description and no source citations are available.
       $title_string = $media_metadata['filename'];
     }
+    $title_string .= $annotations_and_sources->footNoteKeysMarkup(); // placing the footnote keys here is not optimal, see #6329 A.1.
     $render_array['title'] = markup_to_render_array('<div class="title">' . $title_string . '</div>');
   }
 
