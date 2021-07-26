@@ -196,11 +196,15 @@ public class DrushExecuter {
                 out = readExecutionResponse(matches, process.getInputStream(), cmd.outRegex);
                 error = readExecutionResponse(matches, process.getErrorStream(), cmd.errRegex);
             }
-            if (out != null && !out.isEmpty()) {
-                logger.error(error);
+            if (out != null && !out.trim().isEmpty()) {
+                logger.info(out.trim());
             }
-            if (error != null && !error.isEmpty()) {
-                logger.error(error);
+            if (error != null && !error.trim().isEmpty()) {
+                if(!error.contains("[success]")) {
+                    logger.info(error);
+                } else {
+                    logger.error(error);
+                }
             }
         } else {
             throw new DrushExecutionFailure(

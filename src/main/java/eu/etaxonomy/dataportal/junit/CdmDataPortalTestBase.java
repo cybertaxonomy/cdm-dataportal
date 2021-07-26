@@ -91,8 +91,8 @@ public abstract class CdmDataPortalTestBase extends Assert{
     protected void setDrupalVar(String varKey, String varValue) throws IOException, InterruptedException, DrushExecutionFailure {
         DrushExecuter dex = getContext().drushExecuter();
         List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
-        assertEquals(1, result.size());
-        if(!drupalVarsBeforeTest.containsKey(varKey)) {
+        assertTrue(0 <= result.size() && result.size() <= 1);
+        if(result.size() == 1 && !drupalVarsBeforeTest.containsKey(varKey)) {
             // stored original values must not be replaced
             drupalVarsBeforeTest.put(varKey, result.get(0));
         }
@@ -102,10 +102,13 @@ public abstract class CdmDataPortalTestBase extends Assert{
     protected void setDrupalVarJson(String varKey, String varValue) throws IOException, InterruptedException, DrushExecutionFailure {
         DrushExecuter dex = getContext().drushExecuter();
         List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
-        assertEquals(1, result.size());
-        if(!drupalVarsBeforeTest.containsKey(varKey)) {
+        assertTrue(0 <= result.size() && result.size() <= 1);
+        if(result.size() == 1 && !drupalVarsBeforeTest.containsKey(varKey)) {
             // stored original values must not be replaced
             drupalVarsBeforeTest.put(varKey, result.get(0));
+        } else {
+            // empty value will unset
+            drupalVarsBeforeTest.put(varKey, "");
         }
         result = dex.execute(DrushExecuter.variableSetJson, varKey, varValue);
     }
@@ -115,7 +118,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
         boolean fail = false;
         for(String varKey : drupalVarsBeforeTest.keySet()) {
             try {
-                List<Object> result = dex.execute(DrushExecuter.variableSet, varKey, drupalVarsBeforeTest.get(varKey).toString());
+                List<Object> result = dex.execute(DrushExecuter.variableSetJson, varKey, drupalVarsBeforeTest.get(varKey).toString());
             } catch (Exception e) {
                 logger.error("FATAL ERROR: Restoring the original drupal variable " + varKey + " = " + drupalVarsBeforeTest.get(varKey) + " failed.", e);
                 fail = true;
