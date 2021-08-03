@@ -156,6 +156,8 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
                 typeDesignationsTable.getBodyCellText(0, 0));
 
+        DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
+
     }
 
 
