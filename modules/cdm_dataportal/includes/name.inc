@@ -690,7 +690,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
           if(!isset($name_type_designation_refs[$type_status])){
             $name_type_designation_refs[$type_status]  = $entity_reference_list;
           } else {
-            array_push($name_type_designation_refs[$type_status] ,$entity_reference_list);
+            $specimen_type_designation_refs[$type_status] = array_merge($specimen_type_designation_refs[$type_status], $entity_reference_list);
           }
         }
       } else if ($tokens[0] == 'FieldUnit'){
