@@ -18,7 +18,7 @@
              */
             return  new OpenLayers.Layer.WMS(
                   "Metacarta Vmap0",
-                  "http://labs.metacarta.com/wms/vmap0",
+                  "https://labs.metacarta.com/wms/vmap0",
                   {layers: "basic", format:"png"},
                   {
                       maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
@@ -37,7 +37,7 @@
              */
             return  new OpenLayers.Layer.WMS(
                   "OSGEO Vmap0",
-                  "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                  "https://vmap0.tiles.osgeo.org/wms/vmap0",
                   {layers: 'basic', format:"png"},
                   {
                     maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
@@ -56,7 +56,7 @@
              */
             return  new OpenLayers.Layer.WMS(
               "OSGEO Vmap0 via mapproxy",
-              "http://geo.cybertaxonomy.org/mapproxy/service",
+              "https://geo.cybertaxonomy.org/mapproxy/service",
               {layers: 'vmap0', format:"image/png"},
               {
                 maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
@@ -88,7 +88,7 @@
           case 'mapproxy_etopo1':
             return  new OpenLayers.Layer.WMS(
               "ETOPO1 Global Relief Model via mapproxy",
-              "http://cybertaxonomy.org:8082/mapproxy/service",
+              "http://geo.cybertaxonomy.org/mapproxy/service",
               {layers: 'etopo1', format:"image/png"},
               {
                 maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
@@ -102,12 +102,12 @@
            * OSM Layers:
            *
            *   minZoomLevel is not supported for XYZ layers, of which OSM is a subclass.
-           *   http://trac.osgeo.org/openlayers/ticket/2909
-           *   http://trac.osgeo.org/openlayers/ticket/2189
+           *   https://trac.osgeo.org/openlayers/ticket/2909
+           *   https://trac.osgeo.org/openlayers/ticket/2189
            *   solution in OL 2.12
            *
-           *   see also http://stackoverflow.com/questions/4240610/min-max-zoom-level-in-openlayers
-           *   and http://trac.osgeo.org/openlayers/wiki/SettingZoomLevels
+           *   see also https://stackoverflow.com/questions/4240610/min-max-zoom-level-in-openlayers
+           *   and https://trac.osgeo.org/openlayers/wiki/SettingZoomLevels
            *
            *   To allow OSM baselayers to zoom out to the full extend of the world the map width must be
            *   multiple of 256px since the osm tiles from tile.openstreetmap.org have a size of 256px x 256px
@@ -117,7 +117,7 @@
               return  new OpenLayers.Layer.OSM();
 
           case 'stamen_terrain':
-            // see http://developer.mapquest.com/web/products/open/map
+            // see https://developer.mapquest.com/web/products/open/map
             return new OpenLayers.Layer.XYZ(
               "Stamen Terrain",
               [
@@ -125,24 +125,24 @@
               ],
               {
                 // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
-                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+                attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, under <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="https://openstreetmap.org">OpenStreetMap</a>, under <a href="https://www.openstreetmap.org/copyright">ODbL</a>.',
                 transitionEffect: "resize",
                 sphericalMercator: true
               }
             );
 
           case 'open_topomap':
-            // see http://developer.mapquest.com/web/products/open/map
+            // see https://developer.mapquest.com/web/products/open/map
             return new OpenLayers.Layer.XYZ(
               "OpenTopoMap",
               [
-                "http://a.tile.opentopomap.org/${z}/${x}/${y}.png",
-                "http://b.tile.opentopomap.org/${z}/${x}/${y}.png",
-                "http://c.tile.opentopomap.org/${z}/${x}/${y}.png"
+                "https://a.tile.opentopomap.org/${z}/${x}/${y}.png",
+                "https://b.tile.opentopomap.org/${z}/${x}/${y}.png",
+                "https://c.tile.opentopomap.org/${z}/${x}/${y}.png"
               ],
               {
                 // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
-                attribution: 'Kartendaten: © <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: © <a href="http://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+                attribution: 'Kartendaten: © <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
                 transitionEffect: "resize",
                 sphericalMercator: true
               }
@@ -151,35 +151,35 @@
             //
 
           case 'mapquest_open':
-              // see http://developer.mapquest.com/web/products/open/map
+              // see https://developer.mapquest.com/web/products/open/map
               return new OpenLayers.Layer.XYZ(
                       "MapQuest",
                       [
-                          "http://otile1.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                          "http://otile2.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                          "http://otile3.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                          "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png"
+                          "https://otile1.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                          "https://otile2.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                          "https://otile3.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                          "https://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png"
                       ],
                       {
                           // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
-                          attribution: "Data, imagery and map information provided by <a href='http://www.mapquest.com/'  target='_blank'>MapQuest</a>, <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a> and contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/' target='_blank'>CC-BY-SA</a>  <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+                          attribution: "Data, imagery and map information provided by <a href='https://www.mapquest.com/'  target='_blank'>MapQuest</a>, <a href='https://www.openstreetmap.org/' target='_blank'>Open Street Map</a> and contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/' target='_blank'>CC-BY-SA</a>  <img src='https://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
                           transitionEffect: "resize"
                       }
                   );
 
           case 'mapquest_sat':
-              // see http://developer.mapquest.com/web/products/open/map
+              // see https://developer.mapquest.com/web/products/open/map
               return new OpenLayers.Layer.XYZ(
                       "MapQuest Sattelite",
                       [
-                          "http://otile1.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
-                          "http://otile2.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
-                          "http://otile3.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
-                          "http://otile4.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"
+                          "https://otile1.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                          "https://otile2.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                          "https://otile3.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                          "https://otile4.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"
                       ],
                       {
                           // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
-                          attribution: "Data, imagery and map information provided by <a href='http://www.mapquest.com/'  target='_blank'>MapQuest</a>, <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a> and contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/' target='_blank'>CC-BY-SA</a>  <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+                          attribution: "Data, imagery and map information provided by <a href='https://www.mapquest.com/'  target='_blank'>MapQuest</a>, <a href='https://www.openstreetmap.org/' target='_blank'>Open Street Map</a> and contributors, <a href='https://creativecommons.org/licenses/by-sa/2.0/' target='_blank'>CC-BY-SA</a>  <img src='https://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
                           transitionEffect: "resize"
                       }
                   );
