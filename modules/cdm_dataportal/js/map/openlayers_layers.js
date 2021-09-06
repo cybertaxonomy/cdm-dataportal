@@ -72,7 +72,7 @@
          case 'edit-etopo1':
             return  new OpenLayers.Layer.WMS(
                   "ETOPO1 Global Relief Model",
-                  "http://edit.africamuseum.be/geoserver/topp/wms",
+                  "https://edit.africamuseum.be/geoserver/topp/wms",
                   {layers: 'topp:color_etopo1_ice_full', format:"image/png"},
                   {
                     maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
@@ -88,7 +88,7 @@
           case 'mapproxy_etopo1':
             return  new OpenLayers.Layer.WMS(
               "ETOPO1 Global Relief Model via mapproxy",
-              "http://geo.cybertaxonomy.org/mapproxy/service",
+              "https://geo.cybertaxonomy.org/mapproxy/service",
               {layers: 'etopo1', format:"image/png"},
               {
                 maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
