@@ -65,7 +65,7 @@ extract and adapt the ownership of the some folders:
 
 ~~~
 tar -xzf drupal-7-cdm-dataportal-5.23.0.tar.gz
-scripts/admin/fix-permissions --web-user www-data
+./scripts/admin/fix-permissions.sh  --web-user www-data
 ~~~
 
 ##### Apache2 configuration
