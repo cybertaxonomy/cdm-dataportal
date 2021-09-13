@@ -335,8 +335,9 @@ define('CDM_DISTRIBUTION_FILTER_DEFAULT', serialize(
 define('DISTRIBUTION_HIERARCHY_STYLE', 'distribution_hierarchy_style');
 define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
   "level_0" => array(
-    'label_suffix' => ': ',
+    'label_suffix' => '',
     'status_glue' => '',
+    'item_suffix' => ': ',
     'item_glue' => ' ',
     'item_group_prefix' => '',
     'item_group_postfix' => ''
@@ -344,6 +345,7 @@ define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
   "level_1" => array(
     'label_suffix' => '',
     'status_glue' => '‒ ', // '&#8210; '
+    'item_suffix' => '',
     'item_glue' => '; ',
     'item_group_prefix' => '',
     'item_group_postfix' => ''
@@ -351,6 +353,7 @@ define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
   "level_2" => array(
     'label_suffix' => '',
     'status_glue' => '‒ ', // '&#8210; '
+    'item_suffix' => '',
     'item_glue' => ', ',
     'item_group_prefix' => ' (',
     'item_group_postfix' => ')'

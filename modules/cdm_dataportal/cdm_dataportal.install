@@ -496,6 +496,37 @@ function cdm_dataportal_update_7600()
   return join(', ', $tasks_performed);
 };
 
+/**
+ * update for RELEASE 5.27:
+ *  - transform old DISTRIBUTION_HIERARCHY_STYLE params to the new scheme, see https://dev.e-taxonomy.eu/redmine/issues/9756
+ *
+ */
+function cdm_dataportal_update_7700()
+{
+  $tasks_performed = array();
+
+  $dist_hierarchy_style = variable_get(DISTRIBUTION_HIERARCHY_STYLE);
+  if(isset_not_empty($dist_hierarchy_style)){
+    if(isset($dist_hierarchy_style['level_0'])) {
+      if (isset($dist_hierarchy_style['level_0']['label_suffix'])
+        && str_beginsWith($dist_hierarchy_style['level_0']['label_suffix'], ':')) {
+        $dist_hierarchy_style['level_0']['item_suffix'] = $dist_hierarchy_style['level_0']['label_suffix'];
+        $dist_hierarchy_style['level_0']['label_suffix'] = '';
+      }
+      if (!isset($dist_hierarchy_style['level_0']['item_suffix'])){
+        $dist_hierarchy_style['level_0']['item_suffix'] = '';
+      }
+    $dist_hierarchy_style['level_1']['item_suffix'] = '';
+    $dist_hierarchy_style['level_2']['item_suffix'] = '';
+    }
+    _modify_variable(DISTRIBUTION_HIERARCHY_STYLE, $dist_hierarchy_style);
+    $tasks_performed[] = DISTRIBUTION_HIERARCHY_STYLE . " variable updated";
+  }
+
+
+  return join(', ', $tasks_performed);
+}
+
 /* ======================================================================== */
 
 /**
