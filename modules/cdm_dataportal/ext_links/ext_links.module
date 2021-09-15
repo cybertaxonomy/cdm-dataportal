@@ -284,25 +284,6 @@ function ext_links_category_autocomplete($query_string){
 }
 
 /**
- * Autocomplete function called via the menu hook ext_links/category/autocomplete
- *
- * @param $query_string
- *  the string to search for
- */
-function ext_links_category_autocomplete($query_string){
-  $matches = array();
-  $sql = 'SELECT * FROM {ext_links} WHERE category LIKE :category';
-  $args = [':category' => '%' . db_like($query_string) . '%'];
-  $result = db_query($sql, $args);
-  foreach ($result as $row) {
-    $matches[$row->category] = check_plain($row->category);
-  }
-  // Return the result to the form in json
-  drupal_json_output($matches);
-}
-
-
-/**
  * Returns the genus and the first epithet from the object taxon.
  *
  * @param $taxon
