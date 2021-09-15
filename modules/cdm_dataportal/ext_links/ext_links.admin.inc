@@ -140,7 +140,7 @@ function ext_links_admin_link_template_form($form, &$form_state, $link_template)
     '#default_value' => $link_template->id,
     '#maxlength' => 255,
     '#machine_name' => array(
-      'exists' => 'ext_link_exists',
+      'exists' => 'ext_links_exists',
     ),
     '#disabled' => !empty($link_template->id),
   );

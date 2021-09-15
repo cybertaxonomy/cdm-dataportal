@@ -255,7 +255,7 @@ function ext_links_save($link_template) {
  * @see ext_links_load()
  */
 function ext_links_exists($ext_link_name) {
-  return (bool) db_query_range('SELECT 1 FROM {ext_links} WHERE name = :name', 0, 1, array(':name' => $ext_link_name))->fetchField();
+  return (bool) db_query_range('SELECT 1 FROM {ext_links} WHERE id = :id', 0, 1, array(':id' => $ext_link_name))->fetchField();
 }
 
 
