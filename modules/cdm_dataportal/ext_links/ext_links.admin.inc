@@ -148,7 +148,8 @@ function ext_links_admin_link_template_form($form, &$form_state, $link_template)
     '#type' => 'textfield',
     '#title' => t('Category'),
     '#required' => FALSE,
-    '#default_value' => "",
+    '#default_value' => $link_template->category,
+    '#autocomplete_path' => 'ext_links/category/autocomplete',
     '#maxlength' => 255,
   );
   $form['title'] = array(

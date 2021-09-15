@@ -92,6 +92,12 @@ function ext_links_menu() {
  //   'type' => MENU_CALLBACK,
     'file' => 'ext_links.admin.inc',
   ];
+  $items['ext_links/category/autocomplete'] = [
+    'title' => 'Autocomplete for external link categories',
+    'page callback' => 'ext_links_category_autocomplete',
+    'access arguments' => ['access administration pages'],
+    'type' => MENU_CALLBACK
+  ];
   return $items;
 }
 
@@ -257,6 +263,24 @@ function ext_links_save($link_template) {
  */
 function ext_links_exists($ext_link_name) {
   return (bool) db_query_range('SELECT 1 FROM {ext_links} WHERE name = :name', 0, 1, array(':name' => $ext_link_name))->fetchField();
+}
+
+/**
+ * Autocomplete function called via the menu hook ext_links/category/autocomplete
+ *
+ * @param $query_string
+ *  the string to search for
+ */
+function ext_links_category_autocomplete($query_string){
+  $matches = array();
+  $sql = 'SELECT * FROM {ext_links} WHERE category LIKE :category';
+  $args = [':category' => '%' . db_like($query_string) . '%'];
+  $result = db_query($sql, $args);
+  foreach ($result as $row) {
+    $matches[$row->category] = check_plain($row->category);
+  }
+  // Return the result to the form in json
+  drupal_json_output($matches);
 }
 
 
