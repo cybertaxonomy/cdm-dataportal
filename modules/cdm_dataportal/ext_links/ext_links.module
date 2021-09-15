@@ -234,6 +234,7 @@ function ext_links_save($link_template) {
       'id' => $link_template->id,
       'title' => $link_template->title,
       'link' => $link_template->link,
+      'category' => $link_template->category,
       'status' => (int) $link_template->status,
       'weight' => (int) $link_template->weight,
     ))

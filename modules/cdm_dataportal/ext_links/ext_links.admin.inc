@@ -144,6 +144,13 @@ function ext_links_admin_link_template_form($form, &$form_state, $link_template)
     ),
     '#disabled' => !empty($link_template->id),
   );
+  $form['category'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Category'),
+    '#required' => FALSE,
+    '#default_value' => "",
+    '#maxlength' => 255,
+  );
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
