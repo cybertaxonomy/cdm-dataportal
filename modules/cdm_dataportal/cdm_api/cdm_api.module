@@ -343,7 +343,7 @@ function cdm_preferred_media_representations($media, array $mime_types, $width =
           $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
         }
       }
-      $mime_type_match = array_search($representation->mimeType, $mime_types);
+      $mime_type_match = array_search($representation->mimeType, $mime_types) !== false;
       $match_per_mime_type_filter = $mime_types_filter_excludes ? !$mime_type_match : $mime_type_match;
       if ($match_per_mime_type_filter) {
         $expansion_delta_sum = 0;
