@@ -184,7 +184,7 @@ function ext_links_admin_link_template_form($form, &$form_state, $link_template)
     '#type' => 'weight',
     '#title' => t('Weight'),
     '#default_value' => $link_template->weight,
-    '#delta' => 10,
+    '#delta' => 100,
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Save'));
