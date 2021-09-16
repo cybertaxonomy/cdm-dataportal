@@ -30,6 +30,7 @@ function ext_links_admin_overview($form) {
       '#title' => t('Weight for @title', array('@title' => $link_template->id)),
       '#title_display' => 'invisible',
       '#default_value' => $link_template->weight,
+      '#delta' => 100
     );
     $form['link_templates'][$id]['#attributes']['class'] = [];
     if($link_template->status != 1){
@@ -172,6 +173,7 @@ function ext_links_admin_link_template_form($form, &$form_state, $link_template)
       ['!cdm_tokens' => '<li><code>' . join('</code></li><li><code>', $cdm_tokens) . '</code></li>']
     ),
     '#default_value' => $link_template->link,
+    '#maxlength' => 500,
     '#required' => TRUE,
   );
 
@@ -184,7 +186,7 @@ function ext_links_admin_link_template_form($form, &$form_state, $link_template)
     '#type' => 'weight',
     '#title' => t('Weight'),
     '#default_value' => $link_template->weight,
-    '#delta' => 10,
+    '#delta' => 100,
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Save'));
