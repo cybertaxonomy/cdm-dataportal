@@ -84,7 +84,7 @@ function cdm_load_node($nodetype, $uuid, $title) {
 
   // Try to find node id.
   $cdmnode = db_query('SELECT nid, cdmtype FROM {node_cdm} WHERE wsuri = :wsuri AND cdmtype = :cdmtype AND uuid = :uuid', array(
-    ':wsuri' => variable_get('cdm_webservice_url', NULL),
+    ':wsuri' => cdm_webservice_url(),
     ':cdmtype' => $nodetype,
     ':uuid' => $uuid,
   ))->fetch();
@@ -155,11 +155,11 @@ function cdm_load_node($nodetype, $uuid, $title) {
       }
 
       // Hash as a 32-character hexadecimal number.
-      $hash = md5(variable_get('cdm_webservice_url') . $uuid);
+      $hash = md5(cdm_webservice_url() . $uuid);
 
       $id = db_insert('node_cdm')->fields(array(
         'nid' => $node->nid,
-        'wsuri' => variable_get('cdm_webservice_url'),
+        'wsuri' => cdm_webservice_url(),
         'hash' => $hash,
         'cdmtype' => $nodetype,
         'uuid' => $uuid,

@@ -94,7 +94,7 @@
 
     $callback = "jQuery('" . $link_element_selector . "').cdm_ws_progress('" . $progress_element_selector . "');";
 
-    drupal_add_js_async(variable_get('cdm_webservice_url', '').'js/cdm_ws_progress.js', $callback);
+    drupal_add_js_async(cdm_webservice_url(). 'js/cdm_ws_progress.js', $callback);
 
     //   drupal_add_js("
     //   	  if (Drupal.jsEnabled) {
@@ -293,7 +293,7 @@ function _add_js_taxonomic_children($jquery_selector) {
           // activeClass: "fa-rotate-90",
           classificationUuid: "' . get_current_classification_uuid() . '",
           taxonUuid: "' . get_current_taxon_uuid() . '",
-          cdmWebappBaseUri: "' . variable_get('cdm_webservice_url', '') . '",
+          cdmWebappBaseUri: "' . cdm_webservice_url() . '",
           proxyBaseUri: "' . $base_url . '",
           
         });

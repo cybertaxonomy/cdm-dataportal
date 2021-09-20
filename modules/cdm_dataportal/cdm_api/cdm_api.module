@@ -102,7 +102,11 @@ function cdm_api_menu() {
 }
 
 /**
+ * info hook implementation for the CDM web service debug block
+ *
  * Implements hook_block_info().
+ *
+ * @see \cdm_api_block_view()
  */
 function cdm_api_block_info() {
 
@@ -114,13 +118,17 @@ function cdm_api_block_info() {
 }
 
 /**
+ * block_view hook implementation for the CDM web service debug block
+ *
  * Implements hook_block_view().
+ *
+ * @see  cdm_api_block_info()
  */
 function cdm_api_block_view($delta) {
   switch ($delta) {
     case 'cdm_ws_debug':
 
-    $cdm_ws_url = variable_get('cdm_webservice_url', '');
+    $cdm_ws_url = cdm_webservice_url();
 
     $field_map = array(
         'ws_uri' => t('URI') . ' <code>(' . $cdm_ws_url .'...)</code>',
@@ -658,9 +666,30 @@ function cdm_compose_ws_url($uri_pattern, $pathParameters = array(), $query = NU
     $pathParameters = array();
   }
   $path = cdm_compose_url($uri_pattern, $pathParameters, $query);
+  $url = cdm_webservice_url() . $path;
+  return $url;
+}
 
-  $uri = variable_get('cdm_webservice_url', '') . $path;
-  return $uri;
+/**
+ * Wrapper to access the 'cdm_webservice_url' and to ensure that
+ * the returned webservice url scheme conforms to the scheme of the
+ * page request.
+ *
+ * @param string $default optional parameter to set the default, by default an empty string is returned
+ */
+function cdm_webservice_url($default = ''){
+  static $conform_ws_url = null;
+  if($conform_ws_url === null) {
+    $ws_url = variable_get('cdm_webservice_url', $default);
+    if($ws_url && $_SERVER['REQUEST_SCHEME'] == 'https' && parse_url($ws_url, PHP_URL_SCHEME) === 'http'){
+      $conform_ws_url = preg_replace("/^http\:/", "https:", $ws_url);
+      drupal_set_message('The <stong>CDM web service URL</stong> scheme should be set to <strong>HTTPS</strong> the '
+        . l('CDM Data Portal settings', 'admin/config/cdm_dataportal/settings'), 'warning');
+    } else {
+      $conform_ws_url = $ws_url;
+    }
+  }
+  return $conform_ws_url;
 }
 
 /**
@@ -2298,7 +2327,7 @@ function cdm_ws_debug_add($uri, $method, $post_data, $duration_fetch, $duration_
     $xml_uri = $json_uri . '.xml';
   }
 
-  // data links to make data accecsible as json and xml
+  // data links to make data accessible as json and xml
   $data_links = '';
   if (_is_cdm_ws_uri($path)) {
 
@@ -2747,7 +2776,7 @@ function _cdm_api_secref_cache_add($secUuidsStr) {
  *   True if the uri starts with a cdm webservice url.
  */
 function _is_cdm_ws_uri($uri) {
-  return str_beginsWith($uri, variable_get('cdm_webservice_url', '#EMPTY#'));
+  return str_beginsWith($uri, cdm_webservice_url('#EMPTY#'));
 }
 
 /**
