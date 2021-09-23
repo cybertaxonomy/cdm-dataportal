@@ -1868,9 +1868,8 @@ function compose_description_elements_distribution($description_elements){
         }
       }
 
-      $per_node_markup[$node_index] .= $level_style['item_suffix'];
-
       if(isset($node->children[0])){
+        $per_node_markup[$node_index] .= $level_style['item_suffix'];
         _compose_distribution_hierarchy(
           $node->children,
           $feature_block_settings,
