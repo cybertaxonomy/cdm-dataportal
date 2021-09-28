@@ -338,7 +338,7 @@ define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
     'label_suffix' => '',
     'status_glue' => '',
     'item_suffix' => ': ',
-    'item_glue' => ' ',
+    'item_glue' => ', ',
     'item_group_prefix' => '',
     'item_group_postfix' => ''
   ),
