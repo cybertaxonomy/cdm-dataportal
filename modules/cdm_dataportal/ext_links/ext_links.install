@@ -127,6 +127,19 @@ function ext_links_update_7002(){
   return join("; \n", $tasks_performed);
 }
 
+/**
+ * - remove linkg to ePIC
+ */
+function ext_links_update_7003() {
+
+  $tasks_performed = [];
+  $links_templates = ext_links_templates();
+  if(array_key_exists('epic', $links_templates)) {
+    db_delete('ext_links')->condition('id', 'epic')->execute();
+    $tasks_performed[] = "ext_link for ePIC removed";
+  }
+  return join("; \n", $tasks_performed);
+}
 
 /**
  * Migrates old ext link templates from drupal vars to the ext_link table.
