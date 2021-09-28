@@ -128,7 +128,8 @@ function ext_links_update_7002(){
 }
 
 /**
- * - remove linkg to ePIC
+ * - remove link to ePIC
+ * - set improved ulr for the wfo link
  */
 function ext_links_update_7003() {
 
@@ -137,6 +138,14 @@ function ext_links_update_7003() {
   if(array_key_exists('epic', $links_templates)) {
     db_delete('ext_links')->condition('id', 'epic')->execute();
     $tasks_performed[] = "ext_link for ePIC removed";
+  }
+  if(array_key_exists('wfo', $links_templates)) {
+    $defaults = ext_links_template_defaults();
+    db_update('ext_links')->fields(array(
+      'link' => $defaults['wfo']['link']
+    ))->condition('id', 'wfo')
+      ->execute();
+    $tasks_performed[] = "set improved URL for the wfo external link";
   }
   return join("; \n", $tasks_performed);
 }
