@@ -497,7 +497,7 @@ function ext_links_template_defaults() {
   );
   $ext_links_default["wfo"] = array(
     'id' => "wfo",
-    'link' => 'http://www.worldfloraonline.org/search?query=[cdm:taxon_name]',
+    'link' => 'http://www.worldfloraonline.org/search?query=%22[cdm:taxon_name]%22&limit=24&start=0&facet=base.class_s%3Aorg.emonocot.model.Taxon&sort=',
     'title' => 'World Flora Online',
     'weight' => 0,
     'status' => 1,
