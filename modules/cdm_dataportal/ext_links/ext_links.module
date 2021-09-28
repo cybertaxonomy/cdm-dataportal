@@ -453,14 +453,6 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'General',
   );
-  $ext_links_default["epic"] = array(
-    'id' => "epic",
-    'link' => 'http://epic.kew.org/searchepic/summaryquery.do?scientificName=[cdm:taxon_name]&searchAll=true&categories=names&categories=bibl&categories=colln&categories=taxon&categories=flora',
-    'title' => 'ePIC',
-    'weight' => 0,
-    'status' => 1,
-    'category' => 'General',
-  );
   $ext_links_default["jstor"] = array(
     'id' => "jstor",
     'link' => 'https://plants.jstor.org/search?filter=name&so=ps_group_by_genus_species+asc&Query=[cdm:taxon_name]',
@@ -622,15 +614,6 @@ function ext_links_template_defaults() {
     'status' => 1,
     'category' => 'Images',
   );
-  //  $ext_links_default["arkive"] = array(
-  //    // domain no longer exists! Remove extlink?
-  //    'id' => "arkive",
-  //    'link' => 'http://www.arkive.org/search.html?q=[cdm:taxon_name]&output=xml_no_dtd&client=arkive-images&site=arkive-images&ie=utf8&oe=utf8&num=20&proxystylesheet=tng-search&filter=0&getfields=*',
-  //    'title' => 'ARKive',
-  //    'weight' => 0,
-  //    'status' => 0,
-  //    'category' => 'Images',
-  //  );
 
   // --- Conservation ---
   $ext_links_default["iucn"] = array(
