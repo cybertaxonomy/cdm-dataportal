@@ -2447,13 +2447,17 @@ function cdm_http_request($uri, $method = "GET", $data = NULL) {
     $header['Content-Type'] = 'application/x-www-form-urlencoded';
   }
 
-
+  $context_resource = null;
+  if(!variable_get('cdm_webservice_url_ssl_verify', 1)){
+    $context_resource = stream_context_create(array('ssl' => array('verify_peer' => FALSE, 'verify_peer_name' => FALSE)));
+  }
   cdm_dd($uri);
   return drupal_http_request($uri, array(
       'headers' => $header,
       'method' => $method,
       'data' => $data,
-      'timeout' => CDM_HTTP_REQUEST_TIMEOUT
+      'timeout' => CDM_HTTP_REQUEST_TIMEOUT,
+      'context' => $context_resource
       )
    );
 }
