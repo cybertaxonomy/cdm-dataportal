@@ -990,6 +990,15 @@ function cdm_settings_general() {
     '#default_value' => variable_get('cdm_webservice_url', NULL),
   );
 
+  $form['cdm_webservice']['cdm_webservice_url_ssl_verify'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Verify SSL/TLS certificate') . ':',
+    '#description' => 'The ssl/tsl certificate of the CDM web service will not be verified if this options is disabled, . 
+    This can be helpful if you are running your server with self-signed certificates. Since this is 
+    discouraged, disabling this options should only be done, if you are fully aware of the security consequences.',
+    '#default_value' => variable_get('cdm_webservice_url_ssl_verify', 1),
+  );
+
   $form['cdm_webservice']['cdm_webservice_debug'] = array(
     '#type' => 'markup',
     '#markup' => '<b>Debug CDM Web Service:</b> Debugging web services is possible via the ' . l('CDM web service debug block', 'admin/structure/block/manage/cdm_api/cdm_ws_debug/configure')
