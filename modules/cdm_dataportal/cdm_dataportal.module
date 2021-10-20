@@ -2742,17 +2742,31 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
     $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->uuid);
   }
 
+  $taxon_node_classification_uuids = [];
   if ($taxon->class == "Taxon" && isset($taxon_nodes)) {
     foreach ($taxon_nodes as $node) {
       if($node->class == 'TaxonNodeDto' && isset($node->classificationUUID)){
         // case of TaxonNodeDto
-        return $node->classificationUUID == $default_classification_uuid;
+        $taxon_node_classification_uuids[] = $node->classificationUUID;
       } else if($node->class == 'TaxonNode' && isset($node->classification->uuid)) {
-         return $node->classification->uuid == $default_classification_uuid;
+        $taxon_node_classification_uuids[] =  $node->classification->uuid;
       }
     }
   }
-  return FALSE;
+  return _cdm_dataportal_matches_current_view($taxon_node_classification_uuids);
+}
+
+/**
+ * Check if one uuid in the given set matches the current classification uuid.
+ *
+ * @param array $taxon_node_classification_uuids
+ *   A list of classification uuids.
+ * @return bool
+ */
+function _cdm_dataportal_matches_current_view($taxon_node_classification_uuids) {
+
+  $default_classification_uuid = get_current_classification_uuid();
+  return array_search($default_classification_uuid, $taxon_node_classification_uuids) !== false;
 }
 
 /**

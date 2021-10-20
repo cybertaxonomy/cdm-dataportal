@@ -443,7 +443,6 @@ function cdm_accepted_for($accepted_for_uuid) {
  * @param $show_classification boolean
  *
  * @ingroup compose
- *
  */
 function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $show_classification = false) {
 
@@ -480,26 +479,26 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   // thus ...
   $table_of_accepted = array();
 
-  foreach ($synonym_uuids as $relatedUuid) {
+  foreach ($synonym_uuids as $misapplication_uuid) {
     $classification_filter = '';
     if($searched_in_classification_uuid){
       $classification_filter = 'classificationFilter=' . $searched_in_classification_uuid;
     }
-    $table_of_accepted[$relatedUuid] = cdm_ws_get(
+    $table_of_accepted[$misapplication_uuid] = cdm_ws_get(
       CDM_WS_PORTAL_TAXON_ACCEPTED,
-      array($relatedUuid),
+      array($misapplication_uuid),
       $classification_filter
     );
   }
 
-  foreach ($misapplied_uuids as $relatedUuid) {
-    $taxonRelations = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS, array(
-      $relatedUuid,
+  foreach ($misapplied_uuids as $mispplication_uuid) {
+    $taxonRelationsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, array(
+      $mispplication_uuid,
     ));
-    if($taxonRelations){
-      foreach ($taxonRelations as $relation) {
-        if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_acceptedByCurrentView($relation->toTaxon)) {
-          $table_of_accepted[$relatedUuid][] = $relation->toTaxon;
+    if(isset($taxonRelationsDTO->relations)){
+      foreach ($taxonRelationsDTO->relations as $relation) {
+        if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_matches_current_view($relation->classificationsUUIDs)) {
+          $table_of_accepted[$mispplication_uuid][] = cdm_ws_get(CDM_WS_TAXON, $relation->taxonUuid);
         }
       }
     }
@@ -533,13 +532,14 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
           // $taxon_or_name this is a trick to suppress the sec reference for synonyms
           // supplying the name will cause render_taxon_or_name() to not show the sec reference
           $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon, $taxonUri, $referenceUri, true, false, $skip_render_template_parts);
-          if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && isset_not_empty($taxon->secSource->citation)){
-            if(isset($taxon->secSource->citation->authorship)){
+          if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && isset_not_empty($taxon->secSource) && isset_not_empty($taxon->secSource->citation)) {
+            if (isset($taxon->secSource->citation->authorship)) {
               $authorship = $taxon->secSource->citation->authorship->titleCache;
-            } else {
+            }
+            else {
               $authorship = $taxon->secSource->citation->titleCache;
             }
-            $out .=  ' sensu ' . $authorship;
+            $out .= ' sensu ' . $authorship;
           }
           if ($show_classification) {
             $out .= render_classifications_for_taxon($taxon);
