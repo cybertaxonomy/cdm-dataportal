@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 /**
  * @author a.kohlbecker
  * @since Oct 10, 2017
- *
  */
 public class CdmEntityClassAttributesTest extends Assert {
 
@@ -54,5 +53,4 @@ public class CdmEntityClassAttributesTest extends Assert {
         assertNull(a.getCdmType());
         assertNull(a.getEnitytyUuid());
     }
-
 }
