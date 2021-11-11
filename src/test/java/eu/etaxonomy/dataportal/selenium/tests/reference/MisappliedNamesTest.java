@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
@@ -95,8 +95,8 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
-        assertEquals("1. A&S, Plantas vasculares de Oz", footnotes.get(0).getText());
-        assertEquals("2. Lem, New Species in the solar system", footnotes.get(1).getText());
+        assertEquals("1. A&S: Plantas vasculares de Oz", footnotes.get(0).getText());
+        assertEquals("2. Lem: New Species in the solar system", footnotes.get(1).getText());
         // "Species solaris" must not be in the footnotes as it has the same title as the short citation
 
     }
@@ -115,8 +115,8 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
-        assertEquals("1. A&S, Plantas vasculares de Oz", footnotes.get(0).getText());
-        assertEquals("2. Lem, New Species in the solar system", footnotes.get(1).getText());
+        assertEquals("1. A&S: Plantas vasculares de Oz", footnotes.get(0).getText());
+        assertEquals("2. Lem: New Species in the solar system", footnotes.get(1).getText());
     }
 
     /**
@@ -131,11 +131,10 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         BaseElement footNote = footnotes.get(0);
-        assertEquals("1. A&S, Plantas vasculares de Oz", footNote.getText());
+        assertEquals("1. A&S: Plantas vasculares de Oz", footNote.getText());
         List<LinkElement> links = footNote.getLinksInElement();
         assertEquals(1, links.size());
         assertEquals("http://doi.org/10.1111/j.1756-1051.2012.00012.x", links.get(0).getUrl());
-
     }
 
 
