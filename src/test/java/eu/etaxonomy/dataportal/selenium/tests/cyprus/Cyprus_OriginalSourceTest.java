@@ -79,7 +79,7 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
         assertEquals("Chromosome numbers", featureBlock.getHeaderText());
 
         // see  #2288 (Cyprus: ChromosomeNumbers: formating nameInSource)
-        assertEquals("Chromosome numbers\n2n = 18 (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus in Candollea 48. 1993 (as Cistus creticus L.)) (B. Slavík & V. Jarolímová & J. Chrtek, Chromosome counts of some plants from Cyprus. 2 in Acta Univ. Carol., Biol. 46. 2002 (as Cistus creticus L.))", featureBlock.getText());
+        assertEquals("Chromosome numbers\n2n = 18 (B. Slavík, Jarolímová, V. & Chrtek, J. 1993: Chromosome counts of some plants from Cyprus. – Candollea 48: 221-230 (as Cistus creticus L.)) (B. Slavík, Jarolímová, V. & Chrtek, J. 2002: Chromosome counts of some plants from Cyprus. 2. – Acta Univ. Carol., Biol. 46: 295-302 (as Cistus creticus L.))", featureBlock.getText());
 
         assertFalse("expecting no footnote keys", featureBlock.hasFootNoteKeys());
         List<WebElement> linksInFeatureBlock = featureBlock.getElement().findElements(By.tagName("a"));

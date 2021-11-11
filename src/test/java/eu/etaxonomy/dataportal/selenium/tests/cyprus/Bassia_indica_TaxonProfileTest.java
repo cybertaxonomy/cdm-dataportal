@@ -80,7 +80,7 @@ public class Bassia_indica_TaxonProfileTest extends CdmDataPortalTestBase{
                 + "Division 4A\n"
                 + "Division 5B\n"
                 + "Division 6C\n"
-                + "The record for division 5 may refer to division 6.\nA. J. Chrtek & B. Slavík, Contribution to the flora of Cyprus. 4. in Fl. Medit. 10. 2001, B. A. Della & G. Iatrou, New plant records from Cyprus in Kew Bull. 50. 1995, C. R. Hand, Supplementary notes to the flora of Cyprus III. in Willdenowia 33. 2003", featureBlock.getText());
+                + "The record for division 5 may refer to division 6.\nChrtek, J. & B. Slavík 2001: Contribution to the flora of Cyprus. 4. – Fl. Medit. 10: 235-259, B. Della, A. & Iatrou, G. 1995: New plant records from Cyprus. – Kew Bull. 50: 387-396, C. Hand, R. 2003: Supplementary notes to the flora of Cyprus III. – Willdenowia 33: 305-325", featureBlock.getText());
         assertEquals("Distribution", featureBlock.getHeaderText());
         assertEquals("expecting two footnote keys", 3, featureBlock.countFootNoteKeys());
 

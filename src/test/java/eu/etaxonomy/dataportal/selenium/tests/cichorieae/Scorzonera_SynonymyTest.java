@@ -24,11 +24,8 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
 
