@@ -98,7 +98,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Type: \"Habitat in Europae frigidioris pratis asperis.\"", typeDesignations.get(0).getText());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(1).getTypeDesignationType());
-        assertEquals("Lectotype (designated by D. Iamonico 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1", typeDesignations.get(1).getText());
+        assertEquals("Lectotype (designated by Iamonico, D. 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1", typeDesignations.get(1).getText());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
         assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        assertEquals("Lectotype (designated by M. L. Green: 1783): Hypochaeris radicata L.", typeDesignations.get(0).getText());
+        assertEquals("Lectotype (designated by Green, M. L.: 1783): Hypochaeris radicata L.", typeDesignations.get(0).getText());
 
         typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
         assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());

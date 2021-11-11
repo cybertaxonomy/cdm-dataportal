@@ -96,7 +96,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
         assertEquals("1. A&S: Plantas vasculares de Oz", footnotes.get(0).getText());
-        assertEquals("2. Lem: New Species in the solar system", footnotes.get(1).getText());
+        assertEquals("2. Lem, New Species in the solar system", footnotes.get(1).getText());
         // "Species solaris" must not be in the footnotes as it has the same title as the short citation
 
     }
@@ -116,7 +116,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(2, footnotes.size());
         assertEquals("1. A&S: Plantas vasculares de Oz", footnotes.get(0).getText());
-        assertEquals("2. Lem: New Species in the solar system", footnotes.get(1).getText());
+        assertEquals("2. Lem, New Species in the solar system", footnotes.get(1).getText());
     }
 
     /**

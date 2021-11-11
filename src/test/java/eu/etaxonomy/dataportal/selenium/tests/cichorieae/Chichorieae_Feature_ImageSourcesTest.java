@@ -40,7 +40,7 @@ public class Chichorieae_Feature_ImageSourcesTest extends CdmDataPortalTestBase 
         FeatureBlock imageSourcesBlock = p.getFeatureBlockAt(0, "image-sources", "div", "span");
 
         assertEquals("Gottschlich 2009: t. 20-21 (specimen photos)A", imageSourcesBlock.getFeatureBlockElements().get(0).getText());
-        assertEquals("A. Gottschlich, G., Die Gattung Hieracium (Compositae) in der Region Abruzzen (Italien) in Stapfia 89. 2009 (as Hieracium bupleuroides C. C. Gmel.)", imageSourcesBlock.getFootNote(0).getText());
+        assertEquals("A. Gottschlich, G. 2009: Die Gattung Hieracium (Compositae) in der Region Abruzzen (Italien) in Stapfia 89 (as Hieracium bupleuroides C. C. Gmel.)", imageSourcesBlock.getFootNote(0).getText());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class Chichorieae_Feature_ImageSourcesTest extends CdmDataPortalTestBase 
         FeatureBlock imageSourcesBlock = p.getFeatureBlockAt(0, "image-sources", "div", "span");
 
         assertEquals("Gottschlich 2009: t. 14 (specimen photo)A", imageSourcesBlock.getFeatureBlockElements().get(0).getText());
-        assertEquals("A. Gottschlich, G., Die Gattung Hieracium (Compositae) in der Region Abruzzen (Italien) in Stapfia 89. 2009 (as Hieracium anchusoides (Arv.-Touv.) St.-Lag.)", imageSourcesBlock.getFootNote(0).getText());
+        assertEquals("A. Gottschlich, G. 2009: Die Gattung Hieracium (Compositae) in der Region Abruzzen (Italien) in Stapfia 89 (as Hieracium anchusoides (Arv.-Touv.) St.-Lag.)", imageSourcesBlock.getFootNote(0).getText());
     }
 
 

@@ -47,7 +47,7 @@ public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Lectotype (designated by Green 1929: 1771): Scorzonera humilis L.", typeDesignations.get(0).getText()); // last digit of 1771 is footnote key !!!
         assertEquals("should have one footnote from type designation", 1, p.getAcceptedNameFootNotes().size());
-        assertEquals("", "1. Green, Proposals by British Botanists. 1929", p.getAcceptedNameFootNotes().get(0).getText());
+        assertEquals("", "1. Green 1929: Proposals by British Botanists", p.getAcceptedNameFootNotes().get(0).getText());
 //        assertNull("The typified name should not have a name description (protologue)", typeDesignations.get(0).getNameDescription()); // FIXME
 
         assertEquals("= Gelasia Cass. in Bull. Sci. Soc. Philom. Paris 1818: 33. 1818", p.getHeterotypicalGroupSynonymName(1, 1));
