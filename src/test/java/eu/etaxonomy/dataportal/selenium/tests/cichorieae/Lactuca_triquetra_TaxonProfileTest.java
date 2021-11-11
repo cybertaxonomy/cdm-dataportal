@@ -180,7 +180,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         featureLabel = "Common names";
         expectedCssDisplay = "block";
         // after bug #3475 was fixed the number of footnotes increased by one
-        blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكانG,2\nG. Nehmé, M. 2000, Dictionnaire Etymologique de la Flore du Liban (as Scariola triquetra (Labill.) Soják)\n2. recommended";
+        blockTextFull = featureLabel + "\nArabic (Lebanon): سْكَرْيولَة ثُلاثِيَّة الأَرْكانG,2\nG. Nehmé, M. 2000: Dictionnaire Etymologique de la Flore du Liban (as Scariola triquetra (Labill.) Soják)\n2. recommended";
 
         p.testTableOfContentEntry(featureId++, featureLabel, featureClass);
         featureBlock = p.getFeatureBlockAt(featureId, featureClass, "div", "span");

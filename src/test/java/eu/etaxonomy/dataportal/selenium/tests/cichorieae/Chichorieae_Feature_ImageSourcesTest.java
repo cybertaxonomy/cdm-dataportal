@@ -40,7 +40,7 @@ public class Chichorieae_Feature_ImageSourcesTest extends CdmDataPortalTestBase 
         FeatureBlock imageSourcesBlock = p.getFeatureBlockAt(0, "image-sources", "div", "span");
 
         assertEquals("Gottschlich 2009: t. 20-21 (specimen photos)A", imageSourcesBlock.getFeatureBlockElements().get(0).getText());
-        assertEquals("A. Gottschlich, G. 2009: Die Gattung Hieracium (Compositae) in der Region Abruzzen (Italien) in Stapfia 89 (as Hieracium bupleuroides C. C. Gmel.)", imageSourcesBlock.getFootNote(0).getText());
+        assertEquals("A. Gottschlich, G. 2009: Die Gattung Hieracium (Compositae) in der Region Abruzzen (Italien). – Stapfia 89 (as Hieracium bupleuroides C. C. Gmel.)", imageSourcesBlock.getFootNote(0).getText());
     }
 
     @Test
