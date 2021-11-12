@@ -78,13 +78,13 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         List<BaseElement> footnotes = regItem.getRegistrationFootnotes();
         assertEquals(9, footnotes.size());
         assertEquals(
-                "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+                "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes .get(0).getText());
         assertEquals(
                 "2. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                 footnotes .get(1).getText());
         assertEquals(
-                "3. Art. 77.7; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
+                "3. Art. 77.7; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
                 footnotes .get(2).getText());
         assertEquals(
                 "4. Editorial note on Nodosilinea radiophila",
@@ -99,7 +99,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "7. Editorial annotation on Nodosilinea sensensia, Species solaris",
                 footnotes .get(6).getText());
         assertEquals(
-                "8. Art. 88.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
+                "8. Art. 88.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
                 footnotes .get(7).getText());
         assertEquals(
                 "9. Editorial annotation on Nodosilinea sensensi",
@@ -119,7 +119,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
         assertEquals(7, footnotes.size());
         assertEquals(
-                "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+                "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
                 footnotes .get(0).getText());
         assertEquals(
                 "2. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
@@ -134,7 +134,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "5. Editorial annotation on Nodosilinea blockensis, New Species in the solar system",
                 footnotes.get(4).getText());
         assertEquals(
-                "6. Art. 88.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al., International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
+                "6. Art. 88.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
                 footnotes.get(5).getText());
         assertEquals(
                 "7. Editorial annotation on Nodosilinea sensensi",

@@ -43,7 +43,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
      * string generation in the drupal code which need to be removed
      * in order to retain the maintainability of the code.
      */
-    String evans_et_al_referenceCitation = "T. Evans & K. Sengdala & B. Thammavong & O.V. Viengkham & J. Dransfield, A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. 2002";
+    String evans_et_al_referenceCitation = "Evans, T., Sengdala, K., Thammavong, B., Viengkham, O.V. & Dransfield, J. 2002: A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina";
 
     @Before
     public void setUp() throws MalformedURLException {

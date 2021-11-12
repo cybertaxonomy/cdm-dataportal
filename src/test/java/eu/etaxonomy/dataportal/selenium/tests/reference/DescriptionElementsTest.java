@@ -1,4 +1,4 @@
-/**
+Lem[,] New Species in the/**
  * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
@@ -53,8 +53,8 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         FeatureBlock fb = p.getFeatureBlockAt(0, "biology-and-ecology", "div", "span");
         assertNotNull(fb);
         assertEquals(3, fb.getFeatureBlockElements().size());
-        assertEquals("Flowers with white blossoms on Testisland A. 0000-05 to 0000-06 (Lem, New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(0).getText());
-        assertEquals("Flowers with white blossoms on Testisland B. Mai to June (Lem, New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(1).getText());
+        assertEquals("Flowers with white blossoms on Testisland A. 0000-05 to 0000-06 (Lem: New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(0).getText());
+        assertEquals("Flowers with white blossoms on Testisland B. Mai to June (Lem: New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(1).getText());
         assertEquals("Flowers with white blossoms on Testisland C. 2000 to 2000-05", fb.getFeatureBlockElements().get(2).getText());
 
     }
