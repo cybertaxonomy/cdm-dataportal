@@ -172,9 +172,8 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
         assertEquals(item14UseRecordText,
                 listItems.get(0).findElement(By.className("use-records")).getText());
         // synonym
-        assertEquals("Iriartea ventricosa Mart.: De las líneas de la hoja de esta palmera que crece en forma silvestre, los tacana elaboran recipientes de diferentes tamaños. (…). Para la elaboración de cercos , (…), los tacana utilizan los troncos de las palmeras chonta, motacú, copa, assai, majillo, pachiuva, tola y tuana. (…). Para la elaboración de cercos , (…), los tacana utilizan los troncos de las palmeras chonta, motacú, copa, assai, majillo, pachiuva, tola y tuana. (Hissink, K., and A. Hahn, Los Tacana- datos sobre la historia de su civilización. 2000 (as Iriartea ventricosa Mart.))",
+        assertEquals("Iriartea ventricosa Mart.: De las líneas de la hoja de esta palmera que crece en forma silvestre, los tacana elaboran recipientes de diferentes tamaños. (…). Para la elaboración de cercos , (…), los tacana utilizan los troncos de las palmeras chonta, motacú, copa, assai, majillo, pachiuva, tola y tuana. (…). Para la elaboración de cercos , (…), los tacana utilizan los troncos de las palmeras chonta, motacú, copa, assai, majillo, pachiuva, tola y tuana. (Hissink, K., and A. Hahn 2000: Los Tacana- datos sobre la historia de su civilización (as Iriartea ventricosa Mart.))",
             listItems.get(81).getText());
-
     }
 
     @Test

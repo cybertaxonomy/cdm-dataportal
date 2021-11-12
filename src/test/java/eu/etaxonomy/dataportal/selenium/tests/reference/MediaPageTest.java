@@ -58,17 +58,15 @@ public class MediaPageTest extends CdmDataPortalTestBase{
                 );
     }
 
-
     /**
      * related to https://dev.e-taxonomy.eu/redmine/issues/6316
      */
     @Test
     public void testSources_issue6316() throws MalformedURLException {
 
-
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "media/" + ehrenberg_drawing_uuid.toString());
         WebElement mediaCaption = driver.findElement(By.className("media-caption"));
-        assertEquals("Source:\nNaturkundemuseum Berlin (MFN) - Ehrenberg Collection [761]", mediaCaption.getText());
+        assertEquals("Source:\nNaturkundemuseum Berlin (MFN) - Ehrenberg Collection – http://download.naturkundemuseum-berlin.de/Ehrenberg/ [761]", mediaCaption.getText());
     }
 
 }

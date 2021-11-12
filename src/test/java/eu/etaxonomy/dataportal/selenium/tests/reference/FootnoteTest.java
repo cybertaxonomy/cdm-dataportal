@@ -114,7 +114,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("4. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                         footnotes.get(3).getText());
         BaseElement footnote5 = footnotes.get(4);
-        assertEquals("5. Heidari, F. & Hauer, T. - in Heidari, F., Zima, J., Riahi, H. & al., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs in Fottea 18(2): 137–149. 2018 Registration: http://testbank.org/100004, 2019-02-06",
+        assertEquals("5. Heidari, F. & Hauer, T. 2018 – In: Heidari, F., Zima, J., Riahi, H. & Hauer, T., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2) Registration: http://testbank.org/100004, 2019-02-06",
                         footnote5.getText());
         List<LinkElement> linksInFootnote5 = footnote5.getLinksInElement();
         assertEquals(2, linksInFootnote5.size());
