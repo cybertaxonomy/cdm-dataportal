@@ -34,9 +34,8 @@ class DerivationTreeComposer {
       if($this->use_field_unit_short_label === null){
         $specimen_derivate_tree_options = get_array_variable_merged(CDM_SPECIMEN_DERIVATE_TREE_OPTIONS, CDM_SPECIMEN_DERIVATE_TREE_OPTIONS_DEFAULT);
         $this->use_field_unit_short_label = $specimen_derivate_tree_options['field_unit_short_label'];
-      } else {
-        return $this->use_field_unit_short_label;
       }
+      return $this->use_field_unit_short_label;
   }
 
   public function collapsibleItemClassAttribute($has_sub_derivatives) {
