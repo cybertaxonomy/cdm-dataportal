@@ -84,23 +84,23 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
   $tagged_text_expanded = array();
   foreach ($taggedtxt as $tt) {
     if (isset($tt->entityReference) && !in_array($tt->type, $skiptags)) {
-      if(!cdm_type_has_tagged_text($tt->entityReference->type)) {
-        continue;
-      }
-      $base_uri = cdm_ws_base_uri($tt->entityReference->type);
-      if($base_uri){
-        if(str_endsWith($base_uri, '$0')){
-          // sanitize placeholders at the end
-          $base_uri = substr($base_uri, 0, strlen($base_uri) - 2);
+      $referenced_tt = null;
+      if(cdm_type_has_tagged_text($tt->entityReference->type)) {
+        $base_uri = cdm_ws_base_uri($tt->entityReference->type);
+        if($base_uri){
+          if(str_endsWith($base_uri, '$0')){
+            // sanitize placeholders at the end
+            $base_uri = substr($base_uri, 0, strlen($base_uri) - 2);
+          }
+            $tagged_text_method = "/taggedText";
+            if($base_uri == CDM_WS_NAME){
+              $tagged_text_method = "/taggedName";
+            }
+            if(!str_endsWith($base_uri, '/')){
+              $base_uri .= '/';
+            }
+            $referenced_tt = cdm_ws_get($base_uri . $tt->entityReference->uuid . $tagged_text_method);
         }
-          $tagged_text_method = "/taggedText";
-          if($base_uri == CDM_WS_NAME){
-            $tagged_text_method = "/taggedName";
-          }
-          if(!str_endsWith($base_uri, '/')){
-            $base_uri .= '/';
-          }
-          $referenced_tt = cdm_ws_get($base_uri . $tt->entityReference->uuid . $tagged_text_method);
         if($referenced_tt){
           if(isset($tt->attributes)){
             foreach($referenced_tt as $reftt){
