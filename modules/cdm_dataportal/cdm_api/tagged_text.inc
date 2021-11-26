@@ -439,6 +439,33 @@ function tagged_text_extract_nomstatus(&$tagged_text) {
   return $extracted_tt;
 }
 
+/**
+ * Tries to find a tagged text elements that matches the $type and $regex_pattern
+ * and returns all preceding elements as new array.
+ *
+ * @param $tagged_text
+ *  The tagged text to crop
+ * @param $type
+ *  The tagged text type to match
+ * @param $regex_pattern
+ *  A PREG regex pattern
+ *
+ * @return array
+ *  A new tagged text array
+ */
+function tagged_text_crop_at(&$tagged_text, $type, $regex_pattern) {
+  $cropped_tagged_text = array();
+  if (is_array($tagged_text)) {
+    for ($i = 0; $i < count($tagged_text); $i++) {
+      if ($tagged_text[$i]->type == $type && preg_match($regex_pattern, $tagged_text[$i]->text)) {
+        break;
+      }
+      $cropped_tagged_text[] = $tagged_text[$i];
+    }
+  }
+  return $cropped_tagged_text;
+}
+
 function tagged_text_extract(&$tagged_text, $type, $replace_with_placeholder = false) {
   $matching_elements = array();
   if (is_array($tagged_text)) {

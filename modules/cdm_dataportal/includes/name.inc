@@ -805,7 +805,7 @@ function compose_registration_dto_compact($registration_dto, $style = 'citation'
     );
   }
   cdm_tagged_text_add_options($registration_dto->summaryTaggedText, $tagged_text_options);
-  tagged_text_extract_reference($registration_dto->summaryTaggedText);
+  $tagged_text_cropped = tagged_text_crop_at($registration_dto->summaryTaggedText, 'reference', '/[dD]esignated\s+[bB]y/');
   $tagged_text_expanded = cdm_tagged_text_expand_entity_references($registration_dto->summaryTaggedText);
   foreach ($tagged_text_expanded  as $tagged_text){
     if(isset($tagged_text->entityReference->type) && $tagged_text->entityReference->type == 'SpecimenTypeDesignation') {
