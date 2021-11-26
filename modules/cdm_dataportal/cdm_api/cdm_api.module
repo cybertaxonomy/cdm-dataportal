@@ -1088,6 +1088,10 @@ function cdm_ws_base_uri($cdm_type_simple)
   return $ws_base_uri;
 }
 
+function cdm_type_has_tagged_text($cdm_type_name){
+  return array_search($cdm_type_name, ['TaxonName', 'Taxon', 'Synonym']) !== false;
+}
+
 /**
  * Enter description here...
  *

@@ -64,13 +64,13 @@ function cdm_tagged_text_add_options(array &$taggedtxt, array $attributes_map){
 
 /**
  * Walks the passed TaggedText array to find all elements which have a
- * TaggedText->entityReference. For each of these the taggedTexts is loaded
- * from the webservice and the original entry in the TaggedText array will be
- * replaced by the newly loaded array.
+ * TaggedText->entityReference for CDM an entity. For each of these the
+ * taggedTexts is loaded from the webservice and the original entry in
+ * the TaggedText array will be replaced by the newly loaded array.
  *
  * Existing 'attributes' (@see cdm_tagged_text_add_options()) fields will be preserved by
  * copying them to each of the replacement tagged text items. 'prefix' will be added to
- * the first of the replace items and 'suffix' to the last one.
+ * the first of the replaced items and 'suffix' to the last one.
  *
  *
  * @param array $taggedtxt
@@ -84,20 +84,23 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
   $tagged_text_expanded = array();
   foreach ($taggedtxt as $tt) {
     if (isset($tt->entityReference) && !in_array($tt->type, $skiptags)) {
+      if(!cdm_type_has_tagged_text($tt->entityReference->type)) {
+        continue;
+      }
       $base_uri = cdm_ws_base_uri($tt->entityReference->type);
       if($base_uri){
         if(str_endsWith($base_uri, '$0')){
           // sanitize placeholders at the end
           $base_uri = substr($base_uri, 0, strlen($base_uri) - 2);
         }
-        $tagged_text_method = "/taggedText";
-        if($base_uri == CDM_WS_NAME){
-          $tagged_text_method = "/taggedName";
-        }
-        if(!str_endsWith($base_uri, '/')){
-          $base_uri .= '/';
-        }
-        $referenced_tt = cdm_ws_get($base_uri . $tt->entityReference->uuid . $tagged_text_method);
+          $tagged_text_method = "/taggedText";
+          if($base_uri == CDM_WS_NAME){
+            $tagged_text_method = "/taggedName";
+          }
+          if(!str_endsWith($base_uri, '/')){
+            $base_uri .= '/';
+          }
+          $referenced_tt = cdm_ws_get($base_uri . $tt->entityReference->uuid . $tagged_text_method);
         if($referenced_tt){
           if(isset($tt->attributes)){
             foreach($referenced_tt as $reftt){
