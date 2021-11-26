@@ -1014,8 +1014,8 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           $citation_footnote_str = '';
         }
 
-        // for being registered a typedesignation MUST HAVE a citation, so it is save to handle the
-        // Registration output in if condition checking if the citation is present
+        // for being registered a typedesignation MUST HAVE a citation, so we safely can handle the
+        // Registration output under the checked condition that the citation is present
         $registration_markup = render_registrations($specimen_type_designation->registrations);
         $citation_footnote_str .= ($citation_footnote_str ? ' ' : '') . $registration_markup;
 
@@ -1038,23 +1038,37 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
       $out .= type_designation_status_label_markup($specimen_type_designation) . $type_citation_markup;
 
 
-      $derivedUnitFacadeInstance = null;
+      $derived_unit_dto = null;
       if (isset($specimen_type_designation->typeSpecimen)) {
-        $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $specimen_type_designation->typeSpecimen->uuid);
+        $derived_unit_dto = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE_AS_DTO, $specimen_type_designation->typeSpecimen->uuid);
       }
 
-      if (!empty($derivedUnitFacadeInstance->titleCache)) {
-        $specimen_markup = $derivedUnitFacadeInstance->titleCache;
-        if($link_to_specimen_page && isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
-          $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($specimen_type_designation->typeSpecimen->uuid)), $specimen_markup);
+      if (!empty($derived_unit_dto->summaryLabel)) {
+        $specimen_markup = $derived_unit_dto->summaryLabel;
+        if($link_to_specimen_page && isset($derived_unit_dto->mostSignificantIdentifier) && $derived_unit_dto->mostSignificantIdentifier){
+          $specimen_markup = str_replace($derived_unit_dto->mostSignificantIdentifier, l($derived_unit_dto->mostSignificantIdentifier, path_to_specimen($specimen_type_designation->typeSpecimen->uuid)), $specimen_markup);
+        }
+        $media_sources_markup = '';
+        if(isset_not_empty($derived_unit_dto->listOfMedia)){
+         foreach($derived_unit_dto->listOfMedia as $media_dto){
+           // adding the source citations
+           if(isset_not_empty($media_dto->sources)) {
+             foreach ($media_dto->sources as $source_dto) {
+               $media_sources_markup .= source_dto_markup($source_dto);
+             }
+           }
+         }
+        }
+        if($media_sources_markup){
+          $specimen_markup .= ' in ' . $media_sources_markup;
         }
         RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
-        $annotations_and_sources = handle_annotations_and_sources($derivedUnitFacadeInstance);
+        $annotations_and_sources = handle_annotations_and_sources($derived_unit_dto);
         $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
           . $specimen_markup
           . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
-        if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
-          $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
+        if(!empty($derived_unit_dto->preferredStableUri)){
+          $out .= ' ' . l($derived_unit_dto->preferredStableUri, $derived_unit_dto->preferredStableUri, array('absolute' => true));
         }
         $out .= $annotations_and_sources->footNoteKeysMarkup();
       }
@@ -1092,7 +1106,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
   // are relying on the FootnoteListKey set there
   $_fkey = FootnoteManager::addNewFootnote(
     RenderHints::getFootnoteListKey(),
-    (isset($derivedUnitFacadeInstance->collection->titleCache) ? $derivedUnitFacadeInstance->collection->titleCache : FALSE)
+    (isset($derived_unit_dto->collection->titleCache) ? $derived_unit_dto->collection->titleCache : FALSE)
   );
   $out .= render_footnote_key($_fkey, $separator);
   $out .= '</' . $enclosing_tag .'>';
@@ -1100,6 +1114,22 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
   RenderHints::popFromRenderStack();
 
   return $out;
+}
+
+/**
+ * @param $source_dto
+ *
+ * @return string
+ */
+function source_dto_markup($source_dto, $as_nom_ref = false) {
+  $source_dto_markup = '';
+  if (isset_not_empty($source_dto->citation->abbrevTitleCache)) {
+    $source_dto_markup .= $source_dto->citation->abbrevTitleCache;
+  }
+  if (isset_not_empty($source_dto->citationDetail)) {
+    $source_dto_markup .= ': ' . $source_dto->citationDetail;
+  }
+  return $source_dto_markup;
 }
 
 /**
@@ -1143,7 +1173,7 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
           }
         } else {
           $authorteam_str = $citation_footnote_str;
-          // no need for a footnote in case in case it is used as replacement for missing author teams
+          // no need for a footnote in case it is used as replacement for missing author teams
           $citation_footnote_str = '';
         }
 
@@ -1171,23 +1201,23 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
       $out .= type_designation_dto_status_label_markup($std_dto) . $type_citation_markup;
 
       if($show_type_specimen){
-        $derivedUnitFacadeInstance = null;
+        $derived_unit_dto = null;
         if (isset($std_dto->typeSpecimen)) {
-          $derivedUnitFacadeInstance = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, $std_dto->typeSpecimen->uuid);
+          $derived_unit_dto = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE_AS_DTO, $std_dto->typeSpecimen->uuid);
         }
 
-        if (!empty($derivedUnitFacadeInstance->titleCache)) {
-          $specimen_markup = $derivedUnitFacadeInstance->titleCache;
-          if(isset($derivedUnitFacadeInstance->specimenLabel) && $derivedUnitFacadeInstance->specimenLabel){
-            $specimen_markup = str_replace($derivedUnitFacadeInstance->specimenLabel, l($derivedUnitFacadeInstance->specimenLabel, path_to_specimen($std_dto->typeSpecimen->uuid)), $specimen_markup);
+        if (!empty($derived_unit_dto->summaryLabel)) {
+          $specimen_markup = $derived_unit_dto->summaryLabel;
+          if(isset($derived_unit_dto->mostSignificantIdentifier) && $derived_unit_dto->mostSignificantIdentifier){
+            $specimen_markup = str_replace($derived_unit_dto->mostSignificantIdentifier, l($derived_unit_dto->mostSignificantIdentifier, path_to_specimen($std_dto->typeSpecimen->uuid)), $specimen_markup);
           }
           RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
-          $annotations_and_sources = handle_annotations_and_sources($derivedUnitFacadeInstance);
+          $annotations_and_sources = handle_annotations_and_sources($derived_unit_dto);
           $out .= ': <span class="' . html_class_attribute_ref($std_dto->typeSpecimen) . '">'
             . $specimen_markup
             . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
-          if(!empty($derivedUnitFacadeInstance->preferredStableUri)){
-            $out .= ' ' . l($derivedUnitFacadeInstance->preferredStableUri, $derivedUnitFacadeInstance->preferredStableUri, array('absolute' => true));
+          if(!empty($derived_unit_dto->preferredStableUri)){
+            $out .= ' ' . l($derived_unit_dto->preferredStableUri, $derived_unit_dto->preferredStableUri, array('absolute' => true));
           }
           $out .= $annotations_and_sources->footNoteKeysMarkup();
         }
