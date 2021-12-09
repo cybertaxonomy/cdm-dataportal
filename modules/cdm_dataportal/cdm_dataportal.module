@@ -2051,6 +2051,7 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $s
  *     - content: the page content
  *   or FALSE
  *
+ * @throws \Exception
  */
 function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redirect_to_taxon, $highlite_synonym_uuid = NULL) {
   // Getting the full taxonname object from the server.
