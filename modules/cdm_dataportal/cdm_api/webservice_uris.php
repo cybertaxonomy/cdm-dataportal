@@ -181,6 +181,8 @@ const CDM_WS_PORTAL_MEDIA = 'portal/media';
 
 const CDM_WS_MEDIA_METADATA = 'media/$0/metadata';
 
+const CDM_WS_REGISTRATION = "registration";
+
 /**
  * url query parameters:
  *  - identifier (mandatory)

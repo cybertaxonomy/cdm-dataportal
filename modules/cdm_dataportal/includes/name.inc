@@ -1161,14 +1161,14 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
       $type_citation_markup = '';
 
       if (!empty($std_dto->designationSource->citation)) {
-
+        // TODO this now can be simplified since SourceDTO has the label field, see #9896
         $citation_footnote_str = cdm_reference_markup($std_dto->designationSource->citation, null, false, true);
         $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $std_dto->designationSource->citation->uuid);
 
         if (!empty($author_team->titleCache)) {
           $year = @timePeriodToString($std_dto->designationSource->citation->datePublished, true, 'YYYY');
           $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
-          if ($authorteam_str == $std_dto->designationSource->citation->titleCache) {
+          if ($authorteam_str == $std_dto->designationSource->citation->label) {
             $citation_footnote_str = '';
           }
         } else {

@@ -784,7 +784,7 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
     // TODO below call disabled since sequences are not yet supported,
     //      see  #3347 (services and REST service controller for molecular classes implemented)
     //
-    // cdm_load_annotations($sequence);
+    // fetch_visible_annotations($sequence);
 
     foreach (get_object_vars($sequence) as $field => $value) {
 

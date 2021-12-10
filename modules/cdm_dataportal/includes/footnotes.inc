@@ -135,10 +135,10 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
   }
 
   // Adding the footnotes keys.
-  $annotations = cdm_fetch_visible_annotations($cdm_entity);
-  if (is_array($annotations)) {
-    foreach ($annotations as $annotation) {
-      $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation->text);
+  $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
+  if (is_array($annotations_or_dtos)) {
+    foreach ($annotations_or_dtos as $annotation_or_dto) {
+      $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation_or_dto->text);
     }
   }
 
@@ -157,11 +157,11 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
 function cdm_entity_annotations_as_content(stdClass $cdm_entity) {
 
   $annotation_texts = [];
-  $annotations = cdm_fetch_visible_annotations($cdm_entity);
-  if (is_array($annotations)) {
-    foreach ($annotations as $annotation) {
-      if($annotation->text){
-        $annotation_texts[] = $annotation->text;
+  $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
+  if (is_array($annotations_or_dtos)) {
+    foreach ($annotations_or_dtos as $annotation_or_dto) {
+      if($annotation_or_dto->text){
+        $annotation_texts[] = $annotation_or_dto->text;
       }
     }
   }

@@ -1338,10 +1338,8 @@ function compose_cdm_reference_page($uuid) {
     $out .= '<h2 class="block-title">Abstract</h2><div class="abstract">' . $reference->referenceAbstract . '</div>';
   }
 
-
   // Annotations below the table
-  $annotations = cdm_fetch_visible_annotations($reference);
-  $out .= cdm_annotations($annotations);
+  $out .= cdm_annotations(cdm_fetch_visible_annotations($reference));
 
   $registration_working_set = cdm_ws_get("registrationWorkingSetDTO", array($uuid));
   if($registration_working_set && count($registration_working_set->registrationDTOs) > 0){

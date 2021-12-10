@@ -1002,12 +1002,12 @@ function cdm_compose_annotations_uri($cdm_entity) {
  */
 function cdm_ws_base_uri($cdm_type_simple)
 {
-  $ws_base_uri = NULL;
   switch ($cdm_type_simple) {
-
     case 'TaxonNode':
     case 'TaxonNodeDto':
       $ws_base_uri = CDM_WS_TAXONNODE;
+      break;
+
     case 'TaxonBase':
     case 'Taxon':
     case 'Synonym':
@@ -1027,7 +1027,7 @@ function cdm_ws_base_uri($cdm_type_simple)
       break;
 
     case 'Registration':
-      $ws_base_uri = CDM_WS_REFERENCE;
+      $ws_base_uri = CDM_WS_REGISTRATION;
       break;
 
     case 'FieldUnit':
@@ -1856,8 +1856,9 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude
  * If the annotations are not yet already loded with the cdm entity the cdm REST service will
  * be requested for the annotations.
  *
- * @param string $cdm_entity
- *   An annotatable cdm entity.
+ * @param string $cdm_entity_or_dto
+ *   An annotatable cdm entity, or corresponding DTO, DTOs containig AnnotationDTOs
+ *     in an array field named 'annotations' is supported by this method.
  * @param array $include_types
  *   If an array of annotation type uuids is supplied by this parameter the
  *   list of annotations is resticted to those which belong to this type.
@@ -1865,64 +1866,83 @@ function cdm_ws_descriptions_by_featuretree($feature_tree, $taxon_uuid, $exclude
  * @return array
  *   An array of Annotation objects or an empty array.
  */
-function cdm_ws_fetch_annotations(&$cdm_entity, $include_types = FALSE) {
+function cdm_ws_fetch_annotations(&$cdm_entity_or_dto, $include_types = FALSE) {
 
-  if(!isset($cdm_entity->annotations)){
-    $annotation_url = cdm_compose_annotations_uri($cdm_entity);
-    $cdm_entity->annotations = cdm_ws_fetch_all($annotation_url, array(), 'GET', TRUE);
+  if(!isset($cdm_entity_or_dto->annotations)){
+    $annotation_url = cdm_compose_annotations_uri($cdm_entity_or_dto);
+    $cdm_entity_or_dto->annotations = cdm_ws_fetch_all($annotation_url, array(), 'GET', TRUE);
   }
 
-  $annotations = array();
-  foreach ($cdm_entity->annotations as $annotation) {
+  $annotations_or_dtos = array();
+  foreach ($cdm_entity_or_dto->annotations as $annotation_or_dto) {
     if ($include_types) {
-      if (
-        ( isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $include_types, TRUE) )
-        || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $include_types, TRUE))
-      ) {
-        $annotations[] = $annotation;
+      $is_dto = is_cdm_dto($annotation_or_dto);
+      if (($is_dto ? annotation_dto_has_type($annotation_or_dto, $include_types) : annotation_has_type($annotation_or_dto, $include_types))) {
+        $annotations_or_dtos[] = $annotation_or_dto;
       }
     }
     else {
-      $annotations[] = $annotation;
+      $annotations_or_dtos[] = $annotation_or_dto;
     }
   }
-  return $annotations;
+  return $annotations_or_dtos;
+}
 
+/**
+ * @param $annotation
+ * @param array $include_types
+ *
+ * @return bool
+ */
+function annotation_has_type($annotation, array $include_types) {
+  return (isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $include_types, TRUE))
+    || ($annotation->annotationType === NULL && in_array('NULL_VALUE', $include_types, TRUE));
+}
+
+/**
+ * @param $annotation_dto
+ * @param array $include_types
+ *
+ * @return bool
+ */
+function annotation_dto_has_type($annotation_dto, array $include_types) {
+  return (isset($annotation_dto->annotationTypeUuid) && in_array($annotation_dto->annotationTypeUuid, $include_types, TRUE))
+    || ($annotation_dto->annotationTypeUuid === NULL && in_array('NULL_VALUE', $include_types, TRUE));
+}
+
+/**
+ * Tests if the passed object is a DTO exposed by the cdm webservices.
+ * All these DTOs contain a field `class` with the Java class simple name
+ * as value. As all DTO classes are suffixed with "DTO" this method can test
+ * for this class name suffix.
+ *
+ * @param $cdm_dto
+ *  The potential cdm dto to test
+ *
+ * @return bool
+ *  True in case the $cdm_dto is a DTO
+ */
+function is_cdm_dto(&$cdm_dto) {
+  return isset_not_empty($cdm_dto->type) && isset_not_empty($cdm_dto->class) && str_endsWith($cdm_dto->class , 'DTO');
 }
 
 /**
  * Provides the list of visible annotations for the $cdm_entity.
  *
- * @param $cdm_entity
- *     The annotatable CDM entity
+ * @param $cdm_entity_or_dto
+ *     The annotatable CDM entity or corresponding DTO, DTOs containig AnnotationDTOs
+ *     in an array field named 'annotations' is supported by this method
  *
- * @return array of the annotations which are visible according to the settings as stored in ANNOTATION_TYPES_VISIBLE
+ * @return array of the annotations entities or DTOs which are visible according
+ *     to the settings as stored in ANNOTATION_TYPES_VISIBLE
  */
-function cdm_fetch_visible_annotations($cdm_entity){
+function cdm_fetch_visible_annotations($cdm_entity_or_dto){
 
   static $annotations_types_filter = null;
   if(!$annotations_types_filter) {
     $annotations_types_filter = unserialize(EXTENSION_TYPES_VISIBLE_DEFAULT);
   }
-  return cdm_ws_fetch_annotations($cdm_entity, variable_get(ANNOTATION_TYPES_VISIBLE, $annotations_types_filter));
-}
-
-/**
- * Loads the annotations from the REST service an adds them as field to the given $annotatable_entity.
- *
- * NOTE: The annotations are not filtered by the ANNOTATION_TYPES_VISIBLE settings since this method is meant to act
- * like the annotations have been fetched in the ORM-framework in the service.
- *
- * @param object $annotatable_entity
- *   The CDM AnnotatableEntity to load annotations for
- */
-function cdm_load_annotations(&$annotatable_entity) {
-  if (isset($annotatable_entity) && !isset($annotatable_entity->annotations)) {
-    $annotations = cdm_ws_fetch_annotations($annotatable_entity);
-    if (is_array($annotations)) {
-      $annotatable_entity->annotations = $annotations;
-    }
-  }
+  return cdm_ws_fetch_annotations($cdm_entity_or_dto, variable_get(ANNOTATION_TYPES_VISIBLE, $annotations_types_filter));
 }
 
 function cdm_load_tagged_full_title($taxon_name){

@@ -46,7 +46,7 @@ function str_beginsWith($str, $sub) {
 }
 
 /**
- * Checks if a string ends with some substring.
+ * Checks if a string ends with the supplied substring.
  *
  * @param string $str
  *   The string to test.
