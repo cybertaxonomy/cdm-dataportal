@@ -74,7 +74,8 @@ You may now want to copy the apache 2 site configuration files from `scripts/apa
 and to activate one of them, preferably the ssl site configuration:
 
 ~~~
-sudo cp drupal-7-cdm-dataportal/scripts/apache2/dataportal.test* /etc/apache2/sites-available/
+cd /var/www
+sudo cp drupal-7-cdm-dataportal/scripts/apache2.4/dataportal.test* /etc/apache2/sites-available/
 sudo a2ensite dataportal.test-ssl.conf
 sudo systemctl restart apache2
 ~~~
