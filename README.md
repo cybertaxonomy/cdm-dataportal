@@ -77,10 +77,20 @@ and to activate one of them, preferably the ssl site configuration:
 cd /var/www
 sudo cp drupal-7-cdm-dataportal/scripts/apache2.4/dataportal.test* /etc/apache2/sites-available/
 sudo a2ensite dataportal.test-ssl.conf
+sudo a2ensite dataportal.test.conf
 sudo systemctl restart apache2
 ~~~
 
-##### Site installation
+You may now want to add the hostname to the `/etc/hosts` file:
+
+~~~
+echo "127.0.0.1 dataportal.test" | sudo tee -a  /etc/hosts
+~~~
+
+**NOTE**: The virtual host `dataportal.test` is only suitable for development purposes.
+For production systems you will need to rename the virtual host so that it matches a public host name.
+
+ Site installation
 
 Now you are prepared to install a dataportal drupal site. 
 
