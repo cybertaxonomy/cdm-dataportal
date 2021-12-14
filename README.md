@@ -70,6 +70,15 @@ tar -xzf drupal-7-cdm-dataportal-5.23.0.tar.gz
 
 ##### Apache2 configuration
 
+Install required modules
+
+~~~
+sudo a2enmod headers
+sudo a2enmod ssl
+sudo a2enmod rewrite
+~~~
+
+
 You may now want to copy the apache 2 site configuration files from `scripts/apache2.4/` to `/etc/apache2/sites-available/` 
 and to activate one of them, preferably the ssl site configuration:
 
