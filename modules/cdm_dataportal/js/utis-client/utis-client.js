@@ -105,18 +105,23 @@
       var checkboxesArray = [];
       $.each(Object.keys(plugin.options.providers), function (index, key) {
         var checkbox_id = 'checkbox_' + key;
+        var disabled = key == 'worms';
         var checkbox =   $("<input/>",
           {
             type: 'checkbox',
             name: 'provider',
             checked: index == 0 ? 'checked' : '',
             value: key,
-            id:  checkbox_id
+            id:  checkbox_id,
+            disabled: disabled
           }
         );
-        var label = $('<label for="' + checkbox_id + '" style="display: inline-block; vertical-align: top;">&nbsp;' +  plugin.options.providers[key] + '</label><br/>');
+        var label = $('<label for="' + checkbox_id + '" style="display: inline-block; vertical-align: top; ' + (disabled ? 'color:#bbbbbb;': '') + '">&nbsp;' +  plugin.options.providers[key] + '</label><br/>');
         // label.append(checkbox);
         checkBoxesDiv.append(checkbox).append(label);
+        if(disabled){
+          checkBoxesDiv.append($('<div style="font-size:small; color:#bbbbbb;">' + plugin.options.providers[key] + ' disabled due to unresolved potential copyright issues.</div>'))
+        }
 
         checkboxesArray.push(checkbox);
       });
