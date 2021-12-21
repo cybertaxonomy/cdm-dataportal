@@ -236,11 +236,11 @@ function get_taxon_options_list() {
 
 define('CDM_SEARCH_TAXA_MODE','cdm_search_taxa_mode');
 define('CDM_SEARCH_TAXA_MODE_DEFAULT', serialize(
-    // to unset a default enntry set the value to 0
+    // to unset a default entry set the value to 0
     array(
       'doTaxa'=>'doTaxa',
       'doSynonyms' => 'doSynonyms',
-      'doTaxaByCommonNames' => 'doTaxaByCommonNames',
+      'doTaxaByCommonNames' => 0,
       'doMisappliedNames' => 'doMisappliedNames'
     )
   )
@@ -2657,7 +2657,7 @@ function cdm_settings_layout_search() {
       '#type' => 'checkboxes',
       '#title' => 'Search mode',
       '#description' => 'The taxon search can operate in different modes in order to find only taxa, synonyms,
-          taxa by its common name and even taxa which have been used as misappied names. The settings made here will affect the default
+          taxa by its common name and even taxa which have been used as misapplied names. The settings made here will affect the default
           for the advance search form and the behaviour of the simple search form which always will behave according to the
           defaults set here.',
       '#options' => drupal_map_assoc(array_keys(unserialize(CDM_SEARCH_TAXA_MODE_DEFAULT))),
