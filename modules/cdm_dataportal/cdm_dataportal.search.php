@@ -1280,8 +1280,8 @@ function cdm_dataportal_search_agent_execute()
   );
 
   $type_restriction = null;
-  if(isset($query_param_map['class']) && ($query_param_map['class'] == 'Team' || $query_param_map['class'] == 'Person')){
-    $type_restriction = $query_param_map['class'];
+  if(isset($request_params['class']) && ($request_params['class'] == 'Team' || $request_params['class'] == 'Person')){
+    $type_restriction = $request_params['class'];
   }
   $page_index = 0;
   if(isset($_REQUEST['pager']['pageIndex'])){
