@@ -105,7 +105,7 @@
       var checkboxesArray = [];
       $.each(Object.keys(plugin.options.providers), function (index, key) {
         var checkbox_id = 'checkbox_' + key;
-        var disabled = key == 'worms';
+        var disabled = key == '--unused--'; // the disable state has been used for worms
         var checkbox =   $("<input/>",
           {
             type: 'checkbox',
@@ -121,6 +121,9 @@
         checkBoxesDiv.append(checkbox).append(label);
         if(disabled){
           checkBoxesDiv.append($('<div style="font-size:small; color:#bbbbbb;">' + plugin.options.providers[key] + ' disabled due to unresolved potential copyright issues.</div>'))
+        }
+        if(  key == 'worms'){
+          checkBoxesDiv.append($('<div style="font-size:small; color:#bbbbbb;">(WoRMS includes data from different databases. Please consider data sources, data citations, and licensing as given by WoRMS.)</div>'));
         }
 
         checkboxesArray.push(checkbox);
