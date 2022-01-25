@@ -123,7 +123,7 @@
           checkBoxesDiv.append($('<div style="font-size:small; color:#bbbbbb;">' + plugin.options.providers[key] + ' disabled due to unresolved potential copyright issues.</div>'))
         }
         if(  key == 'worms'){
-          checkBoxesDiv.append($('<div style="font-size:small; color:#bbbbbb;">(WoRMS includes data from different databases. Please consider data sources, data citations, and licensing as given by WoRMS.)</div>'));
+          checkBoxesDiv.append($('<div style="font-size:small; color:#bbbbbb;">WoRMS includes data from different databases. Please consider data sources, data citations, and licensing as given by WoRMS.</div>'));
         }
 
         checkboxesArray.push(checkbox);
