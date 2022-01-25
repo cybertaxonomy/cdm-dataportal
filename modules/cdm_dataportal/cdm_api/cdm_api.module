@@ -1654,6 +1654,8 @@ function cdm_terms_by_type_as_option($term_type, $order_by = CDM_ORDER_BY_TITLE_
 function cdm_type_designation_status_filter_terms_as_options($none_option_label, $with_empty_option = false){
   $filter_terms = cdm_ws_get(CDM_WS_TYPE_DESIGNATION_STATUS_FILTER_TERMS);
 
+  $options = [];
+
   if(isset($filter_terms) && is_array($filter_terms)) {
     foreach ($filter_terms as $filter_term) {
       $options[join(',', $filter_term->uuids)] = $filter_term->label;
@@ -1667,7 +1669,6 @@ function cdm_type_designation_status_filter_terms_as_options($none_option_label,
   if($with_empty_option !== FALSE){
     array_unshift ($options, "");
   }
-
 
   return $options;
 }
