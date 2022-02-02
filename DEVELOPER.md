@@ -101,5 +101,78 @@ Click on "Enable Drupal Support" and check all options in the following dialog:
 
 ![](images/phpstorm-enable-drupal-support-dialog.png)
 
+Open the "Settings" `Ctrl + Alt + S` and open "Directories". Click `modules/cdm_dataportal` to activate this folder and set it as "Resource Root":
+
+![](images/phpstorm-directories-resource-root.png)
+
+Set the `vendor`, `web`, and `dist` folders as "Excluded".
+
+**NOTE**: You might not yet have the `dist` folder yet. This is created when the project is being build and will contain
+the distributable installation package. You may want to create it manually now, so that you can mark it as excluded now.
+
+Navigate to `modules/cdm_dataportal/test/phpUnit/src/unit` activate it and set it as "Tests" folder.
+
+The directories overview should now look like this:
+
+![](images/phpstorm-settings-directories.png)
+
+After closing the "Settings" dialog your "Project" view also shows the modified folder types by coloring them like shown here:
+
+![](images/php-storm-project-folders.png)
+
+## Configure PhpStorm to use Xdebug
+
+* [jetbrains: Zero-configuration Web Application Debugging with Xdebug and PhpStorm](https://confluence.jetbrains.com/display/PhpStorm/Zero-configuration+Web+Application+Debugging+with+Xdebug+and+PhpStorm#Zero-configurationWebApplicationDebuggingwithXdebugandPhpStorm-1.InstallXdebug)
+* [jetbrains: Browser Debugging Extensions](https://confluence.jetbrains.com/display/PhpStorm/Browser+Debugging+Extensions)
+* [jetbrains: Troubleshooting common PHP debugging issues](https://www.jetbrains.com/help/phpstorm/troubleshooting-php-debugging.html)
+
+To add a remote debug configuration to the localhost click on "Add Configuration...":
+
+![](images/phpstorm-add-configuration.png)
+
+And add a "PHP Remote Debug" configuration:
+
+![](images/phpstorm-add-remote-debug-configuration.png)
+
+* Set an appropriate name for the configuration like "**dataportal.test - remote debug**"
+* Check "Filter debug connection by IDE key"
+* enter "PHPSTORM" as "IDE key"
+
+![](images/phpstorm-add-remote-debug-configuration-1.png)
+
+* and click "..." to add a "Server" configuration for the virtual host http://dataportal.test :
+
+![](images/phpstorm-add-server-configuration.png)
+
+* Make sure "Xdebug" is selected as Debugger!
+* Do not configure pathmappings for localhost!
+
+Click "Apply" to save settings.
+
+The "PHP Remote Debug" configuration dialog provides links to helpful information on installing Xdebug and
+to validate the configuration. Click on "Validate" to make sure your setup is working correctly.
+
+In case of problems with the debug configuration, you can also open  "Web Server Debug Validation tool" 
+via the main menu:  *Run* > *Web Server Debug Validation*
+
+In the following dialog you will need to set the `web` folder of your project (e.g.: `/home/andreas/workspaces/www/drupal-7-cdm-dataportal/web`) 
+as "Path to create validation script":  
+
+![](images/phpstorm-validate-debug-config.png)
+ 
+### Xdebug helper browser extension
+
+Install the Firefox extension [Xdebug helper](https://addons.mozilla.org/en-US/firefox/addon/xdebug-helper-for-firefox/)
+
+Open the add-on settings and make sure the extension is configured to use the api-key `PHPSTORM` that 
+we have set in the phpStorm debug configuration:
+
+![](images/Xdebug-helper-configuration.png )
+
+### Setup for developing and running PHPUnit tests
+
+see https://github.com/cybertaxonomy/cdm-dataportal/tree/master/modules/cdm_dataportal/test/phpUnit 
+
+
 
 
