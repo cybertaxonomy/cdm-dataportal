@@ -7,6 +7,8 @@ This project has a monolithic structure, that is it contains multiple projects i
 Project dependencies required for bundling the final installation package are managed via composer. 
 Dependencies of sub-projects like *modules/cdm_dataportal*, *themes/zen_dataportal*, etc still have manually copied dependencies. 
 
+Information on setting up the development environment are found in [](DEVELOPER.md)
+
 ## Project structure
 
 * `./drush`: commands, configuration and site aliases for Drush
