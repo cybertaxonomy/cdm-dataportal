@@ -41,12 +41,45 @@ https://www.drupal.org/docs/develop/using-composer/using-composer-with-drupal
 
 https://www.drupal.org/docs/develop/using-composer/managing-dependencies-for-a-custom-project
 
-
-
 ### Installation
 
 **NOTE:** For detailed instructions which also cover the setup of apache and mysql please refer 
 to: https://cybertaxonomy.eu/dataportal/installation
+
+#### Requirements
+
+* mysql (v5.x) or MariaDB (v10.0 to v10.3) server
+* http server: apache or nginx; in this guide we will only cover the configuration of apache 2 (v 2.4)
+* php 7, or php 5.6+ if php 7.x is not yet available for your system. php 8 will not work!
+
+
+##### php
+
+Install php 7.4 or 7.2 with the following extensions:
+
+~~~
+export PHP_VERSION=7.4 ; apt-get install php$PHP_VERSION php$PHP_VERSION-mysql php$PHP_VERSION-gd php$PHP_VERSION-json php$PHP_VERSION-curl php$PHP_VERSION-xml libapache2-mod-php$PHP_VERSION
+~~~
+
+For running the CDM Data Portal it is required to assign sufficient memory to php. 
+Please open your `/etc/php/7.4/apache2/php.ini` and set the `memory_limit` parameter (memory_limit) to at least `128M`. 
+The php.ini responsible for the php processes executed in apache is found in current Debian Linux and derivatives at
+`/etc/php/7.4/apache2/php.ini` or `/etc/php/7.2/apache2/php.ini` .
+
+~~~
+;;;;;;;;;;;;;;;;;;;
+; Resource Limits ;
+;;;;;;;;;;;;;;;;;;;
+memory_limit = 128M      ; Maximum amount of memory a script may consume (128MB)
+~~~
+
+##### Git
+
+Git is needed for downloading (cloning) the  CDM Dataportal Drupal 7 installation package and to keep it up-to-date. 
+
+~~~
+sudo apt-get install git
+~~~
 
 #### Download & extract
 
