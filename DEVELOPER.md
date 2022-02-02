@@ -101,11 +101,12 @@ Click on "Enable Drupal Support" and check all options in the following dialog:
 
 ![](images/phpstorm-enable-drupal-support-dialog.png)
 
-Open the "Settings" `Ctrl + Alt + S` and open "Editor" > "Code", click on the wrench button and choose "import"
+Open the "Settings" `Ctrl + Alt + S` and open *Editor > Code Style > PHP*, 
+click on the torque button and choose "Import Scheme..."
 
 ![](images/phpstorm-import-code-style.png)
 
-
+and import the setting in `/ide/phpStorm/Project.xml`. Click "OK".
 
 Open the "Settings" `Ctrl + Alt + S` and open "Directories". Click `modules/cdm_dataportal` to activate this folder and set it as "Resource Root":
 
