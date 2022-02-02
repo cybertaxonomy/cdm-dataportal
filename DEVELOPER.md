@@ -84,4 +84,22 @@ systemctl restart apache2
 
 ## PhpStorm
 
-Workspace setup
+Start phpStorm and import the whole cdm-dataportal Drupal 7 project which is for example installed in 
+`/home/andreas/workspace/drupal-7-cdm-dataportal/`
+
+![](images/phpstorm-new-project-from-existing-files.png)
+
+**NOTE**: Since the project contains many libraries, phpStorm will take a couple of minutes (>10 minutes) to index all code. 
+Please wait until the indexing has finished.
+
+Once phpStorm has finished the whole import task, two messages will pop up. Once about phpStorm having set the php version for 
+the project to a different version than specified in the project config, and another on the Drupal support.
+
+![](images/phpstorm-drupal-support-popup.png)
+
+Click on "Enable Drupal Support" and check all options in the following dialog:
+
+![](images/phpstorm-enable-drupal-support-dialog.png)
+
+
+
