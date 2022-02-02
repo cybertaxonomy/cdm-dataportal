@@ -101,6 +101,12 @@ Click on "Enable Drupal Support" and check all options in the following dialog:
 
 ![](images/phpstorm-enable-drupal-support-dialog.png)
 
+Open the "Settings" `Ctrl + Alt + S` and open "Editor" > "Code", click on the wrench button and choose "import"
+
+![](images/phpstorm-import-code-style.png)
+
+
+
 Open the "Settings" `Ctrl + Alt + S` and open "Directories". Click `modules/cdm_dataportal` to activate this folder and set it as "Resource Root":
 
 ![](images/phpstorm-directories-resource-root.png)
@@ -118,9 +124,33 @@ The directories overview should now look like this:
 
 After closing the "Settings" dialog your "Project" view also shows the modified folder types by coloring them like shown here:
 
-![](images/php-storm-project-folders.png)
+![](images/php-storm-project-folders.png) 
+
+Since we have exlcuded the `web` folder phpStorm can no longer see the drupal core code - this is explicitly wanted! 
+To fix this we will now add the required code folders to the "External Libraries". Open the context menu or press `F12` 
+to open the PHP Configuration dialog.
+
+![](images/phpstorm-configure-php-includes.png)
+
+And add the following folders:
+
+* `./web/includes`
+* `./web/modules`
+* `./web/misc`
+* `./web/profiles`
+* `./web/sites/all/modules/examples`
+* `./web/sites/all/modules/i18n`
+
+![](images/phpstorm-configure-php-includes-add.png)
+
+Finally, your PHP includes in the project view will look like 
+
+![](images/phpstorm-php-includes-configured.png)
 
 ## Configure PhpStorm to use Xdebug
+
+
+Some helpful links to the official documentation:
 
 * [jetbrains: Zero-configuration Web Application Debugging with Xdebug and PhpStorm](https://confluence.jetbrains.com/display/PhpStorm/Zero-configuration+Web+Application+Debugging+with+Xdebug+and+PhpStorm#Zero-configurationWebApplicationDebuggingwithXdebugandPhpStorm-1.InstallXdebug)
 * [jetbrains: Browser Debugging Extensions](https://confluence.jetbrains.com/display/PhpStorm/Browser+Debugging+Extensions)
