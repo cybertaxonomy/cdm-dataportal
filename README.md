@@ -235,19 +235,32 @@ rm -r drupal-7-cdm-dataportal.last
 
 !!! *Composer v2.x would fail to preserve existing site installations* !!!
 
-In case the version provided by apt is too old (<1.10), you can install composer manually in the project 
-directory `/var/www/drupal-7-cdm-dataportal`. In the following we assume you have installed composer this way and 
-will use `./composer` instead of `composer`.
+In case the version provided by apt is too old (<1.10) or too recent (>=2.0.0), you may want to install composer 
+manually in the project directory `/var/www/drupal-7-cdm-dataportal`. 
+In the following we assume you have installed composer this way and  will use `./composer` 
+instead of `composer`.
 
 ~~~
 cd /var/www/drupal-7-cdm-dataportal
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('sha384', 'composer-setup.php') === '756890a4488ce9024fc62c56153228907f1545c228516cbf63f885e036d37e9a59d27d63f46af1d4d07ee0f76181c7d3') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-php composer-setup.php --filename=composer --version 1.10.22
-php -r "unlink('composer-setup.php');"
 ~~~
 
-The above commands fails with "Installer corrupt"? Please update the corresponding command with the new one from [http//getcomposer.org/download/](http//getcomposer.org/download/). It is **important not use use a version > 1.*!**
+Below command may fail when the `composer-setup.php` has changed after these lines have been written.
+So you may receive the message "*Installer corrupt*". In this case, please update the corresponding 
+command with the new one from [http://getcomposer.org/download/](http://getcomposer.org/download/). 
+
+~~~
+php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+~~~
+
+Now install the latest composer **1.x.x** version:
+And clean up.
+
+~~~
+php composer-setup.php --filename=composer --version 1.10.25
+php -r "unlink('composer-setup.php');"
+~~~
 
 **Un-shallow the installation package**
 
