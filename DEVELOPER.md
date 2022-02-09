@@ -40,6 +40,16 @@ DocumentRoot /home/andreas/workspace/drupal-7-cdm-dataportal/web
 AliasMatch ^/([^/]+)(.*)		/home/andreas/workspace/drupal-7-cdm-dataportal/web/$2
 ~~~~
 
+**3.**
+
+You also need to set the file permission so that apache and phpStorm can access and write files.
+If this is not set correctly, you will be bothered with problems, for example when validating the Xdebug setup below.
+
+~~~
+cd ~/workspace/drupal-7-cdm-dataportal
+sudo ./scripts/admin/fix-permissions.sh --admin-user $USER --web-user www-data 
+~~~
+
 Once you have completed the installation, you might have created a new dataportal site to start with, or you have cloned
 a site according to the instructions in developer wiki page 
 [On migrating Data Portal sites between servers](https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmDataportalSiteMigration)
