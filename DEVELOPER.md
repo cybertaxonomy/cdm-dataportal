@@ -199,7 +199,8 @@ In case of problems with the debug configuration, you can also open  "Web Server
 via the main menu:  *Run* > *Web Server Debug Validation*
 
 In the following dialog you will need to set the `web` folder of your project (e.g.: `/home/andreas/workspaces/www/drupal-7-cdm-dataportal/web`) 
-as "Path to create validation script":  
+as "Path to create validation script". **IMPORTANT** independent of the actual project location, 
+the path must always end with `drupal-7-cdm-dataportal/web` :  
 
 ![](images/phpstorm-validate-debug-config.png)
  
