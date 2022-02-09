@@ -73,8 +73,10 @@ in by pecl.
 zend_extension=/usr/lib/php/20151012/xdebug.so
 xdebug.idekey=PHPSTORM
 xdebug.remote_enable=1
-xdebug.remote_port=9008
+xdebug.remote_port=9000
 ~~~
+
+Note the `xdebug.remote_port` is set to `9000` to conform to the default in the *phpStorm* settings.
 
 Restart apache  to apply the settings 
 
