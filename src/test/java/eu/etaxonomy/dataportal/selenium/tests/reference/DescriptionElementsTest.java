@@ -28,12 +28,10 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
  * @author a.kohlbecker
  *
  */
-
 @DataPortalContexts( { DataPortalSite.reference })
 public class DescriptionElementsTest extends CdmDataPortalTestBase{
 
     static final UUID achilllea_santolina_uuid = UUID.fromString("c246856f-c03e-4cb7-ac92-d9b2864084cd");
-
 
     @Before
     public void setUp() throws Exception {
@@ -42,11 +40,23 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
 
     /**
      * Test to reproduce issue https://dev.e-taxonomy.eu/redmine/issues/3616
-     *
      */
     @Test
     public void tesIssue3616() throws MalformedURLException {
 
+        TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
+
+        FeatureBlock fb = p.getFeatureBlockAt(0, "biology-and-ecology", "div", "span");
+        assertNotNull(fb);
+        assertEquals(3, fb.getFeatureBlockElements().size());
+        assertEquals("Flowers with white blossoms on Testisland A. 0000-05 to 0000-06 (Lem: New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(0).getText());
+        assertEquals("Flowers with white blossoms on Testisland B. Mai to June (Lem: New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(1).getText());
+        assertEquals("Flowers with white blossoms on Testisland C. 2000 to 2000-05", fb.getFeatureBlockElements().get(2).getText());
+    }
+
+
+    @Test
+    public void testTemporalData() throws MalformedURLException {
 
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
 
@@ -55,8 +65,6 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         assertEquals(1, fb.getFeatureBlockElements().size());
         assertEquals(1, fb.getDescriptionElement(0).getSources().size());
         assertEquals("6 Mar–Jun", fb.getFeatureBlockElements().get(0).getText());
-        
-
     }
 
 }
