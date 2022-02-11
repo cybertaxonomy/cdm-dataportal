@@ -227,9 +227,9 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
 
         // 2. Lectotype
         assertTrue(
-                regItem.getSpecimenTypeDesignations().get(1).getText().startsWith("Lectotype: Germany, Berlin, 2 Apr 1835 (BHUPM 671). Naturkundemuseum Berlin (MFN) - Ehrenberg Collection"));
+                regItem.getSpecimenTypeDesignations().get(1).getText().startsWith("Lectotype: Germany, Berlin, 2 Apr 1835 (BHUPM: 671). Naturkundemuseum Berlin (MFN) - Ehrenberg Collection"));
         assertEquals(
-                "BHUPM 671",
+                "BHUPM: 671",
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getText());
         assertTrue(
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(1).getUrl().endsWith("cdm_dataportal/reference/c5d980ff-8766-4322-9acb-7b0a499de707"));
@@ -242,19 +242,13 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
 
         // 3. Isolectotype
         assertEquals(
-                "Isolectotype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M M-0289351). http://herbarium.bgbm.org/object/B400042045",
+                "Isolectotype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M: M-0289351). http://herbarium.bgbm.org/object/B400042045",
                 regItem.getSpecimenTypeDesignations().get(2).getText());
         assertEquals(
-                "M M-0289351",
+                "M: M-0289351",
                 regItem.getSpecimenTypeDesignations().get(2).getLinksInElement().get(0).getText());
         assertEquals(
                 "http://herbarium.bgbm.org/object/B400042045",
                 regItem.getSpecimenTypeDesignations().get(2).getLinksInElement().get(1).getText());
-
-
     }
-
-
-
-
 }
