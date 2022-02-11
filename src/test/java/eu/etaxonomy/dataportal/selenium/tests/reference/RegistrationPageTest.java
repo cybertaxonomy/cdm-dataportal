@@ -92,7 +92,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B 40 0040871).1",
+                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B: 40 0040871).1",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         BaseElement typifiedNameElement = new BaseElement(regItem.getTypifiedNameElement());
         assertEquals(
@@ -139,7 +139,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.1",
                 regItem.getNameElement().getText());
         assertEquals(
-                "Holotype: Iran, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–83–1).2",
+                "Holotype: Iran, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS: A–83–1).2",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
                 "published in: Heidari, F., Zima, J., Riahi, H. & Hauer, T. 2018: New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149",
@@ -190,7 +190,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Ramsaria avicennae Heidari & Hauer in Fottea 18(2): 146, fig. 3F, G. 1 Nov 2018",
                 regItem.getNameElement().getText());
         assertEquals(
-                "Holotype: Iran, Ramsar, alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS A–087–1).",
+                "Holotype: Iran, Ramsar, alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS: A–087–1).",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
                 "published in: Heidari, F., Zima, J., Riahi, H. & Hauer, T. 2018: New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149",
@@ -224,7 +224,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         // type designations in defined order
         // 1. Epitype
         assertEquals(
-                "Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT 2017E68). http://testid.org/2017E68",
+                "Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT: 2017E68). http://testid.org/2017E68",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
 
         // 2. Lectotype
