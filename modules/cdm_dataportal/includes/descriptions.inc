@@ -550,7 +550,7 @@ function compose_description_element($element, $feature_block_settings, $element
           $child_elements_render_array = null;
 
           if (isset($feature_node->descriptionElements[0])) {
-            $elements_render_array = compose_feature_block_items_generic($feature_node->descriptionElements, $feature_node->term);
+            $elements_render_array = compose_feature_block_items_generic($feature_node->descriptionElements);
           }
 
           // Content/ALL OTHER FEATURES/Subordinate Features
@@ -992,6 +992,8 @@ function compose_description_element_individuals_association($element, $feature_
   return $render_array;
 }
 
+
+
 /**
  * Renders a single instance of the type CategoricalData.
  *
@@ -1016,6 +1018,32 @@ function compose_description_element_categorical_data($element, $feature_block_s
 
   return $render_array;
 }
+
+
+/**
+ * Renders a single instance of the type TemporalData.
+ *
+ * @param $element
+ *  The CDM TemporalData entity
+ *
+ * @param $feature_block_settings
+ *
+ * @param bool $prepend_feature_label
+ *   Used in nested feature trees to put the feature as label in front of the description element text representation.
+ *
+ * @return array
+ *   a drupal render array for given TemporalData element
+ *
+ * @ingroup compose
+ */
+function compose_description_element_temporal_data($element, $feature_block_settings, $prepend_feature_label = FALSE) {
+
+  $markup = '<span class="period-label">' . $element->period->label .'</span>';
+  $render_array = compose_description_element($element, $feature_block_settings, $markup, $element->feature->uuid, $prepend_feature_label);
+  return $render_array;
+}
+
+
 
 /**
  * @param $element
@@ -1329,17 +1357,15 @@ function statistical_measure_term2min_max_key($term){
    *   calling the function _mergeFeatureTreeDescriptions().
    *   @see _mergeFeatureTreeDescriptions()
    *
-   * @param  $feature_uuid
-   *
-   * @return
+   * @return array
    *    A drupal render array for the $descriptionElements, may be an empty array if the textual content was empty.
    *    Footnote key or anchors are not considered to be textual content.
    *
    * @ingroup compose
    */
-  function compose_feature_block_items_generic($description_elements, $feature) {
+  function compose_feature_block_items_generic($description_elements) {
 
-    $elements_out_array = array();
+    $elements_out_array = [];
     $distribution_tree = null;
 
     /*
@@ -1378,6 +1404,9 @@ function statistical_measure_term2min_max_key($term){
             break;
           case 'CommonTaxonName':
             $elements_out_array[] = compose_description_element_common_taxon_name($description_element, $feature_block_settings);
+            break;
+          case 'TemporalData':
+            $elements_out_array[] = compose_description_element_temporal_data($description_element, $feature_block_settings);
             break;
           case 'Uses':
             /* IGNORE Uses classes, these are handled completely in compose_feature_block_items_use_records()  */
