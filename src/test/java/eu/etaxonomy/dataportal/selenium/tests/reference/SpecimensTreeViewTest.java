@@ -70,7 +70,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         BaseElement rootNodeHeader1 = duTree.getRootNodes().get(0).getHeader();
         assertEquals("B SP-99999", rootNodeHeader1.getText());
         BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
-        assertEquals("Germany, Berlin, 2 Apr 1835.", rootNodeHeader2.getText());
+        assertEquals("Germany, Berlin, 2 Apr 1835", rootNodeHeader2.getText());
         BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
         assertEquals("Ehrenberg, C.G. D047", rootNodeHeader3.getText());
     }
@@ -114,7 +114,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(1);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
 
-        assertEquals("Germany, Berlin, 2 Apr 1835.", rootNode.getHeader().getText());
+        assertEquals("Germany, Berlin, 2 Apr 1835", rootNode.getHeader().getText());
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
