@@ -42,7 +42,7 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
      * Test to reproduce issue https://dev.e-taxonomy.eu/redmine/issues/3616
      */
     @Test
-    public void tesIssue3616() throws MalformedURLException {
+    public void testssue3616() throws MalformedURLException {
 
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
 
@@ -60,11 +60,18 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
 
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
 
-        FeatureBlock fb = p.getFeatureBlockAt(0, "flowering_period", "div", "span");
-        assertNotNull(fb);
-        assertEquals(1, fb.getFeatureBlockElements().size());
-        assertEquals(1, fb.getDescriptionElement(0).getSources().size());
-        assertEquals("6 Mar–Jun", fb.getFeatureBlockElements().get(0).getText());
+        FeatureBlock flowering_season = p.getFeatureBlockAt(0, "flowering_season", "div", "span");
+        assertNotNull(flowering_season);
+        assertEquals(1, flowering_season.getFeatureBlockElements().size());
+        // FIXME assertEquals(1, flowering_season.getDescriptionElement(0).getSources().size());
+        assertEquals("6 Mar–JunA", flowering_season.getFeatureBlockElements().get(0).getText());
+
+
+        FeatureBlock fruiting_period = p.getFeatureBlockAt(0, "fruiting_period", "div", "span");
+        assertNotNull(fruiting_period);
+        assertEquals(1, fruiting_period.getFeatureBlockElements().size());
+        assertEquals(0, fruiting_period.getDescriptionElement(0).getSources().size());
+        assertEquals("(15 Jul–)2 Aug–3 Sep(–16 Oct)", fruiting_period.getFeatureBlockElements().get(0).getText());
     }
 
 }
