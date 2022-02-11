@@ -52,12 +52,10 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
     String titleSuffix = " | Integration test reference";
 
 
-
     @Before
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
-
 
     @Test
     public void test100001() throws MalformedURLException, UnsupportedEncodingException{

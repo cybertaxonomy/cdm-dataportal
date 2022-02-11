@@ -45,7 +45,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
     private TaxonPage p;
 
-    DerivedUnitTree duTree;
+    private DerivedUnitTree duTree;
 
     @Before
     public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
@@ -75,10 +75,8 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Ehrenberg, C.G. D047", rootNodeHeader3.getText());
     }
 
-
     @Test
     public void testDerivationTree1() {
-
 
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(0);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
@@ -108,9 +106,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("fruit", tissueSampleTable.getDetailsValueCellText("Kind of unit"));
         assertEquals("B-923845", tissueSampleTable.getDetailsValueCellText("Accession number"));
         assertEquals("B", tissueSampleTable.getDetailsValueCellText("Collection"));
-
     }
-
 
     @Test
     public void testDerivationTree2() {
@@ -157,9 +153,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
                 typeDesignationsTable.getBodyCellText(0, 0));
 
         DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
-
     }
-
 
     @Test
     public void testDerivationTree3() {
@@ -303,5 +297,4 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("expecting one footnote key link", 1, typeDesignationsTable_2.getBodyCell(0, 0).getLinksInElement().size());
 
     }
-
 }
