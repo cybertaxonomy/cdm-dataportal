@@ -60,7 +60,7 @@ to: https://cybertaxonomy.eu/dataportal/installation
 Install php 7.4 or 7.2 with the following extensions:
 
 ~~~
-export PHP_VERSION=7.4 ; apt-get install php$PHP_VERSION php$PHP_VERSION-mysql php$PHP_VERSION-gd php$PHP_VERSION-json php$PHP_VERSION-curl php$PHP_VERSION-xml libapache2-mod-php$PHP_VERSION
+export PHP_VERSION=7.4 ; apt-get install php$PHP_VERSION php$PHP_VERSION-mysql php$PHP_VERSION-gd php$PHP_VERSION-json php$PHP_VERSION-curl php$PHP_VERSION-xml php$PHP_VERSION-mbstring libapache2-mod-php$PHP_VERSION
 ~~~
 
 For running the CDM Data Portal it is required to assign sufficient memory to php. 

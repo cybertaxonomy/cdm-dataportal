@@ -1,1 +1,1 @@
-For installation instructions please refer to https://cybertaxonomy.eu/node/7
+For installation instructions please refer to the README.md in the project root
