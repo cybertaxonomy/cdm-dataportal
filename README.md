@@ -313,10 +313,13 @@ https://dataportal.test. Please adapt to your specific settings if needed.
 
 #### Updating drupal and modules
 
+**IMPORTANT**: *If the update-dependencies.sh fails at some point it is crucial to restore the backup that has been 
+crated as first step in the update process. See below for details on restoring updates.**
+
 The drupal-7-cdm-dataportal installer provides a script for convenient and secure updating of single or multisite setups.
 It will 
 
-1. create backups
+1. create backups archives in `$HOME/drupal-cdm-dataportal-backups`
 1. set the site(s) to maintenance mode   
 1. Update drupal core and contributed modules via `composer`
 1. Run any pending database updates and clear the caches
@@ -332,8 +335,6 @@ USAGE: update-dependencies.sh [--deactivate-install] [--multi-site] [--mailto <A
         See https://dev.e-taxonomy.eu/svn/trunk/server-scripts/dataportal-admin/
   --site-url:  The site url to be used with drush. This option disables the --multi-site option
 ~~~
-
-
 
 Update a single site installation with default site URL
 
@@ -351,4 +352,18 @@ Update a multi-site installation with custom site URL
 
 ~~~
 scripts/admin/update-dependencies.sh --deactivate-install --multi-site
+~~~
+
+#### Recover from broken updates / Restore backups
+
+**NOTE**: *The backup archives are tar files which unfortunately have colon characters in their name and thus can not 
+be extracted by tar (tar interprets parts of the file name as host name and tries to restore the file on a remote 
+machine). Therefore, the archive needs to be renamed or symlinked before extraction!*
+
+Backup archive are found in `~/drupal-cdm-dataportal-backups`
+
+~~~
+cd /var/www 
+ln -s ~/drupal-cdm-dataportal-backups/drupal-cdm-dataportal-backup-${timestamp}.tar.gz ./drupal-cdm-dataportal-backup.tar.gz
+mv drupal-7-cdm-dataportal drupal-7-cdm-dataportal-old; mkdir drupal-7-cdm-dataportal; cd drupal-7-cdm-dataportal; tar -xzf ../drupal-cdm-dataportal-backup.tar.gz ./
 ~~~
