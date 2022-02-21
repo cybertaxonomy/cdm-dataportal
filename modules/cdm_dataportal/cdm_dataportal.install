@@ -523,7 +523,32 @@ function cdm_dataportal_update_7700()
     $tasks_performed[] = DISTRIBUTION_HIERARCHY_STYLE . " variable updated";
   }
 
+  return join(', ', $tasks_performed);
+}
 
+/**
+ * update for RELEASE 5.30:
+ *  - map layers edit-etopo1 mapproxy_etopo1 removed, fallback to default, see https://dev.e-taxonomy.eu/redmine/issues/9917
+ *
+ */
+function cdm_dataportal_update_7701()
+{
+  $tasks_performed = array();
+
+  $cdm_map_distribution = variable_get(CDM_MAP_DISTRIBUTION);
+  if(isset_not_empty($cdm_map_distribution)) {
+    if (isset($cdm_map_distribution['openlayers'])) {
+      if (isset($cdm_map_distribution['openlayers']['base_layers'])) {
+        if (strpos($cdm_map_distribution['openlayers']['base_layers']['PREFERRED'], 'etopo1') !== FALSE) {
+          $cdm_map_distribution['openlayers']['base_layers']['PREFERRED'] = 'open_topomap';
+        }
+        unset($cdm_map_distribution['openlayers']['base_layers']['edit-etopo1']);
+        unset($cdm_map_distribution['openlayers']['base_layers']['mapproxy_etopo1']);
+      }
+      _modify_variable(CDM_MAP_DISTRIBUTION, $cdm_map_distribution);
+      $tasks_performed[] = ' edit-etopo1 & mapproxy_etopo1 removed removed from ' . DISTRIBUTION_HIERARCHY_STYLE . " variable";
+    }
+  }
   return join(', ', $tasks_performed);
 }
 
@@ -586,7 +611,7 @@ function _create_variable($name, $value) {
  *
  * Calls _create_variable() and returns a message string.
  *
- * @return
+ * @return string
  *   A message string of the performed operation.
  */
 function _modify_variable($name, $value_override) {

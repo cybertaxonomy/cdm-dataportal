@@ -415,7 +415,7 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
       // 'mapproxy_vmap0' => 'mapproxy_vmap0',
       // it is sufficient to define the preferred layer,
       // since it will automatically be enabled:
-      'PREFERRED' => 'mapproxy_vmap0'),
+      'PREFERRED' => 'open_topomap'),
     'custom_wms_base_layer' => array(
       'name' => NULL,
       'url' => NULL,
