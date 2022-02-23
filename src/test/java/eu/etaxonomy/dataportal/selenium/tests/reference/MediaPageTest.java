@@ -49,11 +49,11 @@ public class MediaPageTest extends CdmDataPortalTestBase{
 
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "media/" + ehrenberg_drawing_uuid.toString());
         assertEquals(
-                "Media (ECdraw671.jpg) | Integration test reference",
+                "Media (PIA01466.jpg) | Integration test reference",
                 driver.getTitle()
                 );
         assertEquals(
-                "Media (ECdraw671.jpg)",
+                "Media (PIA01466.jpg)",
                 driver.findElement(By.id("page-title")).getText()
                 );
     }

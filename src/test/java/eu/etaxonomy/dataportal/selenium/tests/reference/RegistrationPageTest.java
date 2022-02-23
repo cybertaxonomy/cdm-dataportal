@@ -237,7 +237,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("Expecting one row of images", 1, galleryImages.size());
         assertEquals("Expecting 1 image in row", 1, galleryImages.get(0).size());
         assertEquals(
-                "http://download.naturkundemuseum-berlin.de/Ehrenberg/Ec%20Drawings/Ec%20draw%20001-999/Ec%20draw%20600-699/ECdraw671.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/2/25/PIA01466.jpg",
                 galleryImages.get(0).get(0).getImageLink().getUrl());
 
         // 3. Isolectotype

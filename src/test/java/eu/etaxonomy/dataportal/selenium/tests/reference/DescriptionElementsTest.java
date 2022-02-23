@@ -42,12 +42,13 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
      * Test to reproduce issue https://dev.e-taxonomy.eu/redmine/issues/3616
      */
     @Test
-    public void testssue3616() throws MalformedURLException {
+    public void testIssue3616() throws MalformedURLException {
 
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
 
         FeatureBlock fb = p.getFeatureBlockAt(0, "biology-and-ecology", "div", "span");
         assertNotNull(fb);
+
         assertEquals(3, fb.getFeatureBlockElements().size());
         assertEquals("Flowers with white blossoms on Testisland A. 0000-05 to 0000-06 (Lem: New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(0).getText());
         assertEquals("Flowers with white blossoms on Testisland B. Mai to June (Lem: New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(1).getText());
@@ -65,7 +66,6 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         assertEquals(1, flowering_season.getFeatureBlockElements().size());
         // FIXME assertEquals(1, flowering_season.getDescriptionElement(0).getSources().size());
         assertEquals("6 Mar–JunA", flowering_season.getFeatureBlockElements().get(0).getText());
-
 
         FeatureBlock fruiting_period = p.getFeatureBlockAt(0, "fruiting_period", "div", "span");
         assertNotNull(fruiting_period);
