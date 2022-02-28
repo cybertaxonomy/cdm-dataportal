@@ -18,7 +18,7 @@
       'worms': 'WoRMS'
       //'pesi': 'PESI'
     },
-    webserviceUrl : 'https://cybertaxonomy.eu/eu-bon/utis/1.3',
+    webserviceUrl : 'https://cybertaxonomy.org/eu-bon/utis/1.3',
     // webserviceUrl : 'http://test.e-taxonomy.eu/eubon-utis',
     //  webserviceUrl : 'http://localhost:8081/',
     pageSize: 20,

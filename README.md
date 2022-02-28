@@ -46,7 +46,7 @@ https://www.drupal.org/docs/develop/using-composer/managing-dependencies-for-a-c
 ### Installation
 
 **NOTE:** For detailed instructions which also cover the setup of apache and mysql please refer 
-to: https://cybertaxonomy.eu/dataportal/installation
+to: https://cybertaxonomy.org/dataportal/installation
 
 #### Requirements
 
@@ -85,12 +85,12 @@ sudo apt-get install git
 
 #### Download & extract
 
-Download the latest release from https://cybertaxonomy.eu/download/dataportal/stable/ to the location where you want 
+Download the latest release from https://cybertaxonomy.org/download/dataportal/stable/ to the location where you want 
 to install the cdm-dataportal Drupal 7 project e.g.
 
 ~~~
 cd /var/www
-wget https://cybertaxonomy.eu/download/dataportal/stable/drupal-7-cdm-dataportal-5.23.0.tar.gz
+wget https://cybertaxonomy.org/download/dataportal/stable/drupal-7-cdm-dataportal-5.23.0.tar.gz
 ~~~
 
 This archive contains a shallow clone of the whole project together with a ready to use drupal 7 installation with the 

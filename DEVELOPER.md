@@ -19,7 +19,7 @@ than suggested in the [README.md](README.md). You could, for example, replace th
 ~~~
 mkdir -p ~/workspace
 cd ~/workspace
-wget https://cybertaxonomy.eu/download/dataportal/stable/drupal-7-cdm-dataportal-5.23.0.tar.gz
+wget https://cybertaxonomy.org/download/dataportal/stable/drupal-7-cdm-dataportal-5.23.0.tar.gz
 ~~~
 
 ... and continue in the README.md at the corresponding position.

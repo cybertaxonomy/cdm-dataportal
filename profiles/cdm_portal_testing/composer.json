@@ -10,7 +10,7 @@
             "email": "a.kohlbecker@bgbm.org"
         }
     ],
-    "homepage": "https://cybertaxonomy.eu/portal/git",
+    "homepage": "https://cybertaxonomy.org/portal/git",
     "support": {
         "issues": "https://dev.e-taxonomy.eu/redmine/projects/edit/issues?query_id=72",
         "source": "https://github.com/cybertaxonomy/cdm-dataportal"
