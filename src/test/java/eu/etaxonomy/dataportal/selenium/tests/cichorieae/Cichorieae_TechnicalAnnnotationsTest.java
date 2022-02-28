@@ -23,11 +23,8 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
 
