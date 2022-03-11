@@ -227,7 +227,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
 
         // 2. Lectotype
         assertTrue(
-                regItem.getSpecimenTypeDesignations().get(1).getText().startsWith("Lectotype: Germany, Berlin, 2 Apr 1835 (BHUPM: 671). Naturkundemuseum Berlin (MFN) - Ehrenberg Collection"));
+                regItem.getSpecimenTypeDesignations().get(1).getText().startsWith("Lectotype: Germany, Berlin, 2 Apr 1835 (BHUPM: 671) Naturkundemuseum Berlin (MFN) - Ehrenberg Collection"));
         assertEquals(
                 "BHUPM: 671",
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(0).getText());
