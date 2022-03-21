@@ -51,7 +51,7 @@ to: https://cybertaxonomy.org/dataportal/installation
 #### Requirements
 
 * mysql (v5.x) or MariaDB (v10.0 to v10.3) server, create a new user "drupaluser", the password should be the 
-same as defined in setting.php and plugin='mysql_native_password'
+same as defined in setting.php and plugin='mysql_native_password', see also https://www.drupal.org/docs/installing-drupal/step-3-create-a-database
 * http server: apache or nginx; in this guide we will only cover the configuration of apache 2 (v 2.4)
 * php 7, or php 5.6+ if php 7.x is not yet available for your system. php 8 will not work!
 * java8 (https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/Install_OracleJdk_on_Debian)
