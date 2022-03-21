@@ -50,10 +50,11 @@ to: https://cybertaxonomy.org/dataportal/installation
 
 #### Requirements
 
-* mysql (v5.x) or MariaDB (v10.0 to v10.3) server
+* mysql (v5.x) or MariaDB (v10.0 to v10.3) server, create a new user "drupaluser", the password should be the 
+same as defined in setting.php and plugin='mysql_native_password'
 * http server: apache or nginx; in this guide we will only cover the configuration of apache 2 (v 2.4)
 * php 7, or php 5.6+ if php 7.x is not yet available for your system. php 8 will not work!
-
+* java8 (https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/Install_OracleJdk_on_Debian)
 
 ##### php
 
@@ -137,6 +138,11 @@ For production systems you will need to rename the virtual host so that it match
  Site installation
 
 Now you are prepared to install a dataportal drupal site. 
+
+If you want to use a local copy of an existing dataportal please follow the instructions in [On migrating Data Portal sites between servers](https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/CdmDataportalSiteMigration)
+to copy the dataportal files to your local develop environment.
+
+If you want to start from scratch use the following instructions.
 
 A template for the below script can be found in `scripts/user/`
 Make an executable copy from `new-site.sh.template` as `new-site.sh` 
