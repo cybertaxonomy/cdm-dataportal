@@ -22,6 +22,7 @@ import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.GenericPortalPage;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
+import eu.etaxonomy.dataportal.junit.TypeDesignationElement;
 
 /**
  * Issues to be covered by this TestClass:
