@@ -21,6 +21,7 @@ import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.GenericPortalPage;
+import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
  * Issues to be covered by this TestClass:
@@ -35,7 +36,7 @@ import eu.etaxonomy.dataportal.pages.GenericPortalPage;
 public class NamePageTest extends CdmDataPortalTestBase{
 
     static final UUID name_nodosilinea_radiophila_uuid = UUID.fromString("e97cc25b-ec11-4bb8-88d7-ab40a023f3fb");
-    static final UUID name_nodosilinea_sensenia_uuid = UUID.fromString("2f906fda-b425-43ca-9eb5-d5a0a81a16bd");
+    static final UUID taxon_nodosilinea_sensenia_uuid = UUID.fromString("7094ea13-2a95-46d9-bfca-8c0e0848e44c");
 
     @Before
     public void setUp() throws Exception {
@@ -63,16 +64,14 @@ public class NamePageTest extends CdmDataPortalTestBase{
     @Test
     public void testNotDesignatedTypeDesignation() throws MalformedURLException {
 
-
-        GenericPortalPage p = new GenericPortalPage(driver, getContext(), "taxon/" + name_nodosilinea_sensenia_uuid.toString() + "/synonymy");
+        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
+        List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
+        //GenericPortalPage p = new GenericPortalPage(driver, getContext(), "taxon/" + name_nodosilinea_sensenia_uuid.toString() + "/synonymy");
         // expecting to land on name page, see NamePageRedirectTest for other cases
-        assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + name_nodosilinea_sensenia_uuid.toString()));
-        WebElement typeDesignationsContainer = p.getDataPortalContent().getElement().findElement(By.cssSelector("div.homotypic-synonymy-group"));
-        List<WebElement> typeDesignations = typeDesignationsContainer.findElements(By.xpath("./div"));
+       // assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + name_nodosilinea_sensenia_uuid.toString()));
         assertEquals(1, typeDesignations.size());
+        assertTrue(typeDesignations.get(0).statusToString().contains("Type</span>: not designated");
 
-        assertTrue(typeDesignations.get(0).getAttribute("class").contains("cdm:SpecimenTypeDesignation uuid:c8738a91-daaf-42b3-8df6-b5641fff253d"));
-        assertTrue(typeDesignations.get(0).findElement(By.className("type-status")).contains("Type</span>: not designated"));
 
     }
 
