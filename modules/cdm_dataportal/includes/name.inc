@@ -997,7 +997,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
     foreach ($specimen_type_designations as $specimen_type_designation) {
       $type_citation_markup = '';
       if ($specimen_type_designation->notDesignated) {
-        $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($specimen_type_designation) . '">' . type_designation_status_label_markup($name_type_designation) . ': '
+        $out .= '<' . $element_tag . ' class="' . html_class_attribute_ref($specimen_type_designation) . '">' . type_designation_status_label_markup($specimen_type_designation) . ': '
           . t('not designated') . '</' . $element_tag . '>';
       }
       else {
