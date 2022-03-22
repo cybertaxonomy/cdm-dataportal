@@ -1072,6 +1072,9 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         }
         $out .= $annotations_and_sources->footNoteKeysMarkup();
       }
+      if ($specimen_type_designation->notDesignated) {
+        $out .= ' not designated';
+      }
       $out .= '</'. $element_tag .'>';
     }
   } // END Specimen type designations
