@@ -72,8 +72,8 @@ public class NamePageTest extends CdmDataPortalTestBase{
         assertEquals(1, typeDesignations.size());
         typeDesignations.get(0);
         assertTrue(typeDesignations.get(0).getAttribute("class").contains("cdm:SpecimenTypeDesignation uuid:c8738a91-daaf-42b3-8df6-b5641fff253d"));
-        assertTrue(typeDesignations.get(0).getElement().findElement(By.className("type-status").contains("Type</span>: not designated"));
-       
+        assertTrue(typeDesignations.get(0).getElement().findElement(By.className("type-status")).contains("Type</span>: not designated"));
+
     }
 
 
