@@ -71,7 +71,7 @@ public class NamePageTest extends CdmDataPortalTestBase{
         // expecting to land on name page, see NamePageRedirectTest for other cases
        // assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + name_nodosilinea_sensenia_uuid.toString()));
         assertEquals(1, typeDesignations.size());
-        assertTrue(typeDesignations.get(0).statusToString().contains("li | Type: not designated"));
+        assertTrue(typeDesignations.getText().contains("Type: not designated"));
 
     }
 
