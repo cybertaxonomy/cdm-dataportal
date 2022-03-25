@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -36,6 +37,7 @@ import eu.etaxonomy.drush.DrushExecutionFailure;
  * @since Aug 11, 2020
  */
 @DataPortalContexts( { DataPortalSite.reference })
+@Ignore
 public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
 
     private static final UUID glenodinium_apiculatum_t = UUID.fromString("d245083e-3bda-435f-9bb3-bdc2249ff23c");
