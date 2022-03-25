@@ -26,7 +26,6 @@ import eu.etaxonomy.dataportal.pages.RegistrationPage;
 /**
  * @author a.kohlbecker
  * @since Feb 5, 2019
- *
  */
 @DataPortalContexts( { DataPortalSite.reference })
 public class MapTest extends CdmDataPortalTestBase {

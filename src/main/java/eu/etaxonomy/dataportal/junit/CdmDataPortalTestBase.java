@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2019 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.dataportal.junit;
 
 import java.io.IOException;
@@ -24,7 +29,6 @@ import eu.etaxonomy.drush.DrushExecutionFailure;
 
 /**
  * @author a.kohlbecker
- *
  */
 @RunWith(DataPortalContextSuite.class)
 public abstract class CdmDataPortalTestBase extends Assert{
@@ -118,7 +122,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
         boolean fail = false;
         for(String varKey : drupalVarsBeforeTest.keySet()) {
             try {
-                List<Object> result = dex.execute(DrushExecuter.variableSetJson, varKey, drupalVarsBeforeTest.get(varKey).toString());
+                dex.execute(DrushExecuter.variableSetJson, varKey, drupalVarsBeforeTest.get(varKey).toString());
             } catch (Exception e) {
                 logger.error("FATAL ERROR: Restoring the original drupal variable " + varKey + " = " + drupalVarsBeforeTest.get(varKey) + " failed.", e);
                 fail = true;
@@ -129,6 +133,4 @@ public abstract class CdmDataPortalTestBase extends Assert{
             throw new IOException("Restoring a original drupal variable has previously failed. You may want to fix the site settings manually!");
         }
     }
-
-
 }

@@ -8,16 +8,11 @@
  */
 package eu.etaxonomy.dataportal.junit;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
-
-import eu.etaxonomy.dataportal.DataPortalSite;
-import eu.etaxonomy.dataportal.DataPortalManager;
 
 /**
  * http://seleniumhq.org/docs/03_webdriver.html#emulating-selenium-rc

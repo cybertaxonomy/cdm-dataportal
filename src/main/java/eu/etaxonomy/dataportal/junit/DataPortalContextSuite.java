@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2019 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.dataportal.junit;
 
 import java.lang.annotation.ElementType;
@@ -31,7 +36,6 @@ import eu.etaxonomy.dataportal.DataPortalsListContextProvider;
 
 /**
  * @author a.kohlbecker
- *
  */
 public class DataPortalContextSuite extends Suite{
 
@@ -148,5 +152,4 @@ public class DataPortalContextSuite extends Suite{
 	protected List<Runner> getChildren() {
 		return runners;
 	}
-
 }
