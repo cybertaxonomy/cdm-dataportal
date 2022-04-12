@@ -452,7 +452,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                             if ($timeperiod_string) {
                                 $dd_elements[$weight] .= $glue . $timeperiod_string;
                             }
-                            if (isset_not_empty($determinationEvent->actor->titleCache)) {
+                            if (isset_not_empty($determinationEvent->actor) && isset_not_empty($determinationEvent->actor->titleCache)) {
                                 $dd_elements[$weight] .= $glue . $determinationEvent->actor->titleCache;
                             }
                             if (isset_not_empty($determinationEvent->description)) {
