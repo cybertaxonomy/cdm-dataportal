@@ -1008,6 +1008,7 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
     if ($sob_dto) {
       //summary row
       if($sob_dto->class == "FieldUnitDTO"){
+        $sob_dto->date = partialToDate($sob_dto->date);
         $rows[] = array(
           'id' => 'derivate_summary' . $rowcount, // summary row id
           'class' => array('summary_row'),
