@@ -64,9 +64,9 @@ msgid "Search"
 msgstr "Búsqueda"
 
 #: cdm_dataportal.search.php:180
-msgid
-"Enter the name or part of a name you wish to search for.\n"
-"      The asterisk  character * can be used as wildcard, but must not be "
+msgid ""
+"Enter the name or part of a name you wish to search for. "
+"The asterisk  character * can be used as wildcard, but must not be "
 "used as first character."
 msgstr
 "Ingrese nombre o parte del nombre. No se permite usar el asterisco como "
