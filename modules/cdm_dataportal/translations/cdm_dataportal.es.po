@@ -135,7 +135,7 @@ msgstr ""
 msgid "Misapplied names"
 msgstr "Nombres mal aplicados"
 
-#: cdm_dataportal.search.php:414
+#: cdm_dataportal.search.php:608
 msgid ""
 "Enter the text you wish to search for. The asterisk character * can be "
 "used as wildcard, but must not be used as first character. Terms can "
@@ -347,8 +347,8 @@ msgstr ""
 
 #: settings.php:1163
 msgid ""
-"Only the checked classifications will be avaliable in the classification "
-"chooser."
+"Only the checked classifications will be available "
+"in the classification selection element of the taxon tree browser and in search forms."
 msgstr ""
 
 #: settings.php:1168
@@ -365,8 +365,8 @@ msgstr ""
 
 #: settings.php:1251
 msgid ""
-"The media aggregation is also affected by the settigs in "
-"\"<strong>Aggregation via taxon relationsships</strong>\" below."
+"The media aggregation is also affected by the settings in "
+"\"<strong>Aggregation via taxon relationships</strong>\" below."
 msgstr ""
 
 #: settings.php:1256
@@ -376,12 +376,12 @@ msgstr ""
 #: settings.php:1262
 msgid ""
 "Choose whether to include the images of the taxonomic children. This will "
-"affect the <em>Images</em> tab and image tumbnails like in the search "
+"affect the <em>Images</em> tab and image thumbnails like in the search "
 "results."
 msgstr ""
 
 #: settings.php:1268
-msgid "Aggregation via taxon relationsships"
+msgid "Aggregation via taxon relationships"
 msgstr ""
 
 #: settings.php:1272
@@ -389,9 +389,9 @@ msgid ""
 "Information on taxa will be aggregated along the below chosen\n"
 "          taxon relation ships. This will affect images and occurrences "
 "(specimens).\n"
-"          Taxon relation ships are directed and point form one taxon to "
+"          Taxon relationships are directed and point from one taxon to "
 "another. The taxon\n"
-"          relationships to be taken into accunt can therefore configured for "
+"          relationships to be taken into account can therefore configured for "
 "the direct direction\n"
 "          and for the inverse."
 msgstr ""

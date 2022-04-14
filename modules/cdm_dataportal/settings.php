@@ -1256,7 +1256,7 @@ function cdm_settings_general() {
       '#title' => t('Media aggregation'),
       '#collapsible' => FALSE,
       '#collapsed' => TRUE,
-      '#description' => t("The media aggregation is also affected by the settigs in \"<strong>Aggregation via taxon relationsships</strong>\" below."),
+      '#description' => t("The media aggregation is also affected by the settings in \"<strong>Aggregation via taxon relationships</strong>\" below."),
 
   );
   $form['aggregation']['media_aggregation']['cdm_images_include_children'] = array(
@@ -1267,20 +1267,20 @@ function cdm_settings_general() {
           0 => "Show only pictures of the current taxon",
           1 => "Include pictures of taxonomic children",
       ),
-      '#description' => t("Choose whether to include the images of the taxonomic children. This will affect the <em>Images</em> tab and image tumbnails like in the search results."),
+      '#description' => t("Choose whether to include the images of the taxonomic children. This will affect the <em>Images</em> tab and image thumbnails like in the search results."),
   );
 
   $form['aggregation']['aggregate_by_taxon_relationships'][CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS] = array(
       '#type' => 'fieldset',
       '#attributes' => array('class' => array('clearfix')),
-      '#title' => t('Aggregation via taxon relationsships'),
+      '#title' => t('Aggregation via taxon relationships'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#tree' => TRUE,
       '#description' => t('Information on taxa will be aggregated along the below chosen
           taxon relation ships. This will affect images and occurrences (specimens).
           Taxon relation ships are directed and point form one taxon to another. The taxon
-          relationships to be taken into accunt can therefore configured for the direct direction
+          relationships to be taken into account can therefore configured for the direct direction
           and for the inverse.'),
   );
 
