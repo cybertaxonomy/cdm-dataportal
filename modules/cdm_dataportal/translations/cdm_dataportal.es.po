@@ -64,11 +64,11 @@ msgid "Search"
 msgstr "Búsqueda"
 
 #: cdm_dataportal.search.php:180
-msgid ""
+msgid
 "Enter the name or part of a name you wish to search for.\n"
 "      The asterisk  character * can be used as wildcard, but must not be "
 "used as first character."
-msgstr ""
+msgstr
 "Ingrese nombre o parte del nombre. No se permite usar el asterisco como "
 "comodín al inicio."
 
@@ -1402,9 +1402,13 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: cdm_dataportal.module:485
+#: cdm_dataportal.module: 693
 msgid "Advanced"
 msgstr "Avanzada"
+
+#: cdm_dataportal.module: 706
+msgid "By content category"
+msgstr "Según la categoría de contenido"
 
 #: cdm_dataportal.module:492
 msgid "By factual data"
