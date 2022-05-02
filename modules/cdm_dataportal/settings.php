@@ -415,7 +415,7 @@ define('CDM_MAP_DISTRIBUTION_DEFAULT', serialize(array(
       // 'mapproxy_vmap0' => 'mapproxy_vmap0',
       // it is sufficient to define the preferred layer,
       // since it will automatically be enabled:
-      'PREFERRED' => 'mapproxy_vmap0'),
+      'PREFERRED' => 'open_topomap'),
     'custom_wms_base_layer' => array(
       'name' => NULL,
       'url' => NULL,
@@ -3101,8 +3101,8 @@ function cdm_settings_geo($form, &$form_state) {
     'osgeo_vmap0' => "Metacarta Vmap0 (OSGeo server) - instable!", // EPSG:4326: EPSG:900913
     'metacarta_vmap0' => "Metacarta Vmap0 (MetaCarta Labs server)  - instable!", // EPSG:4326, EPSG:900913
     'mapproxy_vmap0' => "Metacarta Vmap0 (OSGeo server) - via fast EDIT MapProxy",
-    'mapproxy_etopo1' => "ETOPO1 Global Relief Model - via fast EDIT MapProxy",
-    'edit-etopo1' => "ETOPO1 Global Relief Model",
+    //'mapproxy_etopo1' => "ETOPO1 Global Relief Model - via fast EDIT MapProxy",
+    //'edit-etopo1' => "ETOPO1 Global Relief Model",
     // all others EPSG:900913
     'mapnik' => 'OpenStreetMap (mapnik)',
     'stamen_terrain' => 'Stamen Terrain',

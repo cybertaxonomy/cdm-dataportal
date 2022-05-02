@@ -66,37 +66,7 @@
               }
             );
 
-         /**
-          * ETOPO1 Global Relief Model
-          */
-         case 'edit-etopo1':
-            return  new OpenLayers.Layer.WMS(
-                  "ETOPO1 Global Relief Model",
-                  "https://edit.africamuseum.be/geoserver/topp/wms",
-                  {layers: 'topp:color_etopo1_ice_full', format:"image/png"},
-                  {
-                    maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
-                    projection: new OpenLayers.Projection("EPSG:4326"),
-                    isBaseLayer: true,
-                    displayInLayerSwitcher: true
-                  }
-                );
 
-        /**
-         * ETOPO1 Global Relief Model
-         */
-          case 'mapproxy_etopo1':
-            return  new OpenLayers.Layer.WMS(
-              "ETOPO1 Global Relief Model via mapproxy",
-              "https://geo.cybertaxonomy.org/mapproxy/service",
-              {layers: 'etopo1', format:"image/png"},
-              {
-                maxExtent: window.CdmOpenLayers.mapExtends.epsg_4326,
-                projection: new OpenLayers.Projection("EPSG:4326"),
-                isBaseLayer: true,
-                displayInLayerSwitcher: true
-              }
-            );
 
           /*
            * OSM Layers:
