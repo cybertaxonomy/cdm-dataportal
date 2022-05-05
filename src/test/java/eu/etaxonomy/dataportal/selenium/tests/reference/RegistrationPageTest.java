@@ -90,7 +90,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         RegistrationItemFull regItem = p.getRegistrationItem();
         assertNotNull(regItem);
         assertEquals(
-                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B: 40 0040871)1",
+                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B: 40 0040871, dried out)1",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         BaseElement typifiedNameElement = new BaseElement(regItem.getTypifiedNameElement());
         assertEquals(
