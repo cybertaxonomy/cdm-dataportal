@@ -107,7 +107,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         int rowId = 1;
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         List<WebElement> cells = rows.get(rowId).findElements(By.tagName("td"));
-        assertEquals("(B: SP-99999)", cells.get(1).getText());
+        assertEquals("(B: SP-99999, destroyed)", cells.get(1).getText());
         // cell number 1 has colspan = 5 !!!
         assertTrue(cells.get(2).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON)); // scan

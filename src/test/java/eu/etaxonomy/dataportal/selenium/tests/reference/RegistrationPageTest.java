@@ -222,7 +222,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         // type designations in defined order
         // 1. Epitype
         assertEquals(
-                "Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT: 2017E68) http://testid.org/2017E68",
+                "Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT: 2017E68, destroyed) http://testid.org/2017E68",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
 
         // 2. Lectotype
