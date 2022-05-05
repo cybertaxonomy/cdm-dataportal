@@ -213,6 +213,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Preserved Specimen", preserverdSpecimenTable_1.getHeaderText());
         assertEquals("Specimen", preserverdSpecimenTable_1.getDetailsValueCellText("Kind of unit"));
         assertEquals("2017E68", preserverdSpecimenTable_1.getDetailsValueCellText("Accession number"));
+        assertEquals("destroyed", preserverdSpecimenTable_1.getDetailsValueCellText("Status"));
         assertEquals("http://testid.org/2017E68", preserverdSpecimenTable_1.getDetailsValueCellText("Preferred stable uri"));
         assertEquals("http://testid.org/2017E68", preserverdSpecimenTable_1.getDetailsValueCell("Preferred stable uri").getLinksInElement().get(0).getUrl());
         assertEquals("CEDiT at Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM)", preserverdSpecimenTable_1.getDetailsValueCellText("Collection"));
