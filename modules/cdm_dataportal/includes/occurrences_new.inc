@@ -291,6 +291,10 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = 
       cdm_occurrence_field_name_label('barcode'),
       $du_dto->barcode);
   }
+  if (isset_not_empty($du_dto->status)) {
+    $table_row_data[] = compose_cdm_sob_dto_status(
+      $du_dto);
+  }
   if (isset($du_dto->preservationMethod)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('preservationMethod'),
@@ -500,6 +504,18 @@ function compose_cdm_sob_dto_markers($sob_dto, $markers) {
 
   $label = count($table_row_data) > 1 ? t("Markers") : t("Marker");
   return cdm_sob_dto_table($label, $table_row_data, $sob_dto, 1);
+}
+
+function compose_cdm_sob_dto_status($sob_dto) {
+
+  $status_string ="";
+  if (isset_not_empty($sob_dto->status))
+  foreach ($sob_dto->status as $status) {
+    $status_string =  $status_string . $status->label;
+  }
+
+  $label =  t("Status");
+  return cdm_sob_dto_table_row($label, $status_string);
 }
 
 /**

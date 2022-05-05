@@ -357,7 +357,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                   case 'recordBasis':
                     $label = $value->representation_L10n;
                     if($label == 'Dna Sample'){
-                      $label == 'DNA Sample';
+                      $label = 'DNA Sample';
                     }
                     _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $label,NULL, -10);
                     break;
@@ -1008,7 +1008,7 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
     if ($sob_dto) {
       //summary row
       if($sob_dto->class == "FieldUnitDTO"){
-        $sob_dto->date = partialToDate($sob_dto->date);
+
         $rows[] = array(
           'id' => 'derivate_summary' . $rowcount, // summary row id
           'class' => array('summary_row'),
@@ -1022,7 +1022,7 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
               'class' => array('summary_row_cell')
             ),
             array(
-              'data' => $sob_dto->date,
+              'data' => partialToDate($sob_dto->date),
               'class' => array('summary_row_cell')
             ),
             array(
@@ -1223,7 +1223,7 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                 case 'recordBase':
                   $label = $value->representation_L10n;
                   if($label == 'Dna Sample'){
-                    $label == 'DNA Sample';
+                    $label = 'DNA Sample';
                   }
                   _description_list_group_add($groups, cdm_occurrence_field_name_label($field), $label,NULL, -10);
                 break;
