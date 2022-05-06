@@ -92,6 +92,23 @@ function compose_cdm_marker($marker) {
   $label = $marker->markerType->representation_L10n . ': ' . (($marker->flag !== TRUE ? t('yes') : t('no')));
   return markup_to_render_array('<span class="' . html_class_attribute_ref($marker) . '">' . $label . '</span>');
 }
+/**
+ * Compose an render array from a CDM Occurrence Status object.
+ *
+ * compose_hook() implementation
+ *
+ * @param object $status
+ *   CDM instance of type Occurrence Status
+ * @return array
+ *   A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_cdm_status($status) {
+  $label = $status->type->representation_L10n ;
+  return markup_to_render_array('<span class="' . html_class_attribute_ref($status) . '">' . $label . '</span>');
+}
+
 
 /**
  * Checks if the given $cdm_entitiy has a marker the type references by the
