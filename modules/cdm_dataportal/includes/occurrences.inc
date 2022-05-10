@@ -376,13 +376,13 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                         }
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
                         break;
-                  case 'status':
-                    $dd_elements = array();
-                    foreach ($value as $status) {
-                      $dd_elements[] = compose_cdm_status($status);
-                    }
-                    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
-                    break;
+                    case 'status':
+                      $dd_elements = array();
+                      foreach ($value as $status) {
+                        $dd_elements[] = compose_cdm_status($status);
+                      }
+                      @_description_list_group_add($groups, cdm_occurrence_field_name_label($field), $dd_elements);
+                      break;
 
 
                     case 'annotations':
