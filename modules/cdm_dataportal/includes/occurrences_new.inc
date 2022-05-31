@@ -274,7 +274,7 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = 
     $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($du_dto->storedUnder->uuid));
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('storedUnder'),
-      render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid)));
+      render_taxon_or_name($taxon_name, url(path_to_name($taxon_name->uuid))));
   }
   if (isset($du_dto->exsiccatum)) {
     $table_row_data[] = cdm_sob_dto_table_row(
@@ -420,14 +420,14 @@ function compose_cdm_sob_dto_determinations($sob_dto, $full_details = FALSE) {
       $link_path = path_to_name($det_event->determination->uuid);
       $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_NAME, [$det_event->determination->uuid]);
     } else {
-      $link_path = path_to_taxon($det_event->determination->uuid);
+      $link_path = path_to_taxon($det_event->determination->uuid, 'General');
       $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_TAXON, [$det_event->determination->uuid]);
     }
     $time_period_string = NULL;
     if (isset($det_event->timePeriod)) {
       $time_period_string = timePeriodToString($det_event->timePeriod);
     }
-    $markup = render_taxon_or_name($taxon_or_name, $link_path);
+    $markup = render_taxon_or_name($taxon_or_name, url($link_path));
     if (isset($det_event->modifier)) {
       $markup .= cdm_term_representation($det_event->modifier);
     }

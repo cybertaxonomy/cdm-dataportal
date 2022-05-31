@@ -561,8 +561,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
   }
   $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base)
-   // . '" data-cdm-ref="/name/' . $taxon_name->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
-    . '" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
+    . '" data-cdm-ref="/name/' . $taxon_name->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
+   // . '" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
   foreach ($renderTemplate as $partName => $part) {
     $separator = '';
     $partHtml = '';
