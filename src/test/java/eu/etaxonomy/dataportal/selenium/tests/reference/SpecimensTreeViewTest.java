@@ -228,7 +228,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DetailsTable identificationsTable_1 = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Identification"));
         assertEquals("Glenodinium apiculatum, 2016-12-01, Kohlbecker, A.",
                 identificationsTable_1.getBodyCellText(0, 0));
-        assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/taxon/d245083e-3bda-435f-9bb3-bdc2249ff23c"));
+        assertTrue(identificationsTable_1.getBodyCell(0, 0).getLinksInElement().get(0).getUrl().endsWith("cdm_dataportal/taxon/d245083e-3bda-435f-9bb3-bdc2249ff23c/General"));
 
         // --- --- node_1_2
 
