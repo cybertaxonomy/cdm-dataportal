@@ -420,7 +420,7 @@ function compose_cdm_sob_dto_determinations($sob_dto, $full_details = FALSE) {
       $link_path = path_to_name($det_event->determination->uuid);
       $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_NAME, [$det_event->determination->uuid]);
     } else {
-      $link_path = path_to_taxon($det_event->determination->uuid, 'General');
+      $link_path = path_to_taxon($det_event->determination->uuid, 'general');
       $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_TAXON, [$det_event->determination->uuid]);
     }
     $time_period_string = NULL;
