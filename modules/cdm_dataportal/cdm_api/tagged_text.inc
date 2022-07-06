@@ -414,6 +414,52 @@ function tagged_text_extract_reference_and_detail(&$tagged_text, $ref_tag_type =
   return $extracted_tt;
 }
 
+/**
+ * Extracts the tagged text for sec references name in source with separator from a tagged text array.
+ * @param $tagged_text
+ *    The tagged text to operate on
+ * @param bool $replace_with_placeholder
+ *    Indicates the method to add a empty placeholder tagged text alement as relpacement for the extrated tagged text
+ *    elements.
+ *
+ * @return array
+ */
+function tagged_text_extract_secReference_name_in_source(&$tagged_text) {
+
+  $extracted_tt = array();
+  if (is_array($tagged_text)) {
+
+    $tt_length = count($tagged_text);
+    $index = -1;
+    for ($i = 0; $i < $tt_length; $i++) {
+      if ($i < $tt_length -1 && isset($tagged_text[$i]) && $tagged_text[$i+1]->type == 'name' && $tagged_text[$i]->type == "secNameInSourceSeparator") {
+        $extracted_tt[++$index] = $tagged_text[$i];
+        $extracted_tt[++$index] = $tagged_text[$i + 1];
+
+        unset($tagged_text[$i]);
+        unset($tagged_text[$i + 1]);
+        continue;
+        //search for all elements with type secNameInSource and the last separator
+      }
+      if (isset($tagged_text[$i]) && $tagged_text[$i]->type == 'secNameInSourceSeparator') {
+        $extracted_tt[++$index] = $tagged_text[$i];
+
+        unset($tagged_text[$i]);
+        break;
+        //search for all elements with type secNameInSource and the last separator
+      }
+      if(isset($tagged_text[$i])  && $index >0){
+          $extracted_tt[++$index] = $tagged_text[$i];
+          unset($tagged_text[$i]);
+      }
+
+
+    }
+  }
+  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  return $extracted_tt;
+}
+
 function tagged_text_extract_nomstatus(&$tagged_text) {
 
   $extracted_tt = [];

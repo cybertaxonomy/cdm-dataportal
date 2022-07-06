@@ -313,6 +313,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
 
   $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_title);
+  $secref_name_inSource_tagged_text = tagged_text_extract_secReference_name_in_source($tagged_title);
   // taxon names will have the nomenclatural reference in the tagged full title:
   $nomref_tagged_text = tagged_text_extract_reference($tagged_title);
   $nom_status_tagged_text = tagged_text_extract_nomstatus($tagged_title);
@@ -493,6 +494,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         $post_separator_markup
           . ' <span class="sec_reference">'
           . join('', cdm_tagged_text_values($secref_tagged_text))
+          . cdm_tagged_text_to_markup($secref_name_inSource_tagged_text)
           . '</span>', $renderTemplate);
     }
   }
