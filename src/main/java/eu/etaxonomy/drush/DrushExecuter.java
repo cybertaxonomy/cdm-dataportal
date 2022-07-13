@@ -26,7 +26,9 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -183,7 +185,7 @@ public class DrushExecuter {
         List<Object> matches = new ArrayList<>();
 
         ProcessBuilder pb = new ProcessBuilder(executableWithArgs);
-        logger.debug("Command: " + pb.command().toString());
+        logger.warn("Command: " + pb.command().toString());
         Process process = pb.start();
         int exitCode = process.waitFor();
 
@@ -262,24 +264,35 @@ public class DrushExecuter {
      */
     protected String readExecutionResponse(List<Object> matches, InputStream stream) throws IOException {
         String out = IOUtils.toString(stream);
-        if(out != null) {
-            out = out.trim();
-            if(!out.isEmpty()) {
-                ObjectMapper mapper = new ObjectMapper();
-                if(out.startsWith("[")) {
-                   matches.add(mapper.readValue(out, new TypeReference<List<Object>>(){}));
-                } else  {
-                   matches.add(mapper.readValue(out, Object.class));
+        try {
+            if(out != null) {
+                out = out.trim();
+                if(!out.isEmpty()) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    if(out.startsWith("[")) {
+                       List<Object> value = mapper.readValue(out, new TypeReference<List<Object>>(){});
+                       matches.add(value);
+                    } else  {
+                       matches.add(mapper.readValue(out, Object.class));
+                    }
+                    if(matches.isEmpty()) {
+                        logger.debug("no result");
+                    } else {
+                        logger.debug("result object: " + matches.get(0));
+                    }
                 }
-                if(matches.isEmpty()) {
-                    logger.debug("no result");
-                } else {
-                    logger.debug("result object: " + matches.get(0));
-                }
-            }
 
+            }
+            return out;
+        } catch (JsonMappingException  e) {
+            logger.warn("JsonMappingException for out='"+out+"';" + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        } catch (JsonProcessingException e) {
+            logger.warn("JsonProcessingException for out='"+out+"';" + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
-        return out;
     }
 
     public static class DrushCommand {
