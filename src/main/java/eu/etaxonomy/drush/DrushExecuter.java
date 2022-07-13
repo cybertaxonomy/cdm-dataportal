@@ -267,11 +267,11 @@ public class DrushExecuter {
         try {
             if(out != null) {
                 out = out.trim();
+                logger.warn("out: '"+out+"'");
                 if(!out.isEmpty()) {
                     ObjectMapper mapper = new ObjectMapper();
                     if(out.startsWith("[")) {
-                       List<Object> value = mapper.readValue(out, new TypeReference<List<Object>>(){});
-                       matches.add(value);
+                       matches.add(mapper.readValue(out, new TypeReference<List<Object>>(){}));
                     } else  {
                        matches.add(mapper.readValue(out, Object.class));
                     }
