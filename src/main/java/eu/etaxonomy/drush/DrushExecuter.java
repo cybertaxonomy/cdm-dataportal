@@ -246,7 +246,7 @@ public class DrushExecuter {
             return null;
         } else {
             out = IOUtils.toString(stream);
-            logger.debug(out);
+            logger.warn("out");
             return out;
         }
     }
