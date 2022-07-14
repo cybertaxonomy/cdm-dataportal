@@ -193,7 +193,8 @@ public class DrushExecuter {
             String out, error;
             if(cmd.jsonResult) {
                 out = readExecutionResponse(matches, process.getInputStream());
-                error = readExecutionResponse(matches, process.getErrorStream());
+                //Note AM: this originally also called the json version (with no 3rd param), but do we expect the error response to be json, too?
+                error = readExecutionResponse(matches, process.getErrorStream(), null);
             } else {
                 out = readExecutionResponse(matches, process.getInputStream(), cmd.outRegex);
                 error = readExecutionResponse(matches, process.getErrorStream(), cmd.errRegex);
