@@ -28,11 +28,9 @@ import eu.etaxonomy.dataportal.pages.RegistrationPage;
 /**
  * @author a.kohlbecker
  * @since Feb 5, 2019
- *
  */
 @DataPortalContexts( { DataPortalSite.reference })
 public class FootnoteTest extends CdmDataPortalTestBase {
-
 
     private static final String nodosilinea_radiophila_regid = "http://testbank.org/100004";
 
@@ -42,10 +40,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
 
     private static final UUID ramsaria_name_UUID = UUID.fromString("3a6d4bf2-5c89-4525-9e87-0bacac96990b");
 
-
-    String titleSuffix = " | Integration test reference";
-
-
+    private static final String titleSuffix = " | Integration test reference";
 
     @Before
     public void setUp() throws Exception {
