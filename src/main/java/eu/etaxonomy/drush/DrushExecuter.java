@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -185,7 +184,7 @@ public class DrushExecuter {
         List<Object> matches = new ArrayList<>();
 
         ProcessBuilder pb = new ProcessBuilder(executableWithArgs);
-        logger.warn("Command: " + pb.command().toString());
+        logger.debug("Command: " + pb.command().toString());
         Process process = pb.start();
         int exitCode = process.waitFor();
 
@@ -193,7 +192,7 @@ public class DrushExecuter {
             String out, error;
             if(cmd.jsonResult) {
                 out = readExecutionResponse(matches, process.getInputStream());
-                //Note AM: this originally also called the json version (with no 3rd param), but do we expect the error response to be json, too?
+                //Note AM: this originally also called the json version of readExecutionResponse (with 2 params only), but this suddenly did throw an exception as the error result was no json. Probably this started with a Linux update?
                 error = readExecutionResponse(matches, process.getErrorStream(), null);
             } else {
                 out = readExecutionResponse(matches, process.getInputStream(), cmd.outRegex);
@@ -247,7 +246,7 @@ public class DrushExecuter {
             return null;
         } else {
             out = IOUtils.toString(stream);
-            logger.warn("out");
+            logger.debug(out);
             return out;
         }
     }
@@ -268,7 +267,6 @@ public class DrushExecuter {
         try {
             if(out != null) {
                 out = out.trim();
-                logger.warn("out: '"+out+"'");
                 if(!out.isEmpty()) {
                     ObjectMapper mapper = new ObjectMapper();
                     if(out.startsWith("[")) {
@@ -285,12 +283,8 @@ public class DrushExecuter {
 
             }
             return out;
-        } catch (JsonMappingException  e) {
-            logger.warn("JsonMappingException for out='"+out+"';" + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        } catch (JsonProcessingException e) {
-            logger.warn("JsonProcessingException for out='"+out+"';" + e.getMessage());
+        } catch (JsonProcessingException  e) {
+            logger.warn(e.getClass().getSimpleName()+ " for out = '"+out+"';" + e.getMessage());
             e.printStackTrace();
             throw e;
         }
