@@ -34,6 +34,7 @@
         -->
         <selenium.htmlunit.version>2.52.0</selenium.htmlunit.version>
         <jackson.version>[2.9.10.7,)</jackson.version>
+        <log4j.version>2.18.0</log4j.version>
     </properties>
     <scm>
       <connection>scm:git:https://dev.e-taxonomy.eu/git/cdm-dataportal.git</connection>
@@ -245,17 +246,12 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.17.2</version>
+            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.18.0</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <version>${log4j.version}</version>
         </dependency>
         <dependency>
            <groupId>com.fasterxml.jackson.core</groupId>
