@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,13 +28,12 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cyprus })
 public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
+
+    private static final Logger logger = LogManager.getLogger();
 
     // Taxon Cistus creticus subsp. creticus
     static UUID taxonUuid = UUID.fromString("2e58b1ab-03a9-4693-bcec-3b8e7f04b572");
@@ -43,14 +44,12 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
     public void setUp() throws MalformedURLException {
 
         p = new TaxonProfilePage(driver, getContext(), taxonUuid);
-
     }
 
     @After
     public void tearDown(){
         logger.debug("@After");
     }
-
 
     @Test
     public void testPage() {

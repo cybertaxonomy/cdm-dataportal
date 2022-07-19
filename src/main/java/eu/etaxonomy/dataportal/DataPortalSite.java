@@ -10,12 +10,11 @@ package eu.etaxonomy.dataportal;
 
 import java.net.URI;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
 public enum DataPortalSite {
 
@@ -25,9 +24,9 @@ public enum DataPortalSite {
     floramalesiana,
     reference;
 
-    DataPortalContext context;
+    public final Logger logger = LogManager.getLogger();
 
-    public final Logger logger = Logger.getLogger(DataPortalSite.class);
+    DataPortalContext context;
 
     private DataPortalSite() {
 

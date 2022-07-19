@@ -20,7 +20,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -53,7 +54,7 @@ public abstract class PortalPage {
 
     public static final int WAIT_SECONDS = 25;
 
-    public static final Logger logger = Logger.getLogger(PortalPage.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected final static String DRUPAL_PAGE_QUERY = "q=";
 

@@ -23,12 +23,15 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import eu.etaxonomy.cdm.common.LogUtils;
 
 /**
  * Java executor for drush (https://www.drush.org/).
@@ -45,7 +48,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class DrushExecuter {
 
-    public static final Logger logger = Logger.getLogger(DrushExecuter.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private URI siteURI = null;
 
@@ -355,7 +358,7 @@ public class DrushExecuter {
      *              if the drush command execution fails with an error code
      */
     public static void main(String[] args) throws URISyntaxException, DrushExecutionFailure {
-        DrushExecuter.logger.setLevel(Level.DEBUG);
+        LogUtils.setLevel(logger, Level.DEBUG);
         try {
             DrushExecuter dex = new DrushExecuter();
             List<Object> results;

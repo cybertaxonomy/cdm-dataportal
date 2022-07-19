@@ -12,7 +12,8 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -30,13 +31,11 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 
 /**
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
 
-    public static final Logger logger = Logger.getLogger(Lactuca_triquetra_TaxonProfileTest.class);
+    private static final Logger logger = LogManager.getLogger();
 
     static UUID taxonUuid = UUID.fromString("ecb7a76e-694a-4706-b1ab-a2eb334173ff");
 

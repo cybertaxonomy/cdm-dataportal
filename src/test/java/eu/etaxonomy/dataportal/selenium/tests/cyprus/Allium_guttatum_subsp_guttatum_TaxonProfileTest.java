@@ -8,15 +8,12 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,11 +31,11 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 
 /**
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cyprus })
 public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPortalTestBase{
+
+    private static final Logger logger = LogManager.getLogger();
 
     static UUID taxonUuid = UUID.fromString("6d04598b-3852-4038-91c9-13c7581b21a6");
 

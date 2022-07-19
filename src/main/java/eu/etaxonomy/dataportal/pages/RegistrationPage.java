@@ -12,7 +12,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.Collections;
 
-import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
@@ -24,15 +23,10 @@ import eu.etaxonomy.dataportal.elements.RegistrationItemFull;
 /**
  * @author a.kohlbecker
  * @since Feb 4, 2019
- *
  */
 public class RegistrationPage extends PortalPage {
 
-
-    public static final Logger logger = Logger.getLogger(TaxonProfilePage.class);
-
     protected static String drupalPagePathBase = "cdm_dataportal/registration";
-
 
     @FindBy(id = "registration")
     @CacheLookup
@@ -49,22 +43,15 @@ public class RegistrationPage extends PortalPage {
         super(driver, context);
     }
 
-
     public RegistrationPage(WebDriver driver, DataPortalContext context, String httpID) throws MalformedURLException, UnsupportedEncodingException {
         super(driver, context, null, Collections.singletonMap("identifier", httpID));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getDrupalPageBase() {
         return drupalPagePathBase;
     }
 
-    /**
-     * @return the registrationItem
-     */
     public RegistrationItemFull getRegistrationItem() {
 
         if(registrationItem == null){
@@ -72,11 +59,4 @@ public class RegistrationPage extends PortalPage {
         }
         return registrationItem;
     }
-
-
-
-
-
-
-
 }

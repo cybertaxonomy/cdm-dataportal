@@ -13,13 +13,14 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.elements.BaseElement;
@@ -28,7 +29,6 @@ import eu.etaxonomy.dataportal.elements.Dynabox;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonPage;
-import eu.etaxonomy.drush.DrushExecuter;
 import eu.etaxonomy.drush.DrushExecutionFailure;
 
 /**
@@ -42,7 +42,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
 
     @Before
     public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
-        Logger.getLogger(DrushExecuter.class).setLevel(Level.DEBUG);
+        LogUtils.setLevel(LogManager.getLogger(), Level.DEBUG);
         setDrupalVar(DrupalVars.CDM_DATAPORTAL_TAXONPAGE_TABS, "1");
         setDrupalVar(DrupalVars.CDM_SPECIMEN_LIST_VIEW_MODE, "derivate_path");
     }

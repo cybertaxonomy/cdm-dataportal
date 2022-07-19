@@ -11,6 +11,8 @@ package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,13 +26,12 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.floramalesiana})
 public class FloraMalesiana_DescriptionTest extends CdmDataPortalTestBase{
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID tristiropsis_acutangula_uuid = UUID.fromString("87e76e43-e4b7-44a1-a195-2c36a63b34bb");
 
@@ -44,7 +45,6 @@ public class FloraMalesiana_DescriptionTest extends CdmDataPortalTestBase{
     public void tearDown(){
         logger.debug("@After");
     }
-
 
     @Test
     public void tristiropsis_acutangula() throws Exception {
@@ -69,7 +69,5 @@ public class FloraMalesiana_DescriptionTest extends CdmDataPortalTestBase{
         assertEquals("Petals cuneate at base, broad-elliptic to broad-ovate, 2.5-3.5 b) 2.2-2.5 mm, creamy-white, margin below the insertion of the scale long-ciliate, furthermore sparsely ciliate, apex crenulate, inside glabrous;", featureBlockElements.get(4).getText());
         assertEquals("Stamens:", featureBlockElements.get(5).getText());
         assertEquals("Fruits ellipsoid to subglobular, widest about or above the middle, narrowed to short-stipitate at base, 3-4-angular to 3-4-ribbed in cross section, 20-30 by 14-25 mm, yellowish green to dark-yellow when ripe, patently short-hairy inside, often sterile but well developed.",featureBlockElements.get(6).getText());
-
     }
-
 }

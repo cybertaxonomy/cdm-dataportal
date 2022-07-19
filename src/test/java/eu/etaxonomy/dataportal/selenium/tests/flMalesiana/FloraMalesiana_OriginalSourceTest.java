@@ -8,11 +8,11 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,13 +28,12 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.floramalesiana})
 public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
+
+    private static final Logger logger = LogManager.getLogger();
 
     private static final UUID UUID_ILLICIUM = UUID.fromString("502e28ca-23d0-44a8-9c13-85fb3d076bff");
 
@@ -51,7 +50,6 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
     public void tearDown(){
         logger.debug("@After");
     }
-
 
     @Test
     @Ignore // see #3788 (sort order of search results broken in free-text taxon search)
@@ -79,7 +77,5 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
         assertEquals("Synonymy", primaryTabs.get(1).getText());
         assertEquals("Images", primaryTabs.get(2).getText());
         assertEquals("Keys", primaryTabs.get(3).getText());
-
     }
-
 }

@@ -5,7 +5,8 @@ package eu.etaxonomy.dataportal.selenium;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -19,12 +20,10 @@ import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 
 /**
  * @author andreas
- *
  */
 public class WebDriverFactory {
 
-
-    public static final Logger logger = Logger.getLogger(WebDriverFactory.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final String SYSTEM_PROPERTY_NAME_BROWSER = "browser";
 
@@ -73,7 +72,7 @@ public class WebDriverFactory {
 
         String chromeBinary = System.getProperty("webdriver.chrome.bin");
         if(chromeBinary != null) {
-            CdmDataPortalTestBase.logger.info(("webdriver.chrome.bin = " + chromeBinary));
+            logger.info(("webdriver.chrome.bin = " + chromeBinary));
             options.setBinary(chromeBinary);
 
         }
@@ -94,8 +93,8 @@ public class WebDriverFactory {
 
         WebDriver driver;
 
-        CdmDataPortalTestBase.logger.info(("webdriver.firefox.bin = " + System.getProperty("webdriver.firefox.bin")));
-        CdmDataPortalTestBase.logger.info(("webdriver.firefox.library.path = " + System.getProperty("webdriver.firefox.library.path")));
+        logger.info(("webdriver.firefox.bin = " + System.getProperty("webdriver.firefox.bin")));
+        logger.info(("webdriver.firefox.library.path = " + System.getProperty("webdriver.firefox.library.path")));
 
         FirefoxProfile firefoxProfile = new FirefoxProfile();
 
@@ -113,7 +112,7 @@ public class WebDriverFactory {
 //                firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firepath-" + FIREXPATH_VERSION + "-fx.xpi");
 
             } catch (IOException e) {
-                CdmDataPortalTestBase.logger.error(e);
+                logger.error(e);
                 System.exit(-1);
             }
         }
@@ -131,14 +130,10 @@ public class WebDriverFactory {
 
          initFirefoxDriver();
          try {
-            Thread.currentThread().sleep(1000);
+            Thread.currentThread();
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             System.err.println("InterruptedException");
         }
-
     }
-
-
-
-
 }

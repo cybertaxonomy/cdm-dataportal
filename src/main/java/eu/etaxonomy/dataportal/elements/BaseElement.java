@@ -13,7 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -27,11 +28,10 @@ import eu.etaxonomy.dataportal.ElementUtils;
 /**
  * @author Andreas Kohlbecker
  * @since Jul 1, 2011
- *
  */
 public class BaseElement {
 
-    public static final Logger logger = Logger.getLogger(BaseElement.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * Default tolerance for testing sizes and positions

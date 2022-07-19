@@ -14,7 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,8 +32,7 @@ import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
  */
 public class NamePage extends PortalPage {
 
-
-    public static final Logger logger = Logger.getLogger(NamePage.class);
+    private static final Logger logger = LogManager.getLogger();
 
     protected static String drupalPagePathBase = "cdm_dataportal/name";
 

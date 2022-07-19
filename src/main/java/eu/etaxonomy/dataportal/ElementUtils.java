@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -26,16 +27,13 @@ import eu.etaxonomy.dataportal.selenium.ChildElementVisible;
 /**
  * @author andreas
  * @since Sep 16, 2011
- *
  */
 public class ElementUtils {
 
-
-    public static final Logger logger = Logger.getLogger(ElementUtils.class);
-
+    private static final Logger logger = LogManager.getLogger();
 
     public static List<BaseElement> baseElementsFromFootNoteListElements(List<WebElement> fnListElements) {
-        List<BaseElement> footNotes = new ArrayList<BaseElement>();
+        List<BaseElement> footNotes = new ArrayList<>();
         for(WebElement fn : fnListElements) {
             footNotes.add(new BaseElement(fn));
         }
@@ -44,7 +42,7 @@ public class ElementUtils {
 
 
     public static List<LinkElement> linkElementsFromFootNoteKeyListElements(List<WebElement> fnkListElements) {
-        List<LinkElement> footNoteKeys = new ArrayList<LinkElement>();
+        List<LinkElement> footNoteKeys = new ArrayList<>();
         for(WebElement fnk : fnkListElements) {
             footNoteKeys.add(new LinkElement(fnk));
         }
@@ -64,7 +62,7 @@ public class ElementUtils {
             return null;
         }
 
-        ArrayList<List<GalleryImage>> galleryImageRows = new ArrayList<List<GalleryImage>>();
+        ArrayList<List<GalleryImage>> galleryImageRows = new ArrayList<>();
 
         List<WebElement> mediaRows = gallery.findElements(By.cssSelector("tr.media-row"));
         List<WebElement> captionRows = gallery.findElements(By.cssSelector("tr.caption-row"));
@@ -144,6 +142,4 @@ public class ElementUtils {
         markup += ">";
         return markup;
     }
-
-
 }

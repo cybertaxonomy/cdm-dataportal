@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,13 +22,10 @@ import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 
 public class PolytomousKeyPage extends PortalPage {
 
-	public static final Logger logger = Logger.getLogger(PolytomousKeyPage.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	private static String drupalPagePathBase = "cdm_dataportal/polytomousKey";
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.dataportal.pages.PortalPage#getDrupalPageBase()
-	 */
 	@Override
 	protected String getDrupalPageBase() {
 		return drupalPagePathBase;
@@ -153,13 +151,7 @@ public class PolytomousKeyPage extends PortalPage {
 		return nextPage;
 	}
 
-
     private String composeFullEdgeText(KeyLineData data) {
         return data.edgeText + "\n" + data.getLinkTextWithSuffix();
     }
-
-
-
-
-
 }

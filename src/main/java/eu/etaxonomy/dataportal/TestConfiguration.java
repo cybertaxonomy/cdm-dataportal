@@ -14,7 +14,8 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.dataportal.selenium.WebDriverFactory;
 
@@ -30,7 +31,7 @@ public class TestConfiguration {
 	private static final String DATA_PORTAL_TEST_PROPERTIES_FILE = "DataPortalTest.xml";
 	private static final String DATAPORTAL_TEST_CONF = "dataportal.test.conf";
 
-	public final static Logger logger = Logger.getLogger(TestConfiguration.class);
+    private static final Logger logger = LogManager.getLogger();
 
 	final Properties properties = new Properties();
 

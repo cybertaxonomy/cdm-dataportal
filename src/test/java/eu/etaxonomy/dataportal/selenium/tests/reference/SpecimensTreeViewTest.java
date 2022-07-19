@@ -12,13 +12,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.UUID;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.elements.BaseElement;
@@ -29,7 +29,6 @@ import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonPage;
-import eu.etaxonomy.drush.DrushExecuter;
 import eu.etaxonomy.drush.DrushExecutionFailure;
 
 /**
@@ -39,8 +38,6 @@ import eu.etaxonomy.drush.DrushExecutionFailure;
 @DataPortalContexts( { DataPortalSite.reference })
 public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
-    public static final Logger logger = Logger.getLogger(DrushExecuter.class);
-
     private static final UUID glenodinium_apiculatum_t = UUID.fromString("d245083e-3bda-435f-9bb3-bdc2249ff23c");
 
     private TaxonPage p;
@@ -49,7 +46,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
     @Before
     public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
-        Logger.getLogger(DrushExecuter.class).setLevel(Level.DEBUG);
+        LogUtils.setLevel(getClass(), Level.DEBUG);
         setDrupalVar(DrupalVars.CDM_DATAPORTAL_TAXONPAGE_TABS, "1");
         setDrupalVar(DrupalVars.CDM_SPECIMEN_LIST_VIEW_MODE, "derivate_tree");
         setDrupalVarJson(DrupalVars.CDM_SPECIMEN_DERIVATE_TREE_OPTIONS, "{\"field_unit_short_label\":1}");

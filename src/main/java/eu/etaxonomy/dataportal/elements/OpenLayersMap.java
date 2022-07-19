@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -43,30 +43,20 @@ public class OpenLayersMap {
                     .findElements(By.className("openlayers-container"));
             return maps.stream().map(m -> new OpenLayersMap(m)).collect(Collectors.toList());
         } catch (NoSuchElementException e) {
-            Logger.getLogger(OpenLayersMap.class).info("No maps found", e);
+            LogManager.getLogger(OpenLayersMap.class).info("No maps found", e);
             return new ArrayList<>();
         }
     }
 
-    /**
-     * @return the webElement
-     */
     public WebElement getWebElement() {
         return webElement;
     }
 
-    /**
-     * @return the mapId
-     */
     public String getMapId() {
         return mapId;
     }
 
-    /**
-     * @return the mapName
-     */
     public String getMapName() {
         return mapName;
     }
-
 }

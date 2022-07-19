@@ -11,6 +11,8 @@ package eu.etaxonomy.dataportal.selenium.tests.reference;
 import java.net.MalformedURLException;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,11 +29,11 @@ import eu.etaxonomy.dataportal.pages.GenericPortalPage;
  * #3616
  *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.reference })
 public class NamePageRedirectTest extends CdmDataPortalTestBase{
+
+    private static final Logger logger = LogManager.getLogger();
 
     static final UUID taxon_achilllea_santolina_uuid = UUID.fromString("c246856f-c03e-4cb7-ac92-d9b2864084cd");
     static final UUID name_achilllea_santolina_uuid = UUID.fromString("2ff1fb18-7055-420f-8c10-5105b66974de");

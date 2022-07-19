@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,11 +29,10 @@ import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 /**
  * @author andreas
  * @since Aug 12, 2011
- *
  */
 public class TaxonSearchResultPage extends GenericPortalPage {
 
-    public static final Logger logger = Logger.getLogger(TaxonSearchResultPage.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private static String drupalPagePathBase = "cdm_dataportal/search/taxon";
 
@@ -50,30 +50,20 @@ public class TaxonSearchResultPage extends GenericPortalPage {
     @CacheLookup
     private WebElement pager;
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.dataportal.pages.PortalPage#getDrupalPageBase()
-     */
     @Override
     protected String getDrupalPageBase() {
         return drupalPagePathBase;
     }
 
-    /**
-     * @param driver
-     * @param context
-     */
     public TaxonSearchResultPage(WebDriver driver, DataPortalContext context) throws Exception {
         super(driver, context);
     }
-
 
     /**
      * Find and return the result n-th item of the result list.
      * The item can be specified by the index paramter.
      * @param index 1-based index to identify the resultset item.
      * This index will be used in a xpath query.
-
      */
     public TaxonListElement getResultItem(int index) {
 
@@ -95,11 +85,6 @@ public class TaxonSearchResultPage extends GenericPortalPage {
         return taxonListElements;
     }
 
-    /**
-     * @throws Exception
-     *
-     */
-    @SuppressWarnings("unchecked")
     public <T extends PortalPage> T  clickTaxonName(TaxonListElement taxonListElement, Class<T> pageClass, UUID taxonUuid) throws Exception {
 
         LinkElement taxonlink = new LinkElement(taxonListElement.getElement().findElement(By.tagName("a")));
@@ -109,7 +94,4 @@ public class TaxonSearchResultPage extends GenericPortalPage {
                     pageClass, 2l, TimeUnit.MINUTES);
 
     }
-
-
-
 }

@@ -1,4 +1,3 @@
-
 /**
  * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,14 +26,10 @@ import eu.etaxonomy.dataportal.elements.TaxonNodeStatusElement;
  *
  * @author andreas
  * @since Jul 1, 2011
- *
  */
 public class TaxonPage extends PortalPage {
 
-    public static final Logger logger = Logger.getLogger(TaxonProfilePage.class);
-
     protected static String drupalPagePathBase = "cdm_dataportal/taxon";
-
 
     @Override
     protected String getDrupalPageBase() {
@@ -88,6 +82,4 @@ public class TaxonPage extends PortalPage {
         }
         return statusEls;
     }
-
-
 }

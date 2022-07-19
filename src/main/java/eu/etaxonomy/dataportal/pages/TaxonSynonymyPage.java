@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,19 +31,14 @@ import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
  *
  * @author andreas
  * @since Jul 1, 2011
- *
  */
 public class TaxonSynonymyPage extends TaxonPage {
 
-    public static final Logger logger = Logger.getLogger(TaxonSynonymyPage.class);
-
     protected static String drupalPagePathBase = "cdm_dataportal/taxon";
-
 
     @FindBy(id = "synonymy")
     @CacheLookup
     private WebElement synonymy;
-
 
     public TaxonSynonymyPage(WebDriver driver, DataPortalContext context, UUID taxonUuid) throws MalformedURLException {
 
