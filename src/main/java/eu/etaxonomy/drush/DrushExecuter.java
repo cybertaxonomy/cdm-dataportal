@@ -358,6 +358,7 @@ public class DrushExecuter {
      *              if the drush command execution fails with an error code
      */
     public static void main(String[] args) throws URISyntaxException, DrushExecutionFailure {
+        //TODO better set the logger correctly in log4j config
         LogUtils.setLevel(logger, Level.DEBUG);
         try {
             DrushExecuter dex = new DrushExecuter();

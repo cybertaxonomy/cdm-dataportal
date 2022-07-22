@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -147,16 +146,15 @@ public class TaxonProfilePage extends TaxonPage {
      */
     public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String elementTag){
 
-        LogUtils.setLevel(logger, Level.TRACE);
-        logger.trace("getFeatureBlockAt()");
+        LogUtils.logAsTrace(logger, "getFeatureBlockAt()");
         List<WebElement> featureBlocks = getDataPortalContent().getElement().findElements(By.className("block-cdm-dataportal-feature"));
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
-            if(logger.isTraceEnabled()) {
-                logger.trace("getFeatureBlockAt() - checking block '" + b.getAttribute("id") + "");
-            }
+//            if(logger.isTraceEnabled()) {
+                LogUtils.logAsTrace(logger, "getFeatureBlockAt() - checking block '" + b.getAttribute("id") + "");
+//            }
             if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
-                logger.debug("getFeatureBlockAt() - block found, will be instantiated ...");
+                LogUtils.logAsTrace(logger, "getFeatureBlockAt() - block found, will be instantiated ...");
                 return new FeatureBlock( driver, b, enclosingTag, elementTag);
             }
         }
