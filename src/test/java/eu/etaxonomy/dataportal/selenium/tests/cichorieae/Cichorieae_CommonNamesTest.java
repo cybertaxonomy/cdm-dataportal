@@ -22,21 +22,15 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
 
-
     static UUID lactuca_serriola_uuid = UUID.fromString("85176c77-e4b6-4899-a08b-e257ab09350a");
-
 
     /**
      * regression test for issue ##3160 (Cichorieae Portal: Common names not correctly ordered)
-     *
      */
     @Test
     public void lactuca_serriola() throws MalformedURLException {
@@ -90,5 +84,4 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
 
         assertEquals(expected, firstChars);
     }
-
 }

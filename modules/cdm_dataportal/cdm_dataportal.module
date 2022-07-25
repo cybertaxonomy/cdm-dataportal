@@ -2727,7 +2727,7 @@ function cdm_dataportal_shortname_of($taxonNodeDTO) {
  * Check if a taxon is accepted by the current taxonomic tree.
  *
  * @param mixed $taxon
- *   The Taxon obkect to check.
+ *   The Taxon object to check.
  *
  * @return bool
  *   Returns TRUE if $taxon is accepted, FALSE otherwise.
