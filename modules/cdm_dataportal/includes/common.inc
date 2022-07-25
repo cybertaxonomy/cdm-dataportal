@@ -205,8 +205,8 @@ function compare_original_sources($a, $b){
   }
   if((isset($a->nameUsedInSource))){
     $a_string .= $a->nameUsedInSource->titleCache;
-  } elseif (isset($a->originalNameString)){
-    $a_string .= $a->originalNameString;
+  } elseif (isset($a->originalInfo)){
+    $a_string .= $a->originalInfo;
   }
 
   $b_string = '';
@@ -215,8 +215,8 @@ function compare_original_sources($a, $b){
   };
   if((isset($b->nameUsedInSource))){
     $b_string .= $b->nameUsedInSource->titleCache;
-  } elseif (isset($b->originalNameString)){
-    $b_string .= $b->originalNameString;
+  } elseif (isset($b->originalInfo)){
+    $b_string .= $b->originalInfo;
   }
 
   if ($a_string == $b_string) {

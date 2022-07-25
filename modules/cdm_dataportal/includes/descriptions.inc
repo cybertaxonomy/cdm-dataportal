@@ -1277,7 +1277,7 @@ function statistical_measure_term2min_max_key($term){
   }
 
 
-  /* compose nameInSource or originalNameString as markup
+  /* compose nameInSource or originalInfo as markup
    *
    * @param $source
    * @param $do_link_to_name_used_in_source
@@ -1324,16 +1324,16 @@ function statistical_measure_term2min_max_key($term){
           ));
       }
     }
-    else if (isset($source->originalNameString) && !empty($source->originalNameString)) {
+    else if (isset($source->originalInfo) && !empty($source->originalInfo)) {
       // the name used in source can not be expressed as valid taxon name,
-      // so the editor has chosen to put the freetext name into ReferencedEntityBase.originalNameString
+      // so the editor has chosen to put the freetext name into ReferencedEntityBase.originalInfo
       // field
-      // using the originalNameString as key to avoid duplicate entries
-      $plaintext = $source->originalNameString;
+      // using the originalInfo as key to avoid duplicate entries
+      $plaintext = $source->originalInfo;
       if($suppress_for_shown_taxon && $taxon_page_accepted_name == $plaintext){
         return $name_in_source_render_array; // SKIP this name
       }
-      $markup = $source->originalNameString;
+      $markup = $source->originalInfo;
     }
 
     if ($plaintext) { // checks if we have any content

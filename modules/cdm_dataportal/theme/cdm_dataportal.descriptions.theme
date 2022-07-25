@@ -408,9 +408,9 @@ function theme_cdm_block_IdentificationKeys($variables) {
     foreach ($description->sources as $description_source) {
       $originalTaxonUsedInSource = NULL;
       $originalTaxonPager = NULL;
-      if ($description_source->originalNameString) {
+      if ($description_source->originalInfo) {
         $request_params = array();
-        $request_params['query'] = $description_source->originalNameString;
+        $request_params['query'] = $description_source->originalInfo;
         $request_params['matchMode'] = "EXACT";
         $originalTaxonPager = cdm_ws_get(CDM_WS_PORTAL_NAME_FINDBYNAME, NULL, queryString($request_params));
         if ($originalTaxonPager->count > 0) {
@@ -426,7 +426,7 @@ function theme_cdm_block_IdentificationKeys($variables) {
 
       $markup = '<li class="descriptionText DescriptionElement">';
       $name_used_in_source_link_to_show_use = l(
-        $description_source->originalNameString,
+        $description_source->originalInfo,
         path_to_name($originalTaxonUsedInSource->uuid, null, null, true),
         array(
           'absolute' => TRUE,
