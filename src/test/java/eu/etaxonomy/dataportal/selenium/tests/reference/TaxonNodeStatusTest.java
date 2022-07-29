@@ -70,7 +70,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(1);  //the taxon node status order has changed, therefore we start with 1 here and later handle 0
         assertEquals("TaxonNodeDto", tnsData_0.getTaxonNodeRef().getCdmType());
         assertEquals("402ea023-07be-4335-9274-1c3e30a7df3f", tnsData_0.getTaxonNodeRef().getUuid().toString());
-        assertEquals("Taxon included in parent taxon with doubts (The placement has been made for software testing purposes only)", tnsData_0.getStatusText().trim());
+        assertEquals("taxon incl. in parent taxon with doubts (The placement has been made for software testing purposes only)", tnsData_0.getStatusText().trim());
 
         assertEquals("Classification", tnsData_0.getClassificationRef().getCdmType());
         assertEquals("2ab81d37-125d-47e6-8450-6aafd5f4b043", tnsData_0.getClassificationRef().getUuid().toString());
