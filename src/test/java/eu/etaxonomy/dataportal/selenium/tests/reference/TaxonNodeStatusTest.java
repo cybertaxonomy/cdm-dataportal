@@ -31,7 +31,6 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
  * @author a.kohlbecker
  *
  */
-
 @DataPortalContexts( { DataPortalSite.reference })
 public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
@@ -146,7 +145,4 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         assertNull(tnsData_0.getClassificationRef());
         assertNull(tnsData_0.getClassficationText());
     }
-
-
-
 }

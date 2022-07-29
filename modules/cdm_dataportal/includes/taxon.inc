@@ -81,7 +81,7 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
   $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
 
   // Aggregate misapplied names having the same fullname:
-  //  - deduplicate misapplied names, so that the same name it not shown multiple times in case it
+  //  - deduplicate misapplied names, so that the same name is not shown multiple times in case
   //    the duplicates only have different sensu references with detail and appended phrase (see #5647)
   //  - show only the author team as short citation for the sec reference
   //  - show the according reference as footnote to this short citation
