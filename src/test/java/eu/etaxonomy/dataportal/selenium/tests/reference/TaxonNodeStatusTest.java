@@ -68,17 +68,17 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         TaxonNodeStatusElement statusElement = statusElements.get(0);
         assertEquals(2, statusElement.getTaxonNodeStatus().size());
 
-        TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
+        TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(1);  //the taxon node status order has changed, therefore we start with 1 here and later handle 0
         assertEquals("TaxonNodeDto", tnsData_0.getTaxonNodeRef().getCdmType());
         assertEquals("402ea023-07be-4335-9274-1c3e30a7df3f", tnsData_0.getTaxonNodeRef().getUuid().toString());
-        assertEquals("doubtful (The placement has been made for software testing purposes only)", tnsData_0.getStatusText().trim());
+        assertEquals("Taxon included in parent taxon with doubts (The placement has been made for software testing purposes only)", tnsData_0.getStatusText().trim());
 
         assertEquals("Classification", tnsData_0.getClassificationRef().getCdmType());
         assertEquals("2ab81d37-125d-47e6-8450-6aafd5f4b043", tnsData_0.getClassificationRef().getUuid().toString());
         assertEquals("[My Classification]", tnsData_0.getClassficationText());
 
-        TaxonNodeStatusData tnsData_1 = statusElement.getTaxonNodeStatus().get(1);
-        assertEquals("excluded", tnsData_1.getStatusText().trim());
+        TaxonNodeStatusData tnsData_1 = statusElement.getTaxonNodeStatus().get(0);
+        assertEquals("name/taxon excluded (unspecific)", tnsData_1.getStatusText().trim());
         assertEquals("5b217667-d4f4-4ae7-8ab9-b2ceb599d7d0", tnsData_1.getTaxonNodeRef().getUuid().toString());
         assertEquals("TaxonNodeDto", tnsData_1.getTaxonNodeRef().getCdmType());
 
@@ -102,7 +102,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
         assertEquals("TaxonNodeDto", tnsData_0.getTaxonNodeRef().getCdmType());
         assertEquals("1d7ce8ab-9335-492b-a079-9f7d84a50cd0", tnsData_0.getTaxonNodeRef().getUuid().toString());
-        assertEquals("unplaced", tnsData_0.getStatusText().trim());
+        assertEquals("taxon unplaced", tnsData_0.getStatusText().trim());
 
         assertNull(tnsData_0.getClassificationRef());
         assertNull(tnsData_0.getClassficationText());
@@ -121,7 +121,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         assertEquals(1, statusElement.getTaxonNodeStatus().size());
 
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
-        assertEquals("excluded", tnsData_0.getStatusText().trim());
+        assertEquals("name/taxon excluded (unspecific)", tnsData_0.getStatusText().trim());
 
         assertNull(tnsData_0.getClassificationRef());
         assertNull(tnsData_0.getClassficationText());
@@ -141,7 +141,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
 
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatus().get(0);
         assertEquals("TaxonNodeDto", tnsData_0.getTaxonNodeRef().getCdmType());
-        assertEquals("excluded", tnsData_0.getStatusText().trim());
+        assertEquals("name/taxon excluded (unspecific)", tnsData_0.getStatusText().trim());
 
         assertNull(tnsData_0.getClassificationRef());
         assertNull(tnsData_0.getClassficationText());
