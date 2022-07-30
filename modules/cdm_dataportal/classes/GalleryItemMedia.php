@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Class GalleryItemMedia filters suitable MediaRepresentations from a CDM Media
  * object and prepares them for to be used as item in a MediaGallery.

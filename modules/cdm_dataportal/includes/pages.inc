@@ -18,7 +18,7 @@
 
 
 /**
- * Composes a render array representing the ocurrences associetad with the $taxon.
+ * Composes a render array representing the ocurrences associated with the $taxon.
  *
  * The resulting render array contains two elements:
  *  - 'map': A map showing all point locations of the occurences is availabale

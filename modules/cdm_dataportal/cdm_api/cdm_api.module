@@ -337,12 +337,11 @@ function get_last_taxon_page_tab() {
  *   An array with preferred media representations or else an empty array.
  */
 function cdm_preferred_media_representations($media, array $mime_types, $width = NULL, $height = NULL, $mime_types_filter_excludes = FALSE, $strict_size_limit = FALSE) {
-  $matching_representations_by_rank = [];
-  if (!isset($media->representations[0])) {
-    return $matching_representations_by_rank;
-  }
-
-
+    
+    $matching_representations_by_rank = [];
+    if (!isset($media->representations[0])) {
+      return $matching_representations_by_rank;
+    }
 
     foreach ($media->representations as &$representation) {
       // If the mimetype is not known, try inferring it.
@@ -384,19 +383,18 @@ function cdm_preferred_media_representations($media, array $mime_types, $width =
             }
             // sum up the expansionDeltas of all parts contained in the representation
             $expansion_delta_sum += $expansion_delta;
-          }
+          }// end parts
         }
         if($valid_parts_cnt > 0){
           $expansion_delta_sum = $expansion_delta_sum / $valid_parts_cnt;
           $matching_representations_by_rank[$expansion_delta_sum] = $representation;
         }
       }
-
     }
 
-  // Sort the array so that the smallest key value is the first in the array
-  ksort($matching_representations_by_rank);
-  return $matching_representations_by_rank;
+    // Sort the array so that the smallest key value is the first in the array
+    ksort($matching_representations_by_rank);
+    return $matching_representations_by_rank;
 }
 
 /**
