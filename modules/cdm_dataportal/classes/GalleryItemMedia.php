@@ -42,8 +42,8 @@ class GalleryItemMedia {
 
     if (isset($media->representations[0]->parts[0])) {
       $thumbnail_representations = cdm_preferred_media_representations($media, $this->image_mime_type_list,
-        $this->thumbnail_width, $this->thumbnail_height, FALSE, TRUE
-      );
+          $this->thumbnail_width, $this->thumbnail_height, FALSE, FALSE);
+        
       $full_size_representations = cdm_preferred_media_representations($media, $this->image_mime_type_list);
       $web_app_representations = cdm_preferred_media_representations($media, $this->image_mime_type_list, NULL, NULL, TRUE);
 
