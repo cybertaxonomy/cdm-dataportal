@@ -1545,7 +1545,7 @@ function compose_name_relationships_inline($name_relations, $current_name_uuid, 
 }
 
 /**
- * Composes an list representation of the name relationships.
+ * Composes a list representation of the name relationships.
  *
  * The output of this function will be usually appended to taxon name representations.
  *
@@ -1622,7 +1622,9 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
     UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
     UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST,
     UUID_NAMERELATIONSHIPTYPE_MISSPELLING,
-    UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR);
+    UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR,
+    UUID_NAMERELATIONSHIPTYPE_AVOIDS_HOMONYM_OF,
+    UUID_NAMERELATIONSHIPTYPE_IS_NOT);
 
   $render_array = array(
     'list' => array(
