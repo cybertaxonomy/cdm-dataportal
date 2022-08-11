@@ -26,7 +26,7 @@ import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.elements.MultipartDescriptionElementRepresentation;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
-import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
+import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
  * @author a.kohlbecker
@@ -40,7 +40,7 @@ public class TaxonProfileTest extends CdmDataPortalTestBase{
     //Iconella splendida (Ehrenb.) Ruck & Nakov sec. Specimen Import 2020-10-12 (sub Iconella splendi)
     static UUID taxonUuid = UUID.fromString("cf5775b5-71a1-4776-955d-91516dc63318");
 
-    TaxonProfilePage p = null;
+    TaxonSynonymyPage p = null;
 
     @Before
     public void setUp() throws MalformedURLException {
