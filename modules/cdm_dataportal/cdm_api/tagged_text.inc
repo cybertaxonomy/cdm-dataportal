@@ -202,6 +202,8 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
         }
         if(!$is_separator && !$was_separator && !$is_first){
           $out .= " ";
+        }else if ($is_separator){
+          $out = rtrim($out);
         }
         if(isset($options['html']) &&  $options['html']){
           $out .= $tt->text;

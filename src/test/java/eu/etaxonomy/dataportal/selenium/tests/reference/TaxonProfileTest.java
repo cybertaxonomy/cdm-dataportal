@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -36,7 +36,7 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 @DataPortalContexts( { DataPortalSite.reference })
 public class TaxonProfileTest extends CdmDataPortalTestBase{
 
-    public static final Logger logger = Logger.getLogger(TaxonProfileTest.class);
+    //public static final Logger logger = Logger.getLogger(TaxonProfileTest.class);
     //Iconella splendida (Ehrenb.) Ruck & Nakov sec. Specimen Import 2020-10-12 (sub Iconella splendi)
     static UUID taxonUuid = UUID.fromString("cf5775b5-71a1-4776-955d-91516dc63318");
 
@@ -55,6 +55,8 @@ public class TaxonProfileTest extends CdmDataPortalTestBase{
 
     @Test
     public void testSecundumNameInSource() {
+
+
         WebElement acceptedName = p.getAcceptedName();
         assertEquals("Iconella splendida (Ehrenb.) Ruck & Nakov sec. Specimen Import 2020-10-12 (sub Iconella splendi)", acceptedName.getText());
         WebElement referenceElement = acceptedName.findElement(By.cssSelector(".secReference"));
