@@ -445,6 +445,7 @@ function infer_mime_type($filepath) {
  *  the formatted string representation of the $datetime
  */
 function format_datetime($datetime, $format = 'Y-m-d H:i:s O', $strip_zeros = true){
+
   return date($format, strtotime($datetime));
 }
 
