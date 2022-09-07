@@ -14,13 +14,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import eu.etaxonomy.cdm.common.LogUtils;
-
-
 /**
  * @author andreas
  * @since Jul 4, 2011
- *
  */
 public class DrupalBlock extends BaseElement {
 
@@ -37,7 +33,7 @@ public class DrupalBlock extends BaseElement {
 
 		super(element);
 
-        LogUtils.logAsTrace(logger, "DrupalBlock() - constructor after super()");
+        logger.trace("DrupalBlock() - constructor after super()");
 
 		try {
 		    titleElement = element.findElement(By.className("block-title"));

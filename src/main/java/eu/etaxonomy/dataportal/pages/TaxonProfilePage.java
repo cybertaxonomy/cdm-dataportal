@@ -1,4 +1,3 @@
-
 /**
  * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy
@@ -27,7 +26,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 
-import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
 import eu.etaxonomy.dataportal.elements.ImgElement;
@@ -38,7 +36,6 @@ import eu.etaxonomy.dataportal.elements.LinkElement;
  *
  * @author andreas
  * @since Jul 1, 2011
- *
  */
 public class TaxonProfilePage extends TaxonPage {
 
@@ -146,15 +143,15 @@ public class TaxonProfilePage extends TaxonPage {
      */
     public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String elementTag){
 
-        LogUtils.logAsTrace(logger, "getFeatureBlockAt()");
+        logger.trace("getFeatureBlockAt()");
         List<WebElement> featureBlocks = getDataPortalContent().getElement().findElements(By.className("block-cdm-dataportal-feature"));
         Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
         for(WebElement b : featureBlocks){
-//            if(logger.isTraceEnabled()) {
-                LogUtils.logAsTrace(logger, "getFeatureBlockAt() - checking block '" + b.getAttribute("id") + "");
-//            }
+            if(logger.isTraceEnabled()) {
+                logger.trace( "getFeatureBlockAt() - checking block '" + b.getAttribute("id") + "");
+            }
             if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
-                LogUtils.logAsTrace(logger, "getFeatureBlockAt() - block found, will be instantiated ...");
+                logger.trace("getFeatureBlockAt() - block found, will be instantiated ...");
                 return new FeatureBlock( driver, b, enclosingTag, elementTag);
             }
         }
