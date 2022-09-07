@@ -350,7 +350,7 @@ public class DrushExecuter {
 
     /**
      * These tests have not been implemented as jUnit tests since the execution
-     * it too much dependent from the local environment. Once the
+     * is too dependent on the local environment. Once the
      * <code>DrushExecuter</code> is being used in the selenium test suite will
      * be tested implicitly anyway.
      *
@@ -394,7 +394,6 @@ public class DrushExecuter {
             if (!results.get(0).equals("http://int.e-taxonomy.eu/cdmserver/integration_cyprus/")) {
                 throw new RuntimeException("unexpected result item 0: " + results.get(0));
             }
-
         } catch (IOException | InterruptedException | AssertionError e) {
             e.printStackTrace();
         }
