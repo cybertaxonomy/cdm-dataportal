@@ -1049,6 +1049,7 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
               'class' => array('summary_row_cell', 'summary_row_icon')
             ),
             array(
+              # test
               'data' => ($sob_dto->hasDna ? $sequence_icon : "") . " "
                 . ($sob_dto->hasDetailImage ? $detail_image_icon : "") . " "
                 . ($sob_dto->hasCharacterData ? $character_data_icon : ""),
