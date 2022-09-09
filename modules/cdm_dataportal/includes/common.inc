@@ -19,7 +19,7 @@
 /**
  * @defgroup compose Compose functions
  * @{
- * Functions which are composing Drupal render arays
+ * Functions which are composing Drupal render arrays
  *
  * The cdm_dataportal module needs to compose rather complex render arrays from
  * the data returned by the CDM REST service. The compose functions are
