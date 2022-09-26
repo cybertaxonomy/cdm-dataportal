@@ -983,7 +983,7 @@ function specimen_render_array_items(array $root_unit_dtos){
  * @ingroup compose
  */
 
-function compose_compressed_specimen_derivate_table($root_unit_uuids) {
+function compose_compressed_specimen_derivate_table($root_units) {
 
   // prepare font icons
   $expand_icon = font_awesome_icon_markup(
@@ -1008,10 +1008,11 @@ function compose_compressed_specimen_derivate_table($root_unit_uuids) {
   $rowcount = 0;
   $rows = array();
 
-  foreach ($root_unit_uuids as $root_unit_uuid) {
+  foreach ($root_units as $root_unit_uuid) {
 
     //get derivate hierarchy for the FieldUnit
-    $sob_dto = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE_AS_DTO, array($root_unit_uuid));
+  //  $sob_dto = cdm_ws_get(CDM_WS_PORTAL_OCCURRENCE_AS_DTO, array($root_unit_uuid));
+    $sob_dto = $root_unit_uuid;
     if ($sob_dto) {
       //summary row
       if($sob_dto->class == "FieldUnitDTO"){
