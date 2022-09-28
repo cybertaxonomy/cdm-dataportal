@@ -106,6 +106,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
 
         // summary row
         int rowId = 1;
+        /*
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         List<WebElement> cells = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("(B: SP-99999, destroyed)", cells.get(1).getText());
@@ -115,11 +116,13 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         ++rowId;
 
         ++rowId;
+        */
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
         assertEquals("1835-04-02", cells.get(2).getText());
         assertEquals("", cells.get(3).getText());
+        assertEquals("BHUPM", cells.get(4).getText());
         // all other empty, TODO check if this is correct or if some data is being missed here
 
         // details row
@@ -132,10 +135,21 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         String detailsText = cells.get(1).getText();
         String[] detailsLines = StringUtils.split(detailsText, "\n");
         assertEquals(1, detailsLines.length);
-        assertEquals("Citation: Germany, Berlin, 2 Apr 1835", detailsLines[0]);
+        assertEquals("Citation: Germany, Berlin, 2 Apr 1835 (BHUPM)", detailsLines[0]);
 
+        ++rowId;
+        //summary row 2
+        assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
+        List<WebElement> cells = rows.get(rowId).findElements(By.tagName("td"));
+        assertEquals("Germany", cells.get(1).getText());
+        // cell number 1 has colspan = 5 !!!
+        assertTrue(cells.get(2).findElement(By.tagName("img")).getAttribute("src")
+                .endsWith(STEP_DONE_ICON)); // scan
+        assertEquals("2012-03-12", cells.get(2).getText());
+        assertEquals("Kusber, W.-H. 12", cells.get(3).getText());
+        ++rowId;
 
-        // summary row
+        // summary row 3
         ++rowId;
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
@@ -143,7 +157,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("2016-03-28", cells.get(2).getText());
         assertEquals("Ehrenberg, C.G. D047", cells.get(3).getText());
          // Only two preserved specimes exepectet in the collection statistics"
-        assertEquals("CEDiT, M", cells.get(4).getText());
+        assertEquals("B(2), CEDiT, M(3), XKCD", cells.get(4).getText());
         assertTrue(cells.get(5).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON));
         assertTrue(cells.get(6).findElement(By.tagName("img")).getAttribute("src")
