@@ -134,7 +134,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         cells = rows.get(rowId).findElements(By.tagName("td"));
         String detailsText = cells.get(1).getText();
         String[] detailsLines = StringUtils.split(detailsText, "\n");
-        assertEquals(1, detailsLines.length);
+        assertEquals(3, detailsLines.length);
         assertEquals("Citation: Germany, Berlin, 2 Apr 1835 (BHUPM)", detailsLines[0]);
 
         ++rowId;

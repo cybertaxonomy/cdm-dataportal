@@ -65,11 +65,11 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         assertEquals(3, duTree.getRootNodes().size());
         BaseElement rootNodeHeader1 = duTree.getRootNodes().get(0).getHeader();
-        assertEquals("B SP-99999", rootNodeHeader1.getText());
-        BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
         assertEquals("Germany, Berlin, 2 Apr 1835", rootNodeHeader2.getText());
+        BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
+        assertEquals("Germany, Berlin, Schlachtensee, 12 Mar 2012, Kusber 12", rootNodeHeader1.getText());
         BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
-        assertEquals("Ehrenberg, C.G. D047", rootNodeHeader3.getText());
+        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.21\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg, C.G. D047", rootNodeHeader3.getText());
     }
 
     @Test
@@ -77,32 +77,38 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(0);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
-        DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
-        DerivedUnitTreeNode subNode3 = rootNode.getSubNodes().get(2);
+        //DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
+        //DerivedUnitTreeNode subNode3 = rootNode.getSubNodes().get(2);
 
-        assertEquals("B SP-99999", rootNode.getHeader().getText());
+        assertEquals("Germany, Berlin, 2 Apr 1835", rootNode.getHeader().getText());
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
-        assertEquals("B B-923845", subNode1.getHeader().getText());
-        assertEquals("B DNA-9098080", subNode2.getHeader().getText());
-        assertEquals("B_SP-99999", subNode3.getHeader().getText());
+        assertEquals("BHUPM 671", subNode1.getHeader().getText());
+        //assertEquals("B DNA-9098080", subNode2.getHeader().getText());
+        //assertEquals("B_SP-99999", subNode3.getHeader().getText());
 
         // NOTE we are only testing subnode 1 here as all other details are tested in other methods
 
         // ---- sub node 1
         subNode1.getHeader().getElement().click(); // make the  content visible
         LinkElement pageLink = subNode1.getHeader().getLinksInElement().get(0);
-        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/2d424df6-f927-472a-8fb5-4c2d2eeb4484"));
+        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/eb729673-5206-49fb-b902-9214d8bdbb51"));
 
-        // THIS THE THE MOST IMORTANT detail to test here
-        assertEquals("Preparation: Liebm., Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM), 2020-01-03", subNode1.getDerivationEvent());
 
-        DetailsTable tissueSampleTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Tissue Sample"));
-        assertEquals("Tissue Sample", tissueSampleTable.getHeaderText());
-        assertEquals("fruit", tissueSampleTable.getDetailsValueCellText("Kind of unit"));
-        assertEquals("B-923845", tissueSampleTable.getDetailsValueCellText("Accession number"));
-        assertEquals("B", tissueSampleTable.getDetailsValueCellText("Collection"));
+        assertEquals("Gathering in situ", subNode1.getDerivationEvent());
+
+        DetailsTable stillImageTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Still Image"));
+        assertEquals("Still Image", stillImageTable.getHeaderText());
+        assertEquals("Unpublished image", stillImageTable.getDetailsValueCellText("Kind of unit"));
+        assertEquals("671", stillImageTable.getDetailsValueCellText("Accession number"));
+        assertEquals("BHUPM", stillImageTable.getDetailsValueCellText("Collection"));
+
+        DetailsTable typeDesignationsTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
+        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
+        typeDesignationsTable.getBodyCellText(0, 0));
+
+        DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
     }
 
     @Test
@@ -111,45 +117,45 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(1);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
 
-        assertEquals("Germany, Berlin, 2 Apr 1835", rootNode.getHeader().getText());
+        assertEquals("Germany, Berlin, Schlachtensee, 12 Mar 2012, Kusber 12", rootNode.getHeader().getText());
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
-        assertEquals("BHUPM 671", subNode1.getHeader().getText());
+        assertEquals("B 123123", subNode1.getHeader().getText());
 
         // ---- root node
         rootNode.getHeader().getElement().click(); // make the  content visible
         LinkElement pageLink = rootNode.getHeader().getLinksInElement().get(0);
-        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/75b73483-7ee6-4c2c-8826-1e58a0ed18e0"));
+        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/77c35cf4-45e2-4c17-9164-c3c877280f43"));
 
-        DetailsTable fieldUnitTable = rootNode.getDetailsTable(DetailsTable.tableClassAttrFrom("Field Unit"));
-        assertEquals("Field Unit", fieldUnitTable.getHeaderText());
-        assertEquals("field note 1", fieldUnitTable.getDetailsValueCellText("Field notes"));
+        //DetailsTable fieldUnitTable = rootNode.getDetailsTable(DetailsTable.tableClassAttrFrom("Field Unit"));
+        //assertEquals("Field Unit", fieldUnitTable.getHeaderText());
+        //assertEquals("field note 1", fieldUnitTable.getDetailsValueCellText("Field notes"));
 
         DetailsTable gatheringTable = rootNode.getDetailsTable(DetailsTable.tableClassAttrFrom("Gathering & Location"));
         assertEquals("Gathering & Location", gatheringTable.getHeaderText());
         assertEquals("Germany", gatheringTable.getDetailsValueCellText("Country"));
-        assertEquals("Berlin", gatheringTable.getDetailsValueCellText("Locality"));
-        assertEquals("1835-04-02", gatheringTable.getDetailsValueCellText("Date"));
+        assertEquals("Berlin, Schlachtensee", gatheringTable.getDetailsValueCellText("Locality"));
+        assertEquals("2012-03-12", gatheringTable.getDetailsValueCellText("Date"));
 
         // ---- sub node 1
         subNode1.getHeader().getElement().click(); // make the  content visible
         pageLink = subNode1.getHeader().getLinksInElement().get(0);
-        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/eb729673-5206-49fb-b902-9214d8bdbb51"));
+        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/e04a54f9-bd2c-4e93-a412-c51653dfd391"));
 
-        assertEquals("Gathering in-situ", subNode1.getDerivationEvent());
+        assertEquals("Accessioning", subNode1.getDerivationEvent());
 
-        DetailsTable imageTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Still Image"));
-        assertEquals("Still Image", imageTable.getHeaderText());
-        assertEquals("Unpublished image", imageTable.getDetailsValueCellText("Kind of unit"));
-        assertEquals("671", imageTable.getDetailsValueCellText("Accession number"));
-        assertEquals("BHUPM", imageTable.getDetailsValueCellText("Collection"));
+        DetailsTable imageTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Preserved Specimen"));
+        assertEquals("Preserved Specimen", imageTable.getHeaderText());
+        //assertEquals("Unpublished image", imageTable.getDetailsValueCellText("Kind of unit"));
+        assertEquals("123123", imageTable.getDetailsValueCellText("Accession number"));
+        assertEquals("B", imageTable.getDetailsValueCellText("Collection"));
 
-        DetailsTable typeDesignationsTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
-        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
-                typeDesignationsTable.getBodyCellText(0, 0));
+        //DetailsTable typeDesignationsTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
+        //assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
+         //       typeDesignationsTable.getBodyCellText(0, 0));
 
-        DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
+        //DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
     }
 
     @Test
@@ -163,7 +169,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DerivedUnitTreeNode subNode1_4 = subNode1.getSubNodes().get(3);
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
 
-        assertEquals("Ehrenberg, C.G. D047", rootNode.getHeader().getText());
+        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047", rootNode.getHeader().getText());
 
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
