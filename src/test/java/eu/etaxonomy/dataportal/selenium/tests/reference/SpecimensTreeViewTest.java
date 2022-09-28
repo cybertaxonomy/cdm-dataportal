@@ -65,9 +65,9 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         assertEquals(3, duTree.getRootNodes().size());
         BaseElement rootNodeHeader1 = duTree.getRootNodes().get(0).getHeader();
-        assertEquals("Germany, Berlin, 2 Apr 1835", rootNodeHeader2.getText());
+        assertEquals("Germany, Berlin, 2 Apr 1835", rootNodeHeader1.getText());
         BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
-        assertEquals("Germany, Berlin, Schlachtensee, 12 Mar 2012, Kusber 12", rootNodeHeader1.getText());
+        assertEquals("Germany, Berlin, Schlachtensee, 12 Mar 2012, Kusber 12", rootNodeHeader2.getText());
         BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
         assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.21\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg, C.G. D047", rootNodeHeader3.getText());
     }
