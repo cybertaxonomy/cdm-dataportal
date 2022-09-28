@@ -67,7 +67,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         BaseElement rootNodeHeader1 = duTree.getRootNodes().get(0).getHeader();
         assertEquals("Germany, Berlin, 2 Apr 1835", rootNodeHeader1.getText());
         BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
-        assertEquals("Germany, Berlin, Schlachtensee, 12 Mar 2012, Kusber 12", rootNodeHeader2.getText());
+        assertEquals("Kusber, W.-H. 12", rootNodeHeader2.getText());
         BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
         assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.21\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg, C.G. D047", rootNodeHeader3.getText());
     }
@@ -96,7 +96,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/eb729673-5206-49fb-b902-9214d8bdbb51"));
 
 
-        assertEquals("Gathering in situ", subNode1.getDerivationEvent());
+        assertEquals("Gathering in-situ", subNode1.getDerivationEvent());
 
         DetailsTable stillImageTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Still Image"));
         assertEquals("Still Image", stillImageTable.getHeaderText());
@@ -117,7 +117,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(1);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
 
-        assertEquals("Germany, Berlin, Schlachtensee, 12 Mar 2012, Kusber 12", rootNode.getHeader().getText());
+        assertEquals("Kusber, W.-H. 12", rootNode.getHeader().getText());
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
@@ -169,7 +169,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DerivedUnitTreeNode subNode1_4 = subNode1.getSubNodes().get(3);
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
 
-        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047", rootNode.getHeader().getText());
+        assertEquals("Ehrenberg, C.G. D047", rootNode.getHeader().getText());
 
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
