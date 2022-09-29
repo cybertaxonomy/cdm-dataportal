@@ -163,7 +163,8 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertTrue(cells.get(6).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON));
         assertTrue(cells.get(7).findElement(By.tagName("img")).getAttribute("src")
-                .endsWith(DETAIL_IMAGE_DERIVATE_ICON));
+                .contains(DETAIL_IMAGE_DERIVATE_ICON));
+        
 
 
         // details row
