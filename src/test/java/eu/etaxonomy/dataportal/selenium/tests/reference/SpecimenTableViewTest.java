@@ -118,7 +118,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         ++rowId;
         */
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
-        List<WebElement> cells =  cells = rows.get(rowId).findElements(By.tagName("td"));
+        List<WebElement> cells  = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
         assertEquals("1835-04-02", cells.get(2).getText());
         assertEquals("", cells.get(3).getText());
@@ -162,9 +162,17 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
                 .endsWith(STEP_DONE_ICON));
         assertTrue(cells.get(6).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON));
-        assertTrue(cells.get(7).findElement(By.tagName("img")).getAttribute("src")
-                .contains(DETAIL_IMAGE_DERIVATE_ICON));
-        
+        List<WebElement> imageCells  = cells.get(7).findElements(By.tagName("img");
+        boolean findDetailImage = false;
+        for(WebElement el: imageCells){
+            if (el.getAttribute("src").endsWith(DETAIL_IMAGE_DERIVATE_ICON){
+                findDetailImage = true;
+                break;
+            }
+
+        }
+        assertTrue(findDetailImage);
+
 
 
         // details row
