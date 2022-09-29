@@ -162,7 +162,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
                 .endsWith(STEP_DONE_ICON));
         assertTrue(cells.get(6).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON));
-        List<WebElement> imageCells  = cells.get(7).findElements(By.tagName("img");
+        List<WebElement> imageCells  = cells.get(7).findElements(By.tagName("img"));
         boolean findDetailImage = false;
         for(WebElement el: imageCells){
             if (el.getAttribute("src").endsWith(DETAIL_IMAGE_DERIVATE_ICON)){
