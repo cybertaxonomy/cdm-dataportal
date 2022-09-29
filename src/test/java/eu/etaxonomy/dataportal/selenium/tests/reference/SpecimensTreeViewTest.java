@@ -69,7 +69,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
         assertEquals("Kusber, W.-H. 12", rootNodeHeader2.getText());
         BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
-        assertEquals("Germany, Berlin, alt. 165 m, 52°31'1.21\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg, C.G. D047", rootNodeHeader3.getText());
+        assertEquals("Ehrenberg, C.G. D047", rootNodeHeader3.getText());
     }
 
     @Test
