@@ -825,6 +825,7 @@ function taxon_media_query_parameters() {
   $taxon_media_filter_choice = variable_get(CDM_TAXON_MEDIA_FILTER, unserialize(CDM_TAXON_MEDIA_FILTER_DEFAULT));
   $mediaQueryParameters['includeTaxonDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonDescriptions'] != 0;
   $mediaQueryParameters['includeOccurrences'] = (boolean) $taxon_media_filter_choice['includeOccurrences'] != 0;
+  $mediaQueryParameters['includeOriginals'] = (boolean) $taxon_media_filter_choice['includeOriginals'] != 0;
   $mediaQueryParameters['includeTaxonNameDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonNameDescriptions'] != 0;
   $mediaQueryParameters['includeTaxonomicChildren'] = variable_get('cdm_images_include_children', 0) != 0;
   return $mediaQueryParameters;

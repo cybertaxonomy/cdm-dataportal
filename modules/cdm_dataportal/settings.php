@@ -389,7 +389,8 @@ define('CDM_TAXON_MEDIA_FILTER_DEFAULT', serialize(
     array(
         'includeTaxonDescriptions' => 'includeTaxonDescriptions',
         'includeOccurrences' => 0,
-        'includeTaxonNameDescriptions' => 0
+        'includeTaxonNameDescriptions' => 0,
+        'includeOriginals' => 0
      )
   ));
 
@@ -1244,6 +1245,7 @@ function cdm_settings_general() {
           'includeTaxonDescriptions' => 'Media in taxon descriptions',
           'includeTaxonNameDescriptions' => 'Media in name descriptions',
           'includeOccurrences' => 'Media related to specimens and occurrences',
+          'includeOriginals' => 'Media related to the originals of specimens and occurrences',
       ),
       '#description' => 'This filter configures which images should be taken into account.',
   );
