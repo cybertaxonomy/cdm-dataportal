@@ -156,7 +156,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
         if ($with_full_details) {
             $detail_html .= "<br>";
             foreach ($derived_unit_dto->characterData as $characterStatePair) {
-                $detail_html .= "<i>" . $characterStatePair->first . "</i>:" . $characterStatePair->second;
+                $detail_html .= "<i>" . $characterStatePair->key . "</i>:" . $characterStatePair->value;
                 $detail_html .= "<br>";
         }
         } else {
@@ -659,7 +659,7 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                                 ),'',9
                             );
                         }
-                        if (isset_not_empty($value->exactLocation->sexagesimalString)) {
+                        if (isset_not_empty($value->exactLocation) && isset_not_empty($value->exactLocation->sexagesimalString)) {
                             @_description_list_group_add($groups, cdm_occurrence_field_name_label('exactLocation'),
                                 array(
                                     array('#markup' => render_point($value->exactLocation)),
@@ -1015,8 +1015,7 @@ function compose_compressed_specimen_derivate_table($root_units) {
     $sob_dto = $root_unit_uuid;
     if ($sob_dto) {
       //summary row
-      if($sob_dto->class == "FieldUnitDTO"){
-
+      if($sob_dto->class == "FieldUnitDTO" && $sob_dto->country != "" && $sob_dto->collectingString != "") {
         $rows[] = array(
           'id' => 'derivate_summary' . $rowcount, // summary row id
           'class' => array('summary_row'),
