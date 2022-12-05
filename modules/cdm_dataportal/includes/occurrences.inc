@@ -28,7 +28,7 @@
  * @return string
  *  The markup for a specimen page
  */
-function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = false)
+function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = true)
 {
     $detail_html = "";
     //link to specimen page
@@ -158,7 +158,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
             foreach ($derived_unit_dto->characterData as $characterStatePair) {
                 $detail_html .= "<i>" . $characterStatePair->key . "</i>:" . $characterStatePair->value;
                 $detail_html .= "<br>";
-        }
+            }
         } else {
             $detail_html .= l("detail page", $path_to_specimen);
             $detail_html .= "<br>";

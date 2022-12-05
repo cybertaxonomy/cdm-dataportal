@@ -65,6 +65,8 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_de
       $render_array['dna-sample'] = compose_cdm_derived_unit_dto_sequences($sob_dto, $full_details);
     } else if($sob_dto->type == 'MediaSpecimen' && isset_not_empty($sob_dto->mediaSpecimen)) {
       $render_array['media-specimens'] = cdm_sob_dto_media_table($sob_dto->mediaSpecimen, $sob_dto, 'Media Specimens');
+    } else if ($sob_dto->characterData){
+        $render_array['character-data'] = cdm_sob_dto_character_data_table($sob_dto->characterData, $sob_dto, 'Character Data');
     }
   }
   if(isset_not_empty($sob_dto->determinations)){
@@ -305,12 +307,19 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = 
   @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('medium'), $value->medium, NULL, 1);
   @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('temperature'), $value->temperature, NULL, 2);
   @_description_list_group_add($sub_dl_groups, cdm_occurrence_field_name_label('definedMaterialOrMethod'), $value->definedMaterialOrMethod, NULL, 3);
-  */
-  if (isset_not_empty($du_dto->characterData)) {
-    $table_row_data[] = cdm_sob_dto_table_row(
-      cdm_occurrence_field_name_label('characterData'),
-      icon_link(path_to_specimen($du_dto->uuid), '', FALSE), false);
-  }
+*/
+ // if (isset_not_empty($du_dto->characterData)) {
+ // $detail_html = "";
+ //   foreach ($du_dto->characterData as $characterStatePair) {
+ //       if (isset_not_empty($characterStatePair->key) && isset_not_empty($characterStatePair->value)) {
+//          $detail_html .= "<i>" . $characterStatePair->key . "</i>:" . $characterStatePair->value;
+//          $detail_html .= "<br>";
+//        }
+//    }
+//    $table_row_data[] = cdm_sob_dto_table_row(
+//    cdm_occurrence_field_name_label('characterData'),$detail_html);
+      //icon_link(path_to_specimen($du_dto->uuid), '', FALSE), false);
+//}
 
   $heading = $table_row_data[0]['data'][1];
   unset($table_row_data[0]);
@@ -504,6 +513,24 @@ function compose_cdm_sob_dto_markers($sob_dto, $markers) {
 
   $label = count($table_row_data) > 1 ? t("Markers") : t("Marker");
   return cdm_sob_dto_table($label, $table_row_data, $sob_dto, 1);
+}
+/**
+ * @param $sob_dto
+ *
+ * @return array|null
+ */
+function cdm_sob_dto_character_data_table($sob_dto){
+    $table_row_data = [];
+    if (!empty($sob_dto) ) {
+        foreach ($sob_dto as $characterStatePair){
+            if (isset_not_empty($characterStatePair->key) && isset_not_empty($characterStatePair->value)) {
+                $table_row_data[] = cdm_sob_dto_table_row($characterStatePair->key, $characterStatePair->value);
+            }
+        }
+    }
+
+
+    return cdm_sob_dto_table('Character Data', $table_row_data, $sob_dto, 1);
 }
 
 function compose_cdm_sob_dto_status($sob_dto) {
