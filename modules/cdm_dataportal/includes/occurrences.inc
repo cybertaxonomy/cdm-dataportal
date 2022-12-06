@@ -1015,7 +1015,7 @@ function compose_compressed_specimen_derivate_table($root_units) {
     $sob_dto = $root_unit_uuid;
     if ($sob_dto) {
       //summary row
-      if($sob_dto->class == "FieldUnitDTO" && $sob_dto->country != "" && $sob_dto->collectingString != "") {
+      if($sob_dto->class == "FieldUnitDTO" && ($sob_dto->country != "" || $sob_dto->collectingString != "")) {
         $rows[] = array(
           'id' => 'derivate_summary' . $rowcount, // summary row id
           'class' => array('summary_row'),
