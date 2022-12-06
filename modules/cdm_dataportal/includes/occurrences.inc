@@ -28,7 +28,7 @@
  * @return string
  *  The markup for a specimen page
  */
-function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = true)
+function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = false)
 {
     $detail_html = "";
     //link to specimen page
