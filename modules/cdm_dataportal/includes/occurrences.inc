@@ -1015,48 +1015,86 @@ function compose_compressed_specimen_derivate_table($root_units) {
     $sob_dto = $root_unit_uuid;
     if ($sob_dto) {
       //summary row
-      if($sob_dto->class == "FieldUnitDTO" && ($sob_dto->country != "" || $sob_dto->collectingString != "")) {
-        $rows[] = array(
-          'id' => 'derivate_summary' . $rowcount, // summary row id
-          'class' => array('summary_row'),
-          'data' => array(
-            array(
-              'data' => $expand_icon . $collapse_icon,
-              'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
-            ),
-            array(
-              'data' => $sob_dto->country,
-              'class' => array('summary_row_cell')
-            ),
-            array(
-              'data' => partialToDate($sob_dto->date),
-              'class' => array('summary_row_cell')
-            ),
-            array(
-              'data' => $sob_dto->collectingString,
-              'class' => array('summary_row_cell')
-            ),
-            @array(
-              'data' => $sob_dto->collectionStatistics,
-              'class' => array('summary_row_cell')
-            ),
-            array(
-              'data' => $sob_dto->hasType ? $checked_box_icon : "",
-              'class' => array('summary_row_cell', 'summary_row_icon')
-            ),
-            array(
-              'data' => $sob_dto->hasSpecimenScan ? $checked_box_icon : "",
-              'class' => array('summary_row_cell', 'summary_row_icon')
-            ),
-            array(
-              # test
-              'data' => ($sob_dto->hasDna ? $sequence_icon : "") . " "
-                . ($sob_dto->hasDetailImage ? $detail_image_icon : "") . " "
-                . ($sob_dto->hasCharacterData ? $character_data_icon : ""),
-              'class' => array('summary_row_cell', 'summary_row_icon')
-            )
-          )
-        );
+      if($sob_dto->class == "FieldUnitDTO" ) {
+        if ( ($sob_dto->country == "" || $sob_dto->collectingString == ""))  {
+            $rows[] = array(
+                'id' => 'derivate_summary' . $rowcount, // summary row id
+                'class' => array('summary_row'),
+                'data' => array(
+                    array(
+                        'data' => $expand_icon . $collapse_icon,
+                        'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+                    ),
+                    array(
+                        'data' => $sob_dto->label,
+                        'class' => array('summary_row_cell'),
+                        'colspan' => 3
+                    ),
+                    @array(
+                        'data' => $sob_dto->collectionStatistics,
+                        'class' => array('summary_row_cell')
+                    ),
+                    array(
+                        'data' => $sob_dto->hasType ? $checked_box_icon : "",
+                        'class' => array('summary_row_cell', 'summary_row_icon')
+                    ),
+                    array(
+                        'data' => $sob_dto->hasSpecimenScan ? $checked_box_icon : "",
+                        'class' => array('summary_row_cell', 'summary_row_icon')
+                    ),
+                    array(
+                        # test
+                        'data' => ($sob_dto->hasDna ? $sequence_icon : "") . " "
+                            . ($sob_dto->hasDetailImage ? $detail_image_icon : "") . " "
+                            . ($sob_dto->hasCharacterData ? $character_data_icon : ""),
+                        'class' => array('summary_row_cell', 'summary_row_icon')
+                    )
+                )
+            );
+        }
+        else {
+            $rows[] = array(
+                'id' => 'derivate_summary' . $rowcount, // summary row id
+                'class' => array('summary_row'),
+                'data' => array(
+                    array(
+                        'data' => $expand_icon . $collapse_icon,
+                        'class' => array('summary_row_cell', 'summary_row_icon', 'expand_column')
+                    ),
+                    array(
+                        'data' => $sob_dto->country,
+                        'class' => array('summary_row_cell')
+                    ),
+                    array(
+                        'data' => partialToDate($sob_dto->date),
+                        'class' => array('summary_row_cell')
+                    ),
+                    array(
+                        'data' => $sob_dto->collectingString,
+                        'class' => array('summary_row_cell')
+                    ),
+                    @array(
+                        'data' => $sob_dto->collectionStatistics,
+                        'class' => array('summary_row_cell')
+                    ),
+                    array(
+                        'data' => $sob_dto->hasType ? $checked_box_icon : "",
+                        'class' => array('summary_row_cell', 'summary_row_icon')
+                    ),
+                    array(
+                        'data' => $sob_dto->hasSpecimenScan ? $checked_box_icon : "",
+                        'class' => array('summary_row_cell', 'summary_row_icon')
+                    ),
+                    array(
+                        # test
+                        'data' => ($sob_dto->hasDna ? $sequence_icon : "") . " "
+                            . ($sob_dto->hasDetailImage ? $detail_image_icon : "") . " "
+                            . ($sob_dto->hasCharacterData ? $character_data_icon : ""),
+                        'class' => array('summary_row_cell', 'summary_row_icon')
+                    )
+                )
+            );
+        }
       } else {
         $rows[] = array(
           'id' => 'derivate_summary' . $rowcount, // summary row id
