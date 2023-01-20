@@ -1787,9 +1787,9 @@ function cdm_settings_layout_taxon() {
   );
   $form['taxon_node'][CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES] = array(
     '#type' => 'checkbox',
-    '#title' => t('Show taxon node states'),
+    '#title' => t('Show taxon node status'),
     '#default_value' => variable_get(CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES, 1),
-    '#description' => t('Show the taxon node states excluded, unplaced and placement doubtful.'),
+    '#description' => t('Show the taxon node status excluded, unplaced, placement doubtful ...'),
   );
 
   // --------- TABBED TAXON ------- //
