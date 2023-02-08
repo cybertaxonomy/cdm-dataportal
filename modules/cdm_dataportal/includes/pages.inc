@@ -144,6 +144,132 @@ function compose_cdm_taxon_page_specimens($taxon) {
 }
 
 /**
+ * Composes a render array representing the ocurrences associated with the $taxon_dto.
+ *
+ * The resulting render array contains two elements:
+ *  - 'map': A map showing all point locations of the occurences is availabale
+ *  - 'specimen_list': the list of occurences prepated as table for theme_table()
+ *
+ * @param object $taxon_dto
+ *   A cdm Taxon DTO object
+ * @return array
+ *   A render array suitable for drupal_render()
+ *
+ * @ingroup Compose
+ *
+ */
+function compose_cdm_taxon_page_new_specimens($taxon_dto) {
+
+    $render_array = array();
+    RenderHints::pushToRenderStack('taxon_page_specimens');
+
+    $root_unit_dtos = null;
+    $specimensOrObservations = array();
+    $current_view_mode = variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT);
+    if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
+        // get fieldUnitDTOs
+        $root_unit_dtos = $taxon_dto->specimen;
+        $root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
+    } else {
+        // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
+        // extend by associated taxas occurrences
+        $relationship_filter_query_parameters = relationship_filter_query_parameters();
+
+        if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
+            $relationship_filter_query_parameters = array_merge($relationship_filter_query_parameters, $_REQUEST['pager']);
+        }
+        $by_associatedtaxon_query = http_build_query($relationship_filter_query_parameters);
+        $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+            null,
+            $by_associatedtaxon_query . '&taxonUuid=' . $taxon_dto->uuid
+        );
+        if (isset($pager->records[0])) {
+            $specimensOrObservations = $pager->records;
+        }
+        // cdm_ws_get(CDM_WS_OCCURRENCE_ROOTUNIT_DTO_BY_ASSOCIATEDTAXON // was CDM_WS_OCCURRENCE_FIELDUNIT_DTO_BY_ASSOCIATEDTAXON,
+        // null,
+        // $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
+        // );
+
+        // $specimensOrObservations = array();
+        // if(isset($pager->records[0])){
+        //    $specimensOrObservations =  $pager->records;
+        // }
+        // Collect media (fieldObjectMedia, derivedUnitMedia) and add as a custom field
+        foreach ($specimensOrObservations as &$occurrence) {
+            $occurrence->_fieldObjectMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+                $occurrence->uuid,
+                'fieldObjectMediaDTO',
+            ));
+            $occurrence->_derivedUnitMedia = cdm_ws_get(CDM_WS_DERIVEDUNIT_FACADE, array(
+                $occurrence->uuid,
+                'derivedUnitMedia',
+            ));
+        }
+        $specimensOrObservations = order_specimens_or_observations_by_date_and_type($specimensOrObservations);
+    }
+
+    // --- get map service HTTP query parameters
+    if (count($specimensOrObservations) > 0 || $root_unit_dtos > 0) {
+        $render_array['map'] = occurrence_map_query_parameters($taxon_dto);
+    }
+
+    // -------------------------------------------------------
+
+    if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE)){
+
+        //COMPRESSED SPECIMEN DERIVATE TABLE
+        $pager_root_units = cdm_ws_page(
+            cdm_compose_url(CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS, [$taxon_dto->uuid]),
+            variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT) * 2,
+            isset($_REQUEST['pager']['pageIndex']) ? isset($_REQUEST['pager']['pageIndex']) : 0
+        );
+
+        // if (isset($pager_root_units->records[0])) {
+        if (isset($root_unit_dtos[0])) {
+            $root_unit_uuids = array();
+            //foreach ($pager_root_units->records as $root_unit) {
+            foreach ($root_unit_dtos as $root_unit) {
+                $root_unit_uuids[] = $root_unit->uuid;
+            }
+            //$render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_uuids);
+            $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_dtos);
+        }
+
+        $render_array['pager'] = markup_to_render_array(
+            theme('cdm_pager', array(
+                'pager' => $pager_root_units,
+                'path' => $_REQUEST['q'],
+                'parameters' => $_REQUEST
+            )),
+            10 // weight
+        );
+    }
+    else if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE)){ // FIXME this seems to be wrong
+        $derivationTreeComposer = new DerivationTreeComposer($root_unit_dtos);
+        $derivationTreeComposer->setWithDetails(true);
+        $derivationTreeComposer->setCollapsible(true);
+        $render_array['specimen_list'] = $derivationTreeComposer->compose();
+        $render_array['specimen_list']['#weight'] = 2;
+    } else {
+        $specimen_table = compose_specimens_table_bottom_up($specimensOrObservations);
+
+        $render_array['specimen_list'] = $specimen_table;
+        $render_array['pager'] = markup_to_render_array(
+            theme('cdm_pager', array(
+                'pager' => $pager,
+                'path' => $_REQUEST['q'],
+                'parameters' => $_REQUEST,
+            )),
+            10 // weight
+        );
+    }
+
+    RenderHints::popFromRenderStack();
+    return $render_array;
+}
+
+/**
  * @return array
  *
  * TODO move to cdm_dataportal.module or api.module?
@@ -450,6 +576,270 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
 
   return $render_array;
 }
+/**
+ * Composes a taxon page based on the taxon_page_dto which can consist of multiple parts like
+ * 'General', 'Synonymy', 'Images', 'Keys'. These parts can be displayed
+ * as tabs or as sections of a single page.
+ *
+ * It is headed by the name of the accepted taxon without author and reference.
+ *
+ * @param $taxon_dto
+ *   The CDM Taxon Instance to compose the page for.
+ * @param $page_part
+ *   Name of the part to display, valid values are:
+ *    - 'description' -  for the general part
+ *    - 'images'
+ *    - 'synonymy'
+ *    - 'keys'
+ *    - 'all'
+ *
+ * @return array
+ *   A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
+
+    // we better cache here since drupal_get_query_parameters has no internal static cache variable
+    $http_request_params = drupal_get_query_parameters();
+
+    // add all mandatory js sources
+    _add_js_footnotes();
+
+
+    $render_array = array();
+    $weight = 0; // the weight for the render array elements
+
+    $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+
+    $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
+
+    $synonymy_as_tab = variable_get(CDM_SYNONYMY_AS_TAB, CDM_SYNONYMY_AS_TAB_DEFAULT) === 1;
+    if(!$synonymy_as_tab){
+        unset($tabsToDisplay["Synonymy"]);
+        // the synonymy is located in the general part in this case
+        if($page_part == 'synonymy'){
+            $page_part = 'description';
+        }
+    }
+
+    $media = _load_media_for_taxon($taxon_dto);
+
+
+    if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
+        taxon_page_tabs_hidden_add('images');
+    }
+
+    // --- GET specimensOrObservations --- //
+   // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon_dto->uuid, 'specimensOrObservationsCount'));
+    $specimensOrObservations = $taxon_dto -> specimens;
+    $specimensOrObservationsCount = $specimensOrObservations != null ? $specimensOrObservations -> count : 0;
+    if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
+        taxon_page_tabs_hidden_add('specimens');
+    }
+
+    // --- GET polytomousKeys --- //
+    $polytomousKeysPager = $taxon_dto->keys;
+    $identificationKeyCount = 0;
+    if ($polytomousKeysPager) {
+        $identificationKeyCount += $polytomousKeysPager->count;
+    }
+    if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
+        taxon_page_tabs_hidden_add('keys');
+    }
+
+    // --- GET TaxonNodeAgentRelations --- //
+    $current_classification_uuid = get_current_classification_uuid();
+    /*$taxon_node_agent_relations_pager = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODEAGENTRELATIONS,
+        array(
+            $taxon_dto->uuid,
+            $current_classification_uuid,
+        ),
+        "pageSize=1&pageIndex=0"// we are only interested into the count so we are fetching only one item, o is not possible!
+    );*/
+    $taxon_node_in_classification = get_node_in_classification($taxon_dto, $current_classification_uuid);
+    $taxon_node_agent_relations_pager = null;
+    if ($taxon_node_in_classification != null){
+        $taxon_node_agent_relations_pager = $taxon_node_in_classification -> agents;
+    }
+
+    if (!$taxon_node_agent_relations_pager || $taxon_node_agent_relations_pager->count == 0){
+        taxon_page_tabs_hidden_add('experts');
+    }
+
+    if (!isset($tabsToDisplay["Synonymy"]) || $tabsToDisplay["Synonymy"] == '0') {
+        taxon_page_tabs_hidden_add('synonymy');
+    }
+
+    // -------------------------------------------- //
+
+    if(variable_get(CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES, 1) && ( $page_part == 'description' || $page_part == 'synonymy' || $page_part == 'all')){
+        $taxon_nodes = $taxon_dto->taxonNodes-> items;
+        if(is_array($taxon_nodes)){
+            $render_array['taxon_node_status'] = compose_taxon_node_new_status($taxon_nodes);
+            $render_array['taxon_node_status']['#weight'] = -100;
+        }
+    }
+
+    if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR) && isset($_REQUEST['acceptedFor'])) {
+        $render_array['accepted_for'] = markup_to_render_array(cdm_accepted_for($_REQUEST['acceptedFor']), $weight++);
+    }
+
+    // --- PAGE PART: DESCRIPTION --- //
+    if (!taxon_page_tabs_hidden_check('description') && ($page_part == 'description' || $page_part == 'all')) {
+
+        $merged_tree = merged_taxon_new_feature_tree($taxon_dto);
+
+
+        $render_array['general'] = compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, !$synonymy_as_tab);
+        $render_array['general']['#weight'] = $weight++;
+        $render_array['general']['#prefix'] = '<div id="general" class="page-part">';
+        $render_array['general']['#suffix'] = '</div>';
+    }
+
+    // --- PAGE PART: IMAGES --- //
+    if (!taxon_page_tabs_hidden_check('images') && ($page_part == 'images' || $page_part == 'all')) {
+        $images_html = '<div id="images" class="page-part">';
+        if ($page_part == 'all') {
+            $images_html .= '<h2>' . t(cdm_taxonpage_tab_label('Images')) . '</h2>';
+        }
+        // Get the image gallery as configured by the admin.
+        $configured_image_gallery_viewer = variable_get(CDM_MEDIA_GALLERY_VIEWER, CDM_MEDIA_GALLERY_VIEWER_DEFAULT);
+        if($configured_image_gallery_viewer != 'fsi'){
+            $images_html .= render_taxon_media_gallery($taxon_dto, $configured_image_gallery_viewer, $media);
+        } else {
+            // the fsi_gallery requires a flash plugin, in case the client browser is not supporting
+            // flash we also need to provide an the default gallery as alternative
+            $images_html .= render_taxon_media_gallery($taxon_dto, CDM_MEDIA_GALLERY_VIEWER_DEFAULT, $media);
+            $images_html .= render_taxon_media_gallery($taxon_dto, $configured_image_gallery_viewer, $media);
+        }
+        $images_html .= '</div>'; // END of <div id="images">
+        $render_array['images'] = markup_to_render_array($images_html, $weight++);
+    }
+
+    // --- PAGE PART: SYNONYMY --- //
+    if (!taxon_page_tabs_hidden_check('synonymy') && (($page_part == 'synonymy' || $page_part == 'all') && $synonymy_as_tab)) {
+        $synonymy_html = '<div id="synonymy" class="page-part">';
+        if ($page_part == 'all') {
+            $synonymy_html .= '<h2>' . t(cdm_taxonpage_tab_label('Synonymy')) . '</h2>';
+        }
+        $addAcceptedTaxon = variable_get(CDM_DATAPORTAL_NOMREF_IN_TITLE, CDM_DATAPORTAL_NOMREF_IN_TITLE_DEFAULT);
+
+        $synonym_a = compose_cdm_taxon_page_new_synonymy($taxon_dto, $addAcceptedTaxon);
+        $synonymy_html .= drupal_render($synonym_a);
+
+        $synonymy_html .= '</div>';
+        $render_array['synonymy'] = markup_to_render_array($synonymy_html, $weight++);
+
+    }
+
+    // --- PAGE PART: SPECIMENS --- //
+    if (!taxon_page_tabs_hidden_check('specimens') && ($specimensOrObservationsCount > 0 && ($page_part == 'specimens' || $page_part == 'all'))) {
+        $render_array['specimens'] = array(
+            '#prefix' => '<div id="specimens" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Specimens')) . '</h2>' : ''),
+            'content' => compose_cdm_taxon_page_new_specimens($taxon_dto), // returns render array
+            '#suffix' => '</div>',
+        );
+    }
+
+    // --- PAGE PART: KEYS --- //
+    if(!taxon_page_tabs_hidden_check('keys')){
+        if ($identificationKeyCount == 1 && $page_part == 'keys'){
+            drupal_goto(path_to_key($polytomousKeysPager->records[0]->class, $polytomousKeysPager->records[0]->uuid));
+        }
+        else if ($identificationKeyCount > 0 && ($page_part == 'keys' || $page_part == 'all')) {
+            $keys_html = '<div id="keys" class="page-part">';
+            if ($page_part == 'all') {
+                $keys_html .= '<h2>' . t(cdm_taxonpage_tab_label('Keys')) . '</h2>';
+            }
+            $keys_html .= theme('cdm_block_IdentificationKeys', array('taxonUuid' => $taxon_dto->uuid));
+            $keys_html .= '</div>';
+            $render_array['keys'] = markup_to_render_array($keys_html, $weight++);
+        }
+    }
+
+    // --- PAGE PART: EXPERTS --- //
+
+    if (!taxon_page_tabs_hidden_check('experts') && ($page_part == 'experts' || $page_part == 'all')) {
+        $render_array['experts'] = array(
+            '#prefix' => '<div id="experts" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Experts')) . '</h2>' : ''),
+            'content' => compose_cdm_taxon_page_experts($taxon_dto), // returns render array
+            '#suffix' => '</div>',
+        );
+    }
+
+    // ------------------ END OF PARTS -------------- //
+
+    // adjust weights of page and toc elements according to the settings
+    $taxontabs_weights = get_array_variable_merged(CDM_TAXONPAGE_TAB_WEIGHT, CDM_TAXONPAGE_TAB_WEIGHT_DEFAULT);
+    foreach($taxontabs_weights as $tab_key => $weight){
+        if(isset($render_array[$tab_key])){
+            $render_array[$tab_key]['#weight'] = $weight;
+        }
+    }
+
+
+    // set up the TOC and pseudo feature blocks for the pages which contain all page parts
+    if($page_part == 'all' && (!isset( $render_array['general']) || count($render_array['general']) == 0 )) {
+
+        $bibliography_block = make_bibliography_feature_block();
+        if($bibliography_block){
+            $render_array['bibliography_block'] = _block_get_renderable_array([$bibliography_block]);
+            $render_array['bibliography_block']['#weight'] = 100;
+            cdm_toc_list_add_item('Bibliography', 'bibliography', null, false, $render_array['bibliography_block']['#weight']);
+        }
+
+        $toc_elements = [];
+        asort($taxontabs_weights);
+        foreach(array_keys($taxontabs_weights) as $tab_key){
+            if(isset($render_array[$tab_key])){
+                if($tab_key != 'general'){
+                    // add entry for page part
+                    $toc_elements[] = array(
+                        'data' => l(t(cdm_taxonpage_tab_label(ucfirst($tab_key))), $_GET['q'], array('fragment' => $tab_key, 'query' => $http_request_params)),
+                        'class' => array('page-part-toc-item-' . $tab_key)
+                    );
+                } else {
+                    // add content of profile part instead
+                    if(isset($render_array['general'])) {
+                        // in case all tabs are shown at once the feature tocs
+                        // should be integrated into the tabs toc as sub list
+                        // and the profile image should be on top of the page
+                        if(isset($render_array['general']['taxon_description_feature_toc'])){;
+                            foreach ($render_array['general']['taxon_description_feature_toc']['#items'] as $profile_toc_item){
+                                $toc_elements[] = $profile_toc_item;
+                            }
+                            unset($render_array['general']['taxon_description_feature_toc']);
+                        }
+                    }
+                }
+            }
+        }
+
+        // move profile image in page structure
+        if(isset($render_array['general']['taxon_profile_image'])){
+            $render_array['profile_image'] = $render_array['general']['taxon_profile_image'];
+            $render_array['profile_image']['#weight'] = -100;
+            unset($render_array['general']['taxon_profile_image']);
+        }
+
+        // finally add the table of contents to the render array
+        $render_array['toc'] = array(
+            '#theme' => 'item_list',
+            '#items' => $toc_elements,
+            '#title' => t('Content'),
+            '#weight' => -101,
+            '#suffix' => '</div>',
+            '#prefix'=> '<div id="page-toc">'
+        );
+
+    }
+
+
+    return $render_array;
+}
+
+
 
 /**
  * TODO should this function really be a compose function?
@@ -461,7 +851,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
  *  - 'taxon_description_features'
  *
  *
- * @param object taxon
+ * @param object taxon_dto
  * @param object $merged_tree
  * @param object media
  * @param bool $add_synonymy
@@ -476,15 +866,15 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description') {
  *
  * @ingroup compose
  */
-function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synonymy) {
+function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $add_synonymy) {
 
   $render_array = array();
 
   $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
 
   $hide_taxon_profile_image = FALSE;
-  if (variable_get('image_hide_rank', '0') != '0' && isset($taxon->name->rank->uuid)) {
-    $rankCompare = rank_compare($taxon->name->rank->uuid, variable_get('image_hide_rank', '-99'));
+  if (variable_get('image_hide_rank', '0') != '0' && isset($taxon_dto->name->rank->uuid)) {
+    $rankCompare = rank_compare($taxon_dto->name->rank->uuid, variable_get('image_hide_rank', '-99'));
     $hide_taxon_profile_image = ($rankCompare > -1);
   }
 
@@ -560,7 +950,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   }
 
   if($add_synonymy){
-    $synonymy_a = compose_cdm_taxon_page_synonymy($taxon, true);
+    $synonymy_a = compose_cdm_taxon_page_synonymy($taxon_dto, true);
     $synonymy_a['#weight'] = -102;
     $synonymy_a['#prefix'] = '<div id="synonymy">';
     $synonymy_a['#suffix'] = '</div>';
@@ -570,7 +960,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   //  $pseudo_feature_block_toc_items = array();
 
   // Render the sections for each real feature
-  $feature_block_list = make_feature_block_list($merged_tree->root->childNodes, $taxon);
+  $feature_block_list = make_feature_block_new_list($merged_tree, $taxon_dto);
 
   // >>>>>>>>>>>>>>>>>>> PSEUDO FEATURES >>>>>>>>>>>>>>>>>>>
   $pseudo_feature_weights = get_array_variable_merged(CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS, CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS_DEFAULT);
@@ -585,7 +975,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
   // Descriptions (aggregated)
   $descriptionTypes = array();
   $descriptionTypes['descriptionTypes'] = ("AGGREGATED_STRUC_DESC");
-  $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon->uuid . '/descriptions', $descriptionTypes);
+  $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon_dto->uuid . '/descriptions', $descriptionTypes);
   if (isset($aggregatedDescriptions) and !empty($aggregatedDescriptions)) {
       // if($feature_block_list) ....TODO
       $feature_description = make_pseudo_feature('Descriptions (aggregated)', PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS);
@@ -635,6 +1025,190 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
 }
 
 /**
+ * TODO should this function really be a compose function?
+ *     For a compose function must there always be a theme function with the same name? (ak 8.8.2013)
+ *
+ * composes and returns an render array containing the components of the taxon profile tab:
+ *  - 'taxon_profile_image'
+ *  - 'taxon_description_feature_toc'
+ *  - 'taxon_description_features'
+ *
+ *
+ * @param object taxon
+ * @param object $merged_tree
+ * @param object media
+ * @param bool $add_synonymy
+ *
+ * @return array
+ *   A Drupal render array with the following elements:
+ *     - 'taxon_profile_image'
+ *     - 'taxon_description_feature_toc'
+ *     - 'taxon_description_features'
+ *
+ * @throws Exception
+ *
+ * @ingroup compose
+ */
+function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synonymy) {
+
+    $render_array = array();
+
+    $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
+
+    $hide_taxon_profile_image = FALSE;
+    if (variable_get('image_hide_rank', '0') != '0' && isset($taxon->name->rank->uuid)) {
+        $rankCompare = rank_compare($taxon->name->rank->uuid, variable_get('image_hide_rank', '-99'));
+        $hide_taxon_profile_image = ($rankCompare > -1);
+    }
+
+    if ($taxon_profile_image_settings['show'] && !$hide_taxon_profile_image) {
+
+        $representationPart = new stdClass();
+        $attributes = array();
+        if (isset($media[0])) {
+            // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
+            // which only contains the thumbnail representation even if the height and width filters are not set.
+            // -->
+            $preferred_media = cdm_ws_get(CDM_WS_MEDIA, $media[0]->uuid);
+            $preferred_representations = cdm_preferred_media_representations($preferred_media, array(
+                'image/jpg',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+            ),
+                $taxon_profile_image_settings['maxextend'],
+                $taxon_profile_image_settings['maxextend']
+            );
+            if(count($preferred_representations) > 0){
+
+                $representation = array_shift($preferred_representations);
+                $representationPart = $representation->parts[0];
+                $attributes['alt'] = $representationPart->uri;
+
+                if (!empty($taxon_profile_image_settings['media_uri_query'])) {
+                    $representationPart->uri = $representationPart->uri
+                        . (strpos($representationPart->uri, '?') !== FALSE ? '&' : '?')
+                        . $taxon_profile_image_settings['media_uri_query'];
+                }
+            }
+        }
+        else {
+            if ($taxon_profile_image_settings['custom_placeholder_enabled']) {
+                // show placeholder image instead
+                if (!empty($taxon_profile_image_settings['custom_placeholder_image_on']) && !empty($taxon_profile_image_settings['custom_placeholder_image_fid'])) {
+                    // use the user provided image
+                    $profile_image_file = file_load($taxon_profile_image_settings['custom_placeholder_image_fid']);
+                    $url = file_create_url($profile_image_file->uri);
+                    $image_info = image_get_info($profile_image_file->uri);
+                    if($image_info){
+                        $representationPart->width = $image_info['width'];
+                        $representationPart->height = $image_info['height'];
+                        $representationPart->uri = $url;
+                    }
+                }
+                if(!isset($representationPart->width)){
+                    // either no custom placeholder defined or $image_info could not be loaded
+                    // use the hard coded default
+                    $representationPart->width = 184;
+                    $representationPart->height = 144;
+                    $representationPart->uri = base_path() . drupal_get_path('module',
+                            'cdm_dataportal') . '/images/no_picture.png';
+                }
+                $attributes['alt'] = "no image available";
+            }
+        }
+
+        if (isset($representationPart->uri)) {
+            $profile_image = cdm_media_gallery_entry_image(
+                ImageMediaItem::fromMediaRepresentationPart($representationPart),
+                $taxon_profile_image_settings['maxextend'],
+                FALSE,
+                $attributes
+            );
+            // NOTE: style="width:${maxextend}px' is needed for IE8 !!!
+            $max_extend_with = $taxon_profile_image_settings['maxextend'] . 'px';
+            $render_array['taxon_profile_image'] = markup_to_render_array('<div id="taxonProfileImage" style="width:' . $max_extend_with . '">' . $profile_image . '</div>',
+                -101);
+        }
+    }
+
+    if($add_synonymy){
+        $synonymy_a = compose_cdm_taxon_page_synonymy($taxon, true);
+        $synonymy_a['#weight'] = -102;
+        $synonymy_a['#prefix'] = '<div id="synonymy">';
+        $synonymy_a['#suffix'] = '</div>';
+        $render_array['synonymy'] = $synonymy_a;
+    }
+
+    //  $pseudo_feature_block_toc_items = array();
+
+    // Render the sections for each real feature
+    $feature_block_list = make_feature_block_list($merged_tree->root->childNodes, $taxon);
+
+    // >>>>>>>>>>>>>>>>>>> PSEUDO FEATURES >>>>>>>>>>>>>>>>>>>
+    $pseudo_feature_weights = get_array_variable_merged(CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS, CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS_DEFAULT);
+
+    // Bibliography
+    $bibliography_block = make_bibliography_feature_block();
+    if($bibliography_block){
+        $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]] = $bibliography_block;
+        cdm_toc_list_add_item('Bibliography', 'bibliography', null, false, $pseudo_feature_weights[PSEUDO_FEATURE_BIBLIOGRAPHY]);
+    }
+
+    // Descriptions (aggregated)
+    $descriptionTypes = array();
+    $descriptionTypes['descriptionTypes'] = ("AGGREGATED_STRUC_DESC");
+    $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon->uuid . '/descriptions', $descriptionTypes);
+    if (isset($aggregatedDescriptions) and !empty($aggregatedDescriptions)) {
+        // if($feature_block_list) ....TODO
+        $feature_description = make_pseudo_feature('Descriptions (aggregated)', PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS);
+        $description_item = '';
+        foreach ($aggregatedDescriptions as $description) {
+            $description_item = '<div class="' . html_class_attribute_ref($description) . '">';
+            $description_item .= render_description_string(get_root_nodes_for_dataset($description));
+            $description_item .= ' ' . icon_link(path_to_description($description->uuid));
+            $description_item .= '<div class="content-caption">'. statistical_values_explanation() . '</div>';
+            $description_item .= '</div>';
+        }
+        $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
+        $description_block->content = [];
+        $description_block->content[] = compose_feature_block_wrap_elements([$description_item], $feature_description);
+
+        $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS]] = $description_block;
+        cdm_toc_list_add_item('Descriptions (aggregated)', 'aggregation_descriptions', null, false, $pseudo_feature_weights[PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS]);
+
+
+    }
+
+    // sort by weight
+    ksort($feature_block_list);
+    $render_array['taxon_description_features'] = _block_get_renderable_array($feature_block_list);
+
+    /*  // update TOC
+      if ($pseudo_feature_block_toc_items){
+        foreach ($pseudo_feature_block_toc_items as $label=>$fragment){
+          cdm_toc_list_add_item($label, $fragment);
+        }
+      }
+    */
+    // <<<<<<<<<<<<<<<<<<< PSEUDO FEATURES <<<<<<<<<<<<<<<<<<<
+
+    // create the table of content
+    $toc = array(
+        '#theme' => 'item_list',
+        '#items' => cdm_toc_list(),
+        '#title' => t('Content'),
+        '#weight' => -100,                  // move to the top
+        '#suffix' => '</div>',
+        '#prefix'=> '<div id="page-toc">'
+    );
+    $render_array['taxon_description_feature_toc'] = $toc;
+
+    return $render_array;
+}
+
+
+/**
  * @return object|\stdclass
  */
 function make_bibliography_feature_block() {
@@ -675,7 +1249,7 @@ function render_cdm_specimen_link($specimen) {
  * The synonymy list is headed by the complete scientific name
  * of the accepted taxon with nomenclatural reference.
  *
- * @param object $taxon
+ * @param object $taxon_dto
  * @param boolean $add_accepted_taxon
  *
  * @return array
@@ -685,7 +1259,7 @@ function render_cdm_specimen_link($specimen) {
  *
  * @ingroup compose
  */
-function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
+function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
 
   RenderHints::pushToRenderStack('taxon_page_synonymy');
 
@@ -693,8 +1267,8 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
   // both should have the same footnote key
   RenderHints::setFootnoteListKey(RenderHints::getRenderPath());
 
-  $synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, array($taxon->uuid));
-
+  $homotypic_synomyms = $taxon_dto->homotypicSynonyms;
+  $heterotypic_synonyms = $taxon_dto-> heterotypicSynonyms;
   $out = '';
 
   // Render accepted taxon.
@@ -710,17 +1284,17 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
     $accepted_name = '';
     if (variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0)) {
       $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
-      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon->secSource->citation->titleCache . '</div>';
+      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon_dto->taxonLabel . '</div>';
     }
     if (isset($taxon->name->nomenclaturalSource->citation)) {
       $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
     }
 
     $accepted_name .= '<div class="accepted-name">';
-    $accepted_name .= render_taxon_or_name($taxon, NULL, $referenceUri);
+    $accepted_name .= render_new_taxon_or_name($taxon_dto, NULL, $referenceUri);
 
-    $name_relations = cdm_name_relationships_for_taxon($taxon);
-    $name_relationships = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
+    $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
+    $name_relationships = compose_name_relationships_inline($name_relations, $taxon_dto->name->uuid, $taxon_dto->uuid);
     // Render relationships of accepted name.
     if(isset($name_relationships['list']['items'][0])){
       $accepted_name .= ' ' . drupal_render($name_relationships);
@@ -736,24 +1310,24 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
 
   // Render the homotypicSynonymyGroup including the type information.
   $out .= theme(
-    'cdm_homotypicSynonymyGroup',
+    'cdm_new_homotypicSynonymyGroup',
     array(
-      'synonymList' => $synomymie->homotypicSynonymsByHomotypicGroup,
-      'accepted_taxon_name_uuid' => $taxon->name->uuid
+      'synonymList' => $homotypic_synomyms,
+      'accepted_taxon_name_uuid' => $taxon_dto->uuid
     )
   );
 
 
   // Render accepted taxon heterotypic synonymy groups.
-  if ($synomymie->heterotypicSynonymyGroups) {
-    foreach ($synomymie->heterotypicSynonymyGroups as $homotypicalGroup) {
+  if ($heterotypic_synonyms) {
+    foreach ($heterotypic_synonyms as $homotypicalGroup) {
       $out .= theme('cdm_heterotypicSynonymyGroup', array('homotypicalGroup' => $homotypicalGroup));
     }
   }
   // Render taxon relationships.
   if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)) {
-    $taxonRelationshipsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, $taxon->uuid);
-    $out .= cdm_taxonRelationships($taxonRelationshipsDTO, $taxon);
+    $taxonRelationshipsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, $taxon_dto->uuid);
+    $out .= cdm_taxonRelationships($taxonRelationshipsDTO, $taxon_dto);
   }
 
   RenderHints::popFromRenderStack();
@@ -761,6 +1335,98 @@ function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
   return markup_to_render_array($out);
 }
 
+/**
+ * Returns HTML containing the synonymy for the accepted taxon.
+ *
+ * Shows the whole synonymy for the accepted taxon.
+ * The synonymy list is headed by the complete scientific name
+ * of the accepted taxon with nomenclatural reference.
+ *
+ * @param object $taxon
+ * @param boolean $add_accepted_taxon
+ *
+ * @return array
+ *  Drupal render array for the synonymy
+ *
+ * @throws Exception
+ *
+ * @ingroup compose
+ */
+function compose_cdm_taxon_page_synonymy($taxon, $add_accepted_taxon) {
+
+    RenderHints::pushToRenderStack('taxon_page_synonymy');
+
+    // footnote key for the homotypic group and accepted taxon,
+    // both should have the same footnote key
+    RenderHints::setFootnoteListKey(RenderHints::getRenderPath());
+
+    $synomymie = cdm_ws_get(CDM_WS_PORTAL_TAXON_SYNONYMY, array($taxon->uuid));
+
+    $out = '';
+
+    // Render accepted taxon.
+    //
+    // foonotes of the accepted taxon will be rendered in the homotypic group section
+    // even if there are not synonyms in the homotypic group
+    // homotypic group and accepted taxon should have the same footnote key
+    $referenceUri = '';
+    if ($add_accepted_taxon) {
+        // set new render path for the accepted taxon so
+        // it can be styled differently via the name render part definitions
+        RenderHints::pushToRenderStack('accepted_taxon');
+        $accepted_name = '';
+        if (variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0)) {
+            $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
+            $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon->secSource->citation->titleCache . '</div>';
+        }
+        if (isset($taxon->name->nomenclaturalSource->citation)) {
+            $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
+        }
+
+        $accepted_name .= '<div class="accepted-name">';
+        $accepted_name .= render_taxon_or_name($taxon, NULL, $referenceUri);
+
+        $name_relations = cdm_name_relationships_for_taxon($taxon);
+        $name_relationships = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
+        // Render relationships of accepted name.
+        if(isset($name_relationships['list']['items'][0])){
+            $accepted_name .= ' ' . drupal_render($name_relationships);
+        }
+        $accepted_name .= '</div>';
+        RenderHints::popFromRenderStack();
+    }
+
+    // --- Render homotypic synonymy group
+    if (!empty($accepted_name)) {
+        $out .= $accepted_name;
+    }
+
+    // Render the homotypicSynonymyGroup including the type information.
+    $out .= theme(
+        'cdm_homotypicSynonymyGroup',
+        array(
+            'synonymList' => $synomymie->homotypicSynonymsByHomotypicGroup,
+            'accepted_taxon_name_uuid' => $taxon->name->uuid
+        )
+    );
+
+
+    // Render accepted taxon heterotypic synonymy groups.
+    if ($synomymie->heterotypicSynonymyGroups) {
+        foreach ($synomymie->heterotypicSynonymyGroups as $homotypicalGroup) {
+            $out .= theme('cdm_heterotypicSynonymyGroup', array('homotypicalGroup' => $homotypicalGroup));
+        }
+    }
+    // Render taxon relationships.
+    if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)) {
+        $taxonRelationshipsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, $taxon->uuid);
+        $out .= cdm_taxonRelationships($taxonRelationshipsDTO, $taxon);
+    }
+
+    RenderHints::popFromRenderStack();
+
+    return markup_to_render_array($out);
+}
 
 /**
  * composes and returns an render array for the experts associated with the given taxon

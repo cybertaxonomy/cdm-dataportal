@@ -2040,11 +2040,45 @@ function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
 }
 
 /**
+ * finds and returns the FeatureNode denoted by the given $feature_uuid
+ *
+ * TODO: This needs to be adapted to the new DTO implementation
+ *
+ * @param $feature_tree_nodes
+ *    The nodes contained in CDM FeatureTree entitiy: $feature->root->childNodes
+ * @param $feature_uuid
+ *    The UUID of the Feature
+ * @return object
+ *    the FeatureNode or null
+ */
+function &cdm_feature_tree_new_find_node($feature_tree_nodes, $feature_uuid){
+
+    // 1. scan this level
+    foreach ($feature_tree_nodes as $node){
+        if($node->uuid == $feature_uuid){
+            return $node;
+        }
+    }
+
+    // 2. descend into childen do we need this in the new implementation???
+    foreach ($feature_tree_nodes as $node){
+        if(is_array($node->childNodes)){
+            $node = cdm_feature_tree_find_node($node->childNodes, $feature_uuid);
+            if($node) {
+                return $node;
+            }
+        }
+    }
+    $null_var = null; // kludgy workaround to avoid "PHP Notice: Only variable references should be returned by reference"
+    return $null_var;
+}
+
+/**
  * Merges the given featureNodes structure with the descriptionElements.
  *
  * This method is used in preparation for rendering the descriptionElements.
  * The descriptionElements which belong to a specific feature node are appended
- * to a the feature node by creating a new field:
+ * to a feature node by creating a new field:
  *  - descriptionElements: the CDM DescriptionElements which belong to this feature
  * The descriptionElements will be cleared in advance in order to allow reusing the
  * same feature tree without the risk of mixing sets of description elements.
@@ -2057,7 +2091,7 @@ function &cdm_feature_tree_find_node($feature_tree_nodes, $feature_uuid){
  *    An array of cdm FeatureNodes which may be hierarchical since feature nodes
  *    may have children.
  * @param array $descriptionElements
- *    An flat array of cdm DescriptionElements
+ *    A flat array of cdm DescriptionElements
  * @return array
  *    The $featureNodes structure enriched with the according $descriptionElements
  */

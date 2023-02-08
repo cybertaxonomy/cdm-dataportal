@@ -575,6 +575,95 @@ function handle_annotations_and_sources($entity, $inline_text_prefix = null, $fo
 }
 
 /**
+ * TODO: This needs to be adapted to the new DTO implementation
+ * @param $entity
+ *    The cdm entity dto for which the annotations and sources are to be handled.
+ * @param $inline_text_prefix
+ *   Only used to decide if the source references should be enclosed in
+ *   brackets or not when displayed inline. This text will not be included into
+ *   the response.
+ * @param $footnote_list_key_suggestion string
+ *   Optional parameter. If this parameter is left empty (null, 0, "") the
+ *   footnote key will be determined by the nested method calls by calling
+ *   RenderHints::getFootnoteListKey().
+ *
+ * @return AnnotationsAndSources
+ *  an object with the following elements:
+ *   - foot_note_keys: all footnote keys as markup
+ *   - source_references: an array of the source references citations
+ *   - names used in source: an associative array of the names in source,
+ *        the name in source strings are de-duplicated
+ *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
+ */
+function handle_new_annotations_and_sources($entity, $inline_text_prefix = null, $footnote_list_key_suggestion = null, AnnotationsAndSources $annotationsAndSources = null) {
+
+    if($annotationsAndSources == null){
+        $annotationsAndSources = new AnnotationsAndSources();
+    }
+
+    // some entity types only have single sources: TODO maybe we do not need this anymore and do all sorting on serverside
+   // $sources = cdm_entity_new_sources_sorted($entity);
+    $sources = $entity->sources;
+    if ($sources == null){
+        return $annotationsAndSources;
+    }
+    $config = RenderHints::getAnnotationsAndSourceConfig();
+
+    if ($config['sources_as_content']) {
+        foreach ($sources as $source) {
+            if (_is_original_source_type($source)) {
+                $reference_citation = render_original_source(
+                    $source,
+                    $config['link_to_reference'],
+                    $config['link_to_name_used_in_source']
+                );
+
+                if ($reference_citation) {
+                    if (empty($inline_text_prefix)) {
+                        $annotationsAndSources->addSourceReferencesCitation($reference_citation);
+                    } else {
+                        $annotationsAndSources->addSourceReferencesCitation(' (' . $reference_citation . ')');
+                    }
+                }
+
+                // also put the name in source into the array, these are already included in the $reference_citation but are
+                // still required to be available separately in some contexts.
+                $name_in_source_render_array = compose_name_in_source(
+                    $source,
+                    $config['link_to_name_used_in_source']
+                );
+
+                if (!empty($name_in_source_render_array)) {
+                    $annotationsAndSources->putNamesUsedInSource($name_in_source_render_array['#_plaintext'], drupal_render($name_in_source_render_array));
+                }
+            }
+        } // END of loop over sources
+
+        // annotations footnotes separate from sources
+        $footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
+        $annotationsAndSources->addAllFootNoteKeys($footnote_keys);
+
+    } // END of references inline
+
+    // footnotes for sources and annotations or put into into bibliography if requested ...
+    $do_foonotes_as_content = isset($config['annotations_as_content']) && $config['annotations_as_content'];
+    if($do_foonotes_as_content){
+        $annotationsAndSources->setAnnotations(cdm_entity_annotations_as_content($entity));
+    }
+    /*TODO
+    if ($config['add_footnote_keys']) {
+        $annotationsAndSources->addAllFootNoteKeys(cdm_entity_footnotes(
+            $entity,
+            $footnote_list_key_suggestion,
+            $config['link_to_reference'],
+            $config['link_to_name_used_in_source'],
+            (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE),
+            !$do_foonotes_as_content
+        ));
+    }*/
+    return $annotationsAndSources;
+}
+/**
  * Get the source or the sources from a cdm entity and return them ordered by see compare_original_sources()
  * (Some entity types only have single sources)
  * @param $entity
@@ -599,6 +688,33 @@ function cdm_entity_sources_sorted($entity) {
   }
   usort($sources, 'compare_original_sources');
   return $sources;
+}
+
+/**
+ * Get the source or the sources from a cdm entity and return them ordered by see compare_original_sources()
+ * (Some entity types only have single sources) TODO this should be done serverside and the sources should be added to the dto
+ * @param $entity
+ *
+ * @return array
+ */
+function cdm_entity_new_sources_sorted($entity) {
+    if (isset($entity->source) && is_object($entity->source)) {
+        $sources = [$entity->source];
+    }
+    else if (isset($entity->sources)) {
+        $sources = $entity->sources;
+    }
+    else {
+        // try to load the sources
+        if(isset_not_empty($entity->uuid)){
+            $sources = cdm_ws_fetch_all(cdm_compose_url('portal/' . cdm_ws_base_uri($entity->class), [ $entity->uuid, 'sources']));
+        } else {
+            // this may happen with DerivedUnitFaced, also with others?
+            $sources = [];
+        }
+    }
+    usort($sources, 'compare_original_sources');
+    return $sources;
 }
 
 /**

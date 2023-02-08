@@ -593,6 +593,145 @@ function compose_description_element($element, $feature_block_settings, $element
     return  $block_list;
   }
 
+
+/**
+ * Returns a set of feature blocks for a taxon profile from the $mergedFeatureNodes of a given $taxon_dto.
+ *
+ * The taxon profile consists of drupal block elements, one for the description elements
+ * of a specific feature. The structure is defined by specific FeatureTree.
+ * The chosen FeatureTree is merged with the list of description elements prior to using this method.
+ *
+ * The merged nodes come with the taxon_dto
+ *
+ * @see cdm_ws_descriptions_by_featuretree()
+ *
+ * @param $mergedFeatureNodes
+ *
+ * @param $taxon
+ *
+ * @return array
+ *  A Drupal render array containing feature blocks and the table of content
+ *
+ * @ingroup compose
+ */
+function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
+
+    $block_list = array();
+
+    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
+
+    $use_description_features = array(UUID_USE);
+
+
+    RenderHints::pushToRenderStack('feature_block');
+    // Create a drupal block for each feature
+    $block_weight = - FEATURE_BLOCK_WEIGHT_INCREMENT;
+    foreach ($mergedFeatureNodes as $feature_node) {
+
+        $block_weight = $block_weight + FEATURE_BLOCK_WEIGHT_INCREMENT;
+
+        if ((isset($feature_node->facts[0]) )){
+               // || has_feature_node_description_elements($feature_node)) && $feature_node->term->uuid != UUID_IMAGE) { // skip empty or suppressed features
+
+            RenderHints::pushToRenderStack($feature_node->uuid);
+
+            //$feature_name = cdm_term_representation($feature_node->term, 'Unnamed Feature');
+            $feature_name = $feature_node-> label;
+
+            //TODO!!
+            $feature_block_settings = get_feature_block_settings($feature_node->term->uuid);
+
+
+            $block = feature_block($feature_name, $feature_node->term);
+            $block->content = array();
+            $block_content_is_empty = TRUE;
+
+            if(array_search($feature_node->term->uuid, $use_description_features) !== false) {
+                // do not show features which belong to the UseDescriptions, these are
+                // handled by compose_feature_block_items_use_records() where the according descriptions are
+                // fetched again separately.
+                // UseDescriptions are a special feature introduced for palmweb
+                continue;
+            }
+
+            /*
+             * Content/DISTRIBUTION.
+             */
+            if ($feature_node->label == 'Distribution') {
+                $block = compose_feature_block_distribution($taxon, $feature_node->facts, $feature_node->term);
+                $block_content_is_empty = FALSE;
+            }
+
+            /*
+             * Content/COMMON_NAME.
+             */
+            else if ($feature_node->label == 'CommonName') {
+                $common_names_render_array = compose_feature_block_items_feature_common_name($feature_node->facts, $feature_node->term);
+                $block->content[] = $common_names_render_array;
+                $block_content_is_empty = FALSE;
+            }
+
+            /*
+             * Content/Use Description (Use + UseRecord)
+             */
+            else if ($feature_node->label == 'UseRecord') {
+                $block->content[] = cdm_block_use_description_content($taxon->uuid, $feature_node->term);
+                $block_content_is_empty = FALSE;
+            }
+
+            /*
+             * Content/ALL OTHER FEATURES.
+             */
+            else {
+
+                $media_list = array();
+                $elements_render_array = array();
+                $child_elements_render_array = null;
+
+                if (isset($feature_node->facts[0])) {
+                    $elements_render_array = compose_new_feature_block_items_generic($feature_node->facts);
+                }
+
+                // Content/ALL OTHER FEATURES/Subordinate Features
+                // subordinate features are printed inline in one floating text,
+                // it is expected hat subordinate features can "contain" TextData,
+                // Qualitative- and Qualitative- DescriptionElements
+                if (isset($feature_node->childNodes[0])) {
+                    $child_elements_render_array = compose_feature_block_items_nested($feature_node, $media_list, $feature_block_settings);
+                    $elements_render_array = array_merge($elements_render_array, $child_elements_render_array);
+                }
+                $block_content_is_empty = $block_content_is_empty && empty($media_list) && empty($elements_render_array);
+                if(!$block_content_is_empty){
+                    $block->content[] = compose_feature_block_wrap_elements($elements_render_array, $feature_node->term, $feature_block_settings['glue']);
+                    $block->content[] = compose_feature_media_gallery($feature_node, $media_list, $gallery_settings);
+                    /*
+                     * Footnotes for the feature block
+                     */
+                    $block->content[] = markup_to_render_array(render_footnotes(PSEUDO_FEATURE_BIBLIOGRAPHY . '-' . $feature_node->term->uuid));
+                    $block->content[] = markup_to_render_array(render_footnotes($feature_node->term->uuid));
+                }
+            } // END all other features
+
+            // allows modifying the block contents via a the hook_cdm_feature_node_block_content_alter
+            drupal_alter('cdm_feature_node_block_content', $block->content, $feature_node->term, $feature_node->descriptionElements);
+
+            if(!$block_content_is_empty){ // skip empty block content
+                $block_list[$block_weight] = $block;
+                cdm_toc_list_add_item(cdm_term_representation($feature_node->term), $feature_node->term->uuid, null, FALSE, $block_weight);
+            } // END: skip empty block content
+        } // END: skip empty or suppressed features
+        RenderHints::popFromRenderStack();
+    } // END: creating a block per feature
+
+    RenderHints::popFromRenderStack();
+
+    drupal_alter('cdm_feature_node_blocks', $block_list, $taxon);
+
+    ksort($block_list);
+
+    return  $block_list;
+}
+
 /**
  * Creates a render array of description elements  held by child nodes of the given feature node.
  *
@@ -922,9 +1061,9 @@ function cdm_description_element_media($descriptionElement, $mimeTypePreference)
     $footnote_list_key_suggestion = $feature_uuid;
 
     $element_markup = '';
-    if (isset($element->multilanguageText_L10n->text)) {
+    if ($element->typedLabel[0]->label != null) {
       // TODO replacement of \n by <br> should be configurable
-      $element_markup = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+      $element_markup = str_replace("\n", "<br/>", $element->typedLabel[0]->label);
     }
 
     $render_array = compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion, $prepend_feature_label);
@@ -1385,7 +1524,7 @@ function statistical_measure_term2min_max_key($term){
            *
            * TODO provide api_hook as extension point for this?
            */
-        $feature_block_settings = get_feature_block_settings($description_element->feature->uuid);
+        $feature_block_settings = get_feature_block_settings($description_element->uuid);
         switch ($description_element->class) {
           case 'TextData':
             $elements_out_array[] = compose_description_element_text_data($description_element, $description_element->feature->uuid, $feature_block_settings);
@@ -1439,6 +1578,98 @@ function statistical_measure_term2min_max_key($term){
     return $elements_out_array;
   }
 
+/**
+ * Return HTML for a list of factual data dtos.
+ *
+ * Usually these are of a specific feature type.
+ *
+ * @param $description_elements
+ *   array of items (dtos) which belong to the same feature.
+ *   These items of a Description must be ordered by the chosen feature tree by
+ *   calling the function _mergeFeatureTreeDescriptions().
+ *   @see _mergeFeatureTreeDescriptions()
+ *
+ * @return array
+ *    A drupal render array for the $descriptionElements, may be an empty array if the textual content was empty.
+ *    Footnote key or anchors are not considered to be textual content.
+ *
+ * @ingroup compose
+ */
+function compose_new_feature_block_items_generic($description_elements) {
+
+    $elements_out_array = [];
+    $distribution_tree = null;
+
+    /*
+     * $feature_block_has_content will be set true if at least one of the
+     * $descriptionElements contains some text which makes up some content
+     * for the feature block. Footnote keys are not considered
+     * to be content in this sense.
+     */
+    $feature_block_has_content = false;
+
+    if (is_array($description_elements)) {
+        foreach ($description_elements as $description_element) {
+            /* decide based on the description element class
+             *
+             * Features handled here:
+             * all except DISTRIBUTION, COMMON_NAME, USES, IMAGES,
+             *
+             * TODO provide api_hook as extension point for this?
+             */
+            $feature_block_settings = get_feature_block_settings($description_element->typedLabel[0]->uuid);
+            switch ($description_element->typedLabel[0]->cdmClass) {
+                case 'TextData':
+                    $elements_out_array[] = compose_description_element_text_data($description_element, $description_element->typedLabel[0]->uuid, $feature_block_settings);
+                    break;
+                case 'CategoricalData':
+                    $elements_out_array[] = compose_description_element_categorical_data($description_element, $feature_block_settings);
+                    break;
+                case 'QuantitativeData':
+                    $elements_out_array[] = compose_description_element_quantitative_data($description_element, $feature_block_settings);
+                    break;
+                case 'IndividualsAssociation':
+                    $elements_out_array[] = compose_description_element_individuals_association($description_element, $feature_block_settings);
+                    break;
+                case 'TaxonInteraction':
+                    $elements_out_array[] = compose_description_element_taxon_interaction($description_element, $feature_block_settings);
+                    break;
+                case 'CommonTaxonName':
+                    $elements_out_array[] = compose_description_element_common_taxon_name($description_element, $feature_block_settings);
+                    break;
+                case 'TemporalData':
+                    $elements_out_array[] = compose_description_element_temporal_data($description_element, $feature_block_settings);
+                    break;
+                case 'Uses':
+                    /* IGNORE Uses classes, these are handled completely in compose_feature_block_items_use_records()  */
+                    break;
+                default:
+                    $feature_block_has_content = true;
+                    $elements_out_array[] = markup_to_render_array('<li>No method for rendering unknown description class: ' . $description_element->class . '</li>');
+            }
+            $elements_out_array_last_item = $elements_out_array[count($elements_out_array) - 1];
+            // considering not empty as long as the last item added is a render array
+            $feature_block_has_content = $feature_block_has_content || !empty($elements_out_array_last_item['#type']);
+        }
+
+        // If feature = CITATION sort the list of sources.
+        // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
+        if (isset($description_element) && $description_element->feature->uuid == UUID_CITATION) {
+            sort($elements_out_array);
+        }
+    }
+
+    // sanitize: remove empty and NULL items from the render array
+    $tmp_out_array = $elements_out_array;
+    $elements_out_array = array();
+    foreach($tmp_out_array as $item){
+        if(is_array($item) && count($item) > 0){
+            $elements_out_array[] = $item;
+        }
+    }
+
+    return $elements_out_array;
+}
 /**
  * Composes block of common names for the given DescriptionElements $elements which must be of the feature CommonName
  *
@@ -1678,6 +1909,7 @@ function compose_description_elements_distribution($description_elements){
     $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_feature_tree(), $taxon->uuid, array(UUID_DISTRIBUTION));
 
 
+
     // 2. find the distribution feature node
     $distribution_node =& cdm_feature_tree_find_node($merged_tree->root->childNodes, UUID_DISTRIBUTION);
 
@@ -1735,6 +1967,89 @@ function compose_description_elements_distribution($description_elements){
 
     return $merged_tree;
   }
+
+/**
+ * Provides the merged feature tree for a taxon profile page.
+ *
+ * The merging of the profile feature tree is actually done in
+ * _mergeFeatureTreeDescriptions(). See this method  for details
+ * on the structure of the merged tree.
+ *
+ * This method provides a hook which can be used to modify the
+ * merged feature tree after it has been created, see
+ * hook_merged_taxon_feature_tree_alter()
+ *
+ * @param $taxon_dto
+ *    A CDM Taxon DTO instance
+ *
+ * @return object
+ *    The merged feature tree
+ *
+ */
+function merged_taxon_new_feature_tree($taxon) {
+
+    // 1. fetch descriptions_by_featuretree but exclude the distribution feature
+    //$merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_feature_tree(), $taxon->uuid, array(UUID_DISTRIBUTION));
+    $merged_tree =  $taxon-> factualData->items;
+
+
+    // 2. find the distribution feature node
+    $distribution_node =& cdm_feature_tree_new_find_node($merged_tree, UUID_DISTRIBUTION);
+
+    if (isset($distribution_node -> facts[0])) {
+        // 3. get the distributionInfoDTO
+        $query_parameters = cdm_distribution_filter_query();
+        $query_parameters['part'] = array('mapUriParams');
+        if(variable_get(DISTRIBUTION_CONDENSED)){
+            $query_parameters['part'][] = 'condensedDistribution';
+        }
+        if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
+            $query_parameters['part'][] = 'tree';
+        }
+        else {
+            $query_parameters['part'][] = 'elements';
+        }
+        $query_parameters['omitLevels'] = array();
+        foreach(variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid){
+            if(is_uuid($uuid)){
+                $query_parameters['omitLevels'][] = $uuid;
+            }
+        }
+        $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
+        if ($customStatusColorsJson) {
+            $query_parameters['statusColors'] = $customStatusColorsJson;
+        }
+
+        $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
+        // 4. get distribution TextData is there are any
+        $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
+            array(
+                'taxon' => $taxon->uuid,
+                'type' => 'TextData',
+                'features' => UUID_DISTRIBUTION
+            )
+        );
+
+        // 5. put all distribution data into the distribution feature node
+        if ($distribution_text_data //if text data exists
+            || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren > 0) // OR if tree element has distribution elements
+            || ($distribution_info_dto && !empty($distribution_info_dto->elements))
+        ) { // OR if DTO has distribution elements
+            $distribution_node->descriptionElements = array('#type' => 'DTO');
+            if ($distribution_text_data) {
+                $distribution_node->descriptionElements['TextData'] = $distribution_text_data;
+            }
+            if ($distribution_info_dto) {
+                $distribution_node->descriptionElements['DistributionInfoDTO'] = $distribution_info_dto;
+            }
+        }
+    }
+
+    // allows modifying the merged tree via a the hook_cdm_feature_node_block_content_alter
+    drupal_alter('merged_taxon_feature_tree', $taxon, $merged_tree);
+
+    return $merged_tree;
+}
 
   /**
    * @param $distribution_tree

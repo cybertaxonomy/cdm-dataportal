@@ -135,3 +135,73 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
   RenderHints::popFromRenderStack();
   return $out;
 }
+
+/**
+ * TODO: This needs to be adapted to the new DTO implementation
+ * Renders the homotypic synonymy group for the accepted taxon in the synonymy.
+ *
+ * Foonotes of the accepted taxon will also be rendered here in the
+ * homotypic synonymy group even if the synonymList or prependedSynonyms are
+ * empty. Therefore  the homotypic group and accepted taxon share the  same
+ * footnote key.
+ *
+ * @param $variables
+ *   an associative array:
+ *   - synonymList: the list of cdm Synonym entities
+ *   - accepted_taxon_uuid: the uuid of the accepted taxon
+ *   - prependedSynonyms: further synonyms which should be prepended
+ *      before the actual list of synonyms
+ *
+ * @return string the markup
+ * @throws \Exception
+ */
+function theme_cdm_new_homotypicSynonymyGroup($variables) {
+  $synonymGroup= $variables['synonymList'];
+  $synonymList = $synonymGroup -> synonyms;
+  $accepted_taxon_name_uuid = $variables['accepted_taxon_name_uuid'];
+  $prependedSynonyms = $variables['prependedSynonyms'];
+
+  RenderHints::pushToRenderStack('homotypicSynonymyGroup');
+
+  $type_designations_in_group = NULL;
+
+  $out = '<div class="homotypic-synonymy-group">';
+
+  //$type_designations = type_designations_for_synonymy_group($synonymList, $accepted_taxon_name_uuid);
+  $type_designations = $synonymGroup -> taggedText;
+  if (count($type_designations) > 0 || is_array($prependedSynonyms) || is_array($synonymList)) {
+    $out .= '<ul class="homotypicSynonyms">';
+    if (!empty($prependedSynonyms)) {
+      foreach ($prependedSynonyms as $taxon) {
+        $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+      }
+    }
+
+    if (isset($synonymList[0])) {
+      foreach ($synonymList as $synonym) {
+        $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+      }
+    }
+
+    if (count($type_designations) > 0) {
+      $out .= render_type_designations($type_designations);
+    }
+
+  }
+
+  $out .= '</ul>';
+
+  // ------- footnotes ------- //
+
+  // all foonotes of the homotypic group and also of the accepted taxon are
+  // rendered here, both should have the same footnote key
+  $out .= '<ul class="footnotes">';
+  $out .= render_footnotes(RenderHints::getFootnoteListKey(), 'li');
+  $out .= '</ul>';
+
+  $out .= '</div>';
+
+
+  RenderHints::popFromRenderStack();
+  return $out;
+}

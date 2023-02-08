@@ -605,6 +605,13 @@ function cdm_dataportal_menu() {
     // Expected callback arguments: uuid.
   );
 
+    $items['cdm_dataportal/newtaxon'] = array(
+        'page callback' => 'cdm_dataportal_new_taxon_page_view',
+        'access arguments' => array('access cdm content'),
+        'type' => MENU_CALLBACK,
+        // Expected callback arguments: uuid.
+    );
+
   $items['cdm_dataportal/occurrence'] = array(
         'page callback' => 'cdm_dataportal_specimen_page_view',
         'access arguments' => array('access cdm content'),
@@ -1374,7 +1381,7 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
  * The media lists are cached in a static variable.
  *
  * @param Taxon $taxon
- *   A CDM Taxon entity
+ *   A CDM Taxon entity or taxon_page_dto
  *
  * @return array
  *   An array of CDM Media entities
@@ -1694,6 +1701,42 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all') {
     return '';
   }
 }
+/**
+ * Creates a taxon page view or a chapter of it.
+ *
+ * The taxon page gives detailed information on a taxon, it shows:
+ *  - Taxon name.
+ *  - Full list of synonyms homotypic synonyms on top, followed by the
+ *    heterotypic and finally followed by misapplied names.
+ *    The list is ordered historically.
+ *  - All description associated with the taxon.
+ *
+ * @param string $uuid
+ * @param string $chapter
+ *   Name of the part to display, valid values are:
+ *   'description', 'images', 'synonymy', 'specimens', 'all'.
+ *
+ * @return string
+ */
+function cdm_dataportal_new_taxon_page_view($uuid, $chapter = 'all') {
+
+    cdm_check_valid_taxon_page($chapter);
+
+    cdm_dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
+
+
+    // Display the page for the taxon defined by $uuid.
+    // set_last_taxon_page_tab(arg(3));
+    $taxonpage = cdm_dataportal_new_taxon_view($uuid, $chapter);
+    if (!empty($taxonpage)) {
+        cdm_dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid);
+        return cdm_node_show(NODETYPE_TAXON, $uuid, $taxonpage->title, $taxonpage->content);
+    }
+    else {
+        cdm_dd("END OF TAXON PAGE [" . $chapter . "] " . $uuid . ' !!! PAGE IS EMPTY !!!');
+        return '';
+    }
+}
 
 /**
  * This function will generate the taxon page part ($chapter) and returns a taxonpage object
@@ -1717,6 +1760,7 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all') {
 function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
   // Taxon object.
   $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $uuid);
+
   if (empty($taxon)) {
     drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
     return null;
@@ -1770,7 +1814,81 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
 
   return $taxonpage;
 }
+/**
+ * This function will generate the taxon page part ($chapter) and returns a taxonpage object
+ * which has two fields, one for the page title and one for the content. Later on in the
+ * process chain the value contained in these fields will be passed to the cdm_node_show()
+ * function as the function parameters $title and $content.
+ *
+ * @param string $uuid
+ *   the uuid of the taxon to show
+ * @param string $chapter
+ *   Name of the part to display, valid values are:
+ *   'description', 'images', 'synonymy', 'all'.
+ *
+ * @return object with the following fields:
+ *   - title : the title of the page
+ *   - content: the content of the page
+ *
+ * @throws Exception
+ *
+ */
+function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
+    // Taxon object.
+    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid);
+    if (empty($taxon_dto)) {
+        drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
+        return null;
+    }
+    $taxonpage = new stdClass();
 
+    $taxonpage->title = theme('cdm_taxon_page_title', array(
+        'taxon' => $taxon_dto
+    ));
+
+    // Check if the taxon id contained in the currently selected tree.
+    $taxon_in_current_classification = taxon_in_current_classification($uuid);
+
+    if (!$taxon_in_current_classification) {
+        $classifications = get_classifications_for_taxon($taxon_dto);
+        RenderHints::pushToRenderStack('not_in_current_classification');
+        RenderHints::setFootnoteListKey('not_in_current_classification');
+        FootnoteManager::blockFootnotesFor('not_in_current_classification');
+        $taxon_name_markup = render_taxon_or_name($taxon_dto);
+        FootnoteManager::unblockFootnotesFor('not_in_current_classification');
+        RenderHints::clearFootnoteListKey();
+
+        if (count($classifications) == 0) {
+            drupal_set_message(t('This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification.',
+                array(
+                    '!taxonname' => $taxon_name_markup,
+                )
+            ), 'warning');
+        }
+        else {
+            $trees = [];
+            foreach ($classifications as $classification) {
+                if (isset($classification->titleCache)) {
+                    $trees[] = '<strong>' . $classification->titleCache . '</strong>';
+                }
+            }
+
+            drupal_set_message(format_plural(count($trees),
+                'This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification, but in this one: !trees',
+                'This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification, but in one of these: !trees',
+                array('!taxonname' => $taxon_name_markup, '!trees' => join(', ', $trees))
+            ) ,
+                'warning');
+        }
+        RenderHints::popFromRenderStack();
+    }
+
+    // Render the taxon page.
+    $render_array = compose_cdm_taxon_new_page($taxon_dto, $chapter);
+    $taxonpage->content = drupal_render($render_array);
+
+    return $taxonpage;
+}
 
 function cdm_dataportal_specimen_by_accession_number_page_view($accession_number)
 {
@@ -3078,5 +3196,12 @@ function cdm_dataportal_preprocess_feedback_simple(&$variables) {
   // $variables['class'][] = 'ctools-modal-modal-popup-medium';
   // $variables['class'][] = 'ctools-modal-modal-popup-large';
 }
-
+function get_node_in_classification($taxon_dto, $current_classification_uuid){
+    foreach($taxon_dto -> taxonNodes as $note){
+        if ($note -> classificationUuid == $current_classification_uuid){
+            return $note;
+        }
+    }
+    return null;
+}
 

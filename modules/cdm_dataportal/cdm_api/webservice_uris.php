@@ -52,6 +52,7 @@ const CDM_WS_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT = 'taxon/findByDescription
 const CDM_WS_PORTAL_TAXON_ACCEPTED = 'portal/taxon/$0/accepted';
 
 const CDM_WS_PORTAL_TAXON = 'portal/taxon';
+const CDM_WS_PORTAL_TAXON_DTO = 'portal/taxon/$0/page';
 const CDM_WS_PORTAL_TAXON_SYNONYMY = 'portal/taxon/$0/synonymy';
 const CDM_WS_PORTAL_TAXON_RELATIONS = 'portal/taxon/$0/taxonRelationships';
 const CDM_WS_PORTAL_TAXON_RELATIONS_DTO = 'taxon/$0/taxonRelationshipsDTO';
