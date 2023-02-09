@@ -1312,7 +1312,7 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
   $out .= theme(
     'cdm_new_homotypicSynonymyGroup',
     array(
-      'synonymList' => $homotypic_synomyms,
+      'synonyms' => $homotypic_synomyms,
       'accepted_taxon_name_uuid' => $taxon_dto->uuid
     )
   );

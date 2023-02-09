@@ -156,10 +156,10 @@ function theme_cdm_homotypicSynonymyGroup($variables) {
  * @throws \Exception
  */
 function theme_cdm_new_homotypicSynonymyGroup($variables) {
-  $synonymGroup= $variables['synonymList'];
-  $synonymList = $synonymGroup -> synonyms;
+  $synonymGroup= $variables['synonyms'];
+  $synonymList = $synonymGroup -> synonyms -> items;
   $accepted_taxon_name_uuid = $variables['accepted_taxon_name_uuid'];
-  $prependedSynonyms = $variables['prependedSynonyms'];
+  //$prependedSynonyms = $variables['prependedSynonyms'];
 
   RenderHints::pushToRenderStack('homotypicSynonymyGroup');
 
@@ -169,13 +169,13 @@ function theme_cdm_new_homotypicSynonymyGroup($variables) {
 
   //$type_designations = type_designations_for_synonymy_group($synonymList, $accepted_taxon_name_uuid);
   $type_designations = $synonymGroup -> taggedText;
-  if (count($type_designations) > 0 || is_array($prependedSynonyms) || is_array($synonymList)) {
+  if ((isset($type_designations) && count($type_designations) > 0)|| is_array($synonymList)) {
     $out .= '<ul class="homotypicSynonyms">';
-    if (!empty($prependedSynonyms)) {
-      foreach ($prependedSynonyms as $taxon) {
-        $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
-      }
-    }
+    //if (!empty($prependedSynonyms)) {
+    //  foreach ($prependedSynonyms as $taxon) {
+    //    $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+    //  }
+    //}
 
     if (isset($synonymList[0])) {
       foreach ($synonymList as $synonym) {
@@ -183,7 +183,7 @@ function theme_cdm_new_homotypicSynonymyGroup($variables) {
       }
     }
 
-    if (count($type_designations) > 0) {
+    if (isset($type_designations) && count($type_designations) > 0) {
       $out .= render_type_designations($type_designations);
     }
 

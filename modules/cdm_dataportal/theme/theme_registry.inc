@@ -70,6 +70,10 @@ function cdm_dataportal_theme() {
         'accepted_taxon_name_uuid' => NULL,
         'prependedSynonyms' => array(),
     )),
+    'cdm_new_homotypicSynonymyGroup' => array('variables' => array(
+        'synonyms' => NULL,
+        'accepted_taxon_name_uuid' => NULL,
+    )),
     'get_nameRenderTemplate' => array('variables' => array()),
     'get_partDefinition' => array('variables' => array()),
 
