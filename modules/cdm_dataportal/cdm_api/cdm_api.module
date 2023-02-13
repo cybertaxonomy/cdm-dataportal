@@ -1429,6 +1429,9 @@ function cdm_term_representation($definedTermBase, $default_representation = '')
   } elseif ( isset($definedTermBase->titleCache)) {
     return $definedTermBase->titleCache;
   }
+  if (is_string($definedTermBase)){
+      return $definedTermBase;
+  }
   return $default_representation;
 }
 

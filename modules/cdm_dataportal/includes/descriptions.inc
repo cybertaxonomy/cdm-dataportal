@@ -658,7 +658,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
              * Content/DISTRIBUTION.
              */
             if ($feature_node->label == 'Distribution') {
-                $block = compose_feature_block_distribution($taxon, $feature_node->facts, $feature_node->term);
+                $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node->label);
                 $block_content_is_empty = FALSE;
             }
 
@@ -713,7 +713,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
             } // END all other features
 
             // allows modifying the block contents via a the hook_cdm_feature_node_block_content_alter
-            drupal_alter('cdm_feature_node_block_content', $block->content, $feature_node->term, $feature_node->descriptionElements);
+            drupal_alter('cdm_feature_node_block_content', $block->content, $feature_node->label, $feature_node->descriptionElements);
 
             if(!$block_content_is_empty){ // skip empty block content
                 $block_list[$block_weight] = $block;
@@ -969,7 +969,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
       }
       //
       $block->content[] = compose_feature_block_wrap_elements(
-        $dto_out_array, $feature, $distribution_glue, $distribution_sortOutArray
+        $dto_out_array, UUID_DISTRIBUTION, $distribution_glue, $distribution_sortOutArray
       );
     }
 
@@ -1381,8 +1381,12 @@ function statistical_measure_term2min_max_key($term){
  */
   function compose_feature_block_wrap_elements(array $description_element_render_arrays, $feature, $glue = '', $sort = FALSE)
   {
+    if (is_object($feature)){
+        $feature_block_settings = get_feature_block_settings($feature->uuid);
+    }else{
+        $feature_block_settings = get_feature_block_settings($feature);
+    }
 
-    $feature_block_settings = get_feature_block_settings($feature->uuid);
     $enclosing_tag = $feature_block_settings['as_list'];
 
     if ($sort) { // TODO remove parameter and replace by $feature_block_settings['sort_elements']
@@ -2112,8 +2116,8 @@ function merged_taxon_new_feature_tree($taxon) {
     $distribution_node =& cdm_feature_tree_new_find_node($merged_tree, UUID_DISTRIBUTION);
 
     if (isset($distribution_node -> facts[0])) {
-        // 3. get the distributionInfoDTO
-        $query_parameters = cdm_distribution_filter_query();
+        // 3. get the distributionInfoDTO ---- for the dto implementation this is not necessary anymore because the distributionInfoDTO is already part of the taxon-portal_dto
+        /*$query_parameters = cdm_distribution_filter_query();
         $query_parameters['part'] = array('mapUriParams');
         if(variable_get(DISTRIBUTION_CONDENSED)){
             $query_parameters['part'][] = 'condensedDistribution';
@@ -2134,8 +2138,10 @@ function merged_taxon_new_feature_tree($taxon) {
         if ($customStatusColorsJson) {
             $query_parameters['statusColors'] = $customStatusColorsJson;
         }
+*/
+        //$distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
+        $distribution_info_dto = $distribution_node->facts[0];
 
-        $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
         // 4. get distribution TextData is there are any
         $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
             array(
