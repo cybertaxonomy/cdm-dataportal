@@ -1785,6 +1785,121 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
   );
 }
 
+
+/**
+ * Composes block of common names for the given items $elements which must be dtos for the feature CommonName
+ * TODO: This needs adaption to the dto implementation
+ * @parameter $elements
+ *  an array of CDM DescriptionElement DTOs either of type CommonName or TextData
+ * @parameter $feature //TODO for the dto implementation we do not need this?
+ *  the common feature of all $elements, must be CommonName
+ *
+ * @return
+ *   A drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_new_feature_block_items_feature_common_name($elements, $feature, $weight = FALSE) {
+
+    $common_name_out = '';
+    $common_name_feature_elements = array();
+    $textData_commonNames = array();
+
+    $footnote_key_suggestion = 'common-names-feature-block';
+
+    $feature_block_settings = get_feature_block_settings(UUID_COMMON_NAME);
+
+    if (is_array($elements)) {
+        foreach ($elements as $element) {
+
+            if ($element->cdmClass == 'CommonTaxonName') {
+
+                // common name without a language or area, should not happen but is possible
+                $language_area_key = '';
+                if (isset($element->language->representation_L10n)) {
+                    $language_area_key .= $element->language->representation_L10n;
+                }
+                if(isset($element->area->representation_L10n) && strlen($element->area->representation_L10n) > 0){
+                    $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->representation_L10n . ')';
+                }
+                if($language_area_key){
+                    $language_area_key = '<span class="language-area-label">' . $language_area_key . '<span class="separator">: </span></span>';
+                }
+
+                if(isset($common_names[$language_area_key][$element->name])) {
+                    // same name already exists for language and area combination, se we merge the description elements
+                    cdm_merge_description_elements($common_names[$language_area_key][$element->name], $element);
+                } else{
+                    // otherwise add as new entry
+                    $common_names[$language_area_key][$element->name] = $element;
+                }
+
+            }
+            elseif ($element->class == 'TextData') {
+                $textData_commonNames[] = $element;
+            }
+        }
+    }
+    // Handling common names.
+    if (isset($common_names) && count($common_names) > 0) {
+        // Sorting the array based on the key (language, + area if set).
+        // Comment @WA there are common names without a language, so this sorting
+        // can give strange results.
+        ksort($common_names);
+
+        // loop over set of elements per language area
+        foreach ($common_names as $language_area_key => $elements) {
+            ksort($elements); // sort names alphabetically
+            $per_language_area_out = array();
+
+            foreach ($elements as $element) {
+                $common_name_render_array = compose_description_element_common_taxon_name($element, $feature_block_settings, $footnote_key_suggestion);
+                $common_name_markup = drupal_render($common_name_render_array);
+                // IMPORTANT!
+                // during the above drupal_render the theme_html_tag function is executed, which adds a "\n" character to the end of the markup
+                // this is an error and the trailing whitespace needs to be removed
+                if(str_endsWith($common_name_markup, "\n")){
+                    $common_name_markup = substr($common_name_markup, 0, strlen($common_name_markup) - 1);
+                }
+                $per_language_area_out[] = $common_name_markup;
+            }
+
+            $common_name_feature_elements[] = $language_area_key . join(', ', $per_language_area_out);
+        } // End of loop over set of elements per language area
+
+
+        $common_name_feature_elements_render_array = compose_feature_block_wrap_elements(
+            $common_name_feature_elements, $feature, '; ', FALSE
+        );
+        $common_name_out .= drupal_render($common_name_feature_elements_render_array); // FIXME should this be a render array instead?
+
+    }
+
+    // Handling commons names as text data.
+    $text_data_out = array();
+
+    foreach ($textData_commonNames as $text_data_element) {
+        /* footnotes are not handled correctly in compose_description_element_text_data,
+           need to set 'common-names-feature-block' as $footnote_key_suggestion */
+        RenderHints::setFootnoteListKey($footnote_key_suggestion);
+        $text_data_render_array = compose_description_element_text_data($text_data_element, $text_data_element->feature->uuid, $feature_block_settings);
+        $text_data_out[] = drupal_render($text_data_render_array);
+    }
+
+    $common_name_out_text_data = compose_feature_block_wrap_elements(
+        $text_data_out, $feature
+    );
+
+    $footnotes = render_footnotes('BIBLIOGRAPHY-' . $footnote_key_suggestion);
+    $footnotes .= render_footnotes($footnote_key_suggestion);
+
+    return  markup_to_render_array(  // FIXME markup_to_render_array should no longer be needed
+        '<div class="common-taxon-name">' . $common_name_out . '</div>'
+        .'<div class="text-data">' . drupal_render($common_name_out_text_data) . '</div>'
+        .$footnotes,
+        $weight
+    );
+}
 /**
  * Renders a single instance of the type CommonTaxonName.
  *

@@ -679,7 +679,7 @@ function cdm_entity_sources_sorted($entity) {
   }
   else {
     // try to load the sources
-    if(isset_not_empty($entity->uuid)){
+    if(isset_not_empty($entity->uuid) && is_cdm_entity($entity)){
       $sources = cdm_ws_fetch_all(cdm_compose_url('portal/' . cdm_ws_base_uri($entity->class), [ $entity->uuid, 'sources']));
     } else {
       // this may happen with DerivedUnitFaced, also with others?
