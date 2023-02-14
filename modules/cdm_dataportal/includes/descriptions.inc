@@ -221,7 +221,7 @@ function &cdm_toc_list(){
  */
 function feature_block($feature_name, $feature) {
   $block = new stdclass();
-  $block->module = 'cdm_dataportal';
+  //$block->module = 'cdm_dataportal';
   $block->region = NULL;
   $class_attribute = html_class_attribute_ref($feature);
   $block_delta = $feature->class !== 'PseudoFeature' ? $feature_name : $feature->label;
@@ -630,7 +630,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
 
         $block_weight = $block_weight + FEATURE_BLOCK_WEIGHT_INCREMENT;
 
-        if ((isset($feature_node->facts[0]) )){
+        if ((isset($feature_node->facts->items[0]) )){
                // || has_feature_node_description_elements($feature_node)) && $feature_node->term->uuid != UUID_IMAGE) { // skip empty or suppressed features
 
             RenderHints::pushToRenderStack($feature_node->uuid);
@@ -657,8 +657,9 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
             /*
              * Content/DISTRIBUTION.
              */
+
             if ($feature_node->label == 'Distribution') {
-                $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node->label);
+                $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node);
                 $block_content_is_empty = FALSE;
             }
 
@@ -688,7 +689,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                 $elements_render_array = array();
                 $child_elements_render_array = null;
 
-                if (isset($feature_node->facts[0])) {
+                if (isset($feature_node->facts->items[0])) {
                     $elements_render_array = compose_new_feature_block_items_generic($feature_node->facts);
                 }
 
@@ -2115,7 +2116,7 @@ function merged_taxon_new_feature_tree($taxon) {
     // 2. find the distribution feature node
     $distribution_node =& cdm_feature_tree_new_find_node($merged_tree, UUID_DISTRIBUTION);
 
-    if (isset($distribution_node -> facts[0])) {
+    if (isset($distribution_node -> facts-> items[0])) {
         // 3. get the distributionInfoDTO ---- for the dto implementation this is not necessary anymore because the distributionInfoDTO is already part of the taxon-portal_dto
         /*$query_parameters = cdm_distribution_filter_query();
         $query_parameters['part'] = array('mapUriParams');
@@ -2140,7 +2141,7 @@ function merged_taxon_new_feature_tree($taxon) {
         }
 */
         //$distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
-        $distribution_info_dto = $distribution_node->facts[0];
+        $distribution_info_dto = $distribution_node->facts->items[0];
 
         // 4. get distribution TextData is there are any
         $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,

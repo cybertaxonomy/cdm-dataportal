@@ -1428,7 +1428,10 @@ function cdm_term_representation($definedTermBase, $default_representation = '')
     return $definedTermBase->representation_L10n;
   } elseif ( isset($definedTermBase->titleCache)) {
     return $definedTermBase->titleCache;
+  } elseif (isset($definedTermBase->label)){
+      return $definedTermBase->label;
   }
+
   if (is_string($definedTermBase)){
       return $definedTermBase;
   }
