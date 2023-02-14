@@ -703,7 +703,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                 }
                 $block_content_is_empty = $block_content_is_empty && empty($media_list) && empty($elements_render_array);
                 if(!$block_content_is_empty){
-                    $block->content[] = compose_feature_block_wrap_elements($elements_render_array, $feature_node->term, $feature_block_settings['glue']);
+                    $block->content[] = compose_new_feature_block_wrap_elements($elements_render_array, $feature_node->uuid, feature_node->label, $feature_block_settings['glue']);
                     $block->content[] = compose_feature_media_gallery($feature_node, $media_list, $gallery_settings);
                     /*
                      * Footnotes for the feature block
@@ -1396,11 +1396,9 @@ function statistical_measure_term2min_max_key($term){
  */
   function compose_feature_block_wrap_elements(array $description_element_render_arrays, $feature, $glue = '', $sort = FALSE)
   {
-    if (is_object($feature)){
-        $feature_block_settings = get_feature_block_settings($feature->uuid);
-    }else{
-        $feature_block_settings = get_feature_block_settings($feature);
-    }
+
+     $feature_block_settings = get_feature_block_settings($feature->uuid);
+
 
     $enclosing_tag = $feature_block_settings['as_list'];
 
@@ -1433,6 +1431,62 @@ function statistical_measure_term2min_max_key($term){
 
     return $render_array;
   }
+/**
+ * Wraps the render array for the given feature into an enclosing html tag.
+ *
+ * Optionally the elements can be sorted and glued together by a separator string.
+ *
+ * @param array $description_element_render_arrays
+ *   An list of render arrays. Which are usually are produced by the compose_description_element()
+ *   function. The render arrays should be of #type=html_tag, so that they can understand the #attribute property.
+ * @param  $feature :
+ *  The feature to which the elements given in $elements are belonging to.
+ * @param string $glue :
+ *  Defaults to empty string.
+ * @param bool $sort
+ *   Boolean Whether to sort the $elements alphabetically, default is FALSE
+ *
+ * @return array
+ *    A Drupal render array
+ *
+ * @ingroup compose
+ */
+function compose_new_feature_block_wrap_elements(array $description_element_render_arrays, $feature_uuid, $feature_label, $glue = '', $sort = FALSE)
+{
+    $feature_block_settings = get_feature_block_settings($feature_uuid);
+
+
+    $enclosing_tag = $feature_block_settings['as_list'];
+
+    if ($sort) { // TODO remove parameter and replace by $feature_block_settings['sort_elements']
+        usort($description_element_render_arrays, 'compare_description_element_render_arrays');
+    }
+
+    $is_first = true;
+    foreach($description_element_render_arrays as &$element_render_array){
+        if(!is_array($element_render_array)){
+            $element_render_array = markup_to_render_array($element_render_array);
+        }
+        $element_render_array['#attributes']['class'][] = "feature-block-element";
+
+        // add the glue!
+        if(!$is_first) {
+            if (isset($element_render_array['#value'])) {
+                $element_render_array['#value'] = $glue . $element_render_array['#value'];
+            } elseif (isset($element_render_array['#markup'])) {
+                $element_render_array['#markup'] = $glue . $element_render_array['#markup'];
+            }
+        }
+        $is_first = false;
+    }
+
+    $render_array['elements']['children'] = $description_element_render_arrays;
+
+    $render_array['elements']['#prefix'] = '<' . $enclosing_tag . ' class="feature-block-elements" id="' . $feature_label . '">';
+    $render_array['elements']['#suffix'] = '</' . $enclosing_tag . '>';
+
+    return $render_array;
+}
 
 
   /* compose nameInSource or originalInfo as markup
