@@ -1057,7 +1057,7 @@ function cdm_description_element_media($descriptionElement, $mimeTypePreference)
    *
    * @ingroup compose
    */
-  function compose_description_element_text_data($element, $feature_uuid, $feature_block_settings, $prepend_feature_label = FALSE) {
+  function compose_new_description_element_text_data($element, $feature_uuid, $feature_block_settings, $prepend_feature_label = FALSE) {
 
     $footnote_list_key_suggestion = $feature_uuid;
 
@@ -1071,6 +1071,20 @@ function cdm_description_element_media($descriptionElement, $mimeTypePreference)
 
     return $render_array;
   }
+function compose_description_element_text_data($element, $feature_uuid, $feature_block_settings, $prepend_feature_label = FALSE) {
+
+    $footnote_list_key_suggestion = $feature_uuid;
+
+    $element_markup = '';
+    if (isset($element->multilanguageText_L10n->text)) {
+        // TODO replacement of \n by <br> should be configurable
+        $element_markup = str_replace("\n", "<br/>", $element->multilanguageText_L10n->text);
+    }
+
+    $render_array = compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion, $prepend_feature_label);
+
+    return $render_array;
+}
 
 
 /**
