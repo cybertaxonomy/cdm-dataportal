@@ -290,6 +290,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $tagged_title = $taxon_name_or_taxon_base->taggedFullTitle;
     } else if (isset($taxon_name->taggedLabel)){
       $tagged_title = $taxon_name_or_taxon_base->taggedLabel;
+    }else {
+        $tagged_title = $taxon_name_or_taxon_base->taggedName;
     }
   }
 
