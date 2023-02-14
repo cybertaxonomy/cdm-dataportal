@@ -288,7 +288,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     $taxon_name = $taxon_name_or_taxon_base;
     if(isset($taxon_name->taggedFullTitle)){
       $tagged_title = $taxon_name_or_taxon_base->taggedFullTitle;
-    } else {
+    } else if (isset($taxon_name->taggedLabel)){
       $tagged_title = $taxon_name_or_taxon_base->taggedLabel;
     }
   }
@@ -612,7 +612,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $annotations_and_sources = handle_annotations_and_sources($taxon_base,
         null, null, $annotations_and_sources);
     }
-    if (!isset($taxon_name-> nameLabel)) { //it is no dto
+    if (isset($taxon_name) && !isset($taxon_name-> nameLabel)) { //it is no dto
         $annotations_and_sources = handle_annotations_and_sources($taxon_name,
             null, null, $annotations_and_sources);
     }
