@@ -703,7 +703,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                 }
                 $block_content_is_empty = $block_content_is_empty && empty($media_list) && empty($elements_render_array);
                 if(!$block_content_is_empty){
-                    $block->content[] = compose_new_feature_block_wrap_elements($elements_render_array, $feature_node->uuid, feature_node->label, $feature_block_settings['glue']);
+                    $block->content[] = compose_new_feature_block_wrap_elements($elements_render_array, $feature_node->uuid, $feature_node->label, $feature_block_settings['glue']);
                     $block->content[] = compose_feature_media_gallery($feature_node, $media_list, $gallery_settings);
                     /*
                      * Footnotes for the feature block
