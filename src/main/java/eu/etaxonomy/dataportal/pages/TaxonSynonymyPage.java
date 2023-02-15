@@ -1,4 +1,3 @@
-
 /**
  * Copyright (C) 2009 EDIT
  * European Distributed Institute of Taxonomy

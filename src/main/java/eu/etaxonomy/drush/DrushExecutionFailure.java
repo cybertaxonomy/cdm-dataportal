@@ -19,7 +19,7 @@ public class DrushExecutionFailure extends Exception {
 
     private static final long serialVersionUID = -4840009591742936935L;
 
-    String out, error, commandLineString;
+    private String out, error, commandLineString;
 
     public DrushExecutionFailure(List<String> cmd, String out, String error) {
         this.out = out;
@@ -30,14 +30,10 @@ public class DrushExecutionFailure extends Exception {
     @Override
     public String getMessage() {
         return "'" + commandLineString + "' failed with '" + error + "'";
-
     }
 
     @Override
     public String getLocalizedMessage() {
         return getMessage();
-
     }
-
-
 }

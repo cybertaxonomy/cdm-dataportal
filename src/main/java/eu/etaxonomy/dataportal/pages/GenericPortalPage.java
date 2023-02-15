@@ -21,26 +21,19 @@ import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
 /**
  * @author andreas
  * @since Jul 5, 2011
- *
  */
 public class GenericPortalPage extends PortalPage {
-
-
 
     public GenericPortalPage(WebDriver driver, DataPortalContext context, String pagePathSuffix) throws MalformedURLException {
         super(driver, context, pagePathSuffix);
     }
 
-
     public GenericPortalPage(WebDriver driver, DataPortalContext context) throws Exception {
         super(driver, context);
     }
 
-    protected static String drupalPagePathBase = "cdm_dataportal";
+    private static String drupalPagePathBase = "cdm_dataportal";
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.dataportal.pages.PortalPage#getDrupalPageBase()
-     */
     @Override
     protected String getDrupalPageBase() {
         return drupalPagePathBase;
@@ -51,13 +44,11 @@ public class GenericPortalPage extends PortalPage {
         searchBlockElement.findElement(By.id("edit-query")).sendKeys(query);
         searchBlockElement.findElement(By.id("edit-submit")).submit();//Search results
 
-        wait.until(
-                    new AllTrue(
-                                new PageTitleValidated(context.prepareTitle("Search results")),
-                                new VisibilityOfElementLocated(By.id("search_results"))
-                                )
+        wait.until(new AllTrue(
+                        new PageTitleValidated(context.prepareTitle("Search results")),
+                        new VisibilityOfElementLocated(By.id("search_results"))
+                        )
                     );
         return new TaxonSearchResultPage(driver, context);
     }
-
 }

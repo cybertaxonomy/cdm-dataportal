@@ -1,5 +1,10 @@
 /**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
  *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
  */
 package eu.etaxonomy.dataportal.selenium;
 
@@ -9,7 +14,6 @@ import com.google.common.base.Function;
 
 /**
  * @author andreas
- *
  */
 public class PageTitleValidated implements Function<WebDriver, Boolean> {
 
@@ -19,13 +23,9 @@ public class PageTitleValidated implements Function<WebDriver, Boolean> {
         this.title = title;
     }
 
-    /* (non-Javadoc)
-     * @see com.google.common.base.Function#apply(java.lang.Object)
-     */
     @Override
     public Boolean apply(WebDriver driver) {
         boolean validated = driver.getTitle().equals(title);
         return Boolean.valueOf(validated);
     }
-
 }

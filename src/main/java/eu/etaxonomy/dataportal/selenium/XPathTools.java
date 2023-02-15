@@ -17,5 +17,4 @@ public class XPathTools {
     public static String classAttrContains(String className) {
         return "[contains(concat(' ',normalize-space(@class),' '),' " + className + " ')]";
     }
-
 }

@@ -28,10 +28,10 @@ import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
 /**
  * @author a.kohlbecker
  * @since Feb 4, 2019
- *
  */
 public class NamePage extends PortalPage {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LogManager.getLogger();
 
     protected static String drupalPagePathBase = "cdm_dataportal/name";
@@ -42,24 +42,14 @@ public class NamePage extends PortalPage {
 
     private List<List<TypeDesignationElement>> typeDesignationElementsByContainer = null;
 
-
-    /**
-     * @param driver
-     * @param context
-     * @throws Exception
-     */
     public NamePage(WebDriver driver, DataPortalContext context) throws Exception {
         super(driver, context);
     }
-
 
     public NamePage(WebDriver driver, DataPortalContext context, UUID nameUuid) throws MalformedURLException {
         super(driver, context, nameUuid.toString());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String getDrupalPageBase() {
         return drupalPagePathBase;
@@ -84,5 +74,4 @@ public class NamePage extends PortalPage {
         }
         return typeDesignationElementsByContainer.get(typeDesignationsContainerIndex);
     }
-
 }

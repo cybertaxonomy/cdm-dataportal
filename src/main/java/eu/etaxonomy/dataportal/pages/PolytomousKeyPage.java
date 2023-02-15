@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.dataportal.pages;
 
 import java.net.MalformedURLException;
@@ -68,12 +76,11 @@ public class PolytomousKeyPage extends PortalPage {
 
 	public static class KeyLineData{
 
-		String nodeNumber = null;
-		String edgeText = null;
-		LinkClass linkClass = null;
-		String linkText = null;
-        String suffix = "";
-
+		private String nodeNumber = null;
+		private String edgeText = null;
+		private LinkClass linkClass = null;
+		private String linkText = null;
+        private String suffix = "";
 
 		public String getNodeNumber() {
 			return nodeNumber;
