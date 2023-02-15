@@ -970,7 +970,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
       }
       //
       $block->content[] = compose_feature_block_wrap_elements(
-        $dto_out_array, UUID_DISTRIBUTION, $distribution_glue, $distribution_sortOutArray
+        $dto_out_array, $feature, $distribution_glue, $distribution_sortOutArray
       );
     }
 
@@ -1941,7 +1941,7 @@ function compose_new_feature_block_items_feature_common_name($elements, $feature
         } // End of loop over set of elements per language area
 
 
-        $common_name_feature_elements_render_array = compose_feature_block_wrap_elements(
+        $common_name_feature_elements_render_array = compose_new_feature_block_wrap_elements(
             $common_name_feature_elements, $feature, '; ', FALSE
         );
         $common_name_out .= drupal_render($common_name_feature_elements_render_array); // FIXME should this be a render array instead?
@@ -1959,7 +1959,7 @@ function compose_new_feature_block_items_feature_common_name($elements, $feature
         $text_data_out[] = drupal_render($text_data_render_array);
     }
 
-    $common_name_out_text_data = compose_feature_block_wrap_elements(
+    $common_name_out_text_data = compose_new_feature_block_wrap_elements(
         $text_data_out, $feature
     );
 
