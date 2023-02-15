@@ -1597,7 +1597,7 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
            *
            * TODO provide api_hook as extension point for this?
            */
-        $feature_block_settings = get_feature_block_settings($description_element->uuid);
+        $feature_block_settings = get_feature_block_settings($description_element-> feature->uuid);
         switch ($description_element->class) {
           case 'TextData':
             $elements_out_array[] = compose_description_element_text_data($description_element, $description_element->feature->uuid, $feature_block_settings);
