@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.ElementUtils;
@@ -80,7 +81,9 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
         TaxonListElement lapsanaCommunnis = searchResultPage.getResultItem(1);
 
-        List<List<GalleryImage>> galleryImageRows = ElementUtils.getGalleryImages(lapsanaCommunnis.getElement(), searchResultPage.getWait());
+        WebElement l_communisElement = lapsanaCommunnis.getElement();
+        WebDriverWait wait = searchResultPage.getWait();
+        List<List<GalleryImage>> galleryImageRows = ElementUtils.getGalleryImages(l_communisElement, wait);
 
         assertEquals("Expecting one row of images", 1, galleryImageRows.size());
         assertEquals("Expecting 4 images in row", 4, galleryImageRows.get(0).size());
