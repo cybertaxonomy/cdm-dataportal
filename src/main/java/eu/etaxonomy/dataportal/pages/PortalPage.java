@@ -219,11 +219,9 @@ public abstract class PortalPage {
         assertFalse("The default footnote list key PAGE_GLOBAL must not occur in the page.", driver.getPageSource().contains("member-of-footnotes-PAGE_GLOBAL"));
     }
 
-
     /**
      * Creates a new PortaPage at given URL location. An Exception is thrown if
      * this URL is not matching the expected URL for the specific page type.
-     *
      */
     public PortalPage(WebDriver driver, DataPortalContext context, URL url) throws Exception {
 
@@ -283,9 +281,7 @@ public abstract class PortalPage {
 
         // This call sets the WebElement fields.
         PageFactory.initElements(driver, this);
-
     }
-
 
     protected boolean isOnPage() {
         return driver.getCurrentUrl().startsWith(pageUrl.toString());
