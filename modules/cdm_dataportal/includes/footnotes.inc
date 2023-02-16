@@ -64,46 +64,50 @@ function cdm_entity_footnotes(
   $do_link_to_name_used_in_source = FALSE,
   $is_bibliography_aware = FALSE,
   $add_annotations = TRUE
-){
+)
+{
 
-  $sources = cdm_entity_sources_sorted($cdm_entity);
+    $sources = cdm_entity_sources_sorted($cdm_entity);
 
-  if (!isset($footnote_list_key) || !$footnote_list_key) {
-    $footnote_list_key = RenderHints::getFootnoteListKey();
-  }
-
-  // Annotations as footnotes.
-  if($add_annotations){
-    $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key);
-  }
-
-  // Source references as footnotes.
-  if($is_bibliography_aware){
-    $bibliography_settings = get_bibliography_settings();
-    $sources_footnote_list_key = bibliography_footnote_list_key($footnote_list_key);
-    $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause bibliography_footnote_list_key to use the default
-  } else {
-    $sources_footnote_list_key = $footnote_list_key;
-    $original_source_footnote_tag = NULL;
-  }
-
-  foreach ($sources as $source) {
-    if (_is_original_source_type($source)) {
-      $fn_key = FootnoteManager::addNewFootnote(
-        $sources_footnote_list_key,
-        render_original_source(
-          $source,
-          $do_link_to_reference,
-          $do_link_to_name_used_in_source
-        ),
-        $original_source_footnote_tag
-      );
-      // Ensure uniqueness of the footnote keys.
-      if(array_search($fn_key, $footnote_keys)=== false) {
-        $footnote_keys[] = $fn_key;
-      }
+    if (!isset($footnote_list_key) || !$footnote_list_key) {
+        $footnote_list_key = RenderHints::getFootnoteListKey();
     }
-  }
+
+    // Annotations as footnotes.
+    if ($add_annotations) {
+        $footnote_keys = cdm_entity_annotations_as_footnote_keys($cdm_entity, $footnote_list_key);
+    }
+
+    // Source references as footnotes.
+    if ($is_bibliography_aware) {
+        $bibliography_settings = get_bibliography_settings();
+        $sources_footnote_list_key = bibliography_footnote_list_key($footnote_list_key);
+        $original_source_footnote_tag = $bibliography_settings['enabled'] == 1 ? 'div' : null; // null will cause bibliography_footnote_list_key to use the default
+    } else {
+        $sources_footnote_list_key = $footnote_list_key;
+        $original_source_footnote_tag = NULL;
+    }
+
+    if (isset_not_empty($sources)) {
+
+        foreach ($sources as $source) {
+            if (_is_original_source_type($source)) {
+                $fn_key = FootnoteManager::addNewFootnote(
+                    $sources_footnote_list_key,
+                    render_original_source(
+                        $source,
+                        $do_link_to_reference,
+                        $do_link_to_name_used_in_source
+                    ),
+                    $original_source_footnote_tag
+                );
+                // Ensure uniqueness of the footnote keys.
+                if (array_search($fn_key, $footnote_keys) === false) {
+                    $footnote_keys[] = $fn_key;
+                }
+            }
+        }
+    }
   // Sort and render footnote keys.
   asort($footnote_keys);
   return $footnote_keys;
@@ -686,7 +690,13 @@ function cdm_entity_sources_sorted($entity) {
       $sources = [];
     }
   }
-  usort($sources, 'compare_original_sources');
+  if (isset($sources-> items)){
+      usort($sources-> items, 'compare_original_sources');
+      return $sources-> items;
+  }else if (isset_not_empty($sources)){
+      usort($sources, 'compare_original_sources');
+  }
+
   return $sources;
 }
 

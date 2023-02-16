@@ -718,7 +718,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
 
             if(!$block_content_is_empty){ // skip empty block content
                 $block_list[$block_weight] = $block;
-                cdm_toc_list_add_item(cdm_term_representation($feature_node->term), $feature_node->term->uuid, null, FALSE, $block_weight);
+                cdm_toc_list_add_item(cdm_term_representation($feature_node->label), $feature_node->uuid, null, FALSE, $block_weight);
             } // END: skip empty block content
         } // END: skip empty or suppressed features
         RenderHints::popFromRenderStack();
@@ -1681,8 +1681,8 @@ function compose_new_feature_block_items_generic($description_elements) {
      */
     $feature_block_has_content = false;
 
-    if (is_array($description_elements)) {
-        foreach ($description_elements as $description_element) {
+    if (is_array($description_elements -> items)) {
+        foreach ($description_elements-> items as $description_element) {
             /* decide based on the description element class
              *
              * Features handled here:
