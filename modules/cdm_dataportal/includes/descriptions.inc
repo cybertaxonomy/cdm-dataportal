@@ -690,7 +690,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                 $child_elements_render_array = null;
 
                 if (isset($feature_node->facts->items[0])) {
-                    $elements_render_array = compose_new_feature_block_items_generic($feature_node->facts, $feature_node-> label);
+                    $elements_render_array = compose_new_feature_block_items_generic($feature_node->facts, $feature_node-> uuid);
                 }
 
                 // Content/ALL OTHER FEATURES/Subordinate Features
@@ -1668,7 +1668,7 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
  *
  * @ingroup compose
  */
-function compose_new_feature_block_items_generic($description_elements, $label) {
+function compose_new_feature_block_items_generic($description_elements, $feature_uuid) {
 
     $elements_out_array = [];
     $distribution_tree = null;
@@ -1693,13 +1693,13 @@ function compose_new_feature_block_items_generic($description_elements, $label) 
             $feature_block_settings = get_feature_block_settings($description_element->typedLabel[0]->uuid);
             switch ($description_element->typedLabel[0]->cdmClass) {
                 case 'TextData':
-                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $description_element->typedLabel[0]->uuid, $feature_block_settings);
+                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $description_element->uuid, $feature_block_settings);
                     break;
                 case 'CategoricalData':
                     $elements_out_array[] = compose_description_element_categorical_data($description_element, $feature_block_settings);
                     break;
                 case 'QuantitativeData':
-                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $description_element->typedLabel[0]->uuid, $feature_block_settings);
+                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $feature_uuid, $feature_block_settings);
                     //$elements_out_array[] = compose_description_element_quantitative_data($description_element, $feature_block_settings);
                     break;
                 case 'IndividualsAssociation':
