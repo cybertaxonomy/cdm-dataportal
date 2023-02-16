@@ -690,7 +690,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                 $child_elements_render_array = null;
 
                 if (isset($feature_node->facts->items[0])) {
-                    $elements_render_array = compose_new_feature_block_items_generic($feature_node->facts);
+                    $elements_render_array = compose_new_feature_block_items_generic($feature_node->facts, $feature_node-> label);
                 }
 
                 // Content/ALL OTHER FEATURES/Subordinate Features
@@ -1668,7 +1668,7 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
  *
  * @ingroup compose
  */
-function compose_new_feature_block_items_generic($description_elements) {
+function compose_new_feature_block_items_generic($description_elements, $label) {
 
     $elements_out_array = [];
     $distribution_tree = null;
@@ -1693,13 +1693,14 @@ function compose_new_feature_block_items_generic($description_elements) {
             $feature_block_settings = get_feature_block_settings($description_element->typedLabel[0]->uuid);
             switch ($description_element->typedLabel[0]->cdmClass) {
                 case 'TextData':
-                    $elements_out_array[] = compose_description_element_text_data($description_element, $description_element->typedLabel[0]->uuid, $feature_block_settings);
+                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $description_element->typedLabel[0]->uuid, $feature_block_settings);
                     break;
                 case 'CategoricalData':
                     $elements_out_array[] = compose_description_element_categorical_data($description_element, $feature_block_settings);
                     break;
                 case 'QuantitativeData':
-                    $elements_out_array[] = compose_description_element_quantitative_data($description_element, $feature_block_settings);
+                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $description_element->typedLabel[0]->uuid, $feature_block_settings);
+                    //$elements_out_array[] = compose_description_element_quantitative_data($description_element, $feature_block_settings);
                     break;
                 case 'IndividualsAssociation':
                     $elements_out_array[] = compose_description_element_individuals_association($description_element, $feature_block_settings);
@@ -2354,8 +2355,10 @@ function merged_taxon_new_feature_tree($taxon) {
           } else {
             $distribution_aggregate->status = [];
           }
-          if(!isset($distribution_aggregate->sources[0])){
-            $distribution_aggregate->sources = array();
+          if (is_array($distribution_aggregate->sources) &&!isset($distribution_aggregate->sources )){
+              $distribution_aggregate->sources = array();
+          }else if (!is_array($distribution_aggregate->sources) && !isset($distribution_aggregate->sources-> items[0])){
+            $distribution_aggregate->sources->items[0] = array();
           }
           if(!isset($distribution_aggregate->annotations[0])){
             $distribution_aggregate->annotations = array();
