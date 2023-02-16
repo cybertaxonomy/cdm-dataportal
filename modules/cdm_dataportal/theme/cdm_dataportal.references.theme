@@ -77,6 +77,45 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
 
   return $out;
 }
+function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_icon_link = FALSE) {
+
+  $citation = trim($reference_dto->label[0]->label);
+  $icon_link = "";
+  if((isset($do_icon_link) && $do_icon_link === TRUE)) {
+    $icon_link = cdm_internal_link(path_to_reference($reference_dto->uuid));
+  }
+  if (isset($do_text_link) && $do_text_link === TRUE) {
+    $out = '<span class="reference">';
+    $out .= l($citation, path_to_reference($reference_dto->uuid), array(
+      'attributes' => array(
+        "class" => "reference",
+      ),
+      'absolute' => TRUE,
+      'html' => TRUE,
+    ));
+    $out .= $icon_link . '</span>';
+  }
+  else {
+    $out = '<span class="reference">' . $citation . $icon_link . '</span>';
+  }
+
+
+
+  if(isset($reference->doi)){
+    $out .= cdm_doi($reference->doi);
+  }
+
+  if (isset($reference->uri)){
+    if($reference->type == 'WebPage'){
+      // the cdm cache strategy adds the uri to the titleCache which is unwanted in this case,
+      // so is is removed from there
+      $out = str_replace('- ' . $reference->uri, '',  $out);
+    }
+    $out .= cdm_external_uri($reference->uri);
+  }
+
+  return $out;
+}
 
 /**
  * Creates an internal link displayes as icon.
@@ -191,6 +230,9 @@ function render_original_source($source, $do_link_to_reference = TRUE, $do_link_
   if(isset($source->cdmSource)){
     $out .= render_cdm_entity_link($source->cdmSource);
   }
+  if(isset($source->label)){
+      $out .= cdm_dto_reference_markup($source, false, $do_link_to_reference);
+    }
 
   if($out){
 

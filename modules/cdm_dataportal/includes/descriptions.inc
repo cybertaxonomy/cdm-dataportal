@@ -708,8 +708,8 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                     /*
                      * Footnotes for the feature block
                      */
-                    $block->content[] = markup_to_render_array(render_footnotes(PSEUDO_FEATURE_BIBLIOGRAPHY . '-' . $feature_node->term->uuid));
-                    $block->content[] = markup_to_render_array(render_footnotes($feature_node->term->uuid));
+                    $block->content[] = markup_to_render_array(render_footnotes(PSEUDO_FEATURE_BIBLIOGRAPHY . '-' . $feature_node->uuid));
+                    $block->content[] = markup_to_render_array(render_footnotes($feature_node->uuid));
                 }
             } // END all other features
 
