@@ -233,6 +233,40 @@ function feature_block($feature_name, $feature) {
   $block->content = '';
   return $block;
 }
+/**
+ * Prepares an empty Drupal block for displaying description elements of a
+ * specific CDM DTO Feature.
+ *
+ * The block can also be used for pseudo Features like a bibliography. Pseudo
+ * features are derived from other data on the fly and so not exist as such in
+ * the cdm data. For pseudo features the $feature can be created using
+ * make_pseudo_feature().
+ *
+ * @param $feature_name
+ *   A label describing the feature, usually the localized feature
+ *   representation.
+ * @param object $feature
+ *   The CDM Feature for which the block is created.
+ *
+ * @return object
+ *   A Drupal block object
+ *
+ * @throws \Exception re-throws exception from theme()
+ */
+function new_feature_block($feature_name, $feature_node) {
+    $block = new stdclass();
+    //$block->module = 'cdm_dataportal';
+    $block->region = NULL;
+    $class_attribute = html_class_attribute_ref($feature_node);
+    $block_delta = $feature_node->class !== 'PseudoFeature' ? $feature_name : $feature_node->label;
+    $block->delta = generalizeString($block_delta);
+    $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '">'
+        . theme('cdm_feature_name', array('feature_name' => $feature_name))
+        . '</span>';
+    $block->module = "cdm_dataportal-feature";
+    $block->content = '';
+    return $block;
+}
 
 
 /**
@@ -642,7 +676,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
             $feature_block_settings = get_feature_block_settings($feature_node->term->uuid);
 
 
-            $block = feature_block($feature_name, $feature_node->term);
+            $block = new_feature_block($feature_name, $feature_node);
             $block->content = array();
             $block_content_is_empty = TRUE;
 
@@ -2180,7 +2214,9 @@ function merged_taxon_new_feature_tree($taxon) {
     // 1. fetch descriptions_by_featuretree but exclude the distribution feature
     //$merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_feature_tree(), $taxon->uuid, array(UUID_DISTRIBUTION));
     $merged_tree =  $taxon-> factualData->items;
-
+    if ($merged_tree == null){
+        return array();
+    }
 
     // 2. find the distribution feature node
     $distribution_node =& cdm_feature_tree_new_find_node($merged_tree, UUID_DISTRIBUTION);
@@ -2336,7 +2372,11 @@ function merged_taxon_new_feature_tree($taxon) {
     foreach ($tree_nodes as $node){
 
       $per_node_markup[++$node_index] = '';
-      $label = $node->nodeId->representation_L10n;
+      if (isset($node->nodeId->representation_L10n)){
+          $label = $node->nodeId->representation_L10n;
+      }else{
+          $label = $node->nodeId->label;
+      }
 
       $distributions = $node->data;
       $distribution_uuids = array();
