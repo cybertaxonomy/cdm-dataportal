@@ -85,8 +85,8 @@ function theme_cdm_new_heterotypicSynonymyGroup($variables) {
   $footnoteListKey = (isset($synonymGroup->synonyms->items[0]) ? $synonymGroup->synonyms->items[0]->uuid : 'NULL');
   RenderHints::setFootnoteListKey($footnoteListKey);
 
-  $type_designations= new_type_designations_for_synonymy_group($synonymGroup);
-
+ // $type_designations= new_type_designations_for_synonymy_group($synonymGroup);
+    $type_designations = $synonymGroup->taggedTypes;
   $is_first_entry = TRUE;
   foreach ($synonymList->items as $synonym) {
     if ($is_first_entry) {
@@ -217,7 +217,7 @@ function theme_cdm_new_homotypicSynonymyGroup($variables) {
   $out = '<div class="homotypic-synonymy-group">';
 
   //$type_designations = type_designations_for_synonymy_group($synonymList, $accepted_taxon_name_uuid);
-  $type_designations = $synonymGroup -> taggedText;
+  $type_designations = $synonymGroup -> taggedTypes;
   if ((isset($type_designations) && count($type_designations) > 0)|| is_array($synonymList)) {
     $out .= '<ul class="homotypicSynonyms">';
     //if (!empty($prependedSynonyms)) {

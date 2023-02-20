@@ -1765,7 +1765,7 @@ function compose_new_feature_block_items_generic($description_elements, $feature
                     $elements_out_array[] = compose_description_element_common_taxon_name($description_element, $feature_block_settings);
                     break;
                 case 'TemporalData':
-                    $elements_out_array[] = compose_description_element_temporal_data($description_element, $feature_block_settings);
+                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $feature_uuid, $feature_block_settings);
                     break;
                 case 'Uses':
                     /* IGNORE Uses classes, these are handled completely in compose_feature_block_items_use_records()  */
