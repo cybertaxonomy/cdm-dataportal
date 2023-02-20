@@ -59,7 +59,19 @@ function html_class_attribute_ref($cdm_entity) {
         }
         break;
     }
-  } else{
+  }elseif (isset($cdm_entity->class)) {
+      // DTOs
+      if (isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)) {
+          $attributes = "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
+      }
+      // additional data of specific DTOs
+      switch ($cdm_entity->class) {
+          case 'TaxonNodeDto':
+              $attributes .= "taxon_uuid:" . $cdm_entity->taxonUuid . " sec_uuid:" . $cdm_entity->secUuid;;
+              break;
+      }
+  }
+  /*else{
       if (isset($cdm_entity->class) && isset($cdm_entity->clazz)) {
           // DTOs
           if (isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)) {
@@ -72,7 +84,7 @@ function html_class_attribute_ref($cdm_entity) {
                   break;
           }
       }
-  }
+  }*/
   return $attributes;
 }
 
