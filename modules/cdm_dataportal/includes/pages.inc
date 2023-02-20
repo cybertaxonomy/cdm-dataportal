@@ -1274,7 +1274,7 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
   RenderHints::setFootnoteListKey(RenderHints::getRenderPath());
 
   $homotypic_synomyms = $taxon_dto->homotypicSynonyms;
-  $heterotypic_synonyms = $taxon_dto-> heterotypicSynonyms;
+  $heterotypic_synonyms = $taxon_dto-> heterotypicSynonymGroups;
   $out = '';
 
   // Render accepted taxon.
@@ -1326,8 +1326,8 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
 
   // Render accepted taxon heterotypic synonymy groups.
   if ($heterotypic_synonyms) {
-    foreach ($heterotypic_synonyms as $homotypicalGroup) {
-      $out .= theme('cdm_heterotypicSynonymyGroup', array('homotypicalGroup' => $homotypicalGroup));
+    foreach ($heterotypic_synonyms->items as $homotypicalGroup) {
+      $out .= theme('cdm_new_heterotypicSynonymyGroup', array('homotypicalGroup' => $homotypicalGroup));
     }
   }
   // Render taxon relationships.

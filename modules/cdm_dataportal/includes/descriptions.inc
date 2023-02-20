@@ -398,23 +398,42 @@ function compare_description_element_render_arrays($a, $b){
  */
 function compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion, $prepend_feature_label = FALSE)
 {
+    if (is_cdm_entity($element)){
+        $render_array = array(
+            '#type' => 'html_tag',
+            '#tag' => cdm_feature_block_element_tag_name($feature_block_settings),
 
-  $render_array = array(
-    '#type' => 'html_tag',
-    '#tag' => cdm_feature_block_element_tag_name($feature_block_settings),
+            '#attributes' => array(
+                'class' => array(
+                    'DescriptionElement',
+                    'DescriptionElement-' . $element->class,
+                    html_class_attribute_ref($element)
+                )
+            ),
 
-    '#attributes' => array(
-      'class' => array(
-        'DescriptionElement',
-        'DescriptionElement-' . $element->class,
-        html_class_attribute_ref($element)
-      )
-    ),
+            '#value' => '',
+            '#value_suffix' => NULL
 
-    '#value' => '',
-    '#value_suffix' => NULL
+        );
+    }else{
+        $render_array = array(
+            '#type' => 'html_tag',
+            '#tag' => cdm_feature_block_element_tag_name($feature_block_settings),
 
-  );
+            '#attributes' => array(
+                'class' => array(
+                    'DescriptionElement',
+                    'DescriptionElement-' . $element->typedLabel[0]->cdmClass,
+                    html_class_attribute_ref($element)
+                )
+            ),
+
+            '#value' => '',
+            '#value_suffix' => NULL
+
+        );
+    }
+
 
   RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
   $annotations_and_sources = handle_annotations_and_sources(

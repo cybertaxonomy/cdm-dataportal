@@ -50,7 +50,8 @@
     Selenium WebDriver settings
 
   -->
-  <!-- <entry key="webdriver.firefox.bin"></entry> -->
+  <!--  <entry key="webdriver.firefox.bin">/home/andreas/opt/firefox-45.0.2/firefox</entry>
+            <entry key="browser">firefox</entry>-->
 <!-- 
       NOTE: install the chromedriver from https://sites.google.com/a/chromium.org/chromedriver/downloads 
    -->

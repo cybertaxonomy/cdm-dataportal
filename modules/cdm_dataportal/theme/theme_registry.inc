@@ -65,6 +65,7 @@ function cdm_dataportal_theme() {
     'cdm_nameRelationships' => array('variables' => array('nameRelationships' => NULL, 'skipTypes' => FALSE)),
     'cdm_homotypicSynonymLine' => array('variables' => array('taxon' => NULL)),
     'cdm_heterotypicSynonymyGroup' => array('variables' => array('homotypicalGroup' => NULL)),
+    'cdm_new_heterotypicSynonymyGroup' => array('variables' => array('homotypicalGroup' => NULL)),
     'cdm_homotypicSynonymyGroup' => array('variables' => array(
         'synonymList' => NULL,
         'accepted_taxon_name_uuid' => NULL,
