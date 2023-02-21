@@ -92,10 +92,10 @@ function theme_cdm_new_heterotypicSynonymyGroup($variables) {
     if ($is_first_entry) {
       $is_first_entry = FALSE;
       // Is first list entry.
-      $out .= '<li class="firstentry synonym">' . cdm_related_taxon($synonym, UUID_HETEROTYPIC_SYNONYM_OF) . '</li>';
+      $out .= '<li class="firstentry synonym">' . cdm_new_related_taxon($synonym, UUID_HETEROTYPIC_SYNONYM_OF) . '</li>';
     }
     else {
-      $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+      $out .= '<li class="synonym">' . cdm_new_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
     }
   }
 
@@ -228,7 +228,7 @@ function theme_cdm_new_homotypicSynonymyGroup($variables) {
 
     if (isset($synonymList[0])) {
       foreach ($synonymList as $synonym) {
-        $out .= '<li class="synonym">' . cdm_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+        $out .= '<li class="synonym">' . cdm_new_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
       }
     }
 

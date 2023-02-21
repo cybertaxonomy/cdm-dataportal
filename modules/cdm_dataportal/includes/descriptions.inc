@@ -719,8 +719,8 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
             /*
              * Content/COMMON_NAME.
              */
-            else if ($feature_node->label == 'CommonName') {
-                $common_names_render_array = compose_feature_block_items_feature_common_name($feature_node->facts, $feature_node->term);
+            else if ($feature_node->label == 'Common Name') {
+                $common_names_render_array = compose_new_feature_block_items_feature_common_name($feature_node->facts);
                 $block->content[] = $common_names_render_array;
                 $block_content_is_empty = FALSE;
             }
@@ -1810,7 +1810,7 @@ function compose_new_feature_block_items_generic($description_elements, $feature
  *
  * @ingroup compose
  */
-function compose_feature_block_items_feature_common_name($elements, $feature, $weight = FALSE) {
+function compose_feature_block_items_feature_common_name($elements, $weight = FALSE) {
 
   $common_name_out = '';
   $common_name_feature_elements = array();
@@ -1926,7 +1926,7 @@ function compose_feature_block_items_feature_common_name($elements, $feature, $w
  *
  * @ingroup compose
  */
-function compose_new_feature_block_items_feature_common_name($elements, $feature, $weight = FALSE) {
+function compose_new_feature_block_items_feature_common_name($elements, $weight = FALSE) {
 
     $common_name_out = '';
     $common_name_feature_elements = array();
@@ -1936,18 +1936,18 @@ function compose_new_feature_block_items_feature_common_name($elements, $feature
 
     $feature_block_settings = get_feature_block_settings(UUID_COMMON_NAME);
 
-    if (is_array($elements)) {
-        foreach ($elements as $element) {
+    if (is_array($elements->items)) {
+        foreach ($elements->items as $element) {
 
-            if ($element->cdmClass == 'CommonTaxonName') {
+            if ($element->clazz == 'CommonNameDto') {
 
                 // common name without a language or area, should not happen but is possible
                 $language_area_key = '';
-                if (isset($element->language->representation_L10n)) {
-                    $language_area_key .= $element->language->representation_L10n;
+                if (isset($element->languageUuid)) {
+                    $language_area_key .= $element->languageUuid;
                 }
-                if(isset($element->area->representation_L10n) && strlen($element->area->representation_L10n) > 0){
-                    $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area->representation_L10n . ')';
+                if(isset($element->areaUUID) && strlen($element->areaUUID) > 0){
+                    $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->areaUUID . ')';
                 }
                 if($language_area_key){
                     $language_area_key = '<span class="language-area-label">' . $language_area_key . '<span class="separator">: </span></span>';
@@ -1996,7 +1996,7 @@ function compose_new_feature_block_items_feature_common_name($elements, $feature
 
 
         $common_name_feature_elements_render_array = compose_new_feature_block_wrap_elements(
-            $common_name_feature_elements, $feature, '; ', FALSE
+            $common_name_feature_elements, UUID_COMMON_NAME, "Common Name", $feature_block_settings['glue']
         );
         $common_name_out .= drupal_render($common_name_feature_elements_render_array); // FIXME should this be a render array instead?
 
@@ -2014,7 +2014,7 @@ function compose_new_feature_block_items_feature_common_name($elements, $feature
     }
 
     $common_name_out_text_data = compose_new_feature_block_wrap_elements(
-        $text_data_out, $feature
+        $text_data_out, UUID_COMMON_NAME, "Common Name", $feature_block_settings['glue']
     );
 
     $footnotes = render_footnotes('BIBLIOGRAPHY-' . $footnote_key_suggestion);

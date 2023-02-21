@@ -395,7 +395,113 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL) {
 
   return $out;
 }
+/**
+ * Renders a representation of the given taxon relationship.
+ *
+ * According name relationships are also being rendered.
+ *
+ * @param $taxon_dto
+ *  The CDM TaxonBase dto
+ * @param $reltype_uuid
+ *  The UUID of the TaxonRelationshipType
+ * @param $relsign
+ *  Optional. Can be  used to override the internal decision strategy on finding a suitable icon for the relationship
+ * @param $reltype_representation
+ *   Optional: Defines the value for the title attribute of the html element enclosing the relsign
+ * @param $doubtful
+ *   TODO
+ * @param $doLinkTaxon
+ *   The taxon will be rendered as clickable link when true.
+ *
+ * @return string
+ *   Markup for the taxon relationship.
+ *
+ * @throws Exception
+ */
+function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
+    static $relsign_homo = '≡';
+    static $relsign_hetero = '=';
+    static $relsign_invalid = '&ndash;';
+    static $nom_status_invalid_type_uuids =  array(
+        UUID_NOMENCLATURALSTATUS_TYPE_INVALID,
+        UUID_NOMENCLATURALSTATUS_TYPE_NUDUM,
+        UUID_NOMENCLATURALSTATUS_TYPE_COMBINATIONINVALID,
+        UUID_NOMENCLATURALSTATUS_TYPE_PROVISIONAL
+    );
 
+    // 'taxonRelationships';
+    $footnoteListKey = NULL;
+
+    $skip_render_template_keys = array();
+
+    $is_invalid = false;
+
+
+    switch ($reltype_uuid) {
+        case UUID_HETEROTYPIC_SYNONYM_OF:
+        case UUID_SYNONYM_OF:
+            $relsign = $relsign_hetero;
+            break;
+
+        case UUID_HOMOTYPIC_SYNONYM_OF:
+            $relsign = $relsign_homo;
+            break;
+
+        case UUID_MISAPPLIED_NAME_FOR:
+            $skip_render_template_keys[] = 'nameAuthorPart';
+            $is_invalid = true;
+            $relsign = $relsign_invalid;
+
+            break;
+
+        default:
+            $relsign = $relsign_invalid;
+    }
+
+
+    /*
+    Names with status invalid or nudum are to be displayed with the
+    $relsign_invalid, these names appear at the end of all names in their
+    homotypic group (ordered correctly by the java cdm_lib).
+    */
+    //TODO: how it is implemented in new dto???
+    /*if (isset($taxon_dto->name) && is_array($taxon_dto->name->status)) {
+        foreach ($taxon->name->status as $status) {
+            if (in_array($status->type->uuid , $nom_status_invalid_type_uuids)) {
+                $relsign = $relsign_invalid;
+                break;
+            }
+        }
+    }
+*/
+    // Now rendering starts ..
+    RenderHints::pushToRenderStack('related_taxon');
+
+    if (isset($taxon->name->nomenclaturalSource->citation)) {
+        $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
+    }
+    $taxonUri = '';
+
+    // Printing the taxonName and the handling the special case of annotations.
+    if (!isset($referenceUri)) {
+        $referenceUri = FALSE;
+    }
+    $out_taxon_part = render_new_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
+    $name_relations = cdm_name_relationships_for_taxon_new($taxon);
+    $name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
+
+    $out = '<span class="relation_sign">' . $relsign . '</span>'
+        . $out_taxon_part;
+    if(isset($name_relations_render_array['list']['items'][0])){
+        $out .= ' '  . drupal_render($name_relations_render_array);
+    }
+
+    $out = uuid_anchor($taxon->uuid, $out);
+
+    RenderHints::popFromRenderStack();
+
+    return $out;
+}
 /**
  * Creates markup for a taxon which is the accepted of another one
  *

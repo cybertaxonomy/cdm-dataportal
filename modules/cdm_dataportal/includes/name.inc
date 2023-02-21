@@ -2139,6 +2139,7 @@ function cdm_name_relationships_for_taxon($taxon)
 
 function cdm_name_relationships_for_taxon_new($taxon_dto)
 {
+    //TODO: without WS calls
     $from_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_FROM_NAMERELATIONS, $taxon_dto->uuid);
     $to_name_relations = cdm_ws_get(CDM_WS_PORTAL_TAXON_TO_NAMERELATIONS, $taxon_dto->uuid);
     $name_relations = array_merge($from_name_relations, $to_name_relations);
