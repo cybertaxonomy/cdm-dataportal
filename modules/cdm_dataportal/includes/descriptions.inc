@@ -1810,7 +1810,7 @@ function compose_new_feature_block_items_generic($description_elements, $feature
  *
  * @ingroup compose
  */
-function compose_feature_block_items_feature_common_name($elements, $weight = FALSE) {
+function compose_feature_block_items_feature_common_name($elements, $feature, $weight = FALSE) {
 
   $common_name_out = '';
   $common_name_feature_elements = array();
