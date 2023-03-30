@@ -42,7 +42,6 @@ public class TypeDesignationElement extends BaseElement {
         CdmEntityClassAttributes attr;
         try {
             attr = new CdmEntityClassAttributes(element.getAttribute("class"));
-            System.err.println(attr);
             typeDesignationType = TypeDesignationType.valueOfCdmClass(attr.getCdmType());
         } catch (Exception e) {
             logger.error(e);
