@@ -1835,7 +1835,11 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
  */
 function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     // Taxon object.
-    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid);
+
+    //get feature tree uuid
+    $feature_tree_uuid =variable_get(CDM_PROFILE_FEATURETREE_UUID);
+    //
+    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, "featureTree=". $feature_tree_uuid);
     if (empty($taxon_dto)) {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
         return null;
