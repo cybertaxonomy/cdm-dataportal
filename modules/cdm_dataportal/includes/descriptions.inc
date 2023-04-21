@@ -719,7 +719,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
             /*
              * Content/COMMON_NAME.
              */
-            else if ($feature_node->label == 'Common Name') {
+            else if ($feature_node->uuid == UUID_COMMON_NAME) {
                 $common_names_render_array = compose_new_feature_block_items_feature_common_name($feature_node->facts);
                 $block->content[] = $common_names_render_array;
                 $block_content_is_empty = FALSE;
@@ -1943,11 +1943,11 @@ function compose_new_feature_block_items_feature_common_name($elements, $weight 
 
                 // common name without a language or area, should not happen but is possible
                 $language_area_key = '';
-                if (isset($element->languageUuid)) {
-                    $language_area_key .= $element->languageUuid;
+                if (isset($element->language)) {
+                    $language_area_key .= $element->language;
                 }
-                if(isset($element->areaUUID) && strlen($element->areaUUID) > 0){
-                    $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->areaUUID . ')';
+                if(isset($element->area) && strlen($element->area) > 0){
+                    $language_area_key .= ($language_area_key ? ' '  : '') . '(' . $element->area . ')';
                 }
                 if($language_area_key){
                     $language_area_key = '<span class="language-area-label">' . $language_area_key . '<span class="separator">: </span></span>';
@@ -2414,7 +2414,7 @@ function merged_taxon_new_feature_tree($taxon) {
           } else {
             $distribution_aggregate->status = [];
           }
-          if (is_array($distribution_aggregate->sources) &&!isset($distribution_aggregate->sources )){
+          if ((is_array($distribution_aggregate->sources) &&!isset($distribution_aggregate->sources ) )|| (!isset($distribution_aggregate->sources)) && $distribution_aggregate->clazz == "DistributionDto"){
               $distribution_aggregate->sources = array();
           }else if (!is_array($distribution_aggregate->sources) && !isset($distribution_aggregate->sources-> items[0])){
             $distribution_aggregate->sources->items[0] = array();
