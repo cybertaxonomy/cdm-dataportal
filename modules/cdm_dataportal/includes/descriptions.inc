@@ -2146,13 +2146,13 @@ function compose_description_elements_distribution($description_elements){
    *
    */
   function merged_taxon_feature_tree($taxon) {
+    $feature_tree = get_profile_feature_tree();
 
-    // 1. fetch descriptions_by_featuretree but exclude the distribution feature
-    $merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_feature_tree(), $taxon->uuid, array(UUID_DISTRIBUTION));
+      // 1. fetch descriptions_by_featuretree but exclude the distribution feature
+      $merged_tree = cdm_ws_descriptions_by_featuretree($feature_tree, $taxon->uuid, array(UUID_DISTRIBUTION));
 
 
-
-    // 2. find the distribution feature node
+      // 2. find the distribution feature node
     $distribution_node =& cdm_feature_tree_find_node($merged_tree->root->childNodes, UUID_DISTRIBUTION);
 
     if ($distribution_node) {
@@ -2167,6 +2167,12 @@ function compose_description_elements_distribution($description_elements){
       }
       else {
         $query_parameters['part'][] = 'elements';
+      }
+      $query_parameters['features'] = array();
+      foreach ($feature_tree->root ->childNodes as $childNode ){
+        if ($childNode->path == "Distribution"){
+            $query_parameters['features'][]= $childNode->term->uuid;
+        }
       }
       $query_parameters['omitLevels'] = array();
       foreach(variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid){
