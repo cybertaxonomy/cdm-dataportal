@@ -334,6 +334,7 @@ define('CDM_DISTRIBUTION_FILTER_DEFAULT', serialize(
      )
 ));
 
+define('CDM_AREATREE_UUID', 'cdm_areatree_uuid');
 define('DISTRIBUTION_HIERARCHY_STYLE', 'distribution_hierarchy_style');
 define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
   "level_0" => array(
@@ -2380,6 +2381,35 @@ ie	introduced: formerly introduced
 
 </pre>'),
   );
+
+  /* ====AREA TREE ===*/
+    // ---- AREA TREE BLOCKS ---- //
+    $form['taxon_profile']['area_trees'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Area Tree'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#description' => t("This section covers settings related to the 
+      <em>Area Tree</em>. The <em>Area tree</em> contains the areas
+      used for the distributions"),
+    );
+    $areaTrees = cdm_get_areaTrees_as_options();
+    //$profile_area_tree = get_profile_area_tree();
+    //$profile_area_tree_uuid = $profile_area_tree->uuid;
+    //if(!isset($areaTrees['options'][$profile_area_tree_uuid])) {
+    //    $profile_area_tree_uuid = UUID_DEFAULT_AREATREE;
+    //}
+    $form['taxon_profile']['area_trees'][CDM_AREATREE_UUID] = array(
+        '#type' => 'radios',
+        '#title' => t('Taxon profile area tree') . ':',
+      //  '#default_value' => $profile_area_tree_uuid,
+        '#options' =>  $areaTrees['options'],
+        '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+        '#options_suffixes' => $areaTrees['treeRepresentations'],
+        '#description' => t('The Area Tree selected defines the type and order 
+    of the according distributions visible in the taxon profile page.'
+        ),
+    );
 
 
   /* ====== SYNONYMY ====== */
