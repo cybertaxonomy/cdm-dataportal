@@ -2188,7 +2188,7 @@ function compose_description_elements_distribution($description_elements){
               if ($customStatusColorsJson) {
                   $query_parameters['statusColors'] = $customStatusColorsJson;
               }
-
+              $query_parameters[features] = $distribution_feature_uuid;
 
               $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
               // 4. get distribution TextData is there are any
