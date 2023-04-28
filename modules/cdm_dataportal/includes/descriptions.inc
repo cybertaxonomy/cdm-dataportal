@@ -962,18 +962,19 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
     }
 
     // --- Distribution map
-    $distribution_map_query_parameters = NULL;
+      if ($feature->uuid == UUID_DISTRIBUTION) {
+          $distribution_map_query_parameters = NULL;
 
-    $map_visibility = variable_get(DISTRIBUTION_MAP_VISIBILITY, DISTRIBUTION_MAP_VISIBILITY_DEFAULT);
-    if(variable_get(DISTRIBUTION_MAP_VISIBILITY, DISTRIBUTION_MAP_VISIBILITY_DEFAULT) == 'always' ||
-        $map_visibility == 'automatic' && isset($descriptionElements['DistributionInfoDTO']->mapUriParams)
-      )
-    {
-      $distribution_map_query_parameters = $descriptionElements['DistributionInfoDTO']->mapUriParams;
-    }
-    $map_render_element = compose_distribution_map($distribution_map_query_parameters);
-    $block->content[] = $map_render_element;
 
+          $map_visibility = variable_get(DISTRIBUTION_MAP_VISIBILITY, DISTRIBUTION_MAP_VISIBILITY_DEFAULT);
+          if (variable_get(DISTRIBUTION_MAP_VISIBILITY, DISTRIBUTION_MAP_VISIBILITY_DEFAULT) == 'always' ||
+              $map_visibility == 'automatic' && isset($descriptionElements['DistributionInfoDTO']->mapUriParams)
+          ) {
+              $distribution_map_query_parameters = $descriptionElements['DistributionInfoDTO']->mapUriParams;
+          }
+          $map_render_element = compose_distribution_map($distribution_map_query_parameters);
+          $block->content[] = $map_render_element;
+      }
     $dto_out_array = array();
 
     // --- Condensed Distribution
@@ -2189,6 +2190,10 @@ function compose_description_elements_distribution($description_elements){
                   $query_parameters['statusColors'] = $customStatusColorsJson;
               }
               $query_parameters['features'] = $distribution_feature_uuid;
+              if (variable_get(CDM_AREATREE_UUID)){
+                  $query_parameters['areaTree '] = variable_get(CDM_AREATREE_UUID);
+              }
+
 
               $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
               // 4. get distribution TextData is there are any
