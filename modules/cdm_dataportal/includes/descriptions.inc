@@ -2191,7 +2191,7 @@ function compose_description_elements_distribution($description_elements){
               }
               $query_parameters['features'] = $distribution_feature_uuid;
               if (variable_get(CDM_AREATREE_UUID)){
-                  $query_parameters['areaTree '] = variable_get(CDM_AREATREE_UUID);
+                  //$query_parameters['areaTree '] = variable_get(CDM_AREATREE_UUID);
               }
 
 
