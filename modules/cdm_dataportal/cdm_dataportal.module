@@ -1839,7 +1839,11 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     //get feature tree uuid
     $feature_tree_uuid =variable_get(CDM_PROFILE_FEATURETREE_UUID);
     //
-    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, "featureTree=". $feature_tree_uuid);
+    if (isset($feature_tree_uuid)){
+        $feature_tree_uuid = "featureTree=". $feature_tree_uuid;
+    }
+
+    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, $feature_tree_uuid);
     if (empty($taxon_dto)) {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
         return null;
@@ -1851,7 +1855,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     ));
 
     // Check if the taxon id contained in the currently selected tree.
-    $taxon_in_current_classification = taxon_in_current_classification($uuid);
+    $taxon_in_current_classification = taxon_in_current_classification_new($taxon_dto);
 
     if (!$taxon_in_current_classification) {
         $classifications = get_classifications_for_taxon($taxon_dto);
