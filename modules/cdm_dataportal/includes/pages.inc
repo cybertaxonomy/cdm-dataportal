@@ -623,8 +623,7 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
         }
     }
 
-    $media = _load_media_for_taxon($taxon_dto);
-
+    $media = $taxon_dto-> media;
 
     if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
         taxon_page_tabs_hidden_add('images');
@@ -950,7 +949,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
   }
 
   if($add_synonymy){
-    $synonymy_a = compose_cdm_taxon_page_synonymy($taxon_dto, true);
+    $synonymy_a = compose_cdm_taxon_page_new_synonymy($taxon_dto, true);
     $synonymy_a['#weight'] = -102;
     $synonymy_a['#prefix'] = '<div id="synonymy">';
     $synonymy_a['#suffix'] = '</div>';

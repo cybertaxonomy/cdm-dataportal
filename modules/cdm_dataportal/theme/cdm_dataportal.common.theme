@@ -70,6 +70,26 @@ function taxon_in_current_classification($taxon_uuid) {
 }
 
 /**
+ * Checks if the taxon specified by the uuid is contained in the currently focused classification.
+ *
+ * @param $taxon_uuid
+ * @return bool
+ */
+function taxon_in_current_classification_new($taxon_dto) {
+  $taxon_nodes = $taxon_dto->taxonNodes;
+  $taxon_in_current_tree = FALSE;
+  //if (is_array($taxon_nodes)) {
+    foreach ($taxon_nodes->items as $node) {
+      if (get_current_classification_uuid() == $node->classificationUuid) {
+        $taxon_in_current_tree = TRUE;
+        break;
+      }
+    }
+  //}
+  return $taxon_in_current_tree;
+}
+
+/**
  * TODO if getting fragment from request is possible remove
  * $_REQUEST['highlite'] HACK
  * NOT WORKING since fragments are not available to the server

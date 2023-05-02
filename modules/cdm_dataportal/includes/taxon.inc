@@ -476,19 +476,20 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
 */
     // Now rendering starts ..
     RenderHints::pushToRenderStack('related_taxon');
-
-    if (isset($taxon->name->nomenclaturalSource->citation)) {
+//TODO: actually the uuid of the nomenclatural source is not available in taxon dto
+    /*if (isset($taxon_dto->name->nomenclaturalSource->citation)) {
         $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
-    }
+    }*/
     $taxonUri = '';
 
     // Printing the taxonName and the handling the special case of annotations.
     if (!isset($referenceUri)) {
         $referenceUri = FALSE;
     }
-    $out_taxon_part = render_new_taxon_or_name($taxon, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
-    $name_relations = cdm_name_relationships_for_taxon_new($taxon);
-    $name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon->name->uuid, $taxon->uuid);
+    $out_taxon_part = render_new_taxon_or_name($taxon_dto, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
+    $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
+    //TODO the name uuid is not available!!!
+    //$name_relations_render_array = compose_name_relationships_inline($name_relations, $taxon_dto->uuid, $taxon_dto->uuid);
 
     $out = '<span class="relation_sign">' . $relsign . '</span>'
         . $out_taxon_part;
@@ -496,7 +497,7 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
         $out .= ' '  . drupal_render($name_relations_render_array);
     }
 
-    $out = uuid_anchor($taxon->uuid, $out);
+    $out = uuid_anchor($taxon_dto->uuid, $out);
 
     RenderHints::popFromRenderStack();
 

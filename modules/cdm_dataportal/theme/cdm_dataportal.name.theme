@@ -99,8 +99,8 @@ function theme_cdm_new_heterotypicSynonymyGroup($variables) {
     }
   }
 
-  if (count($type_designations) > 0) {
-    $out .= render_type_designations($type_designations);
+  if (isset($type_designations) && count($type_designations) > 0) {
+    $out .= cdm_tagged_text_to_markup($type_designations);
   }
   $out .= '</ul>';
 
@@ -233,7 +233,7 @@ function theme_cdm_new_homotypicSynonymyGroup($variables) {
     }
 
     if (isset($type_designations) && count($type_designations) > 0) {
-      $out .= render_type_designations($type_designations);
+      $out .= cdm_tagged_text_to_markup($type_designations);
     }
 
   }
