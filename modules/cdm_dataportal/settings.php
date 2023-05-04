@@ -2331,8 +2331,37 @@ function cdm_settings_layout_taxon() {
     '#description' => 'This option ins only applicable when distributions are hierachically orderd (see option above)!
     Areas which belong to the selected area levels will be hidden in the portal.',
   );
+    /* ====AREA TREE ===*/
+    // ---- AREA TREE BLOCKS ---- //
+    $form['taxon_profile']['area_trees'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Area Tree'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#description' => t("This section covers settings related to the 
+      <em>Area Tree</em>. The <em>Area tree</em> contains the areas
+      used for the distributions"),
+    );
+    $areaTrees = cdm_get_areaTrees_as_options();
+    //$profile_area_tree = get_profile_area_tree();
+    //$profile_area_tree_uuid = $profile_area_tree->uuid;
+    //if(!isset($areaTrees['options'][$profile_area_tree_uuid])) {
+    //    $profile_area_tree_uuid = UUID_DEFAULT_AREATREE;
+    //}
+    $form['taxon_profile']['area_trees'][CDM_AREATREE_UUID] = array(
+        '#type' => 'radios',
+        '#title' => t('Taxon profile area tree') . ':',
+        //  '#default_value' => $profile_area_tree_uuid,
+        '#options' =>  $areaTrees['options'],
+        '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+        '#options_suffixes' => $areaTrees['treeRepresentations'],
+        '#description' => t('The Area Tree selected defines the type and order 
+    of the according distributions visible in the taxon profile page.'
+        ),
+    );
 
-  $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] = array(
+
+    $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] = array(
     '#type' => 'checkbox',
     '#title' => t('Show TextData elements on top of the map'),
     '#default_value' => variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0),
@@ -2342,8 +2371,14 @@ function cdm_settings_layout_taxon() {
       This option is useful if you need to have descriptive texts for each
       distribution map.'),
   );
+    $form['taxon_profile']['status_colours'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Distribution Status Colours'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
 
-  $form['taxon_profile'][DISTRIBUTION_STATUS_COLORS] = array(
+    );
+  $form['taxon_profile']['status_colours'][DISTRIBUTION_STATUS_COLORS] = array(
       '#type' => 'textarea',
       '#title' => t('Custom status colors'),
       '#element_validate' => array('form_element_validate_json'),
@@ -2382,34 +2417,6 @@ ie	introduced: formerly introduced
 </pre>'),
   );
 
-  /* ====AREA TREE ===*/
-    // ---- AREA TREE BLOCKS ---- //
-    $form['taxon_profile']['area_trees'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('Area Tree'),
-        '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
-        '#description' => t("This section covers settings related to the 
-      <em>Area Tree</em>. The <em>Area tree</em> contains the areas
-      used for the distributions"),
-    );
-    $areaTrees = cdm_get_areaTrees_as_options();
-    //$profile_area_tree = get_profile_area_tree();
-    //$profile_area_tree_uuid = $profile_area_tree->uuid;
-    //if(!isset($areaTrees['options'][$profile_area_tree_uuid])) {
-    //    $profile_area_tree_uuid = UUID_DEFAULT_AREATREE;
-    //}
-    $form['taxon_profile']['area_trees'][CDM_AREATREE_UUID] = array(
-        '#type' => 'radios',
-        '#title' => t('Taxon profile area tree') . ':',
-      //  '#default_value' => $profile_area_tree_uuid,
-        '#options' =>  $areaTrees['options'],
-        '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
-        '#options_suffixes' => $areaTrees['treeRepresentations'],
-        '#description' => t('The Area Tree selected defines the type and order 
-    of the according distributions visible in the taxon profile page.'
-        ),
-    );
 
 
   /* ====== SYNONYMY ====== */
