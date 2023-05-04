@@ -213,25 +213,32 @@ function oder_and_render_original_sources($sources){
 function compare_original_sources($a, $b){
 
   $a_string = '';
-  if(isset($a->citation->titleCache)) {
-    $a_string = $a->citation->titleCache;
+  if (isset($a-> label) && is_array($a->label)){
+      $a_string = $a->label[0]->label;
+  }else{
+      if(isset($a->citation->titleCache)) {
+          $a_string = $a->citation->titleCache;
+      }
+      if((isset($a->nameUsedInSource))){
+          $a_string .= $a->nameUsedInSource->titleCache;
+      } elseif (isset($a->originalInfo)){
+          $a_string .= $a->originalInfo;
+      }
   }
-  if((isset($a->nameUsedInSource))){
-    $a_string .= $a->nameUsedInSource->titleCache;
-  } elseif (isset($a->originalInfo)){
-    $a_string .= $a->originalInfo;
-  }
+  if (isset($b-> label) && is_array($b->label)){
+      $b_string = $b->label[0]->label;
+  }else{
+      $b_string = '';
+      if(isset($b->citation->titleCache)) {
+          $b_string = $b->citation->titleCache;
+      };
+      if((isset($b->nameUsedInSource))){
+          $b_string .= $b->nameUsedInSource->titleCache;
+      } elseif (isset($b->originalInfo)){
+          $b_string .= $b->originalInfo;
+      }
 
-  $b_string = '';
-  if(isset($b->citation->titleCache)) {
-    $b_string = $b->citation->titleCache;
-  };
-  if((isset($b->nameUsedInSource))){
-    $b_string .= $b->nameUsedInSource->titleCache;
-  } elseif (isset($b->originalInfo)){
-    $b_string .= $b->originalInfo;
   }
-
   if ($a_string == $b_string) {
     return 0;
   }
