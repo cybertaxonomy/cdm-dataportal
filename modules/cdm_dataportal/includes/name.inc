@@ -657,21 +657,22 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
  *  The markup for a taxon name.
  */
 function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NULL, $reference_link = NULL,
-                              $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
+                              $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
+{
 
     $is_doubtful = false;
     $taxon_base = null;
     $nom_status_fkey = null; // FootNoteKey
     //if($taxon_name_or_taxon_base_dto->class == 'Taxon' || $taxon_name_or_taxon_base_dto->class == 'Synonym'){
-        $taxon_base = $taxon_name_or_taxon_base_dto;
-        if(isset($taxon_name_or_taxon_base->name)){
-            $taxon_name = $taxon_name_or_taxon_base->name;
-        } else {
-            $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base_dto->uuid));
-        }
-        $is_doubtful = $taxon_name_or_taxon_base->doubtful;
-        // use the TaxonBase.tagged_title so we have the secRef
-        $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
+    $taxon_base = $taxon_name_or_taxon_base_dto;
+    if (isset($taxon_name_or_taxon_base_dto->taggedName)) {
+        $tagged_name = $taxon_name_or_taxon_base_dto->taggedName;
+    } else {
+        $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base_dto->uuid));
+    }
+    $is_doubtful = $taxon_name_or_taxon_base_dto->doubtful;
+    // use the TaxonBase.tagged_title so we have the secRef
+    $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
     /*} else {
         // assuming this is a TaxonName
         $taxon_name = $taxon_name_or_taxon_base;
@@ -684,7 +685,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
 
     $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
-    $partDefinition = get_partDefinition($taxon_name->nameType);
+    $partDefinition = get_partDefinition($taxon_name_or_taxon_base_dto->nameType);
 
     // Apply definitions to template.
     foreach ($renderTemplate as $part => $uri) {
@@ -704,8 +705,8 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_title);
     $secref_name_inSource_tagged_text = tagged_text_extract_secReference_name_in_source($tagged_title);
     // taxon names will have the nomenclatural reference in the tagged full title:
-    $nomref_tagged_text = tagged_text_extract_reference($tagged_title);
-    $nom_status_tagged_text = tagged_text_extract_nomstatus($tagged_title);
+    $nomref_tagged_text = tagged_text_extract_reference($tagged_name);
+    $nom_status_tagged_text = tagged_text_extract_nomstatus($tagged_name);
     $appended_phrase_tagged_text = array(); // this is filled later
 
     normalize_tagged_text($tagged_title);
@@ -801,9 +802,9 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
         // [Eckhard]:"Komma nach dem Taxonnamen ist grundsätzlich falsch,
         // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
-        if (isset($renderTemplate['referencePart']['reference']) && isset($taxon_name->nomenclaturalSource)) {
-            $microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
-            if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation)){
+       // if (isset($renderTemplate['referencePart']['reference']) && isset($taggedName->nomenclaturalSource)) {
+            //$microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
+          /*  if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation)){
                 // drupal message for debugging of #9599
                 // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
                 //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
@@ -821,13 +822,14 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                 }
                 $referenceArray['#separator'] = $separator;
                 $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
-            } else {
+                */
+          //  } else {
                 // this is the case for taxon names
                 $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text);
-            }
+          //  }
 
             array_setr('reference', $referenceArray, $renderTemplate);
-        }
+        //}
 
         // If authors have been removed from the name part the last named authorteam
         // should be added to the reference citation, otherwise, keep the separator
@@ -891,7 +893,8 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     // Fill with protologues etc...
     $protologue_links = [];
     if (array_setr('description', TRUE, $renderTemplate)) {
-        $external_links = cdm_ws_get(CDM_WS_NAME_PROTOLOGUE_LINKS, $taxon_name->uuid);
+        $external_links = $taxon_name_or_taxon_base_dto->protologues;
+        //$external_links = cdm_ws_get(CDM_WS_NAME_PROTOLOGUE_LINKS, $taxon_name->uuid);
         if($external_links){
             foreach ($external_links as $link) {
                 if (!empty($link->uri)) {
@@ -904,7 +907,8 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
         // ---------------
 
         $additional_pub_markup = '';
-        $descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxon_name->uuid);
+        $descriptions = $taxon_name_or_taxon_base_dto-> nameFacts;
+       //$descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxon_name->uuid);
         if($descriptions) {
             foreach ($descriptions as $description) {
                 if (!empty($description)) {
@@ -951,7 +955,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
         // developer option to show the render path with each taxon name
         $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
     }
-    $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base)
+    $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base_dto)
         . '" data-cdm-ref="/name/' . $taxon_name->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
     // . '" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
     foreach ($renderTemplate as $partName => $part) {
