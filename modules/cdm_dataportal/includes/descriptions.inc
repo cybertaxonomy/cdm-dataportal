@@ -2443,15 +2443,23 @@ function merged_taxon_new_feature_tree($taxon) {
           if(isset($distribution->status)){
             $distribution_aggregate->status[] = $distribution->status;
           }
-          if($distribution->sources->count >0) {
-              if ($distribution_aggregate->sources->count == 0){
-                  $distribution_aggregate -> sources = $distribution->sources;
-              }else{
-                $distribution_aggregate->sources -> items= array_merge($distribution_aggregate->sources -> items,
-                $distribution->sources -> items);
-                $distribution_aggregate->sources ->count = count($distribution_aggregate -> sources -> items);
-              }
-          }
+          //TODO: differ between DTO handling and standard page
+            if (is_array($distribution->sources) ){
+                $distribution_aggregate->sources= array_merge($distribution_aggregate->sources ,
+                    $distribution->sources );
+            }else{
+                if(isset($distribution-> sources) && $distribution->sources->count >0) {
+                    if ($distribution_aggregate->sources->count == 0){
+                        $distribution_aggregate -> sources = $distribution->sources;
+                    }else{
+                        $distribution_aggregate->sources -> items= array_merge($distribution_aggregate->sources -> items,
+                            $distribution->sources -> items);
+                        $distribution_aggregate->sources ->count = count($distribution_aggregate -> sources -> items);
+                    }
+                }
+            }
+
+
           if(isset($distribution->annotations[0])) {
            $distribution_aggregate->annotations = array_merge($distribution_aggregate->annotations,
               $distribution->annotations);
