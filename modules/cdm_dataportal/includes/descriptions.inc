@@ -1526,9 +1526,9 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
         // add the glue!
         if(!$is_first) {
             if (isset($element_render_array['#value'])) {
-                $element_render_array['#value'] = $glue . $element_render_array['#value'];
+                $element_render_array['#value'] = $glue . " ". $element_render_array['#value'];
             } elseif (isset($element_render_array['#markup'])) {
-                $element_render_array['#markup'] = $glue . $element_render_array['#markup'];
+                $element_render_array['#markup'] = $glue . " ". $element_render_array['#markup'];
             }
         }
         $is_first = false;
