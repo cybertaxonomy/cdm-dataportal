@@ -2338,9 +2338,8 @@ function cdm_settings_layout_taxon() {
         '#title' => t('Area Tree'),
         '#collapsible' => TRUE,
         '#collapsed' => FALSE,
-        '#description' => t("This section covers settings related to the 
-      <em>Area Tree</em>. The <em>Area tree</em> contains the areas
-      used for the distributions"),
+        '#description' => t("This section covers settings related to the distribution  
+      <em>area tree</em>."),
     );
     $areaTrees = cdm_get_areaTrees_as_options();
     //$profile_area_tree = get_profile_area_tree();
@@ -2350,13 +2349,13 @@ function cdm_settings_layout_taxon() {
     //}
     $form['taxon_profile']['area_trees'][CDM_AREATREE_UUID] = array(
         '#type' => 'radios',
-        '#title' => t('Taxon profile area tree') . ':',
+        '#title' => t('Distribution area tree') . ':',
         //  '#default_value' => $profile_area_tree_uuid,
         '#options' =>  $areaTrees['options'],
         '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
         '#options_suffixes' => $areaTrees['treeRepresentations'],
-        '#description' => t('The Area Tree selected defines the type and order 
-    of the according distributions visible in the taxon profile page.'
+        '#description' => t('The area tree selected defines a filter and order (including hierarchical order)
+         of the distribution data visible in the distribution section of the taxon profile page.'
         ),
     );
 
