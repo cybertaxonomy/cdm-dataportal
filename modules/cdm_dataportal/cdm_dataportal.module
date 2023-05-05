@@ -1835,15 +1835,60 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
  */
 function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     // Taxon object.
+    $query_parameters = cdm_distribution_filter_query();
+    //TODO: adapt after changing completely to DTO usage
+    $temp_hidden = $query_parameters['hiddenAreaMarkerType'];
+    if ($temp_hidden){
+        $query_parameters['fallbackAreaMarkerType'] = $temp_hidden;
+    }
+
 
     //get feature tree uuid
     $feature_tree_uuid =variable_get(CDM_PROFILE_FEATURETREE_UUID);
     //
     if (isset($feature_tree_uuid)){
-        $feature_tree_uuid = "featureTree=". $feature_tree_uuid;
+        $query_parameters['featureTree'] =  $feature_tree_uuid;
+    }
+    /*
+     * @RequestParam(value = "fallbackAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
+            @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
+            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            @RequestParam(value = "statusColors", required = false) String statusColorsString,
+            @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
+            @RequestParam(value = "recipe", required = false, defaultValue="EuroPlusMed") CondensedDistributionRecipe recipe,
+
+     */
+
+
+    $query_parameters['part'] = array('mapUriParams');
+    if (variable_get(DISTRIBUTION_CONDENSED)) {
+        $query_parameters['part'][] = 'condensedDistribution';
+    }
+    if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
+        $query_parameters['part'][] = 'tree';
+    } else {
+        $query_parameters['part'][] = 'elements';
     }
 
-    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, $feature_tree_uuid);
+
+    /*$query_parameters['omitLevels'] = array();
+    foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid) {
+        if (is_uuid($uuid)) {
+            $query_parameters['omitLevels'][] = $uuid;
+        }
+    }*/
+    $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
+    if ($customStatusColorsJson) {
+        $query_parameters['statusColors'] = $customStatusColorsJson;
+    }
+    $query_parameters['features'] = UUID_DISTRIBUTION;
+    if (variable_get(CDM_AREATREE_UUID)){
+        $query_parameters['areaTree'] = variable_get(CDM_AREATREE_UUID);
+    }
+
+
+
+    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
     if (empty($taxon_dto)) {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
         return null;

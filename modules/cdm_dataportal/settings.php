@@ -2342,7 +2342,8 @@ function cdm_settings_layout_taxon() {
       <em>area tree</em>."),
     );
     $areaTrees = cdm_get_areaTrees_as_options();
-    //$profile_area_tree = get_profile_area_tree();
+    $areaTrees['options'][] = "Default area tree (computed from vocabularies in use)";
+     //$profile_area_tree = get_profile_area_tree();
     //$profile_area_tree_uuid = $profile_area_tree->uuid;
     //if(!isset($areaTrees['options'][$profile_area_tree_uuid])) {
     //    $profile_area_tree_uuid = UUID_DEFAULT_AREATREE;

@@ -92,11 +92,14 @@ function cdm_distribution_filter_query() {
     $query['subAreaPreference'] = 1;
   }
   if (is_array($cdm_distribution_filter['hiddenAreaMarkerType']) && count($cdm_distribution_filter['hiddenAreaMarkerType']) > 0) {
-    $query['hiddenAreaMarkerType'] = '';
+    $temp_hidden = '';
     foreach ($cdm_distribution_filter['hiddenAreaMarkerType'] as $marker_type => $enabled) {
       if ($enabled) {
         $query['hiddenAreaMarkerType'] .= ($query['hiddenAreaMarkerType'] ? ',' : '') . $marker_type;
       }
+    }
+    if ($temp_hidden){
+        $query['hiddenAreaMarkerType'] = $temp_hidden;
     }
   }
 
