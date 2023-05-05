@@ -358,8 +358,12 @@ function compose_cdm_media_gallery($configuration) {
       if(!$media){
         continue;
       }
-      $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
-      if (isset($complete_media->representations[0]->parts[0])) {
+      if (isset($media->label)){
+          $complete_media = $media;
+      }else {
+          $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
+      }
+      if ((is_array($complete_media->representations) && isset($complete_media->representations[0]->parts[0]))||$complete_media->representations-> count > 0) {
 
         $gallery_media_item = new GalleryItemMedia($complete_media, $max_extend, $max_extend);
 
@@ -694,7 +698,12 @@ function render_taxon_media_gallery($taxon, $gallery_viewer, $media) {
  * @throws Exception
  */
 function taxon_media_gallery_default($taxon, $media) {
-  $hasImages = isset($media[0]);
+    if (is_array($media)){
+        $hasImages = isset($media[0]);
+    }else{
+        $hasImages = $media-> count > 0;
+        $media= $media-> items;
+    }
 
   if ($hasImages) {
 

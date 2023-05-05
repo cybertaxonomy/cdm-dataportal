@@ -1994,7 +1994,11 @@ function compose_new_feature_block_items_feature_common_name($elements, $weight 
 
             $common_name_feature_elements[] = $language_area_key . join(', ', $per_language_area_out);
         } // End of loop over set of elements per language area
-
+/*
+ *     $common_name_feature_elements_render_array = compose_feature_block_wrap_elements(
+      $common_name_feature_elements, $feature, '; ', FALSE
+    );
+ */
 
         $common_name_feature_elements_render_array = compose_new_feature_block_wrap_elements(
             $common_name_feature_elements, UUID_COMMON_NAME, "Common Name", $feature_block_settings['glue']

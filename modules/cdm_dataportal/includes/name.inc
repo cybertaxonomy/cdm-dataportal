@@ -825,7 +825,8 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                 */
           //  } else {
                 // this is the case for taxon names
-                $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text);
+                $options['html']= true;
+                $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text, $skiptags = array(), $tag = 'span', $options);
           //  }
 
             array_setr('reference', $referenceArray, $renderTemplate);

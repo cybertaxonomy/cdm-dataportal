@@ -625,7 +625,7 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
 
     $media = $taxon_dto-> media;
 
-    if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
+    if ($media -> count == 0 || ($tabsToDisplay["Images"] == '0')) {
         taxon_page_tabs_hidden_add('images');
     }
 
@@ -881,11 +881,11 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
     $representationPart = new stdClass();
     $attributes = array();
-    if (isset($media[0])) {
+    if ($media -> count > 0) {
       // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
       // which only contains the thumbnail representation even if the height and width filters are not set.
       // -->
-      $preferred_media = cdm_ws_get(CDM_WS_MEDIA, $media[0]->uuid);
+      $preferred_media = cdm_ws_get(CDM_WS_MEDIA, $media-> items[0]->uuid);
       $preferred_representations = cdm_preferred_media_representations($preferred_media, array(
         'image/jpg',
         'image/jpeg',
@@ -1289,8 +1289,10 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
     $accepted_name = '';
     if (variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0)) {
       $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
-      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon_dto->taxonLabel . '</div>';
+      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon_dto->secTitleCache . '</div>';
     }
+
+    //TODO:
     if (isset($taxon->name->nomenclaturalSource->citation)) {
       $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
     }
@@ -1331,6 +1333,7 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
   }
   // Render taxon relationships.
   if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)) {
+     // $taxon_dto->conceptRelations;
     $taxonRelationshipsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, $taxon_dto->uuid);
     $out .= cdm_taxonRelationships($taxonRelationshipsDTO, $taxon_dto);
   }

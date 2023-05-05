@@ -208,7 +208,12 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
         if(isset($options['html']) &&  $options['html']){
           $out .= $tt->text;
         } else {
-          $out .= t('@text', array('@text' => $tt->text));
+            if (is_array($tt->text ))
+            {
+                $temp = $tt->text[0];
+                $tt->text = "[\"".$temp."\"]";
+            }
+            $out .= t('@text', array('@text' => $tt->text));
         }
         $was_separator = $is_separator;
         $last_type = $tt->type;
@@ -367,7 +372,10 @@ function tagged_text_extract_reference(&$tagged_text, $ref_tag_type = "reference
       }
     }
   }
-  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  if(isset_not_empty($tagged_text)){
+      $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  }
+
   return $extracted_tt;
 }
 
@@ -412,7 +420,10 @@ function tagged_text_extract_reference_and_detail(&$tagged_text, $ref_tag_type =
       }
     }
   }
-  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  if (isset_not_empty($tagged_text)){
+      $tagged_text = array_values($tagged_text);// re-index array to make it continuous again
+  }
+
   return $extracted_tt;
 }
 
@@ -458,7 +469,10 @@ function tagged_text_extract_secReference_name_in_source(&$tagged_text) {
 
     }
   }
-  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  if (isset_not_empty($tagged_text)){
+      $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  }
+
   return $extracted_tt;
 }
 
@@ -486,7 +500,9 @@ function tagged_text_extract_nomstatus(&$tagged_text) {
       }
     }
   }
-  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  if(isset_not_empty($tagged_text)){
+      $tagged_text = array_values($tagged_text);// re-index array to make it continuous again
+  }
   return $extracted_tt;
 }
 
@@ -532,7 +548,9 @@ function tagged_text_extract(&$tagged_text, $type, $replace_with_placeholder = f
       }
     }
   }
-  $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  if (isset_not_empty($tagged_text)) {
+      $tagged_text = array_values($tagged_text); // re-index array to make it continuous again
+  }
   return $matching_elements;
 }
 

@@ -333,6 +333,36 @@ function handle_name_relationship_as_footnote($name_rel)
 }
 
 /**
+ * Creates footnote markup for the name relationship and
+ * registers it in the {@link \FootnoteManager}. The resulting foonote
+ * key is returned as markup.
+ *
+ * @param $name_rel
+ *   The cdm name relationship as DTO
+ * @return \FootnoteKey
+ *  The FootnoteKey
+ */
+function handle_new_name_relationship_as_footnote($name_rel)
+{
+    $footnote_markup = '';
+    $fnkey = null;
+    if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered) {
+        $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span>; ';
+    }
+    if (isset($name_rel->source->label)) {
+        $footnote_markup .= '<span class="reference">' . $name_rel->source->label . '</span>';
+    }
+    //I think we do not need this because the label is created by Formatter
+   // if (isset($name_rel->source->citationMicroReference) && $name_rel->source->citationMicroReference) {
+    //    $footnote_markup .= (isset($name_rel->source->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->source->citationMicroReference . '</span>';
+    //}
+    if ($footnote_markup) {
+        $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
+    }
+    return $fnkey;
+}
+
+/**
  * Creates footnote markup for nomenclatural status and
  * registers it in the {@link \FootnoteManager}. The resulting foonote
  * key is returned as markup.
