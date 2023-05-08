@@ -2342,7 +2342,9 @@ function cdm_settings_layout_taxon() {
       <em>area tree</em>."),
     );
     $areaTrees = cdm_get_areaTrees_as_options();
-    $areaTrees['options'][] = "Default area tree (computed from vocabularies in use)";
+    $areaTrees_temp['options'][] = "Default area tree (computed from vocabularies in use)";
+    $options = array_merge($areaTrees_temp['options'], $areaTrees['options']);
+    $areaTrees['options'] = $options;
      //$profile_area_tree = get_profile_area_tree();
     //$profile_area_tree_uuid = $profile_area_tree->uuid;
     //if(!isset($areaTrees['options'][$profile_area_tree_uuid])) {
@@ -2355,6 +2357,7 @@ function cdm_settings_layout_taxon() {
         '#options' =>  $areaTrees['options'],
         '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
         '#options_suffixes' => $areaTrees['treeRepresentations'],
+        '#default_value' => variable_get(CDM_AREATREE_UUID, array()),
         '#description' => t('The area tree selected defines a filter and order (including hierarchical order)
          of the distribution data visible in the distribution section of the taxon profile page.'
         ),
