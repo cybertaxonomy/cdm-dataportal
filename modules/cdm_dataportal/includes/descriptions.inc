@@ -163,9 +163,9 @@ function cdm_toc_list_add_item($label, $class_attribute_suffix, $fragment = NULL
   $fragment = generalizeString($fragment);
 
   $class_attributes = 'feature-toc-item-' . $class_attribute_suffix;
-    if (function_exists('i18n_string') ) {
+   /* if (function_exists('i18n_string') ) {
         $label =  i18n_string($label);
-    }
+    }*/
   $new_item = toc_list_item(
     theme(
       'cdm_feature_name',
