@@ -1364,6 +1364,15 @@ function cdm_settings_general() {
       <br/><strong>Note:</strong> The start and end of the page creation is currently only logged for taxon pages only.'
   );
 
+    $form['cdm_dto_mode'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'Use Dto page (experimental)',
+        '#default_value' => variable_get('cdm_dto_mode', FALSE),
+        '#description' => 'When this is activated the data are loaded as data portal optimized DTOs which results in less webservice calls and smaller objects.
+        This should improve the performance but at the moment it is only usable for some portals and is in experimental state. 
+        Please contact the EDIT team for more information.'
+    );
+
   // Comment @WA: D7 form api does not support reset buttons,
   // so to mimic the D5 reset button we add one like this.
   $form['actions']['reset'] = array(
