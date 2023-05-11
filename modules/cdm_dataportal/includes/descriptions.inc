@@ -1644,8 +1644,24 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
             'html' => TRUE,
           ));
       }
-    }
-    else if (isset($source->originalInfo) && !empty($source->originalInfo)) {
+    }elseif (isset($source->nameInSource) ) {
+            // it is a DescriptionElementSource !
+            $plaintext = cdm_tagged_text_to_string($source->nameInSource);
+            if($suppress_for_shown_taxon && $taxon_page_accepted_name == $plaintext){
+                return $name_in_source_render_array; // SKIP this name
+            }
+            $markup = cdm_tagged_text_to_markup($source->nameInSource);
+            if ($do_link_to_name_used_in_source) {
+                $markup = l(
+                    $markup,
+                    path_to_name($source->nameInSourceUuid),
+                    array(
+                        'attributes' => array(),
+                        'absolute' => TRUE,
+                        'html' => TRUE,
+                    ));
+            }
+        }else if (isset($source->originalInfo) ) {
       // the name used in source can not be expressed as valid taxon name,
       // so the editor has chosen to put the freetext name into ReferencedEntityBase.originalInfo
       // field
