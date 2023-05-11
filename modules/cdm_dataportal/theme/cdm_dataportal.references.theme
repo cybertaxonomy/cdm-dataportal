@@ -106,12 +106,12 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
   }
 
   if (isset($reference->uri)){
-    if($reference->type == 'WebPage'){
+    //if($reference->type == 'WebPage'){
       // the cdm cache strategy adds the uri to the titleCache which is unwanted in this case,
       // so is is removed from there
-      $out = str_replace('- ' . $reference->uri, '',  $out);
-    }
-    $out .= cdm_external_uri($reference->uri);
+      $out = str_replace('- ' . $reference->javaUri, '',  $out);
+    //}
+    $out .= cdm_external_uri($reference->javaUri);
   }
 
   return $out;

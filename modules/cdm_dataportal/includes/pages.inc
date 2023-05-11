@@ -1301,7 +1301,10 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
     $accepted_name .= render_new_taxon_or_name($taxon_dto, NULL, $referenceUri);
 
     $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
-    $name_relationships = compose_name_relationships_inline($name_relations, $taxon_dto->name->uuid, $taxon_dto->uuid);
+    if (isset($name_relations)&& isset($name_relations[0])){
+        $name_relationships = compose_name_relationships_inline($name_relations, $taxon_dto->name->uuid, $taxon_dto->uuid);
+    }
+
     // Render relationships of accepted name.
     if(isset($name_relationships['list']['items'][0])){
       $accepted_name .= ' ' . drupal_render($name_relationships);

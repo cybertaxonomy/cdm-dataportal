@@ -672,16 +672,12 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     }
     $is_doubtful = $taxon_name_or_taxon_base_dto->doubtful;
     // use the TaxonBase.tagged_title so we have the secRef
-    $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
-    /*} else {
-        // assuming this is a TaxonName
-        $taxon_name = $taxon_name_or_taxon_base;
-        if(isset($taxon_name->taggedFullTitle)){
-            $tagged_title = $taxon_name_or_taxon_base->taggedFullTitle;
-        } else {
-            $tagged_title = $taxon_name_or_taxon_base->taggedName;
-        }
-    }*/
+    if (isset($taxon_name_or_taxon_base_dto->taggedLabel)){
+        $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
+    }else{
+        $tagged_title = $taxon_name_or_taxon_base_dto;
+    }
+
 
 
     $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
@@ -768,7 +764,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
             $taggedName = $taggedNameNew;
             unset($taggedNameNew);
         }
-        $name = '<span class="' . $taxon_name->class . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
+        $name = '<span class="' . "TaxonName" . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
     }
     else {
         // use titleCache instead
@@ -794,8 +790,8 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     // Fill with reference.
     if (isset($renderTemplate['referencePart']) && !$is_type_designation) {
 
-        $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
-        $registration_markup = render_registrations($registrations);
+       // $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
+        //$registration_markup = render_registrations($registrations);
 
         // default separator
         $separator = '';
@@ -911,29 +907,32 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
         $descriptions = $taxon_name_or_taxon_base_dto-> nameFacts;
        //$descriptions = cdm_ws_get(CDM_WS_PORTAL_NAME_DESCRIPTIONS, $taxon_name->uuid);
         if($descriptions) {
-            foreach ($descriptions as $description) {
+            foreach ($descriptions-> items as $description) {
                 if (!empty($description)) {
                     $additional_citations = [];
                     $additional_data = [];
-                    foreach ($description->elements as $description_element) {
-                        if (isset($description_element->multilanguageText_L10n) && $description_element->multilanguageText_L10n->text) {
-                            RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
-                            $annotations_and_sources = handle_annotations_and_sources($description_element);
-                            // synonymy_annotations_and_source_config() has 'sources_as_content' => FALSE, so no need to handle inline sources here
-                            $element_media = cdm_description_element_media(
-                                $description_element,
-                                [
-                                    'application/pdf',
-                                    'image/png',
-                                    'image/jpeg',
-                                    'image/gif',
-                                    'text/html',
-                                ]
-                            );
-                            if (isset($description_element->feature) && $description_element->feature->uuid == UUID_ADDITIONAL_PUBLICATION) {
-                                $additional_citations[] = ' [& ' . trim($description_element->multilanguageText_L10n->text) . $element_media . $annotations_and_sources->footNoteKeysMarkup() .']';
-                            } else {
-                                $additional_data[] = ' [' . trim($description_element->multilanguageText_L10n->text) . $element_media . $annotations_and_sources->footNoteKeysMarkup(). ']';
+                    if ($description->label == "Additional Publication") {
+                        foreach ($description->facts->items as $description_element) {
+                            if (isset($description_element->typedLabel) ) {
+                                RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
+                                $annotations_and_sources = handle_annotations_and_sources($description_element);
+                                // synonymy_annotations_and_source_config() has 'sources_as_content' => FALSE, so no need to handle inline sources here
+                                $element_media = cdm_description_element_media(
+                                    $description_element,
+                                    [
+                                        'application/pdf',
+                                        'image/png',
+                                        'image/jpeg',
+                                        'image/gif',
+                                        'text/html',
+                                    ]
+                                );
+
+                                if (isset($description_element->typedLabel)) {
+                                    $additional_citations[] = ' [& ' . trim($description_element->typedLabel[0]->label) . $element_media . $annotations_and_sources->footNoteKeysMarkup() . ']';
+                                } else {
+                                    $additional_data[] = ' [' . trim($description_element->typedLabel[0]->label) . $element_media . $annotations_and_sources->footNoteKeysMarkup() . ']';
+                                }
                             }
                         }
                     }
@@ -1012,6 +1011,158 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     }
     $out .= $annotations_and_sources->footNoteKeysMarkup();
     */
+    return $out;
+}
+
+function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_type, $name_link = NULL, $reference_link = NULL,
+                                  $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
+{
+
+    $is_doubtful = false;
+
+    $nom_status_fkey = null; // FootNoteKey
+
+
+    //$is_doubtful = $taxon_name_or_taxon_base_dto->doubtful;
+
+
+
+
+    $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
+    $partDefinition = get_partDefinition($name_type);
+
+    // Apply definitions to template.
+    foreach ($renderTemplate as $part => $uri) {
+
+        if (isset($partDefinition[$part])) {
+            $renderTemplate[$part] = $partDefinition[$part];
+        }
+        if (is_array($uri) && isset($uri['#uri'])) {
+            $renderTemplate[$part]['#uri'] = $uri['#uri'];
+        }
+    }
+
+    foreach($skip_render_template_parts as $part){
+        unset($renderTemplate[$part]);
+    }
+
+
+    $appended_phrase_tagged_text = array(); // this is filled later
+
+    normalize_tagged_text($tagged_title);
+
+    $is_valid_tagged_title =
+        isset($taggedLabel)
+        && is_array($taggedLabel)
+        && isset($taggedLabel[0]->text)
+        && is_string($taggedLabel[0]->text)
+        && $taggedLabel[0]->text != ''
+        && isset($taggedLabel[0]->type);
+    $lastAuthorElementString = FALSE;
+
+    $name_encasement = $is_invalid ? '"' : '';
+    $doubtful_marker = $is_doubtful ? '?&#8239;' : ''; // 	&#8239; =  NARROW NO-BREAK SPACE
+    $doubtful_marker_markup = '';
+
+    if($doubtful_marker){
+        $doubtful_marker_markup = '<span class="doubtful">' . $doubtful_marker . '</span>';
+        if($tagged_title[0]->text == '?' ){
+            // remove the first tagged text element
+            unset($tagged_title[0]);
+        }
+    }
+
+    // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
+
+
+    // Got to use second entry as first one, see ToDo comment below ...
+    if ($is_valid_tagged_title) {
+
+        $taggedName = $taggedLabel;
+        $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
+        $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
+
+
+        //if (!(($hasNamePart_with_Authors) || ($hasNameAuthorPart_with_Authors))) {
+            // Find author and split off from name.
+            // TODO expecting to find the author as the last element.
+            /*
+            if($taggedName[count($taggedName)- 1]->type == 'authors'){
+              $authorTeam = $taggedName[count($taggedName)- 1]->text;
+              unset($taggedName[count($taggedName)- 1]);
+            }
+            */
+
+            // Remove all authors.
+            $taggedNameNew = array();
+            foreach ($taggedName as $element) {
+                if ($element->type != 'authors') {
+                    $taggedNameNew[] = $element;
+                }
+                else {
+                    $lastAuthorElementString = $element->text;
+                }
+            }
+            //$taggedName = $taggedNameNew;
+            unset($taggedNameNew);
+        }
+        $name = '<span class="' . "TaxonName" . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
+
+    // Fill name into $renderTemplate.
+    array_setr('name', $name , $renderTemplate);
+
+
+
+
+
+
+    $out = '';
+    if(isset($_REQUEST['RENDER_PATH'])){
+        // developer option to show the render path with each taxon name
+        $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
+    }
+    $out .= '<span class="' . "TaxonName"
+        . '" data-cdm-ref="/name/' . $taxon_name_uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
+    // . '" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
+    foreach ($renderTemplate as $partName => $part) {
+        $separator = '';
+        $partHtml = '';
+        $uri = FALSE;
+        if (!is_array($part)) {
+            continue;
+        }
+        if (isset($part['#uri']) && is_string($part['#uri'])) {
+            $uri = $part['#uri'];
+            unset($part['#uri']);
+        }
+        foreach ($part as $part => $content) {
+            $html = '';
+            if (is_array($content)) {
+                $html = $content['#html'];
+                if(isset($content['#separator'])) {
+                    $separator = $content['#separator'];
+                }
+            }
+            elseif (is_string($content)) {
+                $html = $content;
+            }
+            if($html){ // skip empty elements
+                $partHtml .= '<span class="' . $part . '">' . $html . '</span>';
+            }
+        }
+        if ($uri) {
+            // cannot use l() here since the #uri already should have been processed through uri() at this point
+            $out .= $separator . '<a href="' . $uri . '" class="' . $partName . '">' . $partHtml . '</a>';
+
+        }
+        else {
+            $out .= $separator . $partHtml;
+        }
+    }
+    $out .= '</span>';
+
+
+
     return $out;
 }
 
@@ -1850,6 +2001,49 @@ function name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_
 }
 
 /**
+ * Creates the markup for the given name relationship.
+ *
+ * For the footnotes see handle_annotations_and_sources().
+ *
+ * @param $name_rel
+ *      The NamerelationDTO
+ * @param $current_taxon_uuid
+ * @param $show_name_cache_only
+ *    The nameCache will be shown instead of the titleCache if this parameter is true.
+ * @return null|string
+ *    The markup or null
+ *
+ * @see \get_other_name
+ */
+function name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type, $show_name_cache_only = false){
+
+    $relationship_markup = null;
+    //taggedText
+    $other_name = $name_rel->nameLabel;
+
+    //cdm_load_tagged_full_title($other_name);
+
+    $highlited_synonym_uuid = isset ($name_rel->nameUuid) ? $name_rel->nameUuid : '';
+    if($show_name_cache_only){
+        $relationship_markup = l(
+            '<span class="' . html_class_attribute_ref($other_name) . '"">' . cdm_tagged_text_to_markup($other_name) . '</span>',
+            path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
+            array('html' => true)
+        );
+        $annotations_and_sources = handle_annotations_and_sources($other_name);
+        $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
+    } else {
+        $relationship_markup = render_new_name_for_name_rels($other_name, $name_rel-> nameUuid, $name_type,
+            url(path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
+        );
+    }
+
+    return $relationship_markup;
+}
+
+
+
+/**
  * Determined the other name which is contained in the NameRelationship entity.
  *
  * @param $current_name_uuid
@@ -1937,6 +2131,72 @@ function compose_name_relationships_inline($name_relations, $current_name_uuid, 
   RenderHints::popFromRenderStack();
   return $render_array;
 }
+
+/**
+ * Composes an inline representation of selected name relationships
+ *
+ * The output of this function will be usually appended to taxon name representations.
+ * Only the following types are displayed: LATER_HOMONYM, TREATED_AS_LATER_HOMONYM, BLOCKING_NAME_FOR, ORTHOGRAPHIC_VARIANT
+ *
+ * LATER_HOMONYM, TREATED_AS_LATER_HOMONYM, BLOCKING_NAME_FOR are displayed as
+ * non {titleCache} nec {titleCache} nec {titleCache} whereas the related names
+ * are ordered alphabetically.
+ *
+ * ORTHOGRAPHIC_VARIANT is displayed as 'ort. var. {nameCache}'
+ *
+ * Related issues:
+ *   - https://dev.e-taxonomy.eu/redmine/issues/5697 "Show name conserved against as [non xxx]"
+ *   - https://dev.e-taxonomy.eu/redmine/issues/6678 "How to correctly show name relationship "orth. var." in dataportal"
+ *   - https://dev.e-taxonomy.eu/redmine/issues/5857
+ *   - https://dev.e-taxonomy.eu/redmine/issues/2001 "[Cichorieae Portal] Name Relationship -> blocking name are not shown"
+ *
+ * @param $name_relations
+ *    The list of CDM NameRelationsips
+ * @param $current_name_uuid
+ *    The Uuid of the name for which the relations are to be rendered, the current name will be hidden when
+ *    rendering the relation an only the other name is shown. Parameter is REQUIRED.
+ * @param $suppress_if_current_name_is_source
+ *    The display of the relation will be
+ *    suppressed is the current name is on the source of the relation edge.
+ *    That is if it is on the from side of the relation. Except for 'blocking name for' which is
+ *    an inverse relation. For this relation type the toName is taken in to account.
+ * @param $current_taxon_uuid
+ *    The taxon to be omitted from related taxa. This is only used to create links, see path_to_name()
+ * @return array
+ *    A drupal render array
+ *
+ * @ingroup Compose
+ */
+function compose_new_name_relationships_inline($name_relations, $current_taxon_uuid, $name_type, $suppress_if_current_name_is_source = true) {
+
+    RenderHints::pushToRenderStack('homonym');
+    // the render stack element homonyms is being used in the default render templates !!!, see NameRenderConfiguration::CDM_NAME_RENDER_TEMPLATES_DEFAULT
+
+    $selected_name_rel_uuids = variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, unserialize(CDM_NAME_RELATIONSHIP_INLINE_TYPES_DEFAULT));
+    $name_rel_type_filter = array('direct' => array(), 'inverse' => array());
+    foreach ($selected_name_rel_uuids as $uuid){
+        $name_rel_type_filter['direct'][$uuid] = $uuid;
+        if($uuid != UUID_NAMERELATIONSHIPTYPE_MISSPELLING){
+            $name_rel_type_filter['inverse'][$uuid] = $uuid;
+        }
+    }
+
+    $list_prefix = '<span class="name_relationships">[';
+    $list_suffix = ']</span>';
+    $item_prefix = '<span class="item">';
+    $item_suffix = '</span> ';
+    $render_array = compose_new_name_relationships($name_relations, $name_rel_type_filter,  $current_taxon_uuid, $name_type, $list_prefix, $list_suffix, $item_prefix, $item_suffix);
+
+    // remove the glue space from the last item element which has been added by the $item_suffix = '</span> '
+    $items_ctn = count($render_array['list']['items']);
+    if($items_ctn){
+        $render_array['list']['items'][$items_ctn - 1]['#suffix'] = '</span>';
+    }
+
+    RenderHints::popFromRenderStack();
+    return $render_array;
+}
+
 
 /**
  * Composes a list representation of the name relationships.
@@ -2128,7 +2388,139 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
   return $render_array;
 }
 
+/**
+ * @param $name_relations
+ * @param $name_rel_type_filter
+ *   Associative array with two keys:
+ *   - 'direct': the relationship type uuids for the direct direction of the relation edge to be included
+ *   - 'inverse': the relationship type uuids for the direct direction of the relation edge to be included
+ * @param $current_name_uuid
+ * @param $current_taxon_uuid
+ * @param $list_prefix
+ * @param $list_suffix
+ * @param $item_prefix
+ * @param $item_suffix
+ * @return array
+ *
+ * @ingroup Compose
+ */
+function compose_new_name_relationships($name_relations, $name_rel_type_filter, $current_taxon_uuid, $name_type,
+                                    $list_prefix, $list_suffix, $item_prefix, $item_suffix)
+{
+    $non_nec_name_reltype_uuids = array(UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM,
+        UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM,
+        UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST,
+        UUID_NAMERELATIONSHIPTYPE_MISSPELLING,
+        UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR,
+        UUID_NAMERELATIONSHIPTYPE_AVOIDS_HOMONYM_OF,
+        UUID_NAMERELATIONSHIPTYPE_IS_NOT);
 
+    $render_array = array(
+        'list' => array(
+            '#prefix' => $list_prefix,
+            '#suffix' => $list_suffix,
+            'items' => array()
+        ),
+        'footnotes' => array()
+    );
+
+    if ($name_relations) {
+
+        // remove all relations which are not selected in the settings and
+        // separate all LATER_HOMONYM, TREATED_AS_LATER_HOMONYM, BLOCKING_NAME_FOR relations and ORTHOGRAPHIC_VARIANTs
+        // for special handling
+        $filtered_name_rels = array();
+        $non_nec_name_rels = array();
+        $orthographic_variants = array();
+        foreach ($name_relations as $name_rel) {
+            $rel_type_uuid = $name_rel->relTypeUuid;
+            $is_inverse_relation = $name_rel->inverse;
+            if ((!$is_inverse_relation && isset($name_rel_type_filter['direct'][$rel_type_uuid]) && $name_rel_type_filter['direct'][$rel_type_uuid])
+                ||($is_inverse_relation && isset($name_rel_type_filter['inverse'][$rel_type_uuid]) && $name_rel_type_filter['inverse'][$rel_type_uuid])) {
+
+
+                if (array_search($rel_type_uuid, $non_nec_name_reltype_uuids) !== false &&
+                    ((!$is_inverse_relation && $rel_type_uuid != UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR)
+                        || ($is_inverse_relation && $rel_type_uuid == UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR))) {
+                    $non_nec_name_rels[] = $name_rel;
+                } else if (UUID_NAMERELATIONSHIPTYPE_ORTHOGRAPHIC_VARIANT == $rel_type_uuid) {
+                    $orthographic_variants[] = $name_rel;
+                } else {
+
+                    $filtered_name_rels[] = $name_rel;
+                }
+            }
+        }
+        $name_relations = $filtered_name_rels;
+
+        usort($name_relations, 'compare_name_relations_by_term_order_index');
+
+        // compose
+        $show_name_cache_only = FALSE;
+        foreach ($name_relations as $name_rel) {
+
+            $is_inverse_relation = $name_rel->inverse;
+            $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+            $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $name_rel->relType, $show_name_cache_only);
+            $label = $name_rel->relType;
+
+            $symbol = $name_rel->relType;
+            $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup . ' ';
+            $relationship_markup = $symbol_markup . $relationship_markup;
+            if ($relationship_markup) {
+                $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
+                    null,
+                    $item_prefix,
+                    $item_suffix);
+            }
+        }
+
+        // name relationships to be displayed as non nec
+        if (count($non_nec_name_rels) > 0) {
+            $non_nec_markup = '';
+            $show_name_cache_only = FALSE;
+            foreach ($non_nec_name_rels as $name_rel) {
+
+                $is_inverse_relation = $name_rel->isInverse;
+                $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+                $relationship_markup = name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type, $show_name_cache_only);
+                $label = $name_rel->relType;
+
+                $symbol = $non_nec_markup ? ' nec ' : 'non';
+                $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
+                $non_nec_markup .= $symbol_markup . $relationship_markup;
+            }
+            if ($non_nec_markup) {
+                $render_array['list']['items'][] = markup_to_render_array($non_nec_markup,
+                    null,
+                    $item_prefix,
+                    $item_suffix);
+            }
+        }
+
+        // orthographic variants
+        if (count($orthographic_variants) > 0) {
+            $show_name_cache_only = TRUE;
+            foreach ($orthographic_variants as $name_rel) {
+
+                //$is_inverse_relation = $current_name_uuid == $name_rel->nameUuid;
+                $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
+                $relationship_markup = name_relationship_markup( $name_rel, $current_taxon_uuid, $show_name_cache_only);
+                $label = $name_rel->relType;
+                $symbol = cdm_relationship_type_term_symbol($name_rel->type);
+                $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
+                $relationship_markup = $symbol_markup . $relationship_markup;
+            }
+            if (isset($relationship_markup) && $relationship_markup) {
+                $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
+                    null,
+                    $item_prefix,
+                    $item_suffix);
+            }
+        }
+    }
+    return $render_array;
+}
 
 /**
  * @param $taxon
