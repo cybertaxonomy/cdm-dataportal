@@ -911,13 +911,13 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                 if (!empty($description)) {
                     $additional_citations = [];
                     $additional_data = [];
-                    if ($description->label == "Additional Publication") {
+                    //if ($description->label == "Additional Publication") {
                         foreach ($description->facts->items as $description_element) {
                             if (isset($description_element->typedLabel) ) {
                                 RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
                                 $annotations_and_sources = handle_annotations_and_sources($description_element);
                                 // synonymy_annotations_and_source_config() has 'sources_as_content' => FALSE, so no need to handle inline sources here
-                                $element_media = cdm_description_element_media(
+                               /* $element_media = cdm_new_description_element_media(
                                     $description_element,
                                     [
                                         'application/pdf',
@@ -927,15 +927,15 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                                         'text/html',
                                     ]
                                 );
-
-                                if (isset($description_element->typedLabel)) {
+                                */
+                                if ($description->label == "Additional Publication") {
                                     $additional_citations[] = ' [& ' . trim($description_element->typedLabel[0]->label) . $element_media . $annotations_and_sources->footNoteKeysMarkup() . ']';
                                 } else {
                                     $additional_data[] = ' [' . trim($description_element->typedLabel[0]->label) . $element_media . $annotations_and_sources->footNoteKeysMarkup() . ']';
                                 }
                             }
                         }
-                    }
+                    //}
                     // merge
                     $additional_citations = array_merge($additional_citations, $additional_data);
                     $additional_pub_markup .= join(',', $additional_citations);
