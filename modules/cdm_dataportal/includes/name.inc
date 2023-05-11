@@ -736,7 +736,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     // Got to use second entry as first one, see ToDo comment below ...
     if ($is_valid_tagged_title) {
 
-        $taggedName = $tagged_title;
+        $taggedName = $tagged_name;
         $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
         $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
 
@@ -1103,7 +1103,7 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_typ
                     $lastAuthorElementString = $element->text;
                 }
             }
-            //$taggedName = $taggedNameNew;
+
             unset($taggedNameNew);
         }
         $name = '<span class="' . "TaxonName" . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
