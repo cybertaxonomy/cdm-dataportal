@@ -1899,6 +1899,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
         return null;
     }
+    cache_set('current_taxon', $taxon_dto);
     $taxonpage = new stdClass();
 
     $taxonpage->title = theme('cdm_taxon_page_title', array(

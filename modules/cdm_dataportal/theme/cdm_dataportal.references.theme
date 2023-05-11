@@ -221,7 +221,7 @@ function cdm_doi($doi, $iconified = true) {
  *
  * @return string
  */
-function render_original_source($source, $do_link_to_reference = TRUE, $do_link_to_name_used_in_source = FALSE) {
+function render_original_source($source, $do_link_to_reference = TRUE, $do_link_to_name_used_in_source = FALSE, $current_taxon = null) {
   $out = '';
 
   if (isset($source->citation)) {
