@@ -1852,7 +1852,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     //get feature tree uuid
     $feature_tree_uuid =variable_get(CDM_PROFILE_FEATURETREE_UUID);
     //
-    if (isset($feature_tree_uuid)){
+    if (isset($feature_tree_uuid) && $feature_tree_uuid !== UUID_DEFAULT_FEATURETREE){
         $query_parameters['featureTree'] =  $feature_tree_uuid;
     }
     /*
