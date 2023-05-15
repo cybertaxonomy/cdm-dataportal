@@ -1625,10 +1625,12 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
 
       $current_taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxon_uuid);
       $taxon_page_accepted_name = $current_taxon->name->titleCache;
-    }else{
+    }else if ($suppress_for_shown_taxon && cache_get('current_taxon')){
         $current_taxon = cache_get('current_taxon');
-        $taxon_page_accepted_name = $current_taxon-> data-> nameLabel;
-    }
+        if ($current_taxon){
+            $taxon_page_accepted_name = $current_taxon-> data-> nameLabel;
+        }
+   }
 
 
     if (isset($source->nameUsedInSource->uuid) && isset($source->nameUsedInSource->titleCache)) {
