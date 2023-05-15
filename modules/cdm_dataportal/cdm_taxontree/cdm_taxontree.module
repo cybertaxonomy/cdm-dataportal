@@ -71,6 +71,12 @@ function cdm_taxontree_block_view($delta) {
     case 'cdm_tree':
       $block['subject'] = t('Classification');
       $taxonUuid_inFocus = _cdm_get_taxonuuid();
+      if (!$taxonUuid_inFocus){
+          $current_taxon = cache_get('current_taxon');
+          if ($current_taxon){
+              $taxonUuid_inFocus = $current_taxon->data->uuid;
+          }
+      }
       $tree = cdm_taxontree_build_tree($taxonUuid_inFocus);
 
       // cdm_taxontree_magicbox_enable is not yet made available via the settings, so $magicbox_enable is always 0

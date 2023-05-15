@@ -1044,6 +1044,13 @@ function cdm_dataportal_block_view($delta) {
       return $block;
     case 'classification_breadcrumbs':
       $taxon_uuid = get_current_taxon_uuid();
+      if (!$taxon_uuid){
+          $current_taxon = cache_get('current_taxon');
+          if ($current_taxon){
+              $taxon_uuid = $current_taxon->data-> uuid;
+          }
+
+      }
       $block['subject'] = '<none>';
       $block['content'] = compose_classification_breadcrumbs($taxon_uuid);
       return $block;
