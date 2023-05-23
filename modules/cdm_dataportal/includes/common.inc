@@ -70,11 +70,15 @@ function html_class_attribute_ref($cdm_entity) {
               $attributes .= "taxon_uuid:" . $cdm_entity->taxonUuid . " sec_uuid:" . $cdm_entity->secUuid;;
               break;
       }
-  } else{
+  } else {
 
       // DTOs
-      if (isset_not_empty($cdm_entity ) && isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)) {
-          $attributes = "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
+
+      if (isset_not_empty($cdm_entity) && isset_not_empty($cdm_entity->nameType) && isset_not_empty($cdm_entity->uuid)) {
+          $attributes = "cdm:" . $cdm_entity->nameType . " uuid:" . $cdm_entity->uuid;
+      }elseif(isset_not_empty($cdm_entity) && isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)){
+            //entityReference
+          $attributes = "cdm:" . $cdm_entity->type ." uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity ) && isset_not_empty($cdm_entity->typedLabel[0] )){
           $attributes = "cdm:" . $cdm_entity->typedLabel[0]->cdmClass . " uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity ) && isset_not_empty($cdm_entity->facts )){

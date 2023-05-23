@@ -860,7 +860,8 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
             $tt_to_markup_options = array('html' => false);
             foreach ($nom_status_tagged_text as &$tt){
                 if($tt->type == 'nomStatus'&& isset($tt->entityReference)) {
-                    $nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
+                    //$nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
+                    $nom_status = $nom_status_tagged_text;
                     $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
                     $tt_to_markup_options['html'] = true;
                 }
@@ -929,9 +930,11 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                                 );
                                 */
                                 if ($description->label == "Additional Publication") {
-                                    $additional_citations[] = ' [& ' . trim($description_element->typedLabel[0]->label) . $element_media . $annotations_and_sources->footNoteKeysMarkup() . ']';
+                                    $additional_citations[] = ' [& ' . trim($description_element->typedLabel[0]->label) . //$element_media .
+                                        $annotations_and_sources->footNoteKeysMarkup() . ']';
                                 } else {
-                                    $additional_data[] = ' [' . trim($description_element->typedLabel[0]->label) . $element_media . $annotations_and_sources->footNoteKeysMarkup() . ']';
+                                    $additional_data[] = ' [' . trim($description_element->typedLabel[0]->label) . //$element_media .
+                                        $annotations_and_sources->footNoteKeysMarkup() . ']';
                                 }
                             }
                         }
@@ -1014,7 +1017,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     return $out;
 }
 
-function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_type, $name_link = NULL, $reference_link = NULL,
+function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_type = null, $name_link = NULL, $reference_link = NULL,
                                   $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
 {
 

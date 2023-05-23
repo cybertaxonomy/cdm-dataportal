@@ -49,7 +49,12 @@ function cdm_dataportal_node_view($node, $view_mode = 'full') {
           ':nid' => $node->nid,
         ))->fetch();
         if (isset($cdmnode->uuid)) {
-          cdm_dataportal_taxon_page_view($cdmnode->uuid);
+            if (variable_get('cdm_dto_mode', FALSE)){
+                cdm_dataportal_new_taxon_page_view($cdmnode-> uuid);
+            }else{
+                cdm_dataportal_taxon_page_view($cdmnode->uuid);
+            }
+
         }
       }
       $node->content['cdm'] = isset($node->cdm) ? $node->cdm : '';

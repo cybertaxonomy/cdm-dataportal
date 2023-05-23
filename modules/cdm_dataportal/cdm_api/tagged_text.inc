@@ -535,7 +535,7 @@ function tagged_text_crop_at(&$tagged_text, $type, $regex_pattern) {
 
 function tagged_text_extract(&$tagged_text, $type, $replace_with_placeholder = false) {
   $matching_elements = array();
-  if (is_array($tagged_text)) {
+  if (isset($tagged_text) && is_array($tagged_text)) {
     for ($i = 0; $i < count($tagged_text); $i++) {
       if($tagged_text[$i]->type == $type){
         $matching_elements[] = $tagged_text[$i];
