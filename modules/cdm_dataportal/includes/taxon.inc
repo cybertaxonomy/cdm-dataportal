@@ -216,6 +216,190 @@ function cdm_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 }
 
 /**
+ * Returns HTML for misapplied names and invalid designations.
+ *
+ * Both relation types are currently treated the same!
+ *
+ * @param object taxonRelationships
+ *   A TaxonRelationshipsDTO, see taxon/{uuid}/taxonRelationshipsDTO
+ *
+ * @param object focusedTaxon
+ *  The taxon being in the focus of the application
+ *
+ * @return string
+ *    the rendered html
+ */
+function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
+
+    static $relationship_type_order_weights = [
+        //
+        UUID_PROPARTE_MISAPPLIEDNAME_FOR => 0,
+        UUID_PARTIAL_MISAPPLIEDNAME_FOR => 0,
+        //
+        UUID_MISAPPLIED_NAME_FOR  => 1,
+        //
+        UUID_PROPARTE_SYNONYM_FOR  => 2,
+        UUID_PARTIAL_SYNONYM_FOR  => 2
+    ];
+
+    if (!$taxonRelationshipsDTO || $taxonRelationshipsDTO->count < 1) {
+        return null;
+    }
+
+    static $dedup_rel_type_uuids = array(
+        UUID_MISAPPLIED_NAME_FOR,
+        UUID_PARTIAL_MISAPPLIEDNAME_FOR,
+        UUID_PROPARTE_MISAPPLIEDNAME_FOR
+    );
+
+    RenderHints::pushToRenderStack('taxon_relationships');
+    $footnote_list_key = 'taxon_relationships';
+    RenderHints::setFootnoteListKey($footnote_list_key);
+
+    $misapplied = array();
+    $joined_refs = array();
+
+    $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
+
+    // Aggregate misapplied names having the same fullname:
+    //  - deduplicate misapplied names, so that the same name is not shown multiple times in case
+    //    the duplicates only have different sensu references with detail and appended phrase (see #5647)
+    //  - show only the author team as short citation for the sec reference
+    //  - show the according reference as footnote to this short citation
+    //
+    // Example:
+    // "Xenoxylum foobar" sensu Grumbach¹; sensu Lem²
+    //    1. Novel marsian species, Grumbach, 2022
+    //    2. Flora solaris, Lem, 2019
+   // if (isset($taxonRelationshipsDTO->relations[0])) {
+    foreach($taxonRelationshipsDTO->items as $taxon_relation){
+
+        if (in_array($taxon_relation->relTypeUuid, $taxon_relationship_types)) {
+
+            if (in_array($taxon_relation->relTypeUuid, $dedup_rel_type_uuids)) {
+
+                RenderHints::pushToRenderStack('misapplied_name_for'); // TODO the render path string should in future come from $taxonRelation->type->...
+
+                // full name with relation symbol, rel sec as de-duplication key
+                // the sensu part will be removed from the key below in case it is present
+                $name_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedLabel, array('name')));
+                $full_name_key = cdm_tagged_text_to_string($taxon_relation->taggedLabel, array('symbol', 'appendedPhrase'));
+                $symbol_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedLabel, array('symbol')));
+                $full_name_key = $name_text . ' ' . str_replace($name_text, '', $full_name_key) . ' ' . $symbol_text;
+
+                cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, $misapplied, $joined_refs, $relationship_type_order_weights , $full_name_key);
+
+                RenderHints::popFromRenderStack();
+            } else {
+                RenderHints::pushToRenderStack('other_taxon_relationship');
+                // All relationship types except misapplied_name_for and invalid_designation_for.
+
+                $taxon_relationships_lines[] = cdm_tagged_text_to_markup($taxon_relation->taggedText);
+
+                RenderHints::popFromRenderStack();
+            }
+        }
+    } // END loop over $taxonRelationshipsDTO->relations
+
+    //}
+
+    // Sort the $joined_refs and create footnotes and footnote keys.
+    uasort($joined_refs, function($a, $b) {
+        if ($a['order_by_key'] == $b['order_by_key']) {
+            return 0;
+        }
+        return ($a['order_by_key'] < $b['order_by_key']) ? -1 : 1;
+    });
+
+
+    foreach ($joined_refs as $ref_key => $sensu_strings) {
+        if(!empty($sensu_strings)) {
+            $ref_key_tokens = explode('#', $ref_key);
+            $sensu_uuid = $ref_key_tokens[0];
+            //TODO!!!
+            //$sensu_reference = cdm_ws_get(CDM_WS_REFERENCE, $sensu_uuid);
+            $sensu_reference = $sensu_strings['order_by_key'];
+            if(!$sensu_reference){
+                drupal_set_message("Problem fetching sensu reference with uuid " . $sensu_uuid, 'error');
+            }
+            if($sensu_strings['order_by_key'] != $sensu_reference->titleCache){
+                $sensu_reference_markup = $sensu_strings['markup'];
+                $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
+                $footnote_key = render_footnote_key($footnote_key);
+                $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['markup'] . $footnote_key . '</span>';
+            }
+        }
+    }
+
+    // ---- Generate output ---- //
+    $out = '<div class="taxon-relationships">';
+    if (count($misapplied) > 0) {
+        ksort($misapplied); // order the misapplied by scientific name
+        $out .= '<ul class="misapplied">';
+
+        // create the list entries per misapplied name
+        foreach ($misapplied as $misapplied_name) {
+            $misapplied_name_markup = $misapplied_name['out'];
+            // all sensu and auct. for this MAN
+            if (isset($misapplied_name['sensu_uuids'])) {
+                $sensu_refs_with_fkey = array();
+                foreach ($misapplied_name['sensu_uuids'] as $sensu_data) {
+                    if($sensu_data['uuid']){
+                        $joined_ref_key = $sensu_data['uuid'] . ($sensu_data['citation_detail'] ? '#' .  $sensu_data['citation_detail'] : '');
+                        $sensu_refs_with_fkey[$sensu_data['prefix'] . $joined_refs[$joined_ref_key]['order_by_key']] = $sensu_data['prefix'] . $joined_refs[$joined_ref_key]['markup'];
+                    } else {
+                        $sensu_refs_with_fkey[$sensu_data['prefix']] = $sensu_data['prefix'];
+                    }
+                }
+                ksort($sensu_refs_with_fkey);
+                $sensu_refs_with_fkey_markup = join('; ', $sensu_refs_with_fkey);
+                if(strpos($misapplied_name_markup, '{PLACEHOLDER_secReference}') !== false){
+                    $misapplied_name_markup = str_replace('{PLACEHOLDER_secReference}', $sensu_refs_with_fkey_markup, $misapplied_name_markup);
+                    // just remove the appendedPhrase placeholder as was included in the sensu_refs_with_fkey_markup
+                    $misapplied_name_markup = str_replace('{PLACEHOLDER_appendedPhrase}', '', $misapplied_name_markup);
+                } else {
+                    // no sec ref so there could only be the appended phrase
+                    $misapplied_name_markup = str_replace('{PLACEHOLDER_appendedPhrase}', $sensu_refs_with_fkey_markup, $misapplied_name_markup);
+                }
+            }
+
+            // append the err. sec. if there is any for this MAN
+            if (isset($misapplied_name['relsec_uuids'])) {
+                $relsec_refs_with_fkey = array();
+                foreach ($misapplied_name['relsec_uuids'] as $relsec_data) {
+                    if($relsec_data['uuid']) {
+                        $relsec_refs_with_fkey[$relsec_data['prefix'] . $joined_refs[$relsec_data['uuid']]['order_by_key']] = $relsec_data['prefix'] . $joined_refs[$relsec_data['uuid']]['markup'];
+                    }
+                }
+                ksort($relsec_refs_with_fkey);
+                $relsec_refs_with_fkey_markup = join('; ', $relsec_refs_with_fkey);
+                $misapplied_name_markup = str_replace('{PLACEHOLDER_relSecReference}', $relsec_refs_with_fkey_markup, $misapplied_name_markup);
+            }
+            // final line
+            $out .= '<li class="synonym"><span class="misapplied">' . $misapplied_name_markup . ' </span></li>';
+        }
+        $out .= '</ul>';
+    }
+
+    if (isset($taxon_relationships_lines) && is_array($taxon_relationships_lines) && count($taxon_relationships_lines) > 0) {
+        $out .= '<ul class="taxonRelationships">';
+        foreach ($taxon_relationships_lines as $taxon_relationship_line) {
+            $out .= '<li class="synonym">' . $taxon_relationship_line . '</li>';
+        }
+        $out .= '</ul>';
+    }
+
+    $footnotes = render_footnotes($footnote_list_key, 'li');
+
+    $out .= '<ul class="footnotes">' . $footnotes . '</ul>';
+    $out .= '</div>';
+
+    RenderHints::popFromRenderStack();
+    return $out;
+}
+
+
+/**
  * @param $taxon_relation
  * @param $misapplied
  * @param $joined_refs
@@ -288,6 +472,80 @@ function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misa
   }
 
 }
+/**
+ * @param $taxon_relation
+ * @param $misapplied
+ * @param $joined_refs
+ * @param $relationship_type_weights
+ * @param $name_dedup_key
+ */
+function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$misapplied, &$joined_refs, $relationship_type_weights, $name_dedup_key) {
+
+    $appended_phrase_text = join(' ', cdm_tagged_text_values($taxon_relation->taggedLabel, array('appendedPhrase')));
+    // remove/extract appendedPhrase, secReference, relSecReference and add placeholders if needed
+    tagged_text_extract($taxon_relation->taggedLabel, 'appendedPhrase', true);
+    $sensu_tagged_text = tagged_text_extract_reference_and_detail($taxon_relation->taggedLabel, "secReference", true);
+    $relsec_tagged_text = tagged_text_extract_reference_and_detail($taxon_relation->taggedLabel, "relSecReference", true);
+
+    // prepend the weight value for the relationship type to the $name_dedup_key so that the key can be used for ordering the
+    // entries in the $misapplied array
+    if(isset($relationship_type_weights[$taxon_relation->relTypeUuid])){
+        $reltype_weight = $relationship_type_weights[$taxon_relation->relTypeUuid];
+    } else {
+        $reltype_weight = 99;
+    }
+    $name_dedup_key = str_pad( $reltype_weight, 2, '0', STR_PAD_LEFT) . '-' . $name_dedup_key;
+
+    if (isset($sensu_tagged_text[1])) {
+        // for de-duplication everything else needs to be equal except for appendedPhrase + MAN.sec + MAN.secDetail. see #7658#note-21
+        $name_dedup_key = str_replace(cdm_tagged_text_to_string($sensu_tagged_text), ' ', $name_dedup_key);
+        $appended_phrase_text = $appended_phrase_text . array_shift($sensu_tagged_text)->text; // remove first element which contains the "sensu", this will be added later in this code
+        $sensu_citation_detail = trim(join(' ', cdm_tagged_text_values($sensu_tagged_text, array('secMicroReference'))));
+        $sensu_citation_short_markup = cdm_tagged_text_to_markup($sensu_tagged_text);
+        $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);
+        $sensu_uuid = $sensu_tagged_text[0]->entityReference->uuid;
+        $name_dedup_key = preg_replace('/\s+/', ' ', $name_dedup_key); // sanitize multiple whitespace characters
+        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => $sensu_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $sensu_citation_detail);
+        $ref_key = $sensu_uuid . ($sensu_citation_detail ? '#' . $sensu_citation_detail : '');
+        if (!isset($joined_refs[$ref_key])) {
+            $joined_refs[$ref_key] = array(
+                'order_by_key' => $sensu_citation_short,
+                'markup' => $sensu_citation_short_markup // the footnote key will be appended later
+            );
+        }
+    } else if ($appended_phrase_text) {
+        // appended phrase without reference
+        $name_dedup_key = preg_replace('/\s+/', ' ', $name_dedup_key); // sanitize multiple whitespace characters
+        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => null, 'prefix' => $appended_phrase_text);
+    }
+
+    if (isset($relsec_tagged_text[1])) {
+        $appended_phrase_text = array_shift($relsec_tagged_text)->text; // remove first element which contains the "err. sec", this will be added later in this code
+        $relsec_citation_detail = trim(join(' ', cdm_tagged_text_values($relsec_tagged_text, array('secMicroReference'))));
+        $relsec_citation_short_markup = cdm_tagged_text_to_markup($relsec_tagged_text);
+        $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
+        $relsec_uuid = $relsec_tagged_text[0]->entityReference->uuid;
+        $misapplied[$name_dedup_key]['relsec_uuids'][] = array('uuid' => $relsec_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $relsec_citation_detail);;
+        $ref_key = $relsec_uuid . ($relsec_citation_detail ? '#' . $relsec_citation_detail : '');
+        if (!isset($joined_refs[$ref_key])) {
+            $joined_refs[$ref_key] = array(
+                'order_by_key' => $relsec_citation_short,
+                'markup' => $relsec_citation_short_markup // the footnote key will be appended later
+            );
+        }
+    }
+
+    if (!isset($misapplied[$name_dedup_key]['out'])) {
+        // helpful for debugging: // cdm_tagged_text_add_options($taxon_relation->taggedText, array(array('filter-type' => 'symbol', 'attributes' => array('title' =>  array($taxon_relation->type->representations[0]->label)))));
+        $misapplied[$name_dedup_key]['out'] = cdm_tagged_text_to_markup($taxon_relation->taggedLabel);
+    } else {
+        // We need to add the anchors for all of the other misapplied names not
+        // being rendered explicitly.
+        $misapplied[$name_dedup_key]['out'] = uuid_anchor($taxon_relation->taxonUuid, $misapplied[$name_dedup_key]['out']);
+    }
+
+}
+
 
 /**
  * Renders a representation of the given taxon relationship.

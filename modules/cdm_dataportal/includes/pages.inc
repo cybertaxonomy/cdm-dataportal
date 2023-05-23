@@ -1336,9 +1336,8 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
   }
   // Render taxon relationships.
   if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS, CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS_DEFAULT)) {
-     // $taxon_dto->conceptRelations;
-    $taxonRelationshipsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, $taxon_dto->uuid);
-    $out .= cdm_taxonRelationships($taxonRelationshipsDTO, $taxon_dto);
+      $taxonRelationshipsDTO =  $taxon_dto->conceptRelations;
+      $out .= cdm_new_taxonRelationships($taxonRelationshipsDTO, $taxon_dto);
   }
 
   RenderHints::popFromRenderStack();
