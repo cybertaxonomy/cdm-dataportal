@@ -1771,6 +1771,7 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
             $specimen_markup = str_replace($derived_unit_dto->mostSignificantIdentifier, l($derived_unit_dto->mostSignificantIdentifier, path_to_specimen($std_dto->typeSpecimen->uuid)), $specimen_markup);
           }
           RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+
           $annotations_and_sources = handle_annotations_and_sources($derived_unit_dto);
           $out .= ': <span class="' . html_class_attribute_ref($std_dto->typeSpecimen) . '">'
             . $specimen_markup
@@ -1905,7 +1906,17 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
       $media = '';
 
       // annotations and sources for the $derived_unit_facade_dto
-      RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+      //RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+        RenderHints::setAnnotationsAndSourceConfig([
+                // these settings differ from those provided by annotations_and_sources_config_typedesignations()
+                // TODO is this by purpose? please document the reason for the difference
+                'sources_as_content' => true, // as footnotes
+                'link_to_name_used_in_source' => false,
+                'link_to_reference' => true,
+                'add_footnote_keys' => false,
+                'bibliography_aware' => false
+            ]
+        );
       $annotations_and_sources = handle_annotations_and_sources($derived_unit_facade_dto);
       $source_citations = $annotations_and_sources->getSourceReferences();
       $foot_note_keys = $annotations_and_sources->footNoteKeysMarkup();
@@ -1934,7 +1945,17 @@ function compose_specimen_type_designations($type_entity_refs, $show_media_speci
           ));
         }
         // citation and detail for the media specimen
-        RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+        //RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+          RenderHints::setAnnotationsAndSourceConfig([
+                  // these settings differ from those provided by annotations_and_sources_config_typedesignations()
+                  // TODO is this by purpose? please document the reason for the difference
+                  'sources_as_content' => true, // as footnotes
+                  'link_to_name_used_in_source' => false,
+                  'link_to_reference' => true,
+                  'add_footnote_keys' => false,
+                  'bibliography_aware' => false
+              ]
+          );
         $annotations_and_sources = handle_annotations_and_sources($mediaSpecimen);
         if($annotations_and_sources->hasSourceReferences()){
           $source_citations = array_merge($source_citations, $annotations_and_sources->getSourceReferences());
