@@ -450,10 +450,10 @@ function synonymy_annotations_and_source_config() {
  */
 function annotations_and_sources_config_typedesignations() {
   static $annotations_and_sources_config = [
-    'sources_as_content' => TRUE,
+    'sources_as_content' => FALSE,
     'link_to_name_used_in_source' => FALSE,
     'link_to_reference' => TRUE,
-    'add_footnote_keys' => FALSE,
+    'add_footnote_keys' => TRUE,
     'bibliography_aware' => FALSE
   ];
   return $annotations_and_sources_config;
