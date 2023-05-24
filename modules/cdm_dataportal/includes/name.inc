@@ -1618,17 +1618,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           if ($media_sources_markup) {
             $specimen_markup .= ' in ' . $media_sources_markup;
           }
-          //RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
-             RenderHints::setAnnotationsAndSourceConfig([
-            // these settings differ from those provided by annotations_and_sources_config_typedesignations()
-            // TODO is this by purpose? please document the reason for the difference
-                 'sources_as_content' => true, // as footnotes
-                 'link_to_name_used_in_source' => false,
-                 'link_to_reference' => true,
-                 'add_footnote_keys' => false,
-                 'bibliography_aware' => false
-                ]
-              );
+          RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
           $annotations_and_sources = handle_annotations_and_sources($derived_unit_dto);
           $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
             . $specimen_markup
@@ -1852,7 +1842,6 @@ function compose_name_type_designations($type_entity_refs_by_status){
         $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
       }
       // annotations and sources for the $derived_unit_facade_dto
-
       RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
       $annotations_and_sources = handle_annotations_and_sources($name_type_entity_ref);
 
