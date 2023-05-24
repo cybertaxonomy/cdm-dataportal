@@ -1637,16 +1637,17 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
   // TextualTypeDesignation .........................
   usort($textual_type_designations, 'compare_textual_type_designation');
   if(!empty($textual_type_designations)) {
-     // RenderHints::setAnnotationsAndSourceConfig([
+      RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+      //RenderHints::setAnnotationsAndSourceConfig([
           // these settings differ from those provided by annotations_and_sources_config_typedesignations()
           // TODO is this by purpose? please document the reason for the difference
-    //      'sources_as_content' => false, // as footnotes
-     //     'link_to_name_used_in_source' => false,
-    //      'link_to_reference' => true,
-    //      'add_footnote_keys' => true,
-    //      'bibliography_aware' => false
-    //    ]
-    //  );
+      //    'sources_as_content' => false, // as footnotes
+       //  'link_to_name_used_in_source' => false,
+      //    'link_to_reference' => true,
+       //   'add_footnote_keys' => true,
+       //   'bibliography_aware' => false
+      //  ]
+      //);
     foreach ($textual_type_designations as $textual_type_designation) {
       $annotations_and_sources = handle_annotations_and_sources($textual_type_designation);
       $encasement =  $textual_type_designation->verbatim ? '"' : '';
