@@ -294,7 +294,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                 RenderHints::pushToRenderStack('other_taxon_relationship');
                 // All relationship types except misapplied_name_for and invalid_designation_for.
 
-                $taxon_relationships_lines[] = cdm_tagged_text_to_markup($taxon_relation->taggedText);
+                $taxon_relationships_lines[] = cdm_tagged_text_to_markup($taxon_relation->taggedLabel);
 
                 RenderHints::popFromRenderStack();
             }

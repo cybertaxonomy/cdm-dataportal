@@ -2712,7 +2712,7 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE, $sho
  *  -treeRepresentations: Returns representations of the selected Feature Tree as a detail view
  *
  */
-function cdm_get_areaTrees_as_options() {
+function cdm_get_areaTrees_as_options($add_default_feature_free = TRUE) {
 
     $options = array();
     $tree_representations = array();

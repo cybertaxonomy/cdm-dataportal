@@ -168,7 +168,7 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
     $current_view_mode = variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT);
     if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
         // get fieldUnitDTOs
-        $root_unit_dtos = $taxon_dto->specimen;
+        $root_unit_dtos = $taxon_dto->specimens-> items;
         $root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
     } else {
         // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));

@@ -1622,9 +1622,14 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
     static $taxon_page_accepted_name = '';
     $taxon_uuid = get_current_taxon_uuid();
     if($suppress_for_shown_taxon && $taxon_uuid && empty($taxon_page_accepted_name)){
+        if (cache_get('current_taxon')){
+            $current_taxon = cache_get('current_taxon');
+            $taxon_page_accepted_name = $current_taxon-> data-> nameLabel;
+        }else{
+            $current_taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxon_uuid);
+            $taxon_page_accepted_name = $current_taxon->name->titleCache;
+        }
 
-      $current_taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxon_uuid);
-      $taxon_page_accepted_name = $current_taxon->name->titleCache;
     }else if ($suppress_for_shown_taxon && cache_get('current_taxon')){
         $current_taxon = cache_get('current_taxon');
         if ($current_taxon){
