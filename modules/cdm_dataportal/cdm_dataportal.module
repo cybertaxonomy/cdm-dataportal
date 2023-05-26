@@ -1846,6 +1846,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     $temp_hidden = $query_parameters['hiddenAreaMarkerType'];
     if ($temp_hidden){
         $query_parameters['fallbackAreaMarkerType'] = $temp_hidden;
+        $query_parameters['hiddenAreaMarkerType'] = null;
     }
 
 

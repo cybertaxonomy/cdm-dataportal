@@ -2932,7 +2932,7 @@ function queryString($elements) {
         $query .= (strlen($query) > 0 ? '&' : '') . $key . '=' . urlencode($v);
       }
     }
-    else {
+    else if ($value != null){
       $query .= (strlen($query) > 0 ? '&' : '') . $key . '=' . urlencode($value);
     }
   }
