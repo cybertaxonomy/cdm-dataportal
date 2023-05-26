@@ -95,11 +95,11 @@ function cdm_distribution_filter_query() {
     $temp_hidden = '';
     foreach ($cdm_distribution_filter['hiddenAreaMarkerType'] as $marker_type => $enabled) {
       if ($enabled) {
-        $query['hiddenAreaMarkerType'] .= ($query['hiddenAreaMarkerType'] ? ',' : '') . $marker_type;
+        $query['fallbackAreaMarkerType'] .= ($query['fallbackAreaMarkerType'] ? ',' : '') . $marker_type;
       }
     }
     if ($temp_hidden){
-        $query['hiddenAreaMarkerType'] = $temp_hidden;
+        $query['fallbackAreaMarkerType'] = $temp_hidden;
     }
   }
 
@@ -442,9 +442,16 @@ function compose_description_element($element, $feature_block_settings, $element
 
 
   RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
-  $annotations_and_sources = handle_annotations_and_sources(
-    $element, $element_markup, $footnote_list_key_suggestion
-  );
+  if (is_cdm_entity($element))  {
+      $annotations_and_sources = handle_annotations_and_sources(
+          $element, $element_markup, $footnote_list_key_suggestion
+      );
+  }else{
+      $annotations_and_sources = handle_new_annotations_and_sources(
+          $element, $element_markup, $footnote_list_key_suggestion
+      );
+  }
+
 
   $timescope_markup = '';
   if(isset($element->timeperiod)){
