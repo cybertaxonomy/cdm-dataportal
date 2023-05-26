@@ -944,19 +944,27 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
     if (isset($descriptionElements['TextData'])) {
       // --- TextData
       foreach ($descriptionElements['TextData'] as $text_data_element) {
-        $text_data_render_array = compose_description_element_text_data($text_data_element, $text_data_element->feature->uuid, $feature_block_settings);
-        $repr = drupal_render($text_data_render_array);
+          if ($text_data_element-> typedLabel ){
+              $render_array = compose_new_description_element_text_data($text_data_element, $feature-> uuid, $feature_block_settings);
+              $repr = drupal_render($render_array);
+              //$repr = cdm_tagged_text_to_markup($text_data_element-> typedLabel);
+              if (!array_search($repr, $text_data_out_array)) { // de-duplication !!
+                  $text_data_out_array[] = $repr;
+                  // TODO HINT: sorting in compose_feature_block_wrap_elements will
+                  // not work since this array contains html attributes with uuids
+                  // and what is about cases like the bibliography where
+                  // any content can be prefixed with some foot-note anchors?
+                  $text_data_sortOutArray = TRUE;
+                  $text_data_glue = '<br/> ';
+                  $text_data_enclosingTag = 'p';
+              }
+          }/*else{
+              $text_data_render_array = compose_description_element_text_data($text_data_element, $text_data_element->feature->uuid, $feature_block_settings);
+              $repr = drupal_render($text_data_render_array);
+          }*/
 
-        if (!array_search($repr, $text_data_out_array)) { // de-duplication !!
-          $text_data_out_array[] = $repr;
-          // TODO HINT: sorting in compose_feature_block_wrap_elements will
-          // not work since this array contains html attributes with uuids
-          // and what is about cases like the bibliography where
-          // any content can be prefixed with some foot-note anchors?
-          $text_data_sortOutArray = TRUE;
-          $text_data_glue = '<br/> ';
-          $text_data_enclosingTag = 'p';
-        }
+
+
       }
     }
 
@@ -2370,7 +2378,7 @@ function merged_taxon_new_feature_tree($taxon) {
         //$distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
         $distribution_info_dto = $distribution_node->facts->items[0];
 
-        // 4. get distribution TextData is there are any TODO: remove this ws call!!!!
+        /*4. get distribution TextData is there are any TODO: remove this ws call!!!!
         $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
             array(
                 'taxon' => $taxon->uuid,
@@ -2379,19 +2387,20 @@ function merged_taxon_new_feature_tree($taxon) {
             )
         );
 
+
         // 5. put all distribution data into the distribution feature node
         if ($distribution_text_data //if text data exists
             || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren > 0) // OR if tree element has distribution elements
             || ($distribution_info_dto && !empty($distribution_info_dto->elements))
-        ) { // OR if DTO has distribution elements
+        ) { // OR if DTO has distribution elements */
             $distribution_node->descriptionElements = array('#type' => 'DTO');
-            if ($distribution_text_data) {
-                $distribution_node->descriptionElements['TextData'] = $distribution_text_data;
+            if (isset($distribution_node->facts->items[1])) {
+                $distribution_node->descriptionElements['TextData'] = array_slice($distribution_node->facts->items, 1);
             }
             if ($distribution_info_dto) {
                 $distribution_node->descriptionElements['DistributionInfoDTO'] = $distribution_info_dto;
             }
-        }
+        //}
     }
 
     // allows modifying the merged tree via a the hook_cdm_feature_node_block_content_alter
