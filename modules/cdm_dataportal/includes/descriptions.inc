@@ -958,10 +958,21 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
                   $text_data_glue = '<br/> ';
                   $text_data_enclosingTag = 'p';
               }
-          }/*else{
+          }else{
               $text_data_render_array = compose_description_element_text_data($text_data_element, $text_data_element->feature->uuid, $feature_block_settings);
               $repr = drupal_render($text_data_render_array);
-          }*/
+
+              if (!array_search($repr, $text_data_out_array)) { // de-duplication !!
+                  $text_data_out_array[] = $repr;
+                  // TODO HINT: sorting in compose_feature_block_wrap_elements will
+                  // not work since this array contains html attributes with uuids
+                  // and what is about cases like the bibliography where
+                  // any content can be prefixed with some foot-note anchors?
+                  $text_data_sortOutArray = TRUE;
+                  $text_data_glue = '<br/> ';
+                  $text_data_enclosingTag = 'p';
+              }
+          }
 
 
 
