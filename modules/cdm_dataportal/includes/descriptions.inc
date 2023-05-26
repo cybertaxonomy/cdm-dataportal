@@ -944,7 +944,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
     if (isset($descriptionElements['TextData'])) {
       // --- TextData
       foreach ($descriptionElements['TextData'] as $text_data_element) {
-          if ($text_data_element-> typedLabel ){
+          if (isset($text_data_element->typedLabel )){
               $render_array = compose_new_description_element_text_data($text_data_element, $feature-> uuid, $feature_block_settings);
               $repr = drupal_render($render_array);
               //$repr = cdm_tagged_text_to_markup($text_data_element-> typedLabel);
