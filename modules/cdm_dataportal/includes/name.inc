@@ -916,7 +916,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                         foreach ($description->facts->items as $description_element) {
                             if (isset($description_element->typedLabel) ) {
                                 RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
-                                $annotations_and_sources = handle_annotations_and_sources($description_element);
+                                $annotations_and_sources = handle_new_annotations_and_sources($description_element);
                                 // synonymy_annotations_and_source_config() has 'sources_as_content' => FALSE, so no need to handle inline sources here
                                /* $element_media = cdm_new_description_element_media(
                                     $description_element,
@@ -959,7 +959,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
         $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
     }
     $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base_dto)
-        . '" data-cdm-ref="/name/' . $taxon_name->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
+        . '" data-cdm-ref="/name/' . $taxon_name_or_taxon_base_dto->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
     // . '" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
     foreach ($renderTemplate as $partName => $part) {
         $separator = '';
@@ -999,21 +999,21 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     $out .= '</span>';
 
     $annotations_and_sources = new AnnotationsAndSources();
-    /*TODO
+    //*TODO
     if($nom_status_fkey){
         // the nomenclatural status footnote key refers to the source citation
         $annotations_and_sources->addFootNoteKey($nom_status_fkey);
     }
     if ($show_taxon_name_annotations) {
-        if($taxon_base){
+        /*if($taxon_base){
             $annotations_and_sources = handle_annotations_and_sources($taxon_base,
                 null, null, $annotations_and_sources);
-        }
-        $annotations_and_sources = handle_annotations_and_sources($taxon_name,
+        }*/
+        $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto-> name,
             null, null, $annotations_and_sources);
     }
     $out .= $annotations_and_sources->footNoteKeysMarkup();
-    */
+
     return $out;
 }
 

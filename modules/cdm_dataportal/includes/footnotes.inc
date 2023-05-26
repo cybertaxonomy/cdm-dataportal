@@ -139,11 +139,20 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
   }
 
   // Adding the footnotes keys.
-  $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
+    if (is_cdm_entity($cdm_entity)){
+        $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
+    }else{
+        $annotations_or_dtos = $cdm_entity-> annotations;
+    }
+
   if (is_array($annotations_or_dtos)) {
     foreach ($annotations_or_dtos as $annotation_or_dto) {
       $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation_or_dto->text);
     }
+  }else if (isset($annotations_or_dtos->items) && $annotations_or_dtos->count>0){
+      foreach ($annotations_or_dtos->items as $annotation_or_dto) {
+          $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation_or_dto->text);
+      }
   }
 
   return $foot_note_keys;
@@ -679,12 +688,12 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
 
     } // END of references inline
 
-    // footnotes for sources and annotations or put into into bibliography if requested ...
+    // footnotes for sources and annotations or put into bibliography if requested ...
     $do_foonotes_as_content = isset($config['annotations_as_content']) && $config['annotations_as_content'];
     if($do_foonotes_as_content){
         $annotationsAndSources->setAnnotations(cdm_entity_annotations_as_content($entity));
     }
-    /*TODO
+    //TODO
     if ($config['add_footnote_keys']) {
         $annotationsAndSources->addAllFootNoteKeys(cdm_entity_footnotes(
             $entity,
@@ -694,7 +703,7 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
             (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE),
             !$do_foonotes_as_content
         ));
-    }*/
+    }
     return $annotationsAndSources;
 }
 /**
