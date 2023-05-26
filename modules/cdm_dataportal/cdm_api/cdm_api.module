@@ -1878,10 +1878,17 @@ function cdm_ws_fetch_annotations(&$cdm_entity_or_dto, $include_types = FALSE) {
 
   if(!isset($cdm_entity_or_dto->annotations)){
     $annotation_url = cdm_compose_annotations_uri($cdm_entity_or_dto);
-    $cdm_entity_or_dto->annotations = cdm_ws_fetch_all($annotation_url, array(), 'GET', TRUE);
+    if ($annotation_url){
+        $cdm_entity_or_dto->annotations = cdm_ws_fetch_all($annotation_url, array(), 'GET', TRUE);
+    }
+
   }
 
   $annotations_or_dtos = array();
+  if (!isset($cdm_entity_or_dto->annotations)){
+      return $annotations_or_dtos;
+  }
+
   foreach ($cdm_entity_or_dto->annotations as $annotation_or_dto) {
     if ($include_types) {
       $is_dto = is_cdm_dto($annotation_or_dto);
