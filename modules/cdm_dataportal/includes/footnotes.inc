@@ -139,19 +139,20 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
   }
 
   // Adding the footnotes keys.
-    if (is_cdm_entity($cdm_entity)){
-        $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
+
+    if (isset($cdm_entity-> annotations)){
+        $annotations_or_dtos = $cdm_entity-> annotations;
     }else{
-        if (isset($cdm_entity-> annotations)){
-            $annotations_or_dtos = $cdm_entity-> annotations;
-        }
+        $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
     }
 
-  if (is_array($annotations_or_dtos)) {
+
+
+  if (isset($annotations_or_dtos) && is_array($annotations_or_dtos)) {
     foreach ($annotations_or_dtos as $annotation_or_dto) {
       $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation_or_dto->text);
     }
-  }else if (isset($annotations_or_dtos->items) && $annotations_or_dtos->count>0){
+  }else if (isset($annotations_or_dtos) && isset($annotations_or_dtos->items) && $annotations_or_dtos->count>0){
       foreach ($annotations_or_dtos->items as $annotation_or_dto) {
           $foot_note_keys[] = FootnoteManager::addNewFootnote($footnote_list_key, $annotation_or_dto->text);
       }
