@@ -142,7 +142,9 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
     if (is_cdm_entity($cdm_entity)){
         $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
     }else{
-        $annotations_or_dtos = $cdm_entity-> annotations;
+        if (isset($cdm_entity-> annotations)){
+            $annotations_or_dtos = $cdm_entity-> annotations;
+        }
     }
 
   if (is_array($annotations_or_dtos)) {
