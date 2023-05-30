@@ -140,7 +140,7 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
 
   // Adding the footnotes keys.
 
-    if (isset($cdm_entity-> annotations)){
+    if (isset($cdm_entity-> annotations) && is_cdm_dto($cdm_entity)){
         $annotations_or_dtos = $cdm_entity-> annotations;
     }else{
         $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
