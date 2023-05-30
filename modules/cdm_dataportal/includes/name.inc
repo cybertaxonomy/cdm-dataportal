@@ -1005,11 +1005,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
         $annotations_and_sources->addFootNoteKey($nom_status_fkey);
     }
     if ($show_taxon_name_annotations) {
-        /*if($taxon_base){
-            $annotations_and_sources = handle_annotations_and_sources($taxon_base,
-                null, null, $annotations_and_sources);
-        }*/
-        $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto-> name,
+       $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto,
             null, null, $annotations_and_sources);
     }
     $out .= $annotations_and_sources->footNoteKeysMarkup();
