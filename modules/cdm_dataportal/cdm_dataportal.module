@@ -1860,14 +1860,15 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
      */
 
 
-    $query_parameters['part'] = array('mapUriParams');
-    if (variable_get(DISTRIBUTION_CONDENSED)) {
-        $query_parameters['part'][] = 'condensedDistribution';
-    }
-    if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
-        $query_parameters['part'][] = 'tree';
-    } else {
-        $query_parameters['part'][] = 'elements';
+
+    if (variable_get(DISTRIBUTION_CONDENSED) || variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
+        $query_parameters['part'] = array('mapUriParams');
+        if (variable_get(DISTRIBUTION_CONDENSED)){
+            $query_parameters['part'][] = 'condensedDistribution';
+        }
+        if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
+            $query_parameters['part'][] = 'tree';
+        }
     }
     if (!(variable_get(ET_AL_POS) === null)) {
         $query_parameters['et_al_pos'][] = variable_get(ET_AL_POS);
