@@ -87,6 +87,7 @@ define('EXTENSION_TYPES_VISIBLE_DEFAULT', serialize([]));
     'enabled' => 0,
     'key_format' => 'ALPHA'
   )));
+define('ET_AL_POS', 'et_al_pos');
 
   /* taxonRelationshipTypes */
   define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(
@@ -846,6 +847,27 @@ function get_bibliography_settings($clear_cache = false){
 }
 
 /**
+ * returns the current setting for the the et al position
+ *
+ * Caches internally
+ *
+ * @return integer
+ *  the setting for the et al position:
+ *   - 'position'
+ *
+ */
+function get_et_al_pos_settings($clear_cache = false){
+    static $et_al_pos_settings = null;
+    if(!$et_al_pos_settings || $clear_cache){
+        $et_al_pos_settings = variable_get(
+            ET_AL_POS,
+            2
+        );
+    }
+    return $et_al_pos_settings;
+}
+
+/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
@@ -1484,7 +1506,28 @@ function cdm_settings_layout() {
       'alpha' => 'Alphabet (lower case)')
   );
 
-  // --- Advanced Search --- //
+    // ---- et al position --- //
+   /* $form[ET_AL_POS] = array(
+        '#type' => 'fieldset',
+        '#tree' => TRUE,
+        '#title' => t('Et. al. position in teams'),
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
+    );*/
+
+    $et_al_pos_settings = get_et_al_pos_settings();
+
+    $form[ET_AL_POS] = array(
+        '#type' => 'textfield',
+        '#title' => t('Position of et. al. in teams'),
+        '#default_value' => 2,
+        '#description' => t('Shows the selected number of authors and if there are more members in the team adds & al. <br/><br/> If this value is empty, the default value is two'),
+    );
+
+
+
+
+    // --- Advanced Search --- //
   $form['asearch'] = array(
       '#type' => 'fieldset',
       '#title' => t('Advanced search'),
