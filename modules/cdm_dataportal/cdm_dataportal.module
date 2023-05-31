@@ -1842,13 +1842,6 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
 function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     // Taxon object.
     $query_parameters = cdm_distribution_filter_query();
-    //TODO: adapt after changing completely to DTO usage
-    $temp_hidden = $query_parameters['hiddenAreaMarkerType'];
-    if ($temp_hidden){
-        $query_parameters['fallbackAreaMarkerType'] = $temp_hidden;
-        $query_parameters['hiddenAreaMarkerType'] = null;
-    }
-
 
     //get feature tree uuid
     $feature_tree_uuid =variable_get(CDM_PROFILE_FEATURETREE_UUID);
@@ -1876,7 +1869,9 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     } else {
         $query_parameters['part'][] = 'elements';
     }
-
+    if (!(variable_get(ET_AL_POS) === null)) {
+        $query_parameters['et_al_pos'][] = variable_get(ET_AL_POS);
+    }
 
     /*$query_parameters['omitLevels'] = array();
     foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid) {
