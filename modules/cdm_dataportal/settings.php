@@ -1520,7 +1520,7 @@ function cdm_settings_layout() {
     $form[ET_AL_POS] = array(
         '#type' => 'textfield',
         '#title' => t('Position of <em>& al.</em> in nomenclatural teams'),
-        '#default_value' => variable_get('ET_AL_POS', NULL),
+        '#default_value' => variable_get(ET_AL_POS, NULL),
         '#description' => t('If a team has more members then the given number & al. is used. E.g. if the team is <em>Rivas Mart., Wildpret, del Arco, O. Rodr.</em> and the number is <em>3</em> the team is shown as <em>Rivas Mart., Wildpret & al.</em> instead.
                              <br/>If this value is empty or < 2 the full team is shown.'),
     );
