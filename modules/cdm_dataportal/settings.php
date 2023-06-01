@@ -348,7 +348,7 @@ define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
   ),
   "level_1" => array(
     'label_suffix' => '',
-    'status_glue' => '‒ ', // '&#8210; '
+    'status_glue' => '‒ ', // &#8210;
     'item_suffix' => '',
     'item_glue' => '; ',
     'item_group_prefix' => '',
@@ -356,7 +356,7 @@ define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
   ),
   "level_2" => array(
     'label_suffix' => '',
-    'status_glue' => '‒ ', // '&#8210; '
+    'status_glue' => '‒ ', // &#8210; 
     'item_suffix' => '',
     'item_glue' => ', ',
     'item_group_prefix' => ' (',
