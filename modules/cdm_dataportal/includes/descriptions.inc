@@ -551,7 +551,13 @@ function compose_description_element($element, $feature_block_settings, $element
     $gallery_settings = getGallerySettings(CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME);
 
     $use_description_features = array(UUID_USE);
-
+    $contains_distribution = false;
+    foreach($mergedFeatureNodes as $feature_node){
+        if ($feature_node->term->uuid == UUID_DISTRIBUTION){
+            $contains_distribution = true;
+            break;
+        }
+    }
 
     RenderHints::pushToRenderStack('feature_block');
     // Create a drupal block for each feature
@@ -585,7 +591,7 @@ function compose_description_element($element, $feature_block_settings, $element
          * Content/DISTRIBUTION.
          */
         if ($feature_node->term->supportsDistribution) {
-          $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node->term);
+          $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node->term, $contains_distribution);
           $block_content_is_empty = FALSE;
         }
 
@@ -915,7 +921,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
    *
    * @ingroup compose
    */
-  function compose_feature_block_distribution($taxon, $descriptionElements, $feature) {
+  function compose_feature_block_distribution($taxon, $descriptionElements, $feature, $contains_distribution = false) {
     $text_data_glue = '';
     $text_data_sortOutArray = FALSE;
     $text_data_enclosingTag = 'ul';
@@ -1036,7 +1042,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
       $distribution_info_dto = $descriptionElements['DistributionInfoDTO'];
 
       // --- tree
-      if (is_object($distribution_info_dto->tree)) {
+      if (is_object($distribution_info_dto->tree) && ($feature->uuid == UUID_DISTRIBUTION || !$contains_distribution)) {
         $distribution_tree_render_array = compose_distribution_hierarchy($distribution_info_dto->tree, $feature_block_settings);
         $dto_out_array[] = $distribution_tree_render_array;
       }
