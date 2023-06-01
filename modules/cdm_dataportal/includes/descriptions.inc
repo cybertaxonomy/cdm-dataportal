@@ -734,7 +734,12 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                 $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node);
                 $block_content_is_empty = FALSE;
             }
-
+            else if ($feature_node->label == 'IUCN Status') {
+                $feature_node->descriptionElements['#type'] = "DTO";
+                $feature_node->descriptionElements['DistributionInfoDTO'] = $feature_node->facts-> items[0];
+                $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node, true);
+                $block_content_is_empty = FALSE;
+            }
             /*
              * Content/COMMON_NAME.
              */
@@ -1859,6 +1864,7 @@ function compose_new_feature_block_items_generic($description_elements, $feature
              * TODO provide api_hook as extension point for this?
              */
             $feature_block_settings = get_feature_block_settings($description_element->typedLabel[0]->uuid);
+
             switch ($description_element->typedLabel[0]->cdmClass) {
                 case 'TextData':
                     $elements_out_array[] = compose_new_description_element_text_data($description_element, $description_element->uuid, $feature_block_settings);
