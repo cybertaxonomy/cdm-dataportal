@@ -102,7 +102,7 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
 
 
   if(isset($reference_dto->doi)){
-    $out .= cdm_doi($reference->doi);
+    $out .= cdm_doi($reference_dto->doi);
   }
 
   if (isset($reference_dto->uri)){
