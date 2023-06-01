@@ -847,27 +847,6 @@ function get_bibliography_settings($clear_cache = false){
 }
 
 /**
- * returns the current setting for the the et al position
- *
- * Caches internally
- *
- * @return integer
- *  the setting for the et al position:
- *   - 'position'
- *
- */
-function get_et_al_pos_settings($clear_cache = false){
-    static $et_al_pos_settings = null;
-    if(!$et_al_pos_settings || $clear_cache){
-        $et_al_pos_settings = variable_get(
-            ET_AL_POS,
-            2
-        );
-    }
-    return $et_al_pos_settings;
-}
-
-/**
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
@@ -1506,26 +1485,7 @@ function cdm_settings_layout() {
       'alpha' => 'Alphabet (lower case)')
   );
 
-    // ---- et al position --- //
-   /* $form[ET_AL_POS] = array(
-        '#type' => 'fieldset',
-        '#tree' => TRUE,
-        '#title' => t('Et. al. position in teams'),
-        '#collapsible' => FALSE,
-        '#collapsed' => FALSE,
-    );*/
-
-    $et_al_pos_settings = get_et_al_pos_settings();
-
-    $form[ET_AL_POS] = array(
-        '#type' => 'textfield',
-        '#title' => t('Position of <em>& al.</em> in nomenclatural teams'),
-        '#default_value' => variable_get(ET_AL_POS, NULL),
-        '#description' => t('If a team has more members then the given number & al. is used. E.g. if the team is <em>Rivas Mart., Wildpret, del Arco, O. Rodr.</em> and the number is <em>3</em> the team is shown as <em>Rivas Mart., Wildpret & al.</em> instead.
-                             <br/>If this value is empty or < 2 the full team is shown.'),
-    );
-
-    // --- Advanced Search --- //
+  // --- Advanced Search --- //
   $form['asearch'] = array(
       '#type' => 'fieldset',
       '#title' => t('Advanced search'),
@@ -1568,6 +1528,23 @@ function cdm_settings_layout() {
     '#default_value' => variable_get('cdm_registration_presistent_identifier_as_link', 0),
     '#description' => t('Switch the portal from using the drupal path <code>registration/{url encoded persistent http identifier}</code> to using the persistent http identifier directly as link.'),
   );
+
+
+    // ---- et al position --- //
+	$form['registrations'] = array(
+	    '#type' => 'fieldset',
+	    '#title' => t('Et al. position'),
+	    '#collapsible' => FALSE,
+	    '#collapsed' => FALSE,
+	  );
+
+    $form[ET_AL_POS] = array(
+        '#type' => 'textfield',
+        '#title' => t('Position of <em>& al.</em> in nomenclatural teams'),
+        '#default_value' => variable_get(ET_AL_POS, NULL),
+        '#description' => t('If a team has more members then the given number & al. is used. E.g. if the team is <em>Rivas Mart., Wildpret, del Arco, O. Rodr.</em> and the number is <em>3</em> the team is shown as <em>Rivas Mart., Wildpret & al.</em> instead.
+                             <br/>If this value is empty or < 2 the full team is shown.'),
+    );
 
   // ---- Taxon Name Rendering --- //
   $form['taxon_name'] = array(
