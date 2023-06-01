@@ -1871,7 +1871,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
         }
     }
     if (!(variable_get(ET_AL_POS) === null)) {
-        $query_parameters['et_al_pos'][] = variable_get(ET_AL_POS);
+        $query_parameters['etAlPos'][] = variable_get(ET_AL_POS);
     }
 
     /*$query_parameters['omitLevels'] = array();
@@ -1884,7 +1884,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
     if ($customStatusColorsJson) {
         $query_parameters['statusColors'] = $customStatusColorsJson;
     }
-    $query_parameters['features'] = UUID_DISTRIBUTION;
+
     if (variable_get(CDM_AREATREE_UUID)){
         $query_parameters['areaTree'] = variable_get(CDM_AREATREE_UUID);
     }
