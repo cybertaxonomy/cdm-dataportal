@@ -1531,14 +1531,14 @@ function cdm_settings_layout() {
 
 
     // ---- et al position --- //
-	$form['registrations'] = array(
+	$form['et_al_pos'] = array(
 	    '#type' => 'fieldset',
 	    '#title' => t('Et al. position'),
 	    '#collapsible' => FALSE,
 	    '#collapsed' => FALSE,
 	  );
 
-    $form[ET_AL_POS] = array(
+    $form['et_al_pos'][ET_AL_POS] = array(
         '#type' => 'textfield',
         '#title' => t('Position of <em>& al.</em> in nomenclatural teams'),
         '#default_value' => variable_get(ET_AL_POS, NULL),
