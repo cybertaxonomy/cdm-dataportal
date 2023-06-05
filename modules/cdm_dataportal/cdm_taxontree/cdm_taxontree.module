@@ -536,7 +536,7 @@ function cdm_taxontree_build_tree($taxonUuid = NULL, $hideOtherConcepts = TRUE, 
       $taxon_in_current_tree = null;
       if (cache_get('current_taxon')){
           $current_taxon = cache_get('current_taxon');
-          if ($current_taxon->uuid == $taxonUuid){
+          if (isset($current_taxon->uuid) && $current_taxon->uuid == $taxonUuid){
               $taxon_in_current_tree = taxon_in_current_classification_new($current_taxon);
           }
       }
