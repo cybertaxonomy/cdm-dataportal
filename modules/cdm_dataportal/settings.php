@@ -1224,10 +1224,10 @@ function cdm_settings_general() {
   $marker_type_options = cdm_terms_by_type_as_option('MarkerType');
   $form['distribution'][CDM_DISTRIBUTION_FILTER]['hiddenAreaMarkerType'] = array(
       '#type' => 'checkboxes',
-      '#title' => 'Hide marked area filter',
+      '#title' => 'Fallback area filter',
       '#default_value' => $cdm_distribution_filter['hiddenAreaMarkerType'],
       '#options' => $marker_type_options,
-      '#description' => 'Check one or more MarkerTypes to define the "hide marked area" filter .',
+      '#description' => 'Check one or more MarkerTypes to define the "fallback area" filter.',
   );
 
   $form['aggregation'] = array(
