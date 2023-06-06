@@ -87,7 +87,7 @@ define('EXTENSION_TYPES_VISIBLE_DEFAULT', serialize([]));
     'enabled' => 0,
     'key_format' => 'ALPHA'
   )));
-define('ET_AL_POS', 'et_al_pos');
+const ET_AL_POS = 'et_al_pos';
 
   /* taxonRelationshipTypes */
   define('CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT', serialize(
@@ -1797,6 +1797,23 @@ function cdm_settings_layout_taxon() {
   $form = array();
 
   $form['#submit'][] = 'cdm_settings_layout_taxon_submit';
+    $form['taxon_access'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Taxon access (experimental)'),
+        '#collapsible' => TRUE,
+        '#collapsed' => TRUE,
+        //'#description' => 'Data can be accessed as cdm objects or as so named data transfer objects. The current standard is accessing the cdm objects.'
+    );
+    $form['taxon_access']['cdm_dto_mode'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'Use Dto page',
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#default_value' => variable_get('cdm_dto_mode', FALSE),
+        '#description' => 'When this is activated the data are loaded as data portal optimized DTOs which results in less webservice calls and smaller objects.
+        This should improve the performance but at the moment it is only usable for some portals and is in experimental state. 
+        Please contact the EDIT team for more information.'
+    );
 
   // --------- TABBED TAXON ------- //
   $form['taxon_node'] = array(
@@ -2016,18 +2033,6 @@ function cdm_settings_layout_taxon() {
   $form_title = 'Taxon Profile Images';
   $form_description = '<p>The different sections in the taxon  profile can have images associated with them. These images are displayed in a gallery of thumbnails wich can be configuered here:</p>';
   $form['taxon_profile'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, $collapsed, $form_description);
-
-  // -- DTO PAGE -- //
-    $form['taxon_profile']['cdm_dto_mode'] = array(
-        '#type' => 'checkbox',
-        '#title' => 'Use Dto page (experimental)',
-        '#collapsible' => TRUE,
-        '#collapsed' => FALSE,
-        '#default_value' => variable_get('cdm_dto_mode', FALSE),
-        '#description' => 'When this is activated the data are loaded as data portal optimized DTOs which results in less webservice calls and smaller objects.
-        This should improve the performance but at the moment it is only usable for some portals and is in experimental state. 
-        Please contact the EDIT team for more information.'
-    );
 
   // ---- FEATURE TREE BLOCKS ---- //
   $form['taxon_profile']['feature_blocks'] = array(
