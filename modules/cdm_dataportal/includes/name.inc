@@ -273,6 +273,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   $is_doubtful = false;
   $taxon_base = null;
   $nom_status_fkey = null; // FootNoteKey
+  $nom_status_additional_source_fkey = null; //FootNoteKey for additional source
   if(isset($taxon_name_or_taxon_base->class) && ($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym')){
     $taxon_base = $taxon_name_or_taxon_base;
     if(isset($taxon_name_or_taxon_base->name)){
@@ -612,7 +613,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // the nomenclatural status footnote key refers to the source citation
     $annotations_and_sources->addFootNoteKey($nom_status_fkey);
   }
-    if($nom_status_additional_source_fkey){
+    if(isset($nom_status_additional_source_fkey)){
         // the nomenclatural status footnote key refers to the source citation
         $annotations_and_sources->addFootNoteKey($nom_status_additional_source_fkey);
     }
