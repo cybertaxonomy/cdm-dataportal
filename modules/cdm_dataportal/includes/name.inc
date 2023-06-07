@@ -476,6 +476,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
          if($tt->type == 'nomStatus'&& isset($tt->entityReference)) {
            $nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
            $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
+           if (isset_not_empty($nom_status->source) ){
+               $nom_status_additional_source_fkey = handle_name_relationship_as_footnote($nom_status, false);
+           }
            $tt_to_markup_options['html'] = true;
          }
         }
@@ -609,6 +612,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // the nomenclatural status footnote key refers to the source citation
     $annotations_and_sources->addFootNoteKey($nom_status_fkey);
   }
+    if($nom_status_additional_source_fkey){
+        // the nomenclatural status footnote key refers to the source citation
+        $annotations_and_sources->addFootNoteKey($nom_status_additional_source_fkey);
+    }
   if ($show_taxon_name_annotations) {
     if($taxon_base){
       $annotations_and_sources = handle_annotations_and_sources($taxon_base,
@@ -670,7 +677,10 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     } else {
         $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base_dto->uuid));
     }
-    $is_doubtful = $taxon_name_or_taxon_base_dto->doubtful;
+    if (isset($taxon_name_or_taxon_base_dto->doubtful)){
+        $is_doubtful = $taxon_name_or_taxon_base_dto->doubtful;
+    }
+
     // use the TaxonBase.tagged_title so we have the secRef
     if (isset($taxon_name_or_taxon_base_dto->taggedLabel)){
         $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
@@ -2329,7 +2339,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
     $non_nec_name_rels = array();
     $orthographic_variants = array();
     foreach ($name_relations as $name_rel) {
-      $rel_type_uuid = $name_rel->type->uuid;
+      $rel_type_uuid = isset($name_rel->type->uuid)?$name_rel->type->uuid:null;
       $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
       if ((!$is_inverse_relation && isset($name_rel_type_filter['direct'][$rel_type_uuid]) && $name_rel_type_filter['direct'][$rel_type_uuid])
         ||($is_inverse_relation && isset($name_rel_type_filter['inverse'][$rel_type_uuid]) && $name_rel_type_filter['inverse'][$rel_type_uuid])) {

@@ -325,22 +325,33 @@ function bibliography_footnote_list_key($key_suggestion = null) {
  * @return \FootnoteKey
  *  The FootnoteKey
  */
-function handle_name_relationship_as_footnote($name_rel)
+function handle_name_relationship_as_footnote($name_rel, $code_edition_source = true)
 {
-  $footnote_markup = '';
-  $fnkey = null;
-  if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered) {
-    $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span>; ';
-  }
-  if (isset($name_rel->source->citation)) {
-    $footnote_markup .= '<span class="reference">' . $name_rel->source->citation->titleCache . '</span>';
-  }
-  if (isset($name_rel->source->citationMicroReference) && $name_rel->source->citationMicroReference) {
-    $footnote_markup .= (isset($name_rel->source->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->source->citationMicroReference . '</span>';
-  }
-  if ($footnote_markup) {
-    $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-  }
+    $footnote_markup = '';
+    $fnkey = null;
+    if ($code_edition_source) {
+
+        if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered) {
+            $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span>; ';
+        }
+        if (isset($name_rel->codeEditionSource->citation)) {
+            $footnote_markup .= '<span class="reference">' . $name_rel->codeEditionSource->citation->titleCache . '</span>';
+        }
+
+        if ($footnote_markup) {
+            $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
+        }
+    }else{
+        if (isset($name_rel->source->citation)) {
+            $footnote_markup .= '<span class="reference">' . $name_rel->source->citation->titleCache . '</span>';
+        }
+        if (isset($name_rel->source->citationMicroReference) && $name_rel->source->citationMicroReference) {
+            $footnote_markup .= (isset($name_rel->source->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->source->citationMicroReference . '</span>';
+        }
+        if ($footnote_markup) {
+            $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
+        }
+    }
   return $fnkey;
 }
 
@@ -387,7 +398,8 @@ function handle_nomenclatural_status_as_footnote($nom_status)
 {
   // NomenclaturalStatus is a subclass of ReferencedEntityBase
   // and has the same structure as TaxonNameRelationship
-  return handle_name_relationship_as_footnote($nom_status);
+
+  return handle_name_relationship_as_footnote($nom_status, true);
 }
 
 /**
