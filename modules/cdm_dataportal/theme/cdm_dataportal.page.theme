@@ -35,8 +35,11 @@ function theme_cdm_taxon_page_title($variables) {
   if (isset($taxon->name->nomenclaturalSource->citation)) {
     $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
   }
-
-  $out .= render_taxon_or_name($taxon, NULL, $referenceUri, FALSE);
+  if (isset($taxon->class) && $taxon->class == 'Taxon'){
+    $out .= render_taxon_or_name($taxon, NULL, $referenceUri, FALSE);
+  } else{
+    $out .= render_new_taxon_or_name($taxon, NULL, $referenceUri, FALSE);
+  }
   RenderHints::popFromRenderStack();
 
   return '<span class="' . $taxon->class . '">' . $out . '</span>';
