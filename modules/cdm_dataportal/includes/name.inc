@@ -273,7 +273,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   $is_doubtful = false;
   $taxon_base = null;
   $nom_status_fkey = null; // FootNoteKey
-  if($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym'){
+  if(isset($taxon_name_or_taxon_base->class) && ($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym')){
     $taxon_base = $taxon_name_or_taxon_base;
     if(isset($taxon_name_or_taxon_base->name)){
       $taxon_name = $taxon_name_or_taxon_base->name;
