@@ -1911,7 +1911,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
         RenderHints::pushToRenderStack('not_in_current_classification');
         RenderHints::setFootnoteListKey('not_in_current_classification');
         FootnoteManager::blockFootnotesFor('not_in_current_classification');
-        $taxon_name_markup = render_taxon_or_name($taxon_dto);
+        $taxon_name_markup = render_new_taxon_or_name($taxon_dto);
         FootnoteManager::unblockFootnotesFor('not_in_current_classification');
         RenderHints::clearFootnoteListKey();
 
