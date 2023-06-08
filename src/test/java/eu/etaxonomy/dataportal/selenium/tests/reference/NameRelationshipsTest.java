@@ -99,7 +99,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "7. Editorial annotation on Nodosilinea sensensia, Species solaris",
                 footnotes .get(6).getText());
         assertEquals(
-                "8. Art. 88.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
+                "8. Art. 88.9",
                 footnotes .get(7).getText());
         assertEquals(
                 "9. Editorial annotation on Nodosilinea sensensi",
@@ -134,7 +134,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "5. Editorial annotation on Nodosilinea blockensis, New Species in the solar system",
                 footnotes.get(4).getText());
         assertEquals(
-                "6. Art. 88.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 33",
+                "6. Art. 88.9",
                 footnotes.get(5).getText());
         assertEquals(
                 "7. Editorial annotation on Nodosilinea sensensi",
