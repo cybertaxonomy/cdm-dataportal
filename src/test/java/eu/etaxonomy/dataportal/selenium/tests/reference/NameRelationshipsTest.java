@@ -78,7 +78,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         List<BaseElement> footnotes = regItem.getRegistrationFootnotes();
         assertEquals(9, footnotes.size());
         assertEquals(
-                "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+                "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glashütten: Koeltz Botanical Books",
                 footnotes .get(0).getText());
         assertEquals(
                 "2. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
@@ -119,7 +119,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
         assertEquals(7, footnotes.size());
         assertEquals(
-                "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 11",
+                "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R. , Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glashütten: Koeltz Botanical Books",
                 footnotes .get(0).getText());
         assertEquals(
                 "2. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
