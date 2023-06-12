@@ -1902,7 +1902,7 @@ function compose_new_feature_block_items_generic($description_elements, $feature
 
         // If feature = CITATION sort the list of sources.
         // This is ONLY for FLORA MALESIANA and FLORE d'AFRIQUE CENTRALE.
-        if (isset($description_element) && $description_element->feature->uuid == UUID_CITATION) {
+        if (isset($description_element->feature->uuid) && $description_element->feature->uuid == UUID_CITATION) {
             sort($elements_out_array);
         }
     }
@@ -2240,7 +2240,11 @@ function compose_description_elements_distribution($description_elements){
     $status_label = '';
 
     foreach($distribution_status as $status) {
-      $status_label .= ($status_label ? $status_glue : '') . $status->representation_L10n ;
+      if(isset($status->representation_L10n)){
+          $status_label .= ($status_label ? $status_glue : '') . $status->representation_L10n ;
+      }else{
+          $status_label .= ($status_label ? $status_glue : '') . $status->label ;
+      }
       $status_markup .=  '<span class="distributionStatus"> '
         . ($status_markup ? $status_glue : '')
         . '<span class="distributionStatus-' . $status->idInVocabulary . '">'
