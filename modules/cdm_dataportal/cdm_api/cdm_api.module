@@ -1889,7 +1889,12 @@ function cdm_ws_fetch_annotations(&$cdm_entity_or_dto, $include_types = FALSE) {
       return $annotations_or_dtos;
   }
 
-  foreach ($cdm_entity_or_dto->annotations as $annotation_or_dto) {
+  if (is_array($cdm_entity_or_dto->annotations)){
+      $annotation_or_dtos = $cdm_entity_or_dto->annotations;
+  }else{
+      $annotation_or_dtos = $cdm_entity_or_dto->annotations->items;
+  }
+  foreach ($annotation_or_dtos as $annotation_or_dto) {
     if ($include_types) {
       $is_dto = is_cdm_dto($annotation_or_dto);
       if (($is_dto ? annotation_dto_has_type($annotation_or_dto, $include_types) : annotation_has_type($annotation_or_dto, $include_types))) {

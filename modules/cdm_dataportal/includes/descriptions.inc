@@ -2565,7 +2565,7 @@ function merged_taxon_new_feature_tree($taxon) {
           }else if (!is_array($distribution_aggregate->sources) && !isset($distribution_aggregate->sources-> items[0])){
             $distribution_aggregate->sources->items[0] = array();
           }
-          if(!isset($distribution_aggregate->annotations[0])){
+          if(!isset($distribution_aggregate->annotations)){
             $distribution_aggregate->annotations = array();
           }
         } else {
