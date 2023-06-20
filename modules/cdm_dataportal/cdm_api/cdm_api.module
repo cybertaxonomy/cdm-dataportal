@@ -1943,7 +1943,7 @@ function annotation_dto_has_type($annotation_dto, array $include_types) {
  *  True in case the $cdm_dto is a DTO
  */
 function is_cdm_dto(&$cdm_dto) {
-  return isset_not_empty($cdm_dto->type) && isset_not_empty($cdm_dto->class) && str_endsWith($cdm_dto->class , 'DTO');
+  return isset_not_empty($cdm_dto->type) && isset_not_empty($cdm_dto->class) && (str_endsWith($cdm_dto->class , 'DTO') || str_endsWith($cdm_dto->class , 'Dto') );
 }
 
 /**

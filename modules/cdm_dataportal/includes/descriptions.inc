@@ -2589,9 +2589,14 @@ function merged_taxon_new_feature_tree($taxon) {
             }
 
 
-          if(isset($distribution->annotations[0])) {
+          if(isset($distribution->annotations)) {
+              if (is_array($distribution->annotations)){
+                  $annotations = $distribution->annotations;
+              }else{
+                  $annotations = $distribution->annotations->items;
+              }
            $distribution_aggregate->annotations = array_merge($distribution_aggregate->annotations,
-              $distribution->annotations);
+              $annotations);
           }
         }
       }
