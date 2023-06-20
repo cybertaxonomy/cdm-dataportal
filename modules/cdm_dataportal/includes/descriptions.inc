@@ -2245,11 +2245,20 @@ function compose_description_elements_distribution($description_elements){
       }else{
           $status_label .= ($status_label ? $status_glue : '') . $status->label ;
       }
-      $status_markup .=  '<span class="distributionStatus"> '
-        . ($status_markup ? $status_glue : '')
-        . '<span class="distributionStatus-' . $status->idInVocabulary . '">'
-        .  $status->representation_L10n
-        . '</span></span>';
+      if (isset($status->idInVocabulary)){
+          $status_markup .=  '<span class="distributionStatus"> '
+              . ($status_markup ? $status_glue : '')
+              . '<span class="distributionStatus-' . $status->idInVocabulary . '">'
+              .  $status->representation_L10n
+              . '</span></span>';
+
+      }else{
+          $status_markup .=  '<span class="distributionStatus"> '
+              . ($status_markup ? $status_glue : '')
+              . '<span class="distributionStatus-' . $status->label . '">'
+              .  $status->label
+              . '</span></span>';
+      }
 
     };
     return ['label' => $status_label, 'markup' => $status_markup];
