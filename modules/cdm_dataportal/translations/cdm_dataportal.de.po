@@ -433,7 +433,7 @@ msgstr ""
 
 #: settings.php:1387
 msgid ""
-"This settings contains the general configurations\n"
+"These settings contain the general configurations\n"
 "      layout. If you want to configure the specific sites layout visit the\n"
 "      respective configuration site for taxon, search or media."
 msgstr ""

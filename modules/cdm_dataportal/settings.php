@@ -1401,7 +1401,7 @@ function cdm_settings_layout() {
   $form = array();
 
   $form['about'] = array(
-    '#markup' => '<h4>' . t('Portal Layout') . '</h4><p>' . t('This settings contains the general configurations
+    '#markup' => '<h4>' . t('Portal Layout') . '</h4><p>' . t('These settings contain the general configurations
       layout. If you want to configure the specific sites layout visit the
       respective configuration site for taxon, search or media.') . '</p>',
   );
