@@ -2581,23 +2581,24 @@ function merged_taxon_new_feature_tree($taxon) {
           if(isset($distribution->status)){
             $distribution_aggregate->status[] = $distribution->status;
           }
-          //TODO: differ between DTO handling and standard page
-            if (is_array($distribution->sources) ){
-                $distribution_aggregate->sources= array_merge($distribution_aggregate->sources ,
-                    $distribution->sources );
-            }else{
-                if(isset($distribution-> sources) && $distribution->sources->count >0) {
-                    if ($distribution_aggregate->sources->count == 0){
-                        $distribution_aggregate -> sources = $distribution->sources;
-                    }else{
-                        $distribution_aggregate->sources -> items= array_merge($distribution_aggregate->sources -> items,
-                            $distribution->sources -> items);
-                        $distribution_aggregate->sources ->count = count($distribution_aggregate -> sources -> items);
+          if (is_array($distribution->sources) ){
+            $distribution_aggregate->sources= array_merge($distribution_aggregate->sources,
+                    $distribution->sources);
+          }else{
+            if(isset($distribution->sources) && $distribution->sources->count >0) {
+                if ($distribution_aggregate->sources->count == 0){
+                    $distribution_aggregate -> sources = $distribution->sources;
+                }else{
+                    //$distribution_aggregate->sources->items= array_merge($distribution_aggregate->sources->items,
+                      //      $distribution->sources->items);
+                    if (is_array($distribution_aggregate->sources->items) && is_array($distribution->sources->items)){
+                        $array = [...$distribution_aggregate->sources->items, ... $distribution->sources->items];
+                        $distribution_aggregate->sources->items= array_unique($array, SORT_REGULAR);
                     }
+                    $distribution_aggregate->sources->count = count($distribution_aggregate->sources->items);
                 }
             }
-
-
+          }
           if(isset($distribution->annotations)) {
               if (is_array($distribution->annotations)){
                   $annotations = $distribution->annotations;
@@ -2613,7 +2614,7 @@ function merged_taxon_new_feature_tree($taxon) {
       $annotations_and_sources =  null;
       if($distribution_aggregate) {
         RenderHints::setAnnotationsAndSourceConfig(handle_annotations_and_sources_config($feature_block_settings));
-        $annotations_and_sources = handle_annotations_and_sources(
+        $annotations_and_sources = handle_new_annotations_and_sources(
           $distribution_aggregate, $label, UUID_DISTRIBUTION
         );
         $status = distribution_status_label_and_markup($distribution_aggregate->status, $level_style['status_glue']);
