@@ -41,8 +41,12 @@ function theme_cdm_taxon_page_title($variables) {
     $out .= render_new_taxon_or_name($taxon, NULL, $referenceUri, FALSE);
   }
   RenderHints::popFromRenderStack();
+  if (isset($taxon->class) && $taxon->class == 'Taxon'){
+    return '<span class="' . $taxon->class . '">' . $out . '</span>';
+  } else{
+    return '<span class=Taxon>' . $out . '</span>';
+  }
 
-  return '<span class="' . $taxon->class . '">' . $out . '</span>';
 }
 
 /**

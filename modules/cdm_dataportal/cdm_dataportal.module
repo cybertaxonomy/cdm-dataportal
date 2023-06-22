@@ -3254,8 +3254,8 @@ function cdm_dataportal_preprocess_feedback_simple(&$variables) {
   // $variables['class'][] = 'ctools-modal-modal-popup-large';
 }
 function get_node_in_classification($taxon_dto, $current_classification_uuid){
-    foreach($taxon_dto -> taxonNodes as $note){
-        if ($note -> classificationUuid == $current_classification_uuid){
+    foreach($taxon_dto->taxonNodes-> items as $note){
+        if (isset($note->classificationUuid)  && $note->classificationUuid == $current_classification_uuid){
             return $note;
         }
     }
