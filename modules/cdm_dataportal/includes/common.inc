@@ -219,6 +219,9 @@ function compare_original_sources($a, $b){
   $a_string = '';
   if (isset($a-> label) && is_array($a->label)){
       $a_string = $a->label[0]->label;
+      if (isset($a->originalInfo) && strlen($a->originalInfo)){
+          $a_string .= $a->originalInfo;
+      }
   }else{
       if(isset($a->citation->titleCache)) {
           $a_string = $a->citation->titleCache;
@@ -231,6 +234,9 @@ function compare_original_sources($a, $b){
   }
   if (isset($b-> label) && is_array($b->label)){
       $b_string = $b->label[0]->label;
+      if (isset($b->originalInfo) && strlen($b->originalInfo)){
+          $b_string .= $b->originalInfo;
+      }
   }else{
       $b_string = '';
       if(isset($b->citation->titleCache)) {
