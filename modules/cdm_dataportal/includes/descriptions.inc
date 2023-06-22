@@ -264,7 +264,7 @@ function new_feature_block($feature_name, $feature_node) {
     //$block->module = 'cdm_dataportal';
     $block->region = NULL;
     $class_attribute = html_class_attribute_ref($feature_node);
-    $block_delta = $feature_node->class !== 'PseudoFeature' ? $feature_name : $feature_node->label;
+    $block_delta = isset($feature_node->class) && $feature_node->class !== 'PseudoFeature' ? $feature_name : $feature_node->label;
     $block->delta = generalizeString($block_delta);
     $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '">'
         . theme('cdm_feature_name', array('feature_name' => $feature_name))
@@ -711,7 +711,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
             $feature_name = $feature_node-> label;
 
             //TODO!!
-            $feature_block_settings = get_feature_block_settings($feature_node->term->uuid);
+            $feature_block_settings = get_feature_block_settings($feature_node->uuid);
 
 
             $block = new_feature_block($feature_name, $feature_node);

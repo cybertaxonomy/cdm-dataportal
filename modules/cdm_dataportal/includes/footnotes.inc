@@ -664,10 +664,15 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
 
     // some entity types only have single sources: TODO maybe we do not need this anymore and do all sorting on serverside
    // $sources = cdm_entity_new_sources_sorted($entity);
-    $sources = $entity->sources;
-    if ($sources == null){
+    if (isset($entity->sources)){
+        $sources = $entity->sources;
+    }else{
         return $annotationsAndSources;
     }
+
+    //if ($sources == null){
+    //    return $annotationsAndSources;
+    //}
     $config = RenderHints::getAnnotationsAndSourceConfig();
 
     if ($config['sources_as_content']) {
