@@ -1692,7 +1692,7 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
             'html' => TRUE,
           ));
       }
-    }elseif (isset($source->nameInSource) ) {
+    }elseif (isset($source->nameInSource) && count($source->nameInSource) >0  ) {
             // it is a DescriptionElementSource !
             $plaintext = cdm_tagged_text_to_string($source->nameInSource);
             if($suppress_for_shown_taxon && $taxon_page_accepted_name == $plaintext){
