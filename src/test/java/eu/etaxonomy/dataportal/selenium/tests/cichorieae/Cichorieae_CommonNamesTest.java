@@ -57,11 +57,12 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
         */
         WebElement northCaucasus = distributionBlock.getElement().findElement(By.className("descriptionElement617733b9-d59d-4215-9e77-728a5f60e627"));
         assertEquals("North CaucasusAN,AO,AP,AQ,AR", northCaucasus.getText());
-        assertEquals("AN. Galuško, A. I. 1980: Flora severnogo Kavkaza 3. – Rostov-na-Donu", distributionBlock.getFootNote(39).getText());
         assertEquals("AO. Galuško, A. I. 1980: Flora severnogo Kavkaza 3. – Rostov-na-Donu (as Lactuca altaica)", distributionBlock.getFootNote(40).getText());
+        assertEquals("AN. Galuško, A. I. 1980: Flora severnogo Kavkaza 3. – Rostov-na-Donu", distributionBlock.getFootNote(39).getText());
         assertEquals("AP. Grossgejm, A. A. 1934: Flora kavkaza 4. – Baku", distributionBlock.getFootNote(41).getText());
-        assertEquals("AQ. Komarov, V. L. 1964: Flora SSSR 29. – Leningrad", distributionBlock.getFootNote(42).getText());
         assertEquals("AR. Komarov, V. L. 1964: Flora SSSR 29. – Leningrad (as Lactuca altaica)", distributionBlock.getFootNote(43).getText());
+        assertEquals("AQ. Komarov, V. L. 1964: Flora SSSR 29. – Leningrad", distributionBlock.getFootNote(42).getText());
+
 
 
         FeatureBlock commonNamesBlock = p.getFeatureBlockAt(3, "common_names", "div", "span");
