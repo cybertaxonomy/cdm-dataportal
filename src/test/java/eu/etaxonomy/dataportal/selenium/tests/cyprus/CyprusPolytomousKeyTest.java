@@ -52,7 +52,7 @@ public class CyprusPolytomousKeyTest extends CdmDataPortalTestBase {
         Assert.assertEquals( "G. N. Hadjikyriakou 2007: Aromatic and spicy plants in Cyprus. – Nicosia", sourceRefs.get(0).getText());
         Assert.assertEquals(1, sourceRefs.get(0).getLinksInElement().size());
 
-        Assert.assertEquals("Meikle, R.D. 1985: Flora of Cyprus 2", sourceRefs.get(1).getText());
+        Assert.assertEquals("Meikle, R.D. 1985: Flora of Cyprus 2. – Kew: The Bentham-Moxon Trust", sourceRefs.get(1).getText());
         Assert.assertEquals(1, sourceRefs.get(1).getLinksInElement().size());
 
         // -------- //

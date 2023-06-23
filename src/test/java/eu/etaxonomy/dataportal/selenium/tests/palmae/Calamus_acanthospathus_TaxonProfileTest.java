@@ -43,7 +43,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
      * string generation in the drupal code which need to be removed
      * in order to retain the maintainability of the code.
      */
-    String evans_et_al_referenceCitation = "Evans, T., Sengdala, K., Thammavong, B., Viengkham, O.V. & Dransfield, J. 2002:  A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. – Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84";
+    String evans_et_al_referenceCitation = "Evans, T., Sengdala, K., Thammavong, B., Viengkham, O.V. & Dransfield, J. 2002: A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. – Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84";
 
     @Before
     public void setUp() throws MalformedURLException {
@@ -102,7 +102,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         /* distribution */
         String featureClass = "distribution";
         String featureLabel = "Distribution";
-        String contentTextFull = "Map uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)\nAssam (World Checklist of Arecaceae), China South-Central (World Checklist of Arecaceae), China Southeast (World Checklist of Arecaceae), East Himalaya (World Checklist of Arecaceae), India (World Checklist of Arecaceae), Laos (World Checklist of Arecaceae), Myanmar (World Checklist of Arecaceae), Nepal (World Checklist of Arecaceae), Thailand (World Checklist of Arecaceae), Tibet (World Checklist of Arecaceae)\nIndia (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North). (Evans, T., Sengdala, K., Thammavong, B., Viengkham, O.V. & Dransfield, J. 2002: A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina)";
+        String contentTextFull = "Map uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)\nAssam (World Checklist of Arecaceae), China South-Central (World Checklist of Arecaceae), China Southeast (World Checklist of Arecaceae), East Himalaya (World Checklist of Arecaceae), India (World Checklist of Arecaceae), Laos (World Checklist of Arecaceae), Myanmar (World Checklist of Arecaceae), Nepal (World Checklist of Arecaceae), Thailand (World Checklist of Arecaceae), Tibet (World Checklist of Arecaceae)\nIndia (North-east), Bhutan, Myanmar, China (Tibet, South-east and South Yunnan), Thailand (North) and Laos (North). (Evans, T., Sengdala, K., Thammavong, B., Viengkham, O.V. & Dransfield, J. 2002: A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. – Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84)";
 
         p.testTableOfContentEntry(featureId, featureLabel, featureClass);
         FeatureBlock featureBlockDistribution = p.getFeatureBlockAt(featureId, featureClass, "div", "span");
