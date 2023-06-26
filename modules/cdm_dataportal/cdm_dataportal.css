@@ -58,7 +58,8 @@ dd.sublist-container div dl , dd.sublist-container div h3 {
 .rank,
 .authors,
 .appended-phrase,
-.doubtful{
+.doubtful,
+.separator{
   font-style: normal;
 }
 
