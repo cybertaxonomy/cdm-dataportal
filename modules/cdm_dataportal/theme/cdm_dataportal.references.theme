@@ -198,8 +198,11 @@ function cdm_external_uri($uri, $iconified = true)
 function cdm_doi($doi, $iconified = true) {
 
   if (!empty($doi)) {
-
-    $doi_resolve_uri = 'http://doi.org/' . $doi->prefix;
+    if (isset($doi->prefix)){
+        $doi_resolve_uri = 'http://doi.org/' . $doi->prefix;
+    }else{
+        $doi_resolve_uri = 'http://doi.org/' . $doi;
+    }
     if (isset($doi->suffix)) {
       $doi_resolve_uri .= '/' . $doi->suffix;
     }
