@@ -318,7 +318,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
             $sensu_uuid = $ref_key_tokens[0];
             //TODO!!!
             //$sensu_reference = cdm_ws_get(CDM_WS_REFERENCE, $sensu_uuid);
-            $sensu_reference = $sensu_strings['order_by_key'];
+            $sensu_reference = $sensu_strings['markup'];
             if(!$sensu_reference){
                 drupal_set_message("Problem fetching sensu reference with uuid " . $sensu_uuid, 'error');
             }
@@ -326,7 +326,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                 $sensu_reference_markup = $sensu_strings['markup'];
                 $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
                 $footnote_key = render_footnote_key($footnote_key);
-                $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['markup'] . $footnote_key . '</span>';
+                $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['shortCitation'] . $footnote_key . '</span>';
             }
         }
     }
@@ -501,8 +501,10 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $name_dedup_key = str_replace(cdm_tagged_text_to_string($sensu_tagged_text), ' ', $name_dedup_key);
         $appended_phrase_text = $appended_phrase_text . array_shift($sensu_tagged_text)->text; // remove first element which contains the "sensu", this will be added later in this code
         $sensu_citation_detail = trim(join(' ', cdm_tagged_text_values($sensu_tagged_text, array('secMicroReference'))));
-        $sensu_citation_short_markup = cdm_tagged_text_to_markup($sensu_tagged_text);
+        //$sensu_citation_short_markup = cdm_tagged_text_to_markup($sensu_tagged_text);
+        $sensu_citation_short_markup = render_original_source($taxon_relation->secSource);
         $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);
+        //$sensu_citation_short = $taxon_relation->secSource->label;
         $sensu_uuid = $sensu_tagged_text[0]->entityReference->uuid;
         $name_dedup_key = preg_replace('/\s+/', ' ', $name_dedup_key); // sanitize multiple whitespace characters
         $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => $sensu_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $sensu_citation_detail);
@@ -510,7 +512,8 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         if (!isset($joined_refs[$ref_key])) {
             $joined_refs[$ref_key] = array(
                 'order_by_key' => $sensu_citation_short,
-                'markup' => $sensu_citation_short_markup // the footnote key will be appended later
+                'markup' => $sensu_citation_short_markup,
+                'shortCitation' => $sensu_citation_short// the footnote key will be appended later
             );
         }
     } else if ($appended_phrase_text) {
