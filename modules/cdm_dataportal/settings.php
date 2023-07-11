@@ -2020,7 +2020,7 @@ function cdm_settings_layout_taxon() {
 
   $options = cdm_vocabulary_as_option(UUID_RANK, null, true);
   array_unshift($options, '-- DISABLED --');
-  $form['taxon_profile']['picture']['image_hide_rank'] = array(
+  $form['taxon_profile'][CDM_TAXON_PROFILE_IMAGE]['image_hide_rank'] = array(
     '#type' => 'select',
     '#title' => t('Hide profile picture for higher ranks') . ':',
     '#default_value' => variable_get('image_hide_rank', '0'),
