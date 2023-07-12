@@ -525,15 +525,17 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
     if (isset($relsec_tagged_text[1])) {
         $appended_phrase_text = array_shift($relsec_tagged_text)->text; // remove first element which contains the "err. sec", this will be added later in this code
         $relsec_citation_detail = trim(join(' ', cdm_tagged_text_values($relsec_tagged_text, array('secMicroReference'))));
-        $relsec_citation_short_markup = cdm_tagged_text_to_markup($relsec_tagged_text);
+        $relsec_citation_short_markup = render_original_source($taxon_relation->relSource);
         $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
         $relsec_uuid = $relsec_tagged_text[0]->entityReference->uuid;
         $misapplied[$name_dedup_key]['relsec_uuids'][] = array('uuid' => $relsec_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $relsec_citation_detail);;
         $ref_key = $relsec_uuid . ($relsec_citation_detail ? '#' . $relsec_citation_detail : '');
         if (!isset($joined_refs[$ref_key])) {
+
             $joined_refs[$ref_key] = array(
                 'order_by_key' => $relsec_citation_short,
-                'markup' => $relsec_citation_short_markup // the footnote key will be appended later
+                'markup' => $relsec_citation_short_markup,
+                'shortCitation' => $relsec_citation_short// the footnote key will be appended later
             );
         }
     }
