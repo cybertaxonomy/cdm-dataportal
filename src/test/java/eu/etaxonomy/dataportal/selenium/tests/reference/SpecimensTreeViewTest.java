@@ -105,7 +105,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("BHUPM", stillImageTable.getDetailsValueCellText("Collection"));
 
         DetailsTable typeDesignationsTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
-        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
+        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) for Glenodinium apiculatum Ehrenb.;",
         typeDesignationsTable.getBodyCellText(0, 0));
 
         DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
@@ -225,7 +225,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("E2017E68", preserverdSpecimenTable_1.getDetailsValueCellText("Barcode"));
 
         DetailsTable typeDesignationsTable_1 = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171)",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) for Glenodinium apiculatum Ehrenb.;",
                 typeDesignationsTable_1.getBodyCellText(0, 0));
 
         DetailsTable identificationsTable_1 = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Identification"));
