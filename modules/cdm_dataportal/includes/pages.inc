@@ -1302,7 +1302,7 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
 
     $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
     if (isset($name_relations)&& isset($name_relations[0])){
-        $name_relationships = compose_name_relationships_inline($name_relations, $taxon_dto->name->uuid, $taxon_dto->uuid);
+        $name_relationships = compose_new_name_relationships_inline($name_relations, $taxon_dto->name->uuid, $taxon_dto->uuid);
     }
 
     // Render relationships of accepted name.
@@ -1796,7 +1796,18 @@ function compose_classification_breadcrumbs($taxon_uuid) {
  */
 function compose_cdm_specimen_page($sob_dto)
 {
-  drupal_set_title($sob_dto->label);
+    $title_string ;
+    if (isset($sob_dto->collectorsString)){
+        $title_string = $sob_dto->collectorsString;
+    }
+    if (isset($sob_dto->specimenShortTitle)){
+        if (isset($title_string)){
+            $title_string .= "(" . $sob_dto->specimenShortTitle . ")";
+        }else{
+            $title_string = $sob_dto->specimenShortTitle;
+        }
+    }
+  drupal_set_title($title_string);
   RenderHints::pushToRenderStack('specimen_page');
   $render_array = compose_cdm_specimen_or_observation_new($sob_dto);
   RenderHints::popFromRenderStack();

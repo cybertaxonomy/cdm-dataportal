@@ -1693,9 +1693,16 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
  */
 function source_dto_markup($source_dto, $as_nom_ref = false) {
   $source_dto_markup = '';
-  if (isset_not_empty($source_dto->citation->abbrevTitleCache)) {
-    $source_dto_markup .= $source_dto->citation->abbrevTitleCache;
+  if ($as_nom_ref){
+      if (isset_not_empty($source_dto->citation->abbrevTitleCache)) {
+          $source_dto_markup .= $source_dto->citation->abbrevTitleCache;
+      }
+  }else{
+      if (isset_not_empty($source_dto->citation->abbrevTitleCache)) {
+          $source_dto_markup .= $source_dto->citation->abbrevTitleCache;
+      }
   }
+
   if (isset_not_empty($source_dto->citationDetail)) {
     $source_dto_markup .= ': ' . $source_dto->citationDetail;
   }
@@ -1768,7 +1775,14 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
       }
 
       $out .= '<'. $element_tag .' class="' . html_class_attribute_ref($std_dto) . '">';
-      $out .= type_designation_dto_status_label_markup($std_dto) . $type_citation_markup;
+      $names = "";
+      if (isset_not_empty($std_dto->names)){
+            foreach ($std_dto->names as $name){
+                $names .= l($name->label, path_to_name($name->uuid))  ;
+                $names .= "; ";
+          }
+      }
+      $out .= type_designation_dto_status_label_markup($std_dto) . $type_citation_markup . " for ". $names;
 
       if($show_type_specimen){
         $derived_unit_dto = null;
