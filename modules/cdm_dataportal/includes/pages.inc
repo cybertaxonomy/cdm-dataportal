@@ -1802,7 +1802,7 @@ function compose_cdm_specimen_page($sob_dto)
     }
     if (isset($sob_dto->specimenShortTitle)){
         if (isset($title_string)){
-            $title_string .= "(" . $sob_dto->specimenShortTitle . ")";
+            $title_string .= " (" . $sob_dto->specimenShortTitle . ")";
         }else{
             $title_string = $sob_dto->specimenShortTitle;
         }

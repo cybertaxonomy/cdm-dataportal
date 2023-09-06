@@ -169,7 +169,7 @@ function compose_cdm_derivation_event($derivation_event_dto, $full_details = FAL
 
   $details_array = [];
   // $markup = t("Derivation") . ': ';
-  $markup = ucfirst(cdm_term_representation($derivation_event_dto->eventType));
+  $markup = "";//ucfirst(cdm_term_representation($derivation_event_dto->eventType));
   if(isset_not_empty($derivation_event_dto->actor)){
     $details_array[] = $derivation_event_dto->actor;
   }
@@ -261,8 +261,9 @@ function compose_cdm_field_unit_dto_details($fu_dto, $full_details = FALSE) {
 function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = FALSE) {
 
   $table_row_data = sob_dto_details_rows($du_dto, $full_details);
-
-  if (isset($du_dto->accessionNumber)) {
+    //this is already shown in titleCache
+  /*
+    if (isset($du_dto->accessionNumber)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('accessionNumber'),
       $du_dto->accessionNumber);
@@ -271,33 +272,36 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = 
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('collection'),
       render_collection_dto($du_dto->collection));
-  }
+  }*/
   if (isset($du_dto->storedUnder)) {
     $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($du_dto->storedUnder->uuid));
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('storedUnder'),
       render_taxon_or_name($taxon_name, url(path_to_name($taxon_name->uuid))));
   }
-  if (isset($du_dto->exsiccatum)) {
+  if (isset_not_empty($du_dto->exsiccatum)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('exsiccatum'),
       $du_dto->exsiccatum);
   }
+  /*
   if (isset($du_dto->catalogNumber)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('catalogNumber'),
       $du_dto->catalogNumber);
   }
+
   if (isset($du_dto->barcode)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('barcode'),
       $du_dto->barcode);
   }
+   */
   if (isset_not_empty($du_dto->status)) {
     $table_row_data[] = compose_cdm_sob_dto_status(
       $du_dto);
   }
-  if (isset($du_dto->preservationMethod)) {
+  if (isset_not_empty($du_dto->preservationMethod)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('preservationMethod'),
       $du_dto->preservationMethod);
@@ -323,6 +327,7 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = 
 
   $heading = $table_row_data[0]['data'][1];
   unset($table_row_data[0]);
+
   return cdm_sob_dto_table(t($heading), $table_row_data, $du_dto, 1);
 }
 
@@ -527,6 +532,16 @@ function cdm_sob_dto_character_data_table($sob_dto){
                 $table_row_data[] = cdm_sob_dto_table_row($characterStatePair->key, $characterStatePair->value);
             }
         }
+        //$detail_html = "";
+        //foreach ($sob_dto as $characterStatePair) {
+        //    $detail_html .= "<i>" . $characterStatePair->key . "</i>:" . $characterStatePair->value;
+        //    $detail_html .= "; ";
+        //}
+
+        //$row = cdm_sob_dto_table_row(NULL, $detail_html);
+        //$row['#weight'] = '0' ;
+
+        //$table_row_data[0] = $row;
     }
 
 
@@ -776,7 +791,8 @@ function compose_cdm_specimen_or_observation_new($sob_dto)
       '#attributes' => [
         'class' => 'derived-unit-details-grid'
       ],
-      'children' => compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, true)
+        //'children' => compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, true)
+        'children' => compose_cdm_specimen_or_observation_dto_details_grid($sob_dto)
     ];;
 
     $derivation_tree_roots = cdm_ws_get(CDM_WS_OCCURRENCE_ROOT_UNIT_DTOS, [$sob_dto->uuid]);

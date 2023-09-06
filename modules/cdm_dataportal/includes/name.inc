@@ -1782,7 +1782,7 @@ function render_specimen_typedesignation_dto($specimen_typedesignation_dtos, $sh
                 $names .= "; ";
           }
       }
-      $out .= type_designation_dto_status_label_markup($std_dto) . $type_citation_markup . " for ". $names;
+      $out .= type_designation_dto_status_label_markup($std_dto) . $type_citation_markup . " of ". $names;
 
       if($show_type_specimen){
         $derived_unit_dto = null;
