@@ -105,7 +105,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         //assertEquals("BHUPM", stillImageTable.getDetailsValueCellText("Collection"));
 
         DetailsTable typeDesignationsTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
-        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) for Glenodinium apiculatum Ehrenb.;",
+        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) of Glenodinium apiculatum Ehrenb.;",
         typeDesignationsTable.getBodyCellText(0, 0));
 
         DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
@@ -296,7 +296,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Specimen", preserverdSpecimenTable_2.getDetailsValueCellText("Kind of unit"));
 
         DetailsTable typeDesignationsTable_2 = subNode2.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
-        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) for Glenodinium apiculatum Ehrenb.;",
+        assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) of Glenodinium apiculatum Ehrenb.;",
                 typeDesignationsTable_2.getBodyCellText(0, 0));
         assertEquals("expecting one footnote key link", 1, typeDesignationsTable_2.getBodyCell(0, 0).getLinksInElement().size());
 
