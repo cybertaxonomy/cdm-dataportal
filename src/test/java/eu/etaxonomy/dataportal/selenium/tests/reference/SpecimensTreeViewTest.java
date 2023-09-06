@@ -225,7 +225,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("E2017E68", preserverdSpecimenTable_1.getDetailsValueCellText("Barcode"));
 
         DetailsTable typeDesignationsTable_1 = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) for Glenodinium apiculatum Ehrenb.;",
+        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) of Glenodinium apiculatum Ehrenb.;",
                 typeDesignationsTable_1.getBodyCellText(0, 0));
 
         DetailsTable identificationsTable_1 = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Identification"));
