@@ -56,7 +56,9 @@ function compose_agent($agent, $enclosing_tag) {
   $identifiers_markup = '';
   $identifiers_render_array = [];
   if(isset($agent->orcid)){
-    $orcid_id = number_format($agent->orcid->digitsOnly, 0, '.', '-');
+    $pos = 4;
+    $orcid_id = substr($agent->orcid->digitsOnly, 0, $pos) ."-".substr($agent->orcid->digitsOnly, 4, $pos) ."-".substr($agent->orcid->digitsOnly, 8, $pos)."-".substr($agent->orcid->digitsOnly, 12, $pos) ;
+        //($agent->orcid->digitsOnly, 0, '.', '-');
     $identifiers_render_array[] = markup_to_render_array(l('https://orcid.org/' . $orcid_id, 'https://orcid.org/' . $orcid_id) . ' ');
   }
   if(isset($agent->identifiers)){
