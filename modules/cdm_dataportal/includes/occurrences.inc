@@ -244,7 +244,8 @@ function cdm_occurrence_field_name_label($field){
     'absoluteElevation' => 'Altitude',
     'absoluteElevationMinimum' => 'Altitude maximum',
     'absoluteElevationMaximum' => 'Altitude minimum',
-    'getGatheringPeriod' => 'Gathering period'
+    'getGatheringPeriod' => 'Gathering period',
+    'dnaMarker' => 'DNA Marker'
   );
 
   if(str_endsWith($field,'_L10n')){
@@ -812,7 +813,10 @@ function compose_cdm_sequence($sequence, $isSpecimenPage = false)
                     if (isset($value->description)) {
                         @_description_list_group_add($groups, cdm_occurrence_field_name_label($field) . ' ' . t('description'), $value->description, NULL, 4);
                     }
-                    @_description_list_group_add($groups, cdm_occurrence_field_name_label($field) , $value, NULL, 4);
+                    if (isset($value->representation_L10n)){
+                        @_description_list_group_add($groups, cdm_occurrence_field_name_label($field) , $value->representation_L10n, NULL, 4);
+                    }
+                    
                     break;
 
                 case 'consensusSequence':
