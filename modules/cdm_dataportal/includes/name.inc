@@ -765,10 +765,10 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
             // Remove all authors and everything behind.
             $taggedNameNew = array();
             foreach ($taggedName as $element) {
-                if ($lastAuthorElementString){
+               // if ($lastAuthorElementString){
                     //author should be the last displayed element
-                    break;
-                }
+               //     break;
+                //}
                 if ($element->type != 'authors') {
                     $taggedNameNew[] = $element;
                 }
