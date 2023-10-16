@@ -2177,6 +2177,9 @@ function compose_description_element_common_taxon_name($element, $feature_block_
   if(isset($element->name)){
     $name = $element->name;
   }
+  if (isset($element->transliteration) && isset($element->name)){
+      $name = $name ."/". $element->transliteration;
+  }
 
 
   return compose_description_element($element, $feature_block_settings, $name, $footnote_key);
