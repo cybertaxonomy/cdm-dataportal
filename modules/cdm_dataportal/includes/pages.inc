@@ -42,7 +42,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
   $current_view_mode = variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT);
   if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
       // get fieldUnitDTOs
-      $root_unit_dtos = cdm_ws_get(CDM_WS_PORTAL_TAXON_ROOTUNIT_DTOS, array( $taxon->uuid));
+      $root_unit_dtos = cdm_ws_get(CDM_WS_PORTAL_TAXON_ROOTUNIT_DTOS, array( $taxon->uuid), true);
       $root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
     } else {
       // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
@@ -94,9 +94,15 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
         $pager_root_units = cdm_ws_page(
-          cdm_compose_url(CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS, [$taxon->uuid]),
+          cdm_compose_url(CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS, [$taxon->uuid, true]),
           variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT) * 2,
           isset($_REQUEST['pager']['pageIndex']) ? isset($_REQUEST['pager']['pageIndex']) : 0
+        );
+
+        //$by_associatedtaxon_query = http_build_query($relationship_filter_query_parameters);
+        $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
+            null,
+            '&useDetermination=true'.'&Uuid=' . $taxon->uuid
         );
 
        // if (isset($pager_root_units->records[0])) {
@@ -342,52 +348,56 @@ function create_html_links($linkList, $openInExternalWindow=false, $separator=",
  *
  * @ingroup compose
  */
-function compose_cdm_taxon_page($taxon, $page_part = 'description') {
+function compose_cdm_taxon_page($taxon, $page_part = 'description'){
 
-  // we better cache here since drupal_get_query_parameters has no internal static cache variable
-  $http_request_params = drupal_get_query_parameters();
+    // we better cache here since drupal_get_query_parameters has no internal static cache variable
+    $http_request_params = drupal_get_query_parameters();
 
-  // add all mandatory js sources
-  _add_js_footnotes();
+    // add all mandatory js sources
+    _add_js_footnotes();
 
 
-  $render_array = array();
-  $weight = 0; // the weight for the render array elements
+    $render_array = array();
+    $weight = 0; // the weight for the render array elements
 
-  $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+    $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
 
-  $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
+    $page_part = variable_get('cdm_dataportal_taxonpage_tabs', 1) ? $page_part : 'all';
 
-  $synonymy_as_tab = variable_get(CDM_SYNONYMY_AS_TAB, CDM_SYNONYMY_AS_TAB_DEFAULT) === 1;
-  if(!$synonymy_as_tab){
-    unset($tabsToDisplay["Synonymy"]);
-    // the synonymy is located in the general part in this case
-    if($page_part == 'synonymy'){
-      $page_part = 'description';
+    $synonymy_as_tab = variable_get(CDM_SYNONYMY_AS_TAB, CDM_SYNONYMY_AS_TAB_DEFAULT) === 1;
+    if (!$synonymy_as_tab) {
+        unset($tabsToDisplay["Synonymy"]);
+        // the synonymy is located in the general part in this case
+        if ($page_part == 'synonymy') {
+            $page_part = 'description';
+        }
     }
-  }
 
-  $media = _load_media_for_taxon($taxon);
+    $media = _load_media_for_taxon($taxon);
 
 
-  if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
-    taxon_page_tabs_hidden_add('images');
-  }
+    if (!isset($media[0]) || ($tabsToDisplay["Images"] == '0')) {
+        taxon_page_tabs_hidden_add('images');
+    }
 
-  // --- GET specimensOrObservations --- //
-  $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservationsCount'));
-
-  $specimensOrObservationsCount = $specimensOrObservations != null ? $specimensOrObservations->result : 0;
+    // --- GET specimensOrObservations --- //
+    $specimensOrObservationsCount = 0;
+    if (($tabsToDisplay["Specimens"] != '0')){
+        $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObservationsCount'));
+        $specimensOrObservationsCount = $specimensOrObservations != null ? $specimensOrObservations->result : 0;
+    }
   if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
     taxon_page_tabs_hidden_add('specimens');
   }
 
   // --- GET polytomousKeys --- //
-  $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
-  $identificationKeyCount = 0;
-  if ($polytomousKeysPager) {
-    $identificationKeyCount += $polytomousKeysPager->count;
-  }
+    $identificationKeyCount = 0;
+    if ($tabsToDisplay["Keys"] != '0'){
+        $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
+        if ($polytomousKeysPager) {
+            $identificationKeyCount += $polytomousKeysPager->count;
+        }
+    }
   if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
     taxon_page_tabs_hidden_add('keys');
   }
@@ -1796,7 +1806,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
  */
 function compose_cdm_specimen_page($sob_dto)
 {
-    $title_string ;
+    $title_string = "";
     if (isset($sob_dto->collectorsString)){
         $title_string = $sob_dto->collectorsString;
     }
@@ -1970,7 +1980,7 @@ function compose_cdm_reference_page($uuid) {
               }
             }
           }
-          $value = join($nameArray, ", ");
+          $value = join(", ", $nameArray);
         }
         elseif ($fieldname == "inReference") {
           $type = $reference->$fieldname->type;
