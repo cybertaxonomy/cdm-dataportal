@@ -173,7 +173,7 @@ function theme_cdm_pager($variables) {
   $parameters = $variables['parameters'];
   $out = '';
 
-  if ($pager->pagesAvailable > 1) {
+  if (isset($pager->pagesAvailable) && $pager->pagesAvailable > 1) {
 
     $out .= '<div class="pager">';
     if ($pager->currentIndex > 0) {
