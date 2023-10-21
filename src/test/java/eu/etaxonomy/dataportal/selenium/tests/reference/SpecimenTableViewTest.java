@@ -39,7 +39,6 @@ import eu.etaxonomy.drush.DrushExecutionFailure;
 @DataPortalContexts( { DataPortalSite.reference })
 public class SpecimenTableViewTest extends CdmDataPortalTestBase {
 
-
     private static final String DETAIL_IMAGE_DERIVATE_ICON = "cdm_dataportal/images/detail_image_derivate-16x16-32.png";
 
     private static final String STEP_DONE_ICON = "cdm_dataportal/images/step_done.gif";
@@ -48,7 +47,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
 
     private static final UUID glenodinium_apiculatum_t = UUID.fromString("d245083e-3bda-435f-9bb3-bdc2249ff23c");
 
-    TaxonPage p = null;
+    private TaxonPage p = null;
 
     @Before
     public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
@@ -84,7 +83,6 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Type", headerRows.get(5).getText());
         assertEquals("Scan", headerRows.get(6).getText());
         assertEquals("Derivatives", headerRows.get(7).getText());
-
     }
 
     @Test
@@ -169,11 +167,8 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
                 findDetailImage = true;
                 break;
             }
-
         }
         assertTrue(findDetailImage);
-
-
 
         // details row
         ++rowId;
@@ -205,7 +200,5 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Preferred stable URI: http://herbarium.bgbm.org/object/B400042045", detailsLines[7]);
         assertEquals("Isolectotype of Glenodinium apiculatum Ehrenb.", detailsLines[8]);
         assertEquals(8, linksInDetails.size());
-
     }
-
 }
