@@ -53,8 +53,8 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#specimens table.specimens"));
         List<WebElement> rows = specimensTable.findElements(By.xpath("./tbody/tr"));
         assertEquals(4, rows.size());
-        assertEquals("Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT: 2017E68, destroyed)\nOpen in viewer", rows.get(0).getText());
-        assertEquals("Isolectotype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047 (M: M-0289351)\nOpen in viewer", rows.get(1).getText());
+        assertEquals("Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, C.G. Ehrenberg D047; D. Veloper (CEDiT: 2017E68, destroyed)\nOpen in viewer", rows.get(0).getText());
+        assertEquals("Isolectotype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, C.G. Ehrenberg D047 (M: M-0289351)\nOpen in viewer", rows.get(1).getText());
         assertEquals("Lectotype: BHUPM 671", rows.get(2).getText());
 
         Dynabox dynabox1 = new Dynabox(rows.get(0).findElement(By.className("dynabox")), driver);
