@@ -104,7 +104,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
 
         // summary row
         int rowId = 1;
-        /*
+
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         List<WebElement> cells = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("(B: SP-99999, destroyed)", cells.get(1).getText());
@@ -114,7 +114,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         ++rowId;
 
         ++rowId;
-        */
+        
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         List<WebElement> cells  = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
