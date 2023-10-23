@@ -65,10 +65,12 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         assertEquals(4, duTree.getRootNodes().size());
         BaseElement rootNodeHeader1 = duTree.getRootNodes().get(0).getHeader();
+        assertEquals("B SP-99999", rootNodeHeader1.getText());
+        BaseElement rootNodeHeader1 = duTree.getRootNodes().get(1).getHeader();
         assertEquals("Germany, Berlin, 2 Apr 1835", rootNodeHeader1.getText());
-        BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
+        BaseElement rootNodeHeader2 = duTree.getRootNodes().get(2).getHeader();
         assertEquals("Kusber, W.-H. 12", rootNodeHeader2.getText());
-        BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
+        BaseElement rootNodeHeader3 = duTree.getRootNodes().get(3).getHeader();
         assertEquals("Ehrenberg, C.G. D047", rootNodeHeader3.getText());
     }
 
@@ -93,22 +95,14 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         // ---- sub node 1
         subNode1.getHeader().getElement().click(); // make the  content visible
         LinkElement pageLink = subNode1.getHeader().getLinksInElement().get(0);
-        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/eb729673-5206-49fb-b902-9214d8bdbb51"));
+        assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/2d424df6-f927-472a-8fb5-4c2d2eeb4484"));
+        assertEquals("Preparation: Liebm., Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM), 2020-01-03", subNode1.getDerivationEvent());
 
-
-       // assertEquals("Gathering in-situ", subNode1.getDerivationEvent());
-
-        DetailsTable stillImageTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Still Image"));
-        assertEquals("Still Image", stillImageTable.getHeaderText());
-        assertEquals("Unpublished image", stillImageTable.getDetailsValueCellText("Kind of unit"));
-        //assertEquals("671", stillImageTable.getDetailsValueCellText("Accession number"));
-        //assertEquals("BHUPM", stillImageTable.getDetailsValueCellText("Collection"));
-
-        DetailsTable typeDesignationsTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
-        assertEquals("Lectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) of Glenodinium apiculatum Ehrenb.;",
-        typeDesignationsTable.getBodyCellText(0, 0));
-
-        DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
+        DetailsTable tissueSampleTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Tissue Sample"));
+        assertEquals("Tissue Sample", tissueSampleTable.getHeaderText());
+        assertEquals("fruit", tissueSampleTable.getDetailsValueCellText("Kind of unit"));
+        assertEquals("B-923845", tissueSampleTable.getDetailsValueCellText("Accession number"));
+        assertEquals("B", tissueSampleTable.getDetailsValueCellText("Collection"));
     }
 
     @Test

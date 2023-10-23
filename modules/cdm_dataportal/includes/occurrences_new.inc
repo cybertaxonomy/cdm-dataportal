@@ -169,7 +169,7 @@ function compose_cdm_derivation_event($derivation_event_dto, $full_details = FAL
 
   $details_array = [];
   // $markup = t("Derivation") . ': ';
-  $markup = "";//ucfirst(cdm_term_representation($derivation_event_dto->eventType));
+  $markup = ucfirst(cdm_term_representation($derivation_event_dto->eventType));
   if(isset_not_empty($derivation_event_dto->actor)){
     $details_array[] = $derivation_event_dto->actor;
   }
