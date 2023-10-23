@@ -91,7 +91,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertNotNull(regItem);
         assertEquals(1,regItem.getSpecimenTypeDesignations().size());
         assertEquals(
-                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, Skibbe - collector number D06 (B: 40 0040871, dried out)1",
+                "Epitype: Berlin, small river Wuhle, 52°31'14.844\"N, 13°34'40.116\"E, O. Skibbe - collector number D06 (B: 40 0040871, dried out)1",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         BaseElement typifiedNameElement = new BaseElement(regItem.getTypifiedNameElement());
         assertEquals(
@@ -221,7 +221,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         // type designations in defined order
         // 1. Epitype
         assertEquals(
-                "Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, Ehrenberg D047; D. Veloper (CEDiT: 2017E68, destroyed) http://testid.org/2017E68",
+                "Epitype: Germany, Berlin, alt. 165 m, 52°31'1.2\"N, 13°21'E (WGS84), 28 Mar 2016, C.G. Ehrenberg D047; D. Veloper (CEDiT: 2017E68, destroyed) http://testid.org/2017E68",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
 
         // 2. Lectotype
