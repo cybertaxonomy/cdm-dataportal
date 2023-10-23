@@ -91,7 +91,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#derivate_hierarchy_table"));
 
         List<WebElement> rows = specimensTable.findElements(By.cssSelector("tr"));
-        assertEquals(7, rows.size());
+        assertEquals(9, rows.size());
         // expected rows:
         // 0: header row
 
