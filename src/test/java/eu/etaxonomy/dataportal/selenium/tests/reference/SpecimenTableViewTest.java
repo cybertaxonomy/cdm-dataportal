@@ -114,9 +114,9 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         ++rowId;
 
         ++rowId;
-        
+
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
-        List<WebElement> cells  = rows.get(rowId).findElements(By.tagName("td"));
+        cells  = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
         assertEquals("1835-04-02", cells.get(2).getText());
         assertEquals("", cells.get(3).getText());
