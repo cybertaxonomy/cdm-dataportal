@@ -374,7 +374,7 @@ function statistical_values($stat_vals_arr, $unit = '') {
         $val_markup = $statistical_val;
       }
       else {
-        if (is_numeric($statistical_val->_value)) {
+        if (isset($statistical_val->_value)) {
           $val_markup = '<span class="'
             . html_class_attribute_ref($statistical_val) . ' '
             . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ' . $key . '" title="' . $key . '">'
