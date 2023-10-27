@@ -78,7 +78,7 @@ function taxon_in_current_classification($taxon_uuid) {
 function taxon_in_current_classification_new($taxon_dto) {
   $taxon_nodes = $taxon_dto->taxonNodes;
   $taxon_in_current_tree = FALSE;
-  if (is_array($taxon_nodes)) {
+  if (is_array($taxon_nodes->items)) {
     foreach ($taxon_nodes->items as $node) {
       if (get_current_classification_uuid() == $node->classificationUuid) {
         $taxon_in_current_tree = TRUE;
