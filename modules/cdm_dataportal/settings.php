@@ -46,8 +46,13 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
  const CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH = 'derivate_path';
  const CDM_SPECIMEN_DERIVATE_TREE_OPTIONS = 'cdm_specimen_derivate_tree_options';
  const CDM_SPECIMEN_DERIVATE_TREE_OPTIONS_DEFAULT = ['field_unit_short_label' => 0];
+ const CDM_SEC_WITH_FOOTNOTE = 'footnote';
+ const CDM_SEC_INTERNAL_LINK = 'internal_link';
+ const CDM_SEC_WITHOUT_COMPLETE_REF = 'without_complete_ref';
+
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE', 'cdm_synonymy_accepted_taxon_sec_separate');
+  define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE', 'cdm_synonymy_accepted_taxon_sec_footnote');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL', 'cdm_synonymy_accepted_taxon_sec_separate_label');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT', 'Source');
   define('CDM_DATAPORTAL_ALL_FOOTNOTES', 0);
@@ -2478,7 +2483,9 @@ ie	introduced: formerly introduced
       depending on the ' . l('Name render templates', 'admin/config/cdm_dataportal/settings/layout') . '.'),
   );
 
-  $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE] = array(
+
+
+    $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE] = array(
     '#type' => 'checkbox',
     '#title' => t('Secundum referenence as separate line above the accepted taxon.'),
     '#default_value' => variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0),
@@ -2487,13 +2494,32 @@ ie	introduced: formerly introduced
       . ' (Only applicable when the "Show accepted taxon on top of the synonymy" option above is enabled.)'),
     '#disabled' =>  !variable_get(CDM_DATAPORTAL_NOMREF_IN_TITLE, CDM_DATAPORTAL_NOMREF_IN_TITLE_DEFAULT)
   );
-
-  $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL] = array(
-    '#type' => 'textfield',
-    '#description' => 'Label for the secundum referenence.',
-    '#default_value' => variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT),
-    '#disabled' =>  !variable_get('cdm_dataportal_nomref_in_title', 0)
+    $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL] = array(
+        '#type' => 'textfield',
+        '#description' => 'Label for the secundum referenence.',
+        '#default_value' => variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT),
+        '#disabled' =>  !variable_get('cdm_dataportal_nomref_in_title', 0)
     );
+    $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE] = array(
+        '#type' => 'radios',
+        '#title' => t('Complete secundum referenence in footnote or as internal link.'),
+        '#default_value' => variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE, CDM_SEC_WITHOUT_COMPLETE_REF),
+        '#options' => [
+            CDM_SEC_WITH_FOOTNOTE => 'Footnote',
+            CDM_SEC_INTERNAL_LINK => 'Internal link',
+            CDM_SEC_WITHOUT_COMPLETE_REF => 'Nothing'
+        ],
+        '#description' => 'Available view modes for secundum references are:
+        <ul>
+         <li>' . CDM_SEC_WITH_FOOTNOTE . ': Long citation in a footnote.</li>
+         <li>' . CDM_SEC_INTERNAL_LINK . ': Detailed informations with an internal link</li>
+         <li>' . CDM_SEC_WITHOUT_COMPLETE_REF . ': No link to the long citation or details</li>
+       </ul>'
+    );
+
+
+
+
 
   $form['taxon_synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
     '#type' => 'checkbox',
