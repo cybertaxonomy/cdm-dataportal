@@ -142,6 +142,9 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
 
     if (isset($cdm_entity->annotations) && !is_cdm_entity($cdm_entity)){
         $annotations_or_dtos = $cdm_entity->annotations;
+    }else if (isset($cdm_entity->citation)) {
+        //the cdm_entity is already a source
+        return $foot_note_keys;
     }else{
         $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
     }
@@ -576,8 +579,11 @@ function handle_annotations_and_sources($entity, $inline_text_prefix = null, $fo
     $annotationsAndSources = new AnnotationsAndSources();
   }
 
+
   // some entity types only have single sources:
   $sources = cdm_entity_sources_sorted($entity);
+
+
 
   $config = RenderHints::getAnnotationsAndSourceConfig();
 
@@ -742,6 +748,14 @@ function cdm_entity_sources_sorted($entity) {
   }
   else if (isset($entity->sources)) {
     $sources = $entity->sources;
+  }
+  if (isset($entity->secSource)){
+      if (isset($sources)){
+          $sources = array_merge($sources, [$entity->secSource]);
+      }else{
+          $sources = [$entity->secSource];
+      }
+
   }
   else {
     // try to load the sources
