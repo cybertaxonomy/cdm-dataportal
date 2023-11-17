@@ -748,6 +748,14 @@ function cdm_entity_sources_sorted($entity) {
   }
   else if (isset($entity->sources)) {
     $sources = $entity->sources;
+  }else {
+      // try to load the sources
+      if(isset_not_empty($entity->uuid) && is_cdm_entity($entity)){
+          $sources = cdm_ws_fetch_all(cdm_compose_url('portal/' . cdm_ws_base_uri($entity->class), [ $entity->uuid, 'sources']));
+      } else {
+          // this may happen with DerivedUnitFaced, also with others?
+          $sources = [];
+      }
   }
   if (isset($entity->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE){
       if (isset($sources)){
@@ -757,15 +765,7 @@ function cdm_entity_sources_sorted($entity) {
       }
 
   }
-  else {
-    // try to load the sources
-    if(isset_not_empty($entity->uuid) && is_cdm_entity($entity)){
-      $sources = cdm_ws_fetch_all(cdm_compose_url('portal/' . cdm_ws_base_uri($entity->class), [ $entity->uuid, 'sources']));
-    } else {
-      // this may happen with DerivedUnitFaced, also with others?
-      $sources = [];
-    }
-  }
+
   if (isset($sources-> items)){
       usort($sources-> items, 'compare_original_sources');
       return $sources-> items;
