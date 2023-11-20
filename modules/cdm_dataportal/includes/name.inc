@@ -496,11 +496,14 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       if(isset($nom_status_tagged_text[count($nom_status_tagged_text) - 1]) && ($nom_status_tagged_text[count($nom_status_tagged_text) - 1]->type ==  'postSeparator')){
         $post_separator_markup = cdm_tagged_text_to_markup(array($nom_status_tagged_text[count($nom_status_tagged_text) - 1 ]));
       };
+      //$annotations_and_sources = handle_annotations_and_sources($taxon_base->secSource);
+       // $foot_note_keys = $annotations_and_sources->footNoteKeysMarkup();
       array_setr('secReference',
         $post_separator_markup
           . ' <span class="sec_reference">'
           . join('', cdm_tagged_text_values($secref_tagged_text))
           . cdm_tagged_text_to_markup($secref_name_inSource_tagged_text)
+       //   . $foot_note_keys
           . '</span>', $renderTemplate);
     }
   }
@@ -619,6 +622,16 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     }
   if ($show_taxon_name_annotations) {
     if($taxon_base){
+        if (isset($taxon_base->secSource)){
+            if ( variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE ){
+                $sources = [];
+                if (isset($taxon_base->sources)){
+                    $sources = $taxon_base->sources;
+                }
+                $sources_merged = array_merge($sources, [$taxon_base->secSource]);
+                $taxon_base->sources = $sources_merged;
+            }
+        }
       $annotations_and_sources = handle_annotations_and_sources($taxon_base,
         null, null, $annotations_and_sources);
     }
@@ -889,12 +902,16 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
             $post_separator_markup = $is_reference_year ? '.': '';
             if(isset($nom_status_tagged_text[count($nom_status_tagged_text) - 1]) && ($nom_status_tagged_text[count($nom_status_tagged_text) - 1]->type ==  'postSeparator')){
                 $post_separator_markup = cdm_tagged_text_to_markup(array($nom_status_tagged_text[count($nom_status_tagged_text) - 1 ]));
-            };
+            }
+            //$annotations_and_sources = handle_annotations_and_sources($taxon_base->secSource);
+            //$source_citations = $annotations_and_sources->getSourceReferences();
+           // $foot_note_keys = $annotations_and_sources->footNoteKeysMarkup();
             array_setr('secReference',
                 $post_separator_markup
                 . ' <span class="sec_reference">'
                 . join('', cdm_tagged_text_values($secref_tagged_text))
                 . cdm_tagged_text_to_markup($secref_name_inSource_tagged_text)
+                //. $foot_note_keys
                 . '</span>', $renderTemplate);
         }
     }

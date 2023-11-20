@@ -757,14 +757,7 @@ function cdm_entity_sources_sorted($entity) {
           $sources = [];
       }
   }
-  if (isset($entity->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE){
-      if (isset($sources)){
-          $sources = array_merge($sources, [$entity->secSource]);
-      }else{
-          $sources = [$entity->secSource];
-      }
 
-  }
 
   if (isset($sources-> items)){
       usort($sources-> items, 'compare_original_sources');
