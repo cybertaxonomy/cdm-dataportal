@@ -496,14 +496,38 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       if(isset($nom_status_tagged_text[count($nom_status_tagged_text) - 1]) && ($nom_status_tagged_text[count($nom_status_tagged_text) - 1]->type ==  'postSeparator')){
         $post_separator_markup = cdm_tagged_text_to_markup(array($nom_status_tagged_text[count($nom_status_tagged_text) - 1 ]));
       };
-      //$annotations_and_sources = handle_annotations_and_sources($taxon_base->secSource);
-       // $foot_note_keys = $annotations_and_sources->footNoteKeysMarkup();
+      $footnote_markup = '';
+      $secRef_markup = cdm_tagged_text_to_markup($secref_name_inSource_tagged_text);
+        if (isset($taxon_base->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE) {
+            $footnote_markup .= ' <span class="sec_reference">' . cdm_reference_markup($taxon_base->secSource->citation) . '</span>';
+
+            if (isset($taxon_base->secSource->citation) && isset($taxon_base->secSource->citationMicroReference)) {
+                $footnote_markup .= (isset($taxon_base->secSource->citation) ? ':' : '') . ' <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>';
+            }
+            if ($footnote_markup) {
+                $foot_note_key_secRef = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
+            }
+        }
+        if (isset($taxon_base->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_INTERNAL_LINK) {
+
+            $icon_link = cdm_internal_link(path_to_reference($taxon_base -> secSource -> citation ->uuid));
+            $secRef_markup = l($secRef_markup, path_to_reference($taxon_base -> secSource -> citation ->uuid), array(
+                'attributes' => array(
+                    "class" => "sec_reference",
+                ),
+                'absolute' => TRUE,
+                'html' => TRUE,
+            ));
+            $secRef_markup .= $icon_link . '</span>';
+
+
+        }
       array_setr('secReference',
         $post_separator_markup
           . ' <span class="sec_reference">'
           . join('', cdm_tagged_text_values($secref_tagged_text))
-          . cdm_tagged_text_to_markup($secref_name_inSource_tagged_text)
-       //   . $foot_note_keys
+          . $secRef_markup
+
           . '</span>', $renderTemplate);
     }
   }
@@ -612,26 +636,20 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   $out .= '</span>';
 
   $annotations_and_sources = new AnnotationsAndSources();
+  if($foot_note_key_secRef){
+    // the nomenclatural status footnote key refers to the source citation
+    $annotations_and_sources->addFootNoteKey($foot_note_key_secRef);
+  }
   if($nom_status_fkey){
     // the nomenclatural status footnote key refers to the source citation
     $annotations_and_sources->addFootNoteKey($nom_status_fkey);
   }
-    if(isset($nom_status_additional_source_fkey)){
-        // the nomenclatural status footnote key refers to the source citation
-        $annotations_and_sources->addFootNoteKey($nom_status_additional_source_fkey);
-    }
+  if(isset($nom_status_additional_source_fkey)){
+    // the nomenclatural status footnote key refers to the source citation
+    $annotations_and_sources->addFootNoteKey($nom_status_additional_source_fkey);
+  }
   if ($show_taxon_name_annotations) {
     if($taxon_base){
-        if (isset($taxon_base->secSource)){
-            if ( variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE ){
-                $sources = [];
-                if (isset($taxon_base->sources)){
-                    $sources = $taxon_base->sources;
-                }
-                $sources_merged = array_merge($sources, [$taxon_base->secSource]);
-                $taxon_base->sources = $sources_merged;
-            }
-        }
       $annotations_and_sources = handle_annotations_and_sources($taxon_base,
         null, null, $annotations_and_sources);
     }
