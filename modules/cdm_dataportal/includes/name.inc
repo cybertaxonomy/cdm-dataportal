@@ -636,7 +636,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   $out .= '</span>';
 
   $annotations_and_sources = new AnnotationsAndSources();
-  if($foot_note_key_secRef){
+  if(isset($foot_note_key_secRef)){
     // the nomenclatural status footnote key refers to the source citation
     $annotations_and_sources->addFootNoteKey($foot_note_key_secRef);
   }
