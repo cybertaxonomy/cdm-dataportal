@@ -2708,7 +2708,75 @@ function cdm_get_featureTrees_as_options($add_default_feature_free = FALSE, $sho
   // return $options;
   return array('options' => $options, 'treeRepresentations' => $tree_representations);
 }
+/*
+ **
+ * Returns an array with all available FeatureTrees and the representations of the selected
+ * FeatureTree as a detail view.
+ *
+ * @param boolean $add_default_feature_free
+ * @param boolean $show_weight
+ *     Show the weight which will be applied to the according feature block
+ * @return array
+ *  associative array with following keys:
+ *  -options: Returns an array with all available Feature Trees
+ *  -treeRepresentations: Returns representations of the selected Feature Tree as a detail view
+ *
+ */
+function cdm_get_statusTrees_as_options($add_default_feature_free = TRUE) {
 
+    $options = array();
+    $tree_representations = array();
+    $status_trees = array();
+
+    // Set tree that contains all features.
+    //if ($add_default_feature_free) {
+    //    $options[UUID_DEFAULT_FEATURETREE] = t('Default Featuretree (contains all features)');
+    //    $feature_trees[] = cdm_ws_get(CDM_WS_TERMTREE, UUID_DEFAULT_FEATURETREE);
+    //}
+
+    // Get feature trees from database.
+    $persisted_trees = cdm_ws_fetch_all(CDM_WS_TERMTREES, array("termType" => "PresenceAbsenceTerm"));
+    if (is_array($persisted_trees)) {
+        $status_trees = array_merge($status_trees, $persisted_trees);
+    }
+
+
+    foreach ($status_trees as $status_tree) {
+
+        if(!is_object($status_tree)){
+            continue;
+        }
+        //if ($featureTree->uuid != UUID_DEFAULT_FEATURETREE) {
+        $options[$status_tree->uuid] = $status_tree->representation_L10n;
+        //}
+        // Render the hierarchic tree structure
+        if (is_array( $status_tree->root->childNodes) && count( $status_tree->root->childNodes) > 0) {
+
+            // Render the hierarchic tree structure.
+            $treeDetails = '<div class="featuretree_structure">'
+                . render_feature_tree_hierarchy($status_tree->uuid, false)
+                . '</div>';
+
+            $form = array();
+            $form['statusTree-' .  $status_tree->uuid] = array(
+                '#type' => 'fieldset',
+                '#title' => 'Show details',
+                '#attributes' => array('class' => array('collapsible collapsed')),
+                // '#collapsible' => TRUE,
+                // '#collapsed' => TRUE,
+            );
+            $form['statusTree-' .  $status_tree->uuid]['details'] = array(
+                '#markup' => $treeDetails,
+            );
+
+            $tree_representations[$status_tree->uuid] = drupal_render($form);
+        }
+
+    } // END loop over feature trees
+
+    // return $options;
+    return array('options' => $options, 'treeRepresentations' => $tree_representations);
+}
 
 /*
  **

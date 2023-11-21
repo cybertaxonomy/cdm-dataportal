@@ -341,6 +341,7 @@ define('CDM_DISTRIBUTION_FILTER_DEFAULT', serialize(
 ));
 
 define('CDM_AREATREE_UUID', 'cdm_areatree_uuid');
+define('CDM_STATUSTREE_UUID', 'cdm_statustree_uuid');
 define('DISTRIBUTION_HIERARCHY_STYLE', 'distribution_hierarchy_style');
 define('DISTRIBUTION_HIERARCHY_STYLE_DEFAULT', serialize(array(
   "level_0" => array(
@@ -2404,7 +2405,33 @@ function cdm_settings_layout_taxon() {
          of the distribution data visible in the distribution section of the taxon profile page.'
         ),
     );
+    /* ====STATUS TREE ===*/
+    // ----STATUS TREE BLOCKS ---- //
+    $form['taxon_profile']['status_trees'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Status Tree'),
+        '#collapsible' => TRUE,
+        '#collapsed' => FALSE,
+        '#description' => t("This section covers settings related to the distribution  
+      <em>status tree</em>."),
+    );
+    $statusTrees = cdm_get_statusTrees_as_options();
+    $statusTrees_temp['options'][] = "Default status tree (computed from vocabularies in use)";
+    $options = array_merge($statusTrees_temp['options'], $statusTrees['options']);
+    $statusTrees['options'] = $options;
 
+    $form['taxon_profile']['status_trees'][CDM_STATUSTREE_UUID] = array(
+        '#type' => 'radios',
+        '#title' => t('Distribution status tree') . ':',
+        //  '#default_value' => $profile_area_tree_uuid,
+        '#options' =>  $statusTrees['options'],
+        '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
+        '#options_suffixes' => $statusTrees['treeRepresentations'],
+        '#default_value' => variable_get(CDM_STATUSTREE_UUID, array()),
+        '#description' => t('The status tree selected defines a filter and order (including hierarchical order)
+         of the distribution data visible in the distribution section of the taxon profile page.'
+        ),
+    );
 
     $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] = array(
     '#type' => 'checkbox',
