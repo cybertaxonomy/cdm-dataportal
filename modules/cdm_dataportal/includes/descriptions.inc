@@ -1371,8 +1371,8 @@ function render_state_data($element) {
             $state .= ' [' . $state_data->count . ']';
           }
     
-          if (isset($state_data->modifyingText_L10n)) {
-            $state .= ' ' . $state_data->modifyingText_L10n;
+          if (isset($state_data->modifyingText_l10n)) {
+            $state .= ' ' . $state_data->modifyingText_l10n;
           }
     
           $modifiers_strings = cdm_modifiers_representations($state_data);
@@ -2589,7 +2589,7 @@ function merged_taxon_new_feature_tree($taxon) {
                     $distribution->sources);
           }else{
             if(isset($distribution->sources) && $distribution->sources->count >0) {
-                if ($distribution_aggregate->sources->count == 0){
+                if (!isset($distribution_aggregate->sources) || $distribution_aggregate->sources->count == 0){
                     $distribution_aggregate -> sources = $distribution->sources;
                 }else{
                     //$distribution_aggregate->sources->items= array_merge($distribution_aggregate->sources->items,
