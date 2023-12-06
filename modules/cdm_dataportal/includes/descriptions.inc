@@ -1376,7 +1376,7 @@ function render_state_data($element) {
           }
     
           $modifiers_strings = cdm_modifiers_representations($state_data);
-          $state_data_markup = $state . ($modifiers_strings ? ' ' . $modifiers_strings : '');
+          $state_data_markup = ($modifiers_strings ?  $modifiers_strings . ' ' : '') . $state;
           // we could use strip_tags() to reduce the markup to text for the key but this is expensive
           $sort_key = str_pad($sample_count, 6, '0', STR_PAD_LEFT) . '_' . $state_data_markup;
           $state_data_items[$sort_key] = $state_data_markup;
