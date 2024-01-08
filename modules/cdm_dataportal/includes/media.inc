@@ -843,7 +843,7 @@ function taxon_media_query_parameters() {
   }
   $mediaQueryParameters['includeTaxonNameDescriptions'] = (boolean) $taxon_media_filter_choice['includeTaxonNameDescriptions'] != 0;
   $mediaQueryParameters['includeTaxonomicChildren'] = variable_get('cdm_images_include_children', 0) != 0;
-  $mediaQueryParameters['media_representation_meta_data_source'] = variable_get(CDM_META_DATA_SOURCE, 'mediaServer') != 0;
+  $mediaQueryParameters['media_representation_meta_data_source'] = variable_get(CDM_META_DATA_SOURCE, 'mediaServer') ;
   return $mediaQueryParameters;
 }
 
