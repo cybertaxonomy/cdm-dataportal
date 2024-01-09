@@ -18,7 +18,8 @@ const CDM_NAME_PAGE_SECTION_TAXA_DEFAULT = 1;
 const CDM_MEDIA_GALLERY_VIEWER = 'image_gallery_viewer';
 const CDM_MEDIA_GALLERY_VIEWER_DEFAULT = 'universalviewer';
 const CDM_MEDIA_GALLERY_VIEWER_SIMPLE = 'default';
-const CDM_META_DATA_SOURCE = 'media meta data source';
+const CDM_META_DATA_SOURCE = 'media_meta_data_source';
+const CDM_META_DATA_SOURCE_DEFAULT = 'mediaServer';
 
 const CDM_ADDITIONAL_MEDIA_COPYRIGHT = 'cdm_additional_media_copyright';
 
@@ -2958,14 +2959,13 @@ function cdm_settings_layout_media() {
       $form['media_settings'][CDM_META_DATA_SOURCE] = array (
          '#type' => 'select',
           '#title' => t('Meta data source') . ':',
-          '#default_value' => variable_get(CDM_META_DATA_SOURCE),
+          '#default_value' => variable_get(CDM_META_DATA_SOURCE, CDM_META_DATA_SOURCE_DEFAULT),
           '#options' => array(
                   'cdm' => t('CDM'),
-                  'media server' => t('Media Server')
-
-
+                  'mediaServer' => t('Media Server')
               ),
-          '#description' => 'The <b>Universalviewer</b> can show meta data provided by the cdm instance or from the media server, please choose the source of the shown meta data.'
+          '#description' => 'The <b>Universalviewer</b> can show meta data provided by the cdm instance or from the media server, please choose the source of the shown meta data. 
+A special case is if all information in cdm description field'
       );
 
   }
