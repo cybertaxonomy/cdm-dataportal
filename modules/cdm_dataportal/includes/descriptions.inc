@@ -457,6 +457,10 @@ function compose_description_element($element, $feature_block_settings, $element
   if(isset($element->timeperiod)){
     $timescope_markup = ' ' . timePeriodToString($element->timeperiod, true);
   }
+  $modifier_markup = '';
+    if(isset($element->modifyingText_l10n)){
+        $modifier_markup = ' ' . $element->modifyingText_l10n;
+    }
 
   // handle the special case were the TextData is used as container for original source with name
   // used in source information without any text stored in it.
@@ -480,7 +484,7 @@ function compose_description_element($element, $feature_block_settings, $element
   if ($prepend_feature_label) {
     $feature_label = '<span class="nested-feature-tree-feature-label">' . $element->feature->representation_L10n . ':</span> ';
   }
-  $content_markup = $names_used_in_source_markup . $element_markup . $timescope_markup . $source_references_markup;
+  $content_markup = $names_used_in_source_markup . $element_markup . $modifier_markup . $timescope_markup . $source_references_markup;
 
   if(!$content_markup && $feature_block_settings['sources_as_content'] !== 1){
     // no textual content? So skip this element completely, even if there could be an footnote key
@@ -1386,6 +1390,7 @@ function render_state_data($element) {
     krsort($state_data_items);
     $out = '<span class="' . html_class_attribute_ref($element) . '">' . join(', ', $state_data_items) .  '</span>';
   }
+
   return $out;
 }
 
@@ -1497,8 +1502,8 @@ function render_quantitative_statistics($element) {
   // modifiers of the description element itself
   $modifier_string = cdm_modifiers_representations($element);
   $out .= ($modifier_string ? ' ' . $modifier_string : '');
-  if (isset($element->modifyingText_L10n)) {
-    $out = $element->modifyingText_L10n . ' ' . $out;
+  if (isset($element->modifyingText_l10n)) {
+    $out = $element->modifyingText_l10n . ' ' . $out;
   }
   return $out;
 }
