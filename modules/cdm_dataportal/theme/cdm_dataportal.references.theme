@@ -63,7 +63,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
   }
 
   if(isset($reference->doi)){
-    $out .= cdm_doi($reference->doi);
+    $out .= cdm_doi($reference->doi, false);
   }
 
   if (isset($reference->uri)){
@@ -209,7 +209,7 @@ function cdm_doi($doi, $iconified = true) {
     if($iconified){
       return l(font_awesome_icon_markup('fa-external-link-square-alt', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
     } else {
-      return l($doi_resolve_uri, $doi_resolve_uri);
+      return l($doi_resolve_uri, $doi_resolve_uri).l(font_awesome_icon_markup('fa-external-link-square-alt', array('class' => array('superscript'))), $doi_resolve_uri, array('html' => TRUE));
     }
   }
 
