@@ -134,7 +134,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         assertEquals("1. A&S: Plantas vasculares de Oz http://doi.org/10.1111/j.1756-1051.2012.00012.x", footNote.getText());
         List<LinkElement> links = footNote.getLinksInElement();
         assertEquals(2, links.size());
-        assertEquals("http://doi.org/10.1111/j.1756-1051.2012.00012.x", links.get(0).getUrl());
+        assertEquals("https://doi.org/10.1111/j.1756-1051.2012.00012.x", links.get(0).getUrl());
     }
 
 
