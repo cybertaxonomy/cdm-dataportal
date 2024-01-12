@@ -195,7 +195,7 @@ function cdm_external_uri($uri, $iconified = true)
  * @return string
  *  Markup
  */
-function cdm_doi($doi, $iconified = true) {
+function cdm_doi($doi, $iconified = false) {
 
   if (!empty($doi)) {
     if (isset($doi->prefix)){
