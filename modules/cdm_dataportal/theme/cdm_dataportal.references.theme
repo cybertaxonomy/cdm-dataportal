@@ -199,9 +199,9 @@ function cdm_doi($doi, $iconified = true) {
 
   if (!empty($doi)) {
     if (isset($doi->prefix)){
-        $doi_resolve_uri = 'http://doi.org/' . $doi->prefix;
+        $doi_resolve_uri = ' http://doi.org/' . $doi->prefix;
     }else{ //this should not be possible because a doi without prefix is not allowed in cdm
-        $doi_resolve_uri = 'http://doi.org/' . $doi;
+        $doi_resolve_uri = ' http://doi.org/' . $doi;
     }
     if (isset($doi->suffix)) {
       $doi_resolve_uri .= '/' . $doi->suffix;
