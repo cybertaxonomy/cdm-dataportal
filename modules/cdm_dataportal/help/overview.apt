@@ -71,7 +71,7 @@ CDM Dataportal Settings
    	is where is the CDM Server located in order to access it. Such parameters are configurable
     via the general tag of the settings.
     
-    The <a target="_blank" href="./?q=admin/settings/cdm_dataportal/general">general settings</a> documentation explains itself. 
+    The <a target="_blank" href="./?q=admin/config/cdm_dataportal/settings">general settings</a> documentation explains itself. 
 	
 
 	
@@ -81,7 +81,7 @@ CDM Dataportal Settings
     generate all the maps displayed on your web site. Drupal needs to know where
     the map server is located and this parameter as well as others related with the maps
     appaerance like map legends, map size or map background are configurable via
-    {{{./?q=admin/settings/cdm_dataportal/geo}Geo & Map settings}}.
+    {{{./?q=admin/config/cdm_dataportal/settings/geo}Geo & Map settings}}.
     This configuration site explains itself. 
 
    	 	
@@ -90,7 +90,7 @@ CDM Dataportal Settings
 *Layout
     The Layout of <em>taxa pages</em>, <em>search results</em> and <em>media files</em>
     are configurable under
-    <a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout">Administer&#45&#62Site Configuration&#45&#62CDM Dataportal&#45&#62Layout</a>. 
+    <a target="_blank" href="./?q=admin/config/cdm_dataportal/settings/layout">Administer&#45&#62Site Configuration&#45&#62CDM Dataportal&#45&#62Layout</a>. 
     <em>Taxa pages</em> contains different sections which can be displayed as tabs or as single taxon page.
     This sections are <em>Taxon general information</em> (such descriptions or distribution), 
     <em>taxon synonymy</em>, <em>taxon specimens</em> and <em>taxon media</em>.
@@ -108,7 +108,7 @@ CDM Dataportal Settings
     
 		 
     Go to the   	
-    {{{./?q=admin/help/settings/cdm_dataportal/cachesite}cache settings site}}
+    {{{./?q=admin/config/cdm_dataportal/settings/cachesite}cache settings site}}
     to configure it or learn more about CDM Data Portal cache.
     
 

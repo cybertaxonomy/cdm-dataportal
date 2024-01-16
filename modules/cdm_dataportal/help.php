@@ -124,23 +124,23 @@ function cdm_dataportal_file_get_content($path) {
    $apt_content = str_replace('<a target="_blank" href="./?q=admin/build/themes">Administer&#45&#62Site buildin&#45&#62Themes</a>',
    '<Administer-\>Site building-\>Themes>',
    $apt_content);
-   $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal">Administer&#45&#62Site Configuration&#45&#62CDM Dataportal</a>',
+   $apt_content = str_replace('<a target="_blank" href="./?q=admin/config/cdm_dataportal">Administer&#45&#62Site Configuration&#45&#62CDM Dataportal</a>',
    '<Administer-\>Site Configuration-\>CDM Dataportal>',
    $apt_content);
-   $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/general" title="General">here</a>',
+   $apt_content = str_replace('<a target="_blank" href="./?q=admin/config/cdm_dataportal/settings" title="General">here</a>',
    '<Administer-\>Site Configuration-\>CDM Dataportal>',
    $apt_content);
-   $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/geo" title="General">Geo &amp Map settings</a>',
+   $apt_content = str_replace('<a target="_blank" href="./?q=admin/config/cdm_dataportal/settings/geo" title="General">Geo &amp Map settings</a>',
    '<Administer-\>Site Configuration-\>CDM Dataportal-\>geo & Map>',
    $apt_content);
-   $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/search">Search Layout Settings</a>',
+   $apt_content = str_replace('<a target="_blank" href="./?q=admin/config/cdm_dataportal/settings/layout/search">Search Layout Settings</a>',
    '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Search>',
    $apt_content);
-   $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
+   $apt_content = str_replace('<a target="_blank" href="./?q=admin/config/cdm_dataportal/settings/layout/media">Media Layout Settings</a>',
    '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>',
    $apt_content);
    //
-   //    $apt_content = str_replace('<a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/media">Media Layout Settings</a>',
+   //    $apt_content = str_replace('<a target="_blank" href="./?q=admin/config/cdm_dataportal/settings/layout/media">Media Layout Settings</a>',
    //                             '<Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>',
    //                             $apt_content);
    //

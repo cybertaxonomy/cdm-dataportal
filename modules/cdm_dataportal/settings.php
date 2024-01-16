@@ -2695,9 +2695,9 @@ ie	introduced: formerly introduced
   $form_description = '<p>This section covers the settings related to the taxon <strong>images</strong> tab.
    Taxa may have media (usually images) and they are displayed as thumbnails. It is possible to configure
    the thumbnails gallery here, however for configuring how a single media should be displayed please go to
-   <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a></p>
+   <a href="./?q=admin/config/cdm_dataportal/settings/layout/media">Layout -&gt; Media</a></p>
    <p><strong>Note:</strong> These settings are only taken into account when the standard
-   gallery viewer is selected at <a href="./?q=admin/settings/cdm_dataportal/layout/media">Layout -&gt; Media</a>.</p>';
+   gallery viewer is selected at <a href="./?q=admin/config/cdm_dataportal/settings/layout/media">Layout -&gt; Media</a>.</p>';
   $form['taxon_media'][] = cdm_dataportal_create_gallery_settings_form($form_name, $form_title, TRUE, $form_description);
 
   // Comment @WA: D7 form api does not support reset buttons,

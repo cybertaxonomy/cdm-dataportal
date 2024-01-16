@@ -83,7 +83,7 @@ CDM Dataportal Settings
     generate all the maps displayed on your web site. Again the module needs to know where
     the map server is located and this parameter as well as others related with the maps
     appaerance like map legends, map size, map background ... are configurable via
-    {{{./?q=admin/settings/cdm_dataportal/geo}Geo & Map settings}}.
+    {{{./?q=admin/config/cdm_dataportal/settings/geo}Geo & Map settings}}.
     This configuration site also explain all the configurable options itself. Same documentation with some extra details is avaible
     <a href="./?q=admin/help/cdm_dataportal_geo" title="Geo & Map">here</a> as one html site.
    	 	
@@ -91,10 +91,10 @@ CDM Dataportal Settings
 	 	
 *Layout		
     
-    <a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout" >Here</a> 
+    <a target="_blank" href="./?q=admin/config/cdm_dataportal/settings/layout" >Here</a> 
     you will find the settings for configuring the layout issues such pictures size or
     number of search results to show. Layout section itself contains three subsections; 
-    <a target="_blank" href="./?q=admin/settings/cdm_dataportal/layout/taxon">Taxon Layout Settings</a>,
+    <a target="_blank" href="./?q=admin/config/cdm_dataportal/settings/layout/taxon">Taxon Layout Settings</a>,
     <Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Search> and
     <Administer-\>Site Configuration-\>CDM Dataportal-\>Layout-\>Media>. 
     Each one of the listed links forward you to the settings configuration site where each site explains 
