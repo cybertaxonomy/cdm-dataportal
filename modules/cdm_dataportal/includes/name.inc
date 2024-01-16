@@ -505,7 +505,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
             $footnote_markup .= ' <span class="sec_reference">' . cdm_reference_markup($taxon_base->secSource->citation) . '</span>';
 
             if (isset($taxon_base->secSource->citation) && isset($taxon_base->secSource->citationMicroReference)) {
-                $footnote_markup .= (isset($taxon_base->secSource->citation) ? ':' : '') . ' <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>';
+                $footnote_markup .= (isset_not_empty($taxon_base->secSource->citationMicroReference) ? ':' : '') . ' <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>';
             }
             if ($footnote_markup) {
                 $foot_note_key_secRef = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
@@ -944,9 +944,9 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
         //$external_links = cdm_ws_get(CDM_WS_NAME_PROTOLOGUE_LINKS, $taxon_name->uuid);
         if($external_links){
             foreach ($external_links as $link) {
-                if (!empty($link->uri)) {
+                if (!empty($link->javaUri)) {
                     // for the link see also cdm_external_uri()
-                    $protologue_links[] = l(font_awesome_icon_markup('fa-book'), $link->uri, ['html' => true]);
+                    $protologue_links[] = l(font_awesome_icon_markup('fa-book'), $link->javaUri, ['html' => true]);
                 }
             }
         }
