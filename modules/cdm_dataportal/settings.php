@@ -2403,8 +2403,7 @@ function cdm_settings_layout_taxon() {
         '#pre_render' => array('form_pre_render_conditional_form_element', 'radios_prepare_options_suffix'),
         '#options_suffixes' => $areaTrees['treeRepresentations'],
         '#default_value' => variable_get(CDM_AREATREE_UUID, array()),
-        '#description' => t('The area tree selected defines a filter and order (including hierarchical order)
-         of the distribution data visible in the distribution section of the taxon profile page.'
+        '#description' => t('The area tree selected defines a filter and order of the distribution data visible in the distribution section of the taxon profile page.'
         ),
     );
     /* ====STATUS TREE ===*/
