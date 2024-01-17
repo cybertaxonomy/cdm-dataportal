@@ -2338,6 +2338,9 @@ function compose_description_elements_distribution($description_elements){
               if (variable_get(CDM_AREATREE_UUID)){
                   $query_parameters['areaTree'] = variable_get(CDM_AREATREE_UUID);
               }
+              if (variable_get(CDM_STATUSTREE_UUID)){
+                  $query_parameters['statusTree'] = variable_get(CDM_STATUSTREE_UUID);
+              }
 
 
               $distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
