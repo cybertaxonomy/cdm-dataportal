@@ -39,6 +39,9 @@
 function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link = FALSE, $do_icon_link = FALSE) {
 
   $citation = trim($reference->titleCache);
+  if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
+          $citation .= ".";
+  }
   $icon_link = "";
   if((isset($do_icon_link) && $do_icon_link === TRUE)) {
     $icon_link = cdm_internal_link(path_to_reference($reference->uuid));
@@ -63,6 +66,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
   }
 
   if(isset($reference->doi)){
+
     $out .= cdm_doi($reference->doi, false);
   }
 
@@ -77,6 +81,16 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
 
   return $out;
 }
+
+function endsWith( $haystack, $needle ) {
+    $length = strlen( $needle );
+    if( !$length ) {
+        return true;
+    }
+    return substr( $haystack, -$length ) === $needle;
+}
+
+
 function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_icon_link = FALSE) {
 
   $citation = trim($reference_dto->label[0]->label);
