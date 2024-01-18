@@ -94,7 +94,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
         //COMPRESSED SPECIMEN DERIVATE TABLE
         $pager_root_units = cdm_ws_page(
-          cdm_compose_url(CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS, [$taxon->uuid, true]),
+          cdm_compose_url(CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS, [$taxon->uuid]),
           variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT) * 2,
           isset($_REQUEST['pager']['pageIndex']) ? isset($_REQUEST['pager']['pageIndex']) : 0
         );
@@ -105,15 +105,15 @@ function compose_cdm_taxon_page_specimens($taxon) {
             '&useDetermination=true'.'&Uuid=' . $taxon->uuid
         );
 
-       // if (isset($pager_root_units->records[0])) {
-      if (isset($root_unit_dtos[0])) {
+      if (isset($pager_root_units->records[0])) {
+     // if (isset($root_unit_dtos[0])) {
           $root_unit_uuids = array();
-          //foreach ($pager_root_units->records as $root_unit) {
-        foreach ($root_unit_dtos as $root_unit) {
+        foreach ($pager_root_units->records as $root_unit) {
+        //foreach ($root_unit_dtos as $root_unit) {
             $root_unit_uuids[] = $root_unit->uuid;
           }
-          //$render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_uuids);
-         $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_dtos);
+         $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_uuids);
+         //$render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_dtos);
         }
 
         $render_array['pager'] = markup_to_render_array(
