@@ -39,9 +39,7 @@
 function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link = FALSE, $do_icon_link = FALSE) {
 
   $citation = trim($reference->titleCache);
-  if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
-          $citation .= ".";
-  }
+
   $icon_link = "";
   if((isset($do_icon_link) && $do_icon_link === TRUE)) {
     $icon_link = cdm_internal_link(path_to_reference($reference->uuid));
@@ -55,20 +53,36 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
       'absolute' => TRUE,
       'html' => TRUE,
     ));
+    if(isset($reference->doi)){
+        if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
+                      $out .= ".";
+            }
+        $out .= cdm_doi($reference->doi, false);
+    }
+
     $out .= $icon_link . '</span>';
   }
   else {
-    $out = '<span class="reference">' . $citation . $icon_link . '</span>';
+    if(isset($reference->doi)){
+        if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
+                      $citation .= ".";
+        }
+        $doi = cdm_doi($reference->doi, false);
+      }
+    $out = '<span class="reference">' . $citation .$icon_link . $doi . '</span>';
   }
 
   if (!empty($citation_detail)) {
     $out .= ": " . $citation_detail;
   }
-
+/*
   if(isset($reference->doi)){
-
+    if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
+                  $out .= ".";
+        }
     $out .= cdm_doi($reference->doi, false);
   }
+  */
 
   if (isset($reference->uri)){
     if($reference->type == 'WebPage'){
@@ -107,18 +121,30 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
       'absolute' => TRUE,
       'html' => TRUE,
     ));
+    if(isset($reference_dto->doi)){
+            if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
+                          $out .= ".";
+                }
+            $out .= cdm_doi($reference_dto->doi, false);
+        }
     $out .= $icon_link . '</span>';
   }
   else {
-    $out = '<span class="reference">' . $citation . $icon_link . '</span>';
+    if(isset($reference_dto->doi)){
+            if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
+                          $citation .= ".";
+            }
+            $doi = cdm_doi($reference_dto->doi, false);
+    }
+    $out = '<span class="reference">' . $citation . $icon_link . $doi . ' </span>';
   }
 
 
-
+/*
   if(isset($reference_dto->doi)){
     $out .= cdm_doi($reference_dto->doi);
   }
-
+*/
   if (isset($reference_dto->uri)){
     //if($reference->type == 'WebPage'){
       // the cdm cache strategy adds the uri to the titleCache which is unwanted in this case,
