@@ -63,6 +63,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
     $out .= $icon_link . '</span>';
   }
   else {
+    $doi = "";
     if(isset($reference->doi)){
         if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
                       $citation .= ".";
@@ -130,6 +131,7 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
     $out .= $icon_link . '</span>';
   }
   else {
+    $doi = "";
     if(isset($reference_dto->doi)){
             if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
                           $citation .= ".";
