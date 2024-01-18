@@ -53,7 +53,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
       'absolute' => TRUE,
       'html' => TRUE,
     ));
-    if(isset($reference->doi)){
+    if(isset($reference->doi) && $reference->doi != null){
         if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
                       $out .= ".";
             }
@@ -64,7 +64,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
   }
   else {
     $doi = "";
-    if(isset($reference->doi)){
+    if(isset($reference->doi) && $reference->doi != null){
         if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
                       $citation .= ".";
         }
@@ -77,7 +77,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
     $out .= ": " . $citation_detail;
   }
 /*
-  if(isset($reference->doi)){
+  if(isset($reference->doi))&& $reference->doi != null){
     if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
                   $out .= ".";
         }
@@ -122,7 +122,7 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
       'absolute' => TRUE,
       'html' => TRUE,
     ));
-    if(isset($reference_dto->doi)){
+    if(isset($reference_dto->doi) && $reference->doi != null){
             if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
                           $out .= ".";
                 }
@@ -132,7 +132,7 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
   }
   else {
     $doi = "";
-    if(isset($reference_dto->doi)){
+    if(isset($reference_dto->doi) && $reference->doi != null){
             if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
                           $citation .= ".";
             }
