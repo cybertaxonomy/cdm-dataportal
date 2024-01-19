@@ -502,10 +502,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       $footnote_markup = '';
       $secRef_markup = cdm_tagged_text_to_markup($secref_name_inSource_tagged_text);
         if (isset($taxon_base->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE) {
-            $footnote_markup .= ' <span class="sec_reference">' . cdm_reference_markup($taxon_base->secSource->citation) . '</span>';
+            $footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($taxon_base->secSource->citation) . '</span>';
 
             if (isset($taxon_base->secSource->citation) && isset($taxon_base->secSource->citationMicroReference)) {
-                $footnote_markup .= (isset_not_empty($taxon_base->secSource->citationMicroReference) ? ':' : '') . ' <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>';
+                $footnote_markup .= (isset_not_empty($taxon_base->secSource->citationMicroReference) ? ': <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>' : '') ;
             }
             if ($footnote_markup) {
                 $foot_note_key_secRef = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
@@ -527,10 +527,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         }
       array_setr('secReference',
         $post_separator_markup
-          . ' <span class="sec_reference">'
+          . '<span class="sec_reference">'
           . join('', cdm_tagged_text_values($secref_tagged_text))
           . $secRef_markup
-
           . '</span>', $renderTemplate);
     }
   }
