@@ -106,8 +106,8 @@ function compose_cdm_taxon_page_specimens($taxon) {
             '&useDetermination=true'.'&Uuid=' . $taxon->uuid
         );
           */
-      if (isset($pager_root_units->records[0])) {
-     // if (isset($root_unit_dtos[0])) {
+     // if (isset($pager_root_units->records[0])) {
+      if (isset($root_unit_dtos[0])) {
           $root_unit_uuids = array();
         //foreach ($pager_root_units->records as $root_unit) {
         //foreach ($root_unit_dtos as $root_unit) {
@@ -119,7 +119,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
-                'pager' => $pager_root_units,
+                'pager' => $root_unit_dtos,
                 'path' => $_REQUEST['q'],
                 'parameters' => $_REQUEST
             )),
@@ -225,12 +225,12 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
 
     if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE)){
 
-        //COMPRESSED SPECIMEN DERIVATE TABLE
+        /*COMPRESSED SPECIMEN DERIVATE TABLE
         $pager_root_units = cdm_ws_page(
             cdm_compose_url(CDM_WS_PORTAL_TAXON_ASSOCIATED_ROOTUNITS, [$taxon_dto->uuid]),
             variable_get(CDM_SEARCH_RESULT_PAGE_SIZE, CDM_SEARCH_RESULT_PAGE_SIZE_DEFAULT) * 2,
             isset($_REQUEST['pager']['pageIndex']) ? isset($_REQUEST['pager']['pageIndex']) : 0
-        );
+        );     */
 
         // if (isset($pager_root_units->records[0])) {
         if (isset($root_unit_dtos[0])) {
@@ -245,7 +245,7 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
 
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
-                'pager' => $pager_root_units,
+                'pager' => $root_unit_dtos,
                 'path' => $_REQUEST['q'],
                 'parameters' => $_REQUEST
             )),
