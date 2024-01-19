@@ -141,7 +141,6 @@ const CDM_WS_PORTAL_TERM = 'portal/term/$0';
 const CDM_WS_TERMTREE = 'portal/termTree/$0';
 const CDM_WS_TERMTREES = 'portal/termTree';
 // define('CDM_WS_TERMTREE_CHILDREN', 'termTree/$0/children');
-const CDM_WS_GEOSERVICE_DISTRIBUTIONMAP = 'ext/edit/mapServiceParameters/taxonDistributionFor/$0';
 const CDM_WS_GEOSERVICE_OCCURRENCEMAP_FOR_FIELDUNITS = 'ext/edit/mapServiceParameters/taxonOccurrencesForX';
 const CDM_WS_GEOSERVICE_OCCURRENCEMAP = 'ext/edit/mapServiceParameters/taxonOccurrencesFor/$0';
 const CDM_WS_KML_SPECIMENSOROCCURENCES = 'kml/specimensOrOccurences/$0';
