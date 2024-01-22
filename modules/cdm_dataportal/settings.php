@@ -2961,8 +2961,10 @@ function cdm_settings_layout_media() {
           '#title' => t('Meta data source') . ':',
           '#default_value' => variable_get(CDM_META_DATA_SOURCE, CDM_META_DATA_SOURCE_DEFAULT),
           '#options' => array(
-                  'cdm' => t('CDM'),
-                  'mediaServer' => t('Media Server')
+                  'cdm' => t('Prefer CDM'),
+                  'mediaServer' => t('Prefer Media Server'),
+                  'onlyCdm' => t('Only CDM'),
+                  'onlyMediaServer' => t('Only Media Server')
               ),
           '#description' => 'The <b>Universalviewer</b> can show meta data provided by the cdm instance or from the media server, please choose the source of the shown meta data. 
 A special case is if all information in cdm description field'
