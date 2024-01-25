@@ -1005,7 +1005,9 @@ function compose_cdm_media_caption($media, $elements = null, $sources_as_content
   );
 
   $render_array = [];
-
+    if ($media_metadata === null){
+        return $render_array;
+  }
 
   // Title.
   if ($doTitle) {
