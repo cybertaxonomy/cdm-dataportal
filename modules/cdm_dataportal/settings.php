@@ -49,7 +49,7 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
  const CDM_SPECIMEN_DERIVATE_TREE_OPTIONS = 'cdm_specimen_derivate_tree_options';
  const CDM_SPECIMEN_DERIVATE_TREE_OPTIONS_DEFAULT = ['field_unit_short_label' => 0];
  const CDM_SPECIMEN_RELATION = 'cdm_specimen_relation';
- const CDM_SPECIMEN_RELATION_DEFAULT = ['TD' => 'TD', 'IA' => 'IA', 'DET' => 'DET', 'CDET' => 'CDET'];
+ const CDM_SPECIMEN_RELATION_DEFAULT = array('IA'=>'IA', 'TD'=>'TD', 'DET'=>'DET', 'CDET'=>'CDET');
  const CDM_SPECIMEN_RELATION_OPTION_IND_ASS = 'IA';
  const CDM_SPECIMEN_RELATION_OPTION_DET = 'DET';
  const CDM_SPECIMEN_RELATION_OPTION_TD = 'TD';
@@ -2631,12 +2631,7 @@ ie	introduced: formerly introduced
       <strong>specimens</strong> tab.'),
   );
 
-  $form['taxon_specimens'][SPECIMEN_MAP_VISIBILITY]  = _cdm_map_visibility_setting('specimen');
-/*
- * IndividualsAssociation("IA"),
-    Determination("DET"),
-    TypeDesignation("TD");
- */
+
     $form['taxon_specimens'][CDM_SPECIMEN_RELATION] = array(
         '#type' => 'checkboxes',
         '#title' => 'Relations to the selected taxon of displayed specimens or occurrences.',
@@ -2653,7 +2648,7 @@ ie	introduced: formerly introduced
          <li>' . CDM_SPECIMEN_RELATION_OPTION_TD . ': Mentioned as type designations</li>
          <li>' . CDM_SPECIMEN_RELATION_OPTION_DET . ': Mentioned in determinations </li>
          <li>' . CDM_SPECIMEN_RELATION_OPTION_CDET . ': Mentioned as current determinations</li>         
-       </ul>'
+       </ul>' . 'If nothing is selected all related specimen are displayed'
     );
 
 

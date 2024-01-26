@@ -54,7 +54,8 @@ function compose_cdm_taxon_page_specimens($taxon) {
       if (isset($_REQUEST['pager']) && is_array($_REQUEST['pager'])) {
         $relationship_filter_query_parameters = array_merge($relationship_filter_query_parameters, $_REQUEST['pager']);
       }
-      $by_associatedtaxon_query = http_build_query($relationship_filter_query_parameters);
+      $params = array_merge($relationship_filter_query_parameters, getOccurrrenceQuery_parameters());
+      $by_associatedtaxon_query = http_build_query($params);
       $pager = cdm_ws_get(CDM_WS_OCCURRENCE_BY_ASSOCIATEDTAXON,
         null,
         $by_associatedtaxon_query . '&taxonUuid=' . $taxon->uuid
