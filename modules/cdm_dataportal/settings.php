@@ -48,6 +48,13 @@ define('TAXONTREE_RANKLIMIT_DEFAULT', 0);
  const CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH = 'derivate_path';
  const CDM_SPECIMEN_DERIVATE_TREE_OPTIONS = 'cdm_specimen_derivate_tree_options';
  const CDM_SPECIMEN_DERIVATE_TREE_OPTIONS_DEFAULT = ['field_unit_short_label' => 0];
+ const CDM_SPECIMEN_RELATION = 'cdm_specimen_relation';
+ const CDM_SPECIMEN_RELATION_DEFAULT = ['TD' => 'TD', 'IA' => 'IA', 'DET' => 'DET', 'CDET' => 'CDET'];
+ const CDM_SPECIMEN_RELATION_OPTION_IND_ASS = 'IA';
+ const CDM_SPECIMEN_RELATION_OPTION_DET = 'DET';
+ const CDM_SPECIMEN_RELATION_OPTION_TD = 'TD';
+const CDM_SPECIMEN_RELATION_OPTION_CDET = 'CDET';
+ 
  const CDM_SEC_WITH_FOOTNOTE = 'footnote';
  const CDM_SEC_INTERNAL_LINK = 'internal_link';
  const CDM_SEC_WITHOUT_COMPLETE_REF = 'without_complete_ref';
@@ -2625,6 +2632,29 @@ ie	introduced: formerly introduced
   );
 
   $form['taxon_specimens'][SPECIMEN_MAP_VISIBILITY]  = _cdm_map_visibility_setting('specimen');
+/*
+ * IndividualsAssociation("IA"),
+    Determination("DET"),
+    TypeDesignation("TD");
+ */
+    $form['taxon_specimens'][CDM_SPECIMEN_RELATION] = array(
+        '#type' => 'checkboxes',
+        '#title' => 'Relations to the selected taxon of displayed specimens or occurrences.',
+        '#default_value' => variable_get(CDM_SPECIMEN_RELATION, CDM_SPECIMEN_RELATION_DEFAULT),
+        '#options' => [
+            CDM_SPECIMEN_RELATION_OPTION_IND_ASS => 'Individual Association',
+            CDM_SPECIMEN_RELATION_OPTION_TD=> 'Type Designation',
+            CDM_SPECIMEN_RELATION_OPTION_DET => 'Determination',
+            CDM_SPECIMEN_RELATION_OPTION_CDET => 'Current Determination'
+        ],
+        '#description' => 'Available relations between taxa and specimen or observations are :
+        <ul>
+         <li>' . CDM_SPECIMEN_RELATION_OPTION_IND_ASS . ': Related by individual associations.</li>
+         <li>' . CDM_SPECIMEN_RELATION_OPTION_TD . ': Mentioned as type designations</li>
+         <li>' . CDM_SPECIMEN_RELATION_OPTION_DET . ': Mentioned in determinations </li>
+         <li>' . CDM_SPECIMEN_RELATION_OPTION_CDET . ': Mentioned as current determinations</li>         
+       </ul>'
+    );
 
 
   $form['taxon_specimens'][CDM_SPECIMEN_LIST_VIEW_MODE] = array(

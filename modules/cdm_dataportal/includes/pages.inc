@@ -40,9 +40,11 @@ function compose_cdm_taxon_page_specimens($taxon) {
   $root_unit_dtos = null;
   $specimensOrObservations = array();
   $current_view_mode = variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT);
-  if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
+    $query_parameters = getOccurrrenceQuery_parameters();
+    if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
       // get fieldUnitDTOs
-      $root_unit_dtos = cdm_ws_get(CDM_WS_PORTAL_TAXON_ROOTUNIT_DTOS, array( $taxon->uuid), true);
+
+      $root_unit_dtos = cdm_ws_get(CDM_WS_PORTAL_TAXON_ROOTUNIT_DTOS, array( $taxon->uuid), queryString($query_parameters));
       $root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
     } else {
       // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
@@ -148,6 +150,25 @@ function compose_cdm_taxon_page_specimens($taxon) {
 
     RenderHints::popFromRenderStack();
     return $render_array;
+}
+
+/**
+ * @return array
+ */
+function getOccurrrenceQuery_parameters(): array
+{
+    $query_parameters = array();
+    if (variable_get(CDM_SPECIMEN_RELATION)) {
+        $variable = variable_get(CDM_SPECIMEN_RELATION);
+        $paramArray = array();
+        foreach ($variable as $param) {
+            if (is_string($param)) {
+                $paramArray[] = $param;
+            }
+        }
+        $query_parameters['taxOccRelFilter'] = implode(",", $paramArray);
+    }
+    return $query_parameters;
 }
 
 /**
@@ -384,7 +405,8 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description'){
     // --- GET specimensOrObservations --- //
     $specimensOrObservationsCount = 0;
     if (($tabsToDisplay["Specimens"] != '0')){
-        $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObservationsCount'));
+        $query_parameter = getOccurrrenceQuery_parameters();
+        $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array($taxon->uuid, 'specimensOrObservationsCount'), queryString($query_parameter));
         $specimensOrObservationsCount = $specimensOrObservations != null ? $specimensOrObservations->result : 0;
     }
   if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
