@@ -797,11 +797,15 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
             // Remove all authors and everything behind.
             $taggedNameNew = array();
+            $nameInSourceActive = false;
             foreach ($taggedName as $element) {
-                if ($element->type != 'authors') {
+                if ($element->type != 'authors' && $element->type != 'nameInSourceSeparator' && !$nameInSourceActive) {
                     $taggedNameNew[] = $element;
-                }
-                else {
+                } else if ($element->type == 'nameInSourceSeparator' && !$nameInSourceActive) {
+                    $nameInSourceActive = true;
+                }else if ($element->type == 'nameInSourceSeparator' && $nameInSourceActive){
+                    $nameInSourceActive = false;
+                }else {
                     $lastAuthorElementString = $element->text;
                 }
             }
