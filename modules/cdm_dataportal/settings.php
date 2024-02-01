@@ -2642,13 +2642,13 @@ ie	introduced: formerly introduced
             CDM_SPECIMEN_RELATION_OPTION_DET => 'Determination',
             CDM_SPECIMEN_RELATION_OPTION_CDET => 'Current Determination'
         ],
-        '#description' => 'Available relations between taxa and specimen or observations are :
+        '#description' => 'Available relations between taxa and specimens or observations are :
         <ul>
          <li>' . 'Taxon Fact' . ': Related by taxon fact for example individual association.</li>
-         <li>' . 'Type Designation' . ': Mentioned as a type designations</li>
+         <li>' . 'Type Designation' . ': Mentioned as a type designation</li>
          <li>' . 'Determination' . ': Mentioned in a determination </li>
          <li>' . 'Current Determination' . ': Mentioned as current determination</li>         
-       </ul>' . 'If nothing is selected all related specimen are displayed. To fully remove specimens please deselect the specimen tab from the tabs area above.
+       </ul>' . 'If nothing is selected all related specimens are displayed. To fully remove specimens please deselect the specimen tab from the tabs area above.
        If determination and current determination are selected, current determination has no effect.'
     );
 
