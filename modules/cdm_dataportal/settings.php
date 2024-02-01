@@ -2648,7 +2648,7 @@ ie	introduced: formerly introduced
          <li>' . 'Type Designation' . ': Mentioned as a type designations</li>
          <li>' . 'Determination' . ': Mentioned in a determination </li>
          <li>' . 'Current Determination' . ': Mentioned as current determination</li>         
-       </ul>' . 'If nothing is selected all related specimen are displayed'
+       </ul>' . 'If nothing is selected all related specimen are displayed. To fully remove specimens please deselect the specimen tab from the tabs area above.'
     );
 
 
