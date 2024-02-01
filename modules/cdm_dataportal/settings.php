@@ -2644,12 +2644,11 @@ ie	introduced: formerly introduced
         ],
         '#description' => 'Available relations between taxa and specimens or observations are :
         <ul>
-         <li>' . 'Taxon Fact' . ': Related by taxon fact for example individual association.</li>
+         <li>' . 'Taxon Fact' . ': Related by taxon fact for example individual association</li>
          <li>' . 'Type Designation' . ': Mentioned as a type designation</li>
          <li>' . 'Determination' . ': Mentioned in a determination </li>
-         <li>' . 'Current Determination' . ': Mentioned as current determination</li>         
-       </ul>' . 'If nothing is selected all related specimens are displayed. To fully remove specimens please deselect the specimen tab from the tabs area above.
-       If determination and current determination are selected, current determination has no effect.'
+         <li>' . 'Current Determination' . ': Mentioned as current determination, if <i>Determination</i> is selected this option has no effect</li>         
+       </ul>' . 'If nothing is selected all related specimens are displayed. To fully remove specimens please deselect the specimen tab from the tabs area above.'
     );
 
 
