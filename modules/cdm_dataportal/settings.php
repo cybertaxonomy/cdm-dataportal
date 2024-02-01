@@ -2634,7 +2634,7 @@ ie	introduced: formerly introduced
 
     $form['taxon_specimens'][CDM_SPECIMEN_RELATION] = array(
         '#type' => 'checkboxes',
-        '#title' => 'Relations to the selected taxon of displayed specimens or occurrences.',
+        '#title' => 'Relations to the selected taxon of displayed specimens or occurrences:',
         '#default_value' => variable_get(CDM_SPECIMEN_RELATION, CDM_SPECIMEN_RELATION_DEFAULT),
         '#options' => [
             CDM_SPECIMEN_RELATION_OPTION_IND_ASS => 'Taxon Fact',
@@ -2648,7 +2648,8 @@ ie	introduced: formerly introduced
          <li>' . 'Type Designation' . ': Mentioned as a type designations</li>
          <li>' . 'Determination' . ': Mentioned in a determination </li>
          <li>' . 'Current Determination' . ': Mentioned as current determination</li>         
-       </ul>' . 'If nothing is selected all related specimen are displayed. To fully remove specimens please deselect the specimen tab from the tabs area above.'
+       </ul>' . 'If nothing is selected all related specimen are displayed. To fully remove specimens please deselect the specimen tab from the tabs area above.
+       If determination and current determination are selected, current determination has no effect.'
     );
 
 
