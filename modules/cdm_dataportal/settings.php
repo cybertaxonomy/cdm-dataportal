@@ -2637,17 +2637,17 @@ ie	introduced: formerly introduced
         '#title' => 'Relations to the selected taxon of displayed specimens or occurrences.',
         '#default_value' => variable_get(CDM_SPECIMEN_RELATION, CDM_SPECIMEN_RELATION_DEFAULT),
         '#options' => [
-            CDM_SPECIMEN_RELATION_OPTION_IND_ASS => 'Individual Association',
+            CDM_SPECIMEN_RELATION_OPTION_IND_ASS => 'Taxon Fact',
             CDM_SPECIMEN_RELATION_OPTION_TD=> 'Type Designation',
             CDM_SPECIMEN_RELATION_OPTION_DET => 'Determination',
             CDM_SPECIMEN_RELATION_OPTION_CDET => 'Current Determination'
         ],
         '#description' => 'Available relations between taxa and specimen or observations are :
         <ul>
-         <li>' . CDM_SPECIMEN_RELATION_OPTION_IND_ASS . ': Related by individual associations.</li>
-         <li>' . CDM_SPECIMEN_RELATION_OPTION_TD . ': Mentioned as type designations</li>
-         <li>' . CDM_SPECIMEN_RELATION_OPTION_DET . ': Mentioned in determinations </li>
-         <li>' . CDM_SPECIMEN_RELATION_OPTION_CDET . ': Mentioned as current determinations</li>         
+         <li>' . 'Taxon Fact' . ': Related by taxon fact for example individual association.</li>
+         <li>' . 'Type Designation' . ': Mentioned as a type designations</li>
+         <li>' . 'Determination' . ': Mentioned in a determination </li>
+         <li>' . 'Current Determination' . ': Mentioned as current determination</li>         
        </ul>' . 'If nothing is selected all related specimen are displayed'
     );
 
@@ -2663,10 +2663,10 @@ ie	introduced: formerly introduced
       ],
       '#description' => 'Available view modes for listing specimens and occurrences are:
         <ul>
-         <li>' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE . ': As compressed table where every row represents
+         <li>' . 'Compressed derivate table' . ': As compressed table where every row represents
     a collection. Rows can be expanded to get an overview of the specimens and their derivatives.</li>
-         <li>' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE . ': As tree of all derivations stemming from the field unit</li>
-         <li>' . CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_PATH . ': As the path of derivatives from the specimen to the field unit</li>
+         <li>' . 'Derivate tree' . ': As tree of all derivations stemming from the field unit</li>
+         <li>' . 'Derivate path' . ': As the path of derivatives from the specimen to the field unit</li>
        </ul>'
   );
 
