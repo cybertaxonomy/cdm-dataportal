@@ -734,7 +734,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
              * Content/DISTRIBUTION.
              */
 
-            if ($feature_node->label == 'Distribution') {
+            if (isset($feature_node->descriptionElements["DistributionInfoDTO"]) || $feature_node->uuid == UUID_DISTRIBUTION) {
                 $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node);
                 $block_content_is_empty = FALSE;
             }
@@ -2403,50 +2403,13 @@ function merged_taxon_new_feature_tree($taxon) {
     }
 
     // 2. find the distribution feature node
-    $distribution_node =& cdm_feature_tree_new_find_node($merged_tree, UUID_DISTRIBUTION);
+    $distribution_nodes =& cdm_feature_tree_new_find_distributionNode($merged_tree);
 
-    if (isset($distribution_node -> facts-> items[0])) {
-        // 3. get the distributionInfoDTO ---- for the dto implementation this is not necessary anymore because the distributionInfoDTO is already part of the taxon-portal_dto
-        /*$query_parameters = cdm_distribution_filter_query();
-        $query_parameters['part'] = array('mapUriParams');
-        if(variable_get(DISTRIBUTION_CONDENSED)){
-            $query_parameters['part'][] = 'condensedDistribution';
-        }
-        if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
-            $query_parameters['part'][] = 'tree';
-        }
-        else {
-            $query_parameters['part'][] = 'elements';
-        }
-        $query_parameters['omitLevels'] = array();
-        foreach(variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid){
-            if(is_uuid($uuid)){
-                $query_parameters['omitLevels'][] = $uuid;
-            }
-        }
-        $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
-        if ($customStatusColorsJson) {
-            $query_parameters['statusColors'] = $customStatusColorsJson;
-        }
-*/
-        //$distribution_info_dto = cdm_ws_get(CDM_WS_PORTAL_DESCRIPTION_DISTRIBUTION_INFO_FOR, $taxon->uuid, queryString($query_parameters));
-        $distribution_info_dto = $distribution_node->facts->items[0];
+    foreach ($distribution_nodes as $distribution_node) {
+        if (isset($distribution_node->facts->items[0])) {
 
-        /*4. get distribution TextData is there are any TODO: remove this ws call!!!!
-        $distribution_text_data = cdm_ws_fetch_all(CDM_WS_DESCRIPTIONELEMENT_BY_TAXON,
-            array(
-                'taxon' => $taxon->uuid,
-                'type' => 'TextData',
-                'features' => UUID_DISTRIBUTION
-            )
-        );
+            $distribution_info_dto = $distribution_node->facts->items[0];
 
-
-        // 5. put all distribution data into the distribution feature node
-        if ($distribution_text_data //if text data exists
-            || ($distribution_info_dto && isset($distribution_info_dto->tree) && $distribution_info_dto->tree->rootElement->numberOfChildren > 0) // OR if tree element has distribution elements
-            || ($distribution_info_dto && !empty($distribution_info_dto->elements))
-        ) { // OR if DTO has distribution elements */
             $distribution_node->descriptionElements = array('#type' => 'DTO');
             if (isset($distribution_node->facts->items[1])) {
                 $distribution_node->descriptionElements['TextData'] = array_slice($distribution_node->facts->items, 1);
@@ -2454,7 +2417,8 @@ function merged_taxon_new_feature_tree($taxon) {
             if ($distribution_info_dto) {
                 $distribution_node->descriptionElements['DistributionInfoDTO'] = $distribution_info_dto;
             }
-        //}
+
+        }
     }
 
     // allows modifying the merged tree via a the hook_cdm_feature_node_block_content_alter

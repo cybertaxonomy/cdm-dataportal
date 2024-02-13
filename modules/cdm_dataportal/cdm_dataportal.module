@@ -1900,6 +1900,9 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
         return null;
     }
+    if ($taxon_dto->messages){
+        drupal_set_message($taxon_dto->messages[0]->message, strtolower($taxon_dto->messages[0]->type));
+    }
     cache_set('current_taxon', $taxon_dto);
     $taxonpage = new stdClass();
 
