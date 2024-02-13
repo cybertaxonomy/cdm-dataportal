@@ -2094,6 +2094,39 @@ function &cdm_feature_tree_new_find_node($feature_tree_nodes, $feature_uuid){
 }
 
 /**
+ * finds and returns the FeatureNodes for distributions
+ *
+ * @param $feature_tree_nodes
+ *    The nodes contained in CDM FeatureTree entitiy: $feature->root->childNodes
+ * @return object
+ *    the FeatureNode or null
+ */
+function &cdm_feature_tree_new_find_distributionNode($feature_tree_nodes){
+
+    // 1. scan this level
+    $nodes = array();
+    foreach ($feature_tree_nodes as $node){
+        if($node->facts->items[0]->clazz == 'DistributionInfoDto'){
+            $nodes[] = $node;
+        }
+    }
+
+    // 2. descend into childen do we need this in the new implementation???
+    foreach ($feature_tree_nodes as $node){
+        if(is_array($node->childNodes)){
+            $node = cdm_feature_tree_new_find_distributionNode($node->childNodes);
+            if($node) {
+                $nodes[] = $node;
+            }
+        }
+    }
+
+    return $nodes;
+}
+
+
+
+/**
  * Merges the given featureNodes structure with the descriptionElements.
  *
  * This method is used in preparation for rendering the descriptionElements.
