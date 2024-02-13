@@ -38,8 +38,11 @@
  */
 function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link = FALSE, $do_icon_link = FALSE) {
 
-  $citation = trim($reference->titleCache);
-
+  if (isset($reference->titleCache)){
+    $citation = trim($reference->titleCache);
+  }else{
+    $citation = trim($reference->label);
+  }
   $icon_link = "";
   if((isset($do_icon_link) && $do_icon_link === TRUE)) {
     $icon_link = cdm_internal_link(path_to_reference($reference->uuid));

@@ -922,12 +922,58 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     }
 
     if (isset($renderTemplate['secReferencePart'])){
-        if(isset($secref_tagged_text[1])){
-            $post_separator_markup = $is_reference_year ? '.': '';
-            if(isset($nom_status_tagged_text[count($nom_status_tagged_text) - 1]) && ($nom_status_tagged_text[count($nom_status_tagged_text) - 1]->type ==  'postSeparator')){
-                $post_separator_markup = cdm_tagged_text_to_markup(array($nom_status_tagged_text[count($nom_status_tagged_text) - 1 ]));
+        $annotations_and_sources = new AnnotationsAndSources();
+        if(isset($secref_tagged_text[1])) {
+            $post_separator_markup = $is_reference_year ? '.' : '';
+            if (isset($nom_status_tagged_text[count($nom_status_tagged_text) - 1]) && ($nom_status_tagged_text[count($nom_status_tagged_text) - 1]->type == 'postSeparator')) {
+                $post_separator_markup = cdm_tagged_text_to_markup(array($nom_status_tagged_text[count($nom_status_tagged_text) - 1]));
             }
-            //$annotations_and_sources = handle_annotations_and_sources($taxon_base->secSource);
+            $footnote_markup = '';
+            if (isset_not_empty($secref_name_inSource_tagged_text)){
+                $secRef_markup = cdm_tagged_text_to_markup($secref_name_inSource_tagged_text);
+            }
+            $foot_note_key_secRef = "";
+            if (isset($secref_tagged_text[1]->entityReference) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE) {
+                $footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($secref_tagged_text[1]->entityReference) . '</span>';
+//TODO: handle microReference
+                //if (isset($secref_tagged_text[1]->entityReference) ){//&& isset($taxon_base->secSource->citationMicroReference)) {
+                //    $footnote_markup .= (isset_not_empty($taxon_base->secSource->citationMicroReference) ? ': <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>' : '');
+                //}
+                if ($footnote_markup) {
+                    $foot_note_key_secRef = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
+                    if(isset($foot_note_key_secRef)){
+                        // the nomenclatural status footnote key refers to the source citation
+                        $annotations_and_sources->addFootNoteKey($foot_note_key_secRef);
+                        $secRef_markup.= $annotations_and_sources->footNoteKeysMarkup();
+                    }
+                }
+            }
+            if (isset($secref_tagged_text[1]->entityReference) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_INTERNAL_LINK) {
+
+                $icon_link = cdm_internal_link(path_to_reference($taxon_base->secSource->citation->uuid));
+                $secRef_markup = l($secRef_markup, path_to_reference($taxon_base->secSource->citation->uuid), array(
+                    'attributes' => array(
+                        "class" => "sec_reference",
+                    ),
+                    'absolute' => TRUE,
+                    'html' => TRUE,
+                ));
+                $secRef_markup .= $icon_link . '</span>';
+
+
+            }
+            array_setr('secReference',
+                $post_separator_markup
+                . '<span class="sec_reference">'
+                . join('', cdm_tagged_text_values($secref_tagged_text))
+                . $secRef_markup
+                . '</span>', $renderTemplate);
+
+        }
+
+
+
+            /*$annotations_and_sources = handle_annotations_and_sources($taxon_base->secSource);
             //$source_citations = $annotations_and_sources->getSourceReferences();
            // $foot_note_keys = $annotations_and_sources->footNoteKeysMarkup();
             array_setr('secReference',
@@ -936,8 +982,8 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                 . join('', cdm_tagged_text_values($secref_tagged_text))
                 . cdm_tagged_text_to_markup($secref_name_inSource_tagged_text)
                 //. $foot_note_keys
-                . '</span>', $renderTemplate);
-        }
+                . '</span>', $renderTemplate);*/
+
     }
 
     // Fill with protologues etc...
@@ -1052,6 +1098,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
     $annotations_and_sources = new AnnotationsAndSources();
     //*TODO
+
     if($nom_status_fkey){
         // the nomenclatural status footnote key refers to the source citation
         $annotations_and_sources->addFootNoteKey($nom_status_fkey);
