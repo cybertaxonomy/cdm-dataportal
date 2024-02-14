@@ -1128,7 +1128,9 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_typ
 
 
     $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
-    $partDefinition = get_partDefinition($name_type);
+    $currentTaxon = cache_get('current_taxon');
+
+    $partDefinition = get_partDefinition($currentTaxon->data->nameType);
 
     // Apply definitions to template.
     foreach ($renderTemplate as $part => $uri) {
@@ -2799,6 +2801,7 @@ function &get_preceding_contentElementKey($contentElementKey, array &$renderTemp
 }
 
 function nameTypeToDTYPE($dtype){
+
   static $nameTypeLabelMap = array(
     "ICNB" => "BacterialName",
     "ICNAFP" => "BotanicalName",
@@ -2811,7 +2814,11 @@ function nameTypeToDTYPE($dtype){
     "Plant" => "BotanicalName",
     "Algae" => "BotanicalName",
   );
-  return $nameTypeLabelMap[$dtype];
+  if(array_key_exists($dtype, $nameTypeLabelMap)){
+      return $nameTypeLabelMap[$dtype];
+  }
+  return '';
+
 
 }
 
