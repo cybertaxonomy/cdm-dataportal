@@ -322,12 +322,13 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
             if(!$sensu_reference){
                 drupal_set_message("Problem fetching sensu reference with uuid " . $sensu_uuid, 'error');
             }
-            if($sensu_strings['order_by_key'] != $sensu_reference->titleCache){
+            //TODO: Check whether this still needs to be handled
+           /*if($sensu_strings['order_by_key'] != $sensu_reference->titleCache){
                 $sensu_reference_markup = $sensu_strings['markup'];
                 $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
                 $footnote_key = render_footnote_key($footnote_key);
                 $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['shortCitation'] . $footnote_key . '</span>';
-            }
+            }*/
         }
     }
 
