@@ -74,14 +74,14 @@ function html_class_attribute_ref($cdm_entity) {
 
       // DTOs
 
-      if (isset_not_empty($cdm_entity) && !is_array($cdm_entity) && isset_not_empty($cdm_entity->nameType) && isset_not_empty($cdm_entity->uuid)) {
+      if (isset_not_empty($cdm_entity) && !is_array($cdm_entity) && isset($cdm_entity->nameType) && isset_not_empty($cdm_entity->uuid)) {
           $attributes = "cdm:" . $cdm_entity->nameType . " uuid:" . $cdm_entity->uuid;
-      }elseif(isset_not_empty($cdm_entity) && !is_array($cdm_entity) && isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)){
+      }elseif(isset_not_empty($cdm_entity) && !is_array($cdm_entity) && isset($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)){
             //entityReference
           $attributes = "cdm:" . $cdm_entity->type ." uuid:" . $cdm_entity->uuid;
-      }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset_not_empty($cdm_entity->typedLabel[0] )){
-          $attributes = "cdm:" . $cdm_entity->typedLabel[0]->cdmClass . " uuid:" . $cdm_entity->uuid;
-      }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset_not_empty($cdm_entity->facts )){
+      }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->label )){
+          $attributes = "cdm:" . $cdm_entity->label . " uuid:" . $cdm_entity->uuid;
+      }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->facts )){
           //maybe change to the specific feature?
           $attributes = "cdm:Feature"  . " uuid:" . $cdm_entity->uuid;
       }

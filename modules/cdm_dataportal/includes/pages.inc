@@ -796,7 +796,7 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
     if (!taxon_page_tabs_hidden_check('experts') && ($page_part == 'experts' || $page_part == 'all')) {
         $render_array['experts'] = array(
             '#prefix' => '<div id="experts" class="page-part">' . ($page_part == 'all' ? '<h2>' . t(cdm_taxonpage_tab_label('Experts')) . '</h2>' : ''),
-            'content' => compose_cdm_taxon_page_experts($taxon_dto), // returns render array
+            'content' => compose_cdm_taxon_page_new_experts($taxon_dto), // returns render array
             '#suffix' => '</div>',
         );
     }
@@ -1560,6 +1560,81 @@ function compose_cdm_taxon_page_experts($taxon){
 
 
   return $render_array;
+}
+function compose_cdm_taxon_page_new_experts($taxon){
+
+    $render_array = array();
+    if(!isset($taxon->uuid)){
+        return $render_array;
+    }
+
+    $current_classification_uuid = get_current_classification_uuid();
+    // TODO use cdm_ws_fetchall below but this failes! needs fix!
+    $taxon_node = get_node_in_classification($taxon, $current_classification_uuid);
+    $taxon_node_agent_relations = $taxon_node->agents;
+
+    $header = array(
+        array('data' => t('Expert')),
+        array('data' => t('Role'))
+    );
+    $rows = array();
+
+
+    foreach($taxon_node_agent_relations->items as $taxon_node_agent_relation){
+
+
+        $expert_role_id = $taxon_node_agent_relation->uuid . '-' . $taxon_node_agent_relation->typeUuid;
+        $expert_details_container_id = 'expert_details_' . $expert_role_id;
+
+        $agent_label_markup = cdm_dynabox(
+            'expert_' . $expert_role_id,
+            $taxon_node_agent_relation->agent,
+            // specifying both ends of the relationship will return only one record in the pager
+            cdm_compose_ws_url(CDM_WS_PORTAL_AGENT,
+                array($taxon_node_agent_relation->uuid, 'taxonNodeAgentRelations'),
+                'taxon_uuid=' . $taxon->uuid . '&relType_uuid=' . $taxon_node_agent_relation->typeUuid),
+            'cdm_taxon_expert',
+            'Click for details',
+            array('div', 'div'),
+            array(), // attributes
+            '#' . $expert_details_container_id // $content_element_selector
+        );
+
+        // Expert and Role
+        $rows[] = array(
+            'data' => array(
+                array(
+                    'data' => $agent_label_markup,
+                    'class' => array(html_class_attribute_ref($taxon_node_agent_relation))
+                ),
+                array(
+                    'data' => $taxon_node_agent_relation->type,
+                    'class' => array(html_class_attribute_ref($taxon_node_agent_relation->type))
+                )
+            )
+        );
+        // Agent details
+        $rows[] = array(
+            'data' => array(
+                array(
+                    'data' => '<!-- expert_details_container -->',
+                    'id' => $expert_details_container_id,
+                    'colspan' => 2
+                )
+            )
+        );
+
+    }
+
+
+    $render_array['experts_table'] = array(
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => $rows,
+    );
+
+
+    return $render_array;
 }
 
 
