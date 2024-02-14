@@ -2113,7 +2113,7 @@ function &cdm_feature_tree_new_find_distributionNode($feature_tree_nodes){
 
     // 2. descend into childen do we need this in the new implementation???
     foreach ($feature_tree_nodes as $node){
-        if(is_array($node->childNodes)){
+        if(isset($node->childNodes) && is_array($node->childNodes)){
             $node = cdm_feature_tree_new_find_distributionNode($node->childNodes);
             if($node) {
                 $nodes[] = $node;

@@ -923,6 +923,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
     if (isset($renderTemplate['secReferencePart'])){
         $annotations_and_sources = new AnnotationsAndSources();
+        $secRef_markup = "";
         if(isset($secref_tagged_text[1])) {
             $post_separator_markup = $is_reference_year ? '.' : '';
             if (isset($nom_status_tagged_text[count($nom_status_tagged_text) - 1]) && ($nom_status_tagged_text[count($nom_status_tagged_text) - 1]->type == 'postSeparator')) {

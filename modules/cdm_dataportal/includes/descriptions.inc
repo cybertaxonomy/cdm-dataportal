@@ -734,7 +734,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
              * Content/DISTRIBUTION.
              */
 
-            if (isset($feature_node->descriptionElements["DistributionInfoDTO"]) || $feature_node->uuid == UUID_DISTRIBUTION) {
+            if (isset($feature_node->descriptionElements["DistributionInfoDTO"]) ) {
                 $block = compose_feature_block_distribution($taxon, $feature_node->descriptionElements, $feature_node);
                 $block_content_is_empty = FALSE;
             }
