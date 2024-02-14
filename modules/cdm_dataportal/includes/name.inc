@@ -2628,7 +2628,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
             $show_name_cache_only = FALSE;
             foreach ($non_nec_name_rels as $name_rel) {
 
-                $is_inverse_relation = $name_rel->isInverse;
+                $is_inverse_relation = $name_rel->inverse;
                 $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
                 $relationship_markup = name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type, $show_name_cache_only);
                 $label = $name_rel->relType;
