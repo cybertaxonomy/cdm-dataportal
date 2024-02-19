@@ -352,8 +352,8 @@ function compose_cdm_gathering_dto_details($gathering_dto, $full_details = FALSE
 
   $table_row_data = [];
   if (isset_not_empty($gathering_dto->date)) {
-    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('date'),
-      partialToDate($gathering_dto->date));
+    $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('date'),$gathering_dto->date);
+      //partialToDate($gathering_dto->date));
   }
   if (isset_not_empty($gathering_dto->collector)) {
     $table_row_data[] = cdm_sob_dto_table_row(cdm_occurrence_field_name_label('collector'),
