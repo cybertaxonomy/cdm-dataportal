@@ -45,7 +45,7 @@ function compose_cdm_taxon_page_specimens($taxon) {
       // get fieldUnitDTOs
 
       $root_unit_dtos = cdm_ws_get(CDM_WS_PORTAL_TAXON_ROOTUNIT_DTOS, array( $taxon->uuid), queryString($query_parameters));
-      $root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
+      //$root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
     } else {
       // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
       // extend by associated taxas occurrences
@@ -197,8 +197,9 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
     $current_view_mode = variable_get(CDM_SPECIMEN_LIST_VIEW_MODE, CDM_SPECIMEN_LIST_VIEW_MODE_DEFAULT);
     if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
         // get fieldUnitDTOs
-        $root_unit_dtos = $taxon_dto->specimens-> items;
-        $root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
+        //$root_unit_dtos = $taxon_dto->rootSpecimens-> items;
+        $root_unit_dtos = $taxon_dto->rootSpecimens;
+        //$root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
     } else {
         // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
         // extend by associated taxas occurrences
@@ -665,8 +666,8 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
 
     // --- GET specimensOrObservations --- //
    // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon_dto->uuid, 'specimensOrObservationsCount'));
-    $specimensOrObservations = $taxon_dto -> specimens;
-    $specimensOrObservationsCount = $specimensOrObservations != null ? $specimensOrObservations -> count : 0;
+    $specimensOrObservations = $taxon_dto -> rootSpecimens;
+    $specimensOrObservationsCount = $specimensOrObservations != null ? sizeof($specimensOrObservations): 0;
     if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
         taxon_page_tabs_hidden_add('specimens');
     }
