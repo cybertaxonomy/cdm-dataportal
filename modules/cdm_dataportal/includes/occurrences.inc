@@ -1019,7 +1019,7 @@ function compose_compressed_specimen_derivate_table($root_units) {
    $sob_dto = $root_unit_uuid;
     if ($sob_dto) {
       //summary row
-      if($sob_dto->type == "eu.etaxonomy.cdm.model.occurrence.FieldUnit" ) {
+      if($sob_dto->type == "FieldUnit" ) {
         if ( ($sob_dto->country == "" && $sob_dto->collectingString == ""))  {
             $rows[] = array(
                 'id' => 'derivate_summary' . $rowcount, // summary row id
