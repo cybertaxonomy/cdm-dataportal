@@ -45,7 +45,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
         }
     }
     if ($derived_unit_dto->preferredStableUri) {
-        $stableIdentifierLink = l($derived_unit_dto->preferredStableUri, $derived_unit_dto->preferredStableUri);
+        $stableIdentifierLink = l($derived_unit_dto->preferredStableUri->javaUri, $derived_unit_dto->preferredStableUri->javaUri);
         $detail_html .= create_label("Preferred stable URI") . $stableIdentifierLink . "<br>";
     }
     if ($with_full_details) {
@@ -1019,7 +1019,7 @@ function compose_compressed_specimen_derivate_table($root_units) {
    $sob_dto = $root_unit_uuid;
     if ($sob_dto) {
       //summary row
-      if($sob_dto->class == "FieldUnitDTO" ) {
+      if($sob_dto->type == "eu.etaxonomy.cdm.model.occurrence.FieldUnit" ) {
         if ( ($sob_dto->country == "" && $sob_dto->collectingString == ""))  {
             $rows[] = array(
                 'id' => 'derivate_summary' . $rowcount, // summary row id
@@ -1070,7 +1070,7 @@ function compose_compressed_specimen_derivate_table($root_units) {
                         'class' => array('summary_row_cell')
                     ),
                     array(
-                        'data' => partialToDate($sob_dto->date),
+                        'data' => $sob_dto->date,
                         'class' => array('summary_row_cell')
                     ),
                     array(
