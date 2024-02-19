@@ -65,13 +65,13 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         assertEquals(4, duTree.getRootNodes().size());
         BaseElement rootNodeHeader1 = duTree.getRootNodes().get(0).getHeader();
-        assertEquals("Germany, Berlin, 2 Apr 1835", rootNodeHeader2.getText());
+        assertEquals("Germany, Berlin, 2 Apr 1835", rootNodeHeader1.getText());
         BaseElement rootNodeHeader2 = duTree.getRootNodes().get(1).getHeader();
-        assertEquals("Kusber, W.-H. 12", rootNodeHeader3.getText());
+        assertEquals("Kusber, W.-H. 12", rootNodeHeader2.getText());
         BaseElement rootNodeHeader3 = duTree.getRootNodes().get(2).getHeader();
-        assertEquals("Ehrenberg, C.G. D047", rootNodeHeader4.getText());
+        assertEquals("Ehrenberg, C.G. D047", rootNodeHeader3.getText());
         BaseElement rootNodeHeader4 = duTree.getRootNodes().get(3).getHeader();
-        assertEquals("B SP-99999", rootNodeHeader1.getText());
+        assertEquals("B SP-99999", rootNodeHeader4.getText());
     }
 
     @Test
