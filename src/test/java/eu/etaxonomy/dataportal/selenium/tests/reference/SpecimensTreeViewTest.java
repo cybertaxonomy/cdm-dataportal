@@ -130,7 +130,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Gathering & Location", gatheringTable.getHeaderText());
         assertEquals("Germany", gatheringTable.getDetailsValueCellText("Country"));
         assertEquals("Berlin, Schlachtensee", gatheringTable.getDetailsValueCellText("Locality"));
-        assertEquals("2012-03-12", gatheringTable.getDetailsValueCellText("Date"));
+        assertEquals("12 Mar 2012", gatheringTable.getDetailsValueCellText("Date"));
 
         // ---- sub node 1
         subNode1.getHeader().getElement().click(); // make the  content visible
@@ -190,7 +190,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         DetailsTable gatheringTable = rootNode.getDetailsTable(DetailsTable.tableClassAttrFrom("Gathering & Location"));
         assertEquals("Gathering & Location", gatheringTable.getHeaderText());
-        assertEquals("2016-03-28", gatheringTable.getDetailsValueCellText("Date"));
+        assertEquals("28 Mar 2016", gatheringTable.getDetailsValueCellText("Date"));
         assertEquals("Ehrenberg, C.G.", gatheringTable.getDetailsValueCellText("Collector"));
         assertEquals("Berlin", gatheringTable.getDetailsValueCellText("Locality"));
         assertEquals("Germany", gatheringTable.getDetailsValueCellText("Country"));
