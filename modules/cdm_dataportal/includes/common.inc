@@ -974,7 +974,7 @@ function isset_not_empty(&$var, $numerical_non_zero = FALSE){
     if($numerical_non_zero){
       return $var;
     } else {
-      true;
+      return true;
     };
   } else if(is_array($var)){
     return count($var) > 0;
