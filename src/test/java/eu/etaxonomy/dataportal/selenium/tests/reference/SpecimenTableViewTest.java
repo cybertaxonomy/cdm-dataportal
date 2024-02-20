@@ -119,7 +119,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         List<WebElement> cells  = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
-        assertEquals("1835-04-02", cells.get(2).getText());
+        assertEquals("02 Apr 1835", cells.get(2).getText());
         assertEquals("", cells.get(3).getText());
         assertEquals("BHUPM", cells.get(4).getText());
         // all other empty, TODO check if this is correct or if some data is being missed here
@@ -144,7 +144,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         // cell number 1 has colspan = 5 !!!
         //assertTrue(cells.get(2).findElement(By.tagName("img")).getAttribute("src")
           //      .endsWith(STEP_DONE_ICON)); // scan
-        assertEquals("2012-03-12", cells.get(2).getText());
+        assertEquals("12 Mar 2012", cells.get(2).getText());
         assertEquals("Kusber, W.-H. 12", cells.get(3).getText());
         ++rowId;
 
@@ -153,7 +153,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
-        assertEquals("2016-03-28", cells.get(2).getText());
+        assertEquals("28 Mar 2016", cells.get(2).getText());
         assertEquals("Ehrenberg, C.G. D047", cells.get(3).getText());
          // Only two preserved specimes exepectet in the collection statistics"
         assertEquals("B(2), CEDiT, M(3), XKCD", cells.get(4).getText());
