@@ -501,7 +501,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       };
       $footnote_markup = '';
       $secRef_markup = cdm_tagged_text_to_markup($secref_name_inSource_tagged_text);
-        if (isset($taxon_base->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE && !$is_for_search) {
+        if (isset($taxon_base->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE ) {
             $footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($taxon_base->secSource->citation) . '</span>';
 
             if (isset($taxon_base->secSource->citation) && isset($taxon_base->secSource->citationMicroReference)) {
@@ -536,7 +536,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
   // Fill with protologues etc...
   $protologue_links = [];
-  if (array_setr('description', TRUE, $renderTemplate) && !$is_for_search) {
+  if (array_setr('description', TRUE, $renderTemplate) ) {
     $external_links = cdm_ws_get(CDM_WS_NAME_PROTOLOGUE_LINKS, $taxon_name->uuid);
     if($external_links){
       foreach ($external_links as $link) {
@@ -649,7 +649,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // the nomenclatural status footnote key refers to the source citation
     $annotations_and_sources->addFootNoteKey($nom_status_additional_source_fkey);
   }
-  if ($show_taxon_name_annotations && !$is_for_search) {
+  if ($show_taxon_name_annotations ) {
     if($taxon_base){
       $annotations_and_sources = handle_annotations_and_sources($taxon_base,
         null, null, $annotations_and_sources);
