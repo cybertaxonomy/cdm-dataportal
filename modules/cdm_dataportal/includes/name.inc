@@ -276,7 +276,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   $nom_status_additional_source_fkey = null; //FootNoteKey for additional source
   if(isset($taxon_name_or_taxon_base->class) && ($taxon_name_or_taxon_base->class == 'Taxon' || $taxon_name_or_taxon_base->class == 'Synonym')){
     $taxon_base = $taxon_name_or_taxon_base;
-    if(isset($taxon_name_or_taxon_base->name)){
+    if(isset($taxon_name_or_taxon_base->name) ){
       $taxon_name = $taxon_name_or_taxon_base->name;
     } else {
       $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base->uuid));
@@ -501,7 +501,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
       };
       $footnote_markup = '';
       $secRef_markup = cdm_tagged_text_to_markup($secref_name_inSource_tagged_text);
-        if (isset($taxon_base->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE) {
+        if (isset($taxon_base->secSource) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE && !$is_for_search) {
             $footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($taxon_base->secSource->citation) . '</span>';
 
             if (isset($taxon_base->secSource->citation) && isset($taxon_base->secSource->citationMicroReference)) {
@@ -536,7 +536,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
   // Fill with protologues etc...
   $protologue_links = [];
-  if (array_setr('description', TRUE, $renderTemplate)) {
+  if (array_setr('description', TRUE, $renderTemplate) && !$is_for_search) {
     $external_links = cdm_ws_get(CDM_WS_NAME_PROTOLOGUE_LINKS, $taxon_name->uuid);
     if($external_links){
       foreach ($external_links as $link) {
@@ -598,8 +598,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
   }
   $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base)
-    . '" data-cdm-ref="/name/' . $taxon_name->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
-   // . '" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
+   .'" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
   foreach ($renderTemplate as $partName => $part) {
     $separator = '';
     $partHtml = '';
@@ -650,7 +649,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // the nomenclatural status footnote key refers to the source citation
     $annotations_and_sources->addFootNoteKey($nom_status_additional_source_fkey);
   }
-  if ($show_taxon_name_annotations) {
+  if ($show_taxon_name_annotations && !$is_for_search) {
     if($taxon_base){
       $annotations_and_sources = handle_annotations_and_sources($taxon_base,
         null, null, $annotations_and_sources);
@@ -1058,8 +1057,8 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
         $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
     }
     $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base_dto)
-        . '" data-cdm-ref="/name/' . $taxon_name_or_taxon_base_dto->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
-    // . '" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
+     //   . '" data-cdm-ref="/name/' . $taxon_name_or_taxon_base_dto->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
+     . '" data-cdm-ref="/name/' . $taxon_name_or_taxon_base_dto->uuid . '">';
     foreach ($renderTemplate as $partName => $part) {
         $separator = '';
         $partHtml = '';
@@ -1223,8 +1222,8 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_typ
         $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
     }
     $out .= '<span class="' . "TaxonName"
-        . '" data-cdm-ref="/name/' . $taxon_name_uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
-    // . '" data-cdm-ref="/name/' . $taxon_name->uuid . '">';
+     //   . '" data-cdm-ref="/name/' . $taxon_name_uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
+     . '" data-cdm-ref="/name/' . $taxon_name_uuid . '">';
     foreach ($renderTemplate as $partName => $part) {
         $separator = '';
         $partHtml = '';
