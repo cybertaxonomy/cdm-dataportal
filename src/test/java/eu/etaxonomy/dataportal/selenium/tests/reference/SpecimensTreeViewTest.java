@@ -77,7 +77,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     @Test
     public void testDerivationTree1() {
 
-        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(0);
+        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(3);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
         DerivedUnitTreeNode subNode3 = rootNode.getSubNodes().get(2);
@@ -108,7 +108,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     @Test
     public void testDerivationTree2() {
 
-        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(2);
+        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(1);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
 
         assertEquals("Kusber, W.-H. 12", rootNode.getHeader().getText());
@@ -155,7 +155,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     @Test
     public void testDerivationTree3() {
 
-        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(3);
+        DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(2);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
         DerivedUnitTreeNode subNode1_1 = subNode1.getSubNodes().get(0);
         DerivedUnitTreeNode subNode1_2 = subNode1.getSubNodes().get(1);
