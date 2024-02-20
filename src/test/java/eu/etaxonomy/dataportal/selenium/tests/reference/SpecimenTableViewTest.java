@@ -119,7 +119,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertTrue(rows.get(rowId).getAttribute("class").contains("summary_row"));
         List<WebElement> cells  = rows.get(rowId).findElements(By.tagName("td"));
         assertEquals("Germany", cells.get(1).getText());
-        assertEquals("02 Apr 1835", cells.get(2).getText());
+        assertEquals("2 Apr 1835", cells.get(2).getText());
         assertEquals("", cells.get(3).getText());
         assertEquals("BHUPM", cells.get(4).getText());
         // all other empty, TODO check if this is correct or if some data is being missed here
