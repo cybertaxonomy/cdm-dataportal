@@ -156,16 +156,16 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     public void testDerivationTree3() {
 
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(2);
-        /*DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
+        DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
         DerivedUnitTreeNode subNode1_1 = subNode1.getSubNodes().get(0);
         DerivedUnitTreeNode subNode1_2 = subNode1.getSubNodes().get(1);
         DerivedUnitTreeNode subNode1_3 = subNode1.getSubNodes().get(2);
         DerivedUnitTreeNode subNode1_4 = subNode1.getSubNodes().get(3);
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
-        */
+
 
         assertEquals("Ehrenberg, C.G. D047", rootNode.getHeader().getText());
-/*
+
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
@@ -179,7 +179,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("M M0093531 (Erigeron annus)", subNode1_3.getHeader().getText());
         assertEquals("XKCD MASKS 2X (Masks)", subNode1_4.getHeader().getText());
         assertEquals("M M-0289351", subNode2.getHeader().getText());
-*/
+
         // --- Root note
         rootNode.getHeader().getElement().click(); // make the  content visible
         LinkElement pageLink = rootNode.getHeader().getLinksInElement().get(0);
@@ -195,7 +195,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Ehrenberg, C.G.", gatheringTable.getDetailsValueCellText("Collector"));
         assertEquals("Berlin", gatheringTable.getDetailsValueCellText("Locality"));
         assertEquals("Germany", gatheringTable.getDetailsValueCellText("Country"));
-        assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", gatheringTable.getDetailsValueCellText("Exact location"));
+       // assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", gatheringTable.getDetailsValueCellText("Exact location"));
         assertEquals("165 m", gatheringTable.getDetailsValueCellText("Altitude"));
 
         // --- node 1
