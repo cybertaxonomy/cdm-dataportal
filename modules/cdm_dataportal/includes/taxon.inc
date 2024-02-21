@@ -928,7 +928,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       if (isset($taxon->name->nomenclaturalSource->citation)) {
         $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
       }
-      $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri);
+      $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
       if ($show_classification) {
         $out .= render_classifications_for_taxon($taxon);
       }
