@@ -908,11 +908,11 @@ function render_cdm_entity_link($cdm_entity) {
  *
  * @return string
  */
-function render_point($point, $do_link_to_geohack = true, $geohack_link_pagename = ''){
-  if(!isset($point->sexagesimalString)){
+function render_pointDto($point, $do_link_to_geohack = true, $geohack_link_pagename = ''){
+  if(!isset($point->label)){
     return '';
   }
-  $markup = $point->sexagesimalString;
+  $markup = $point->label;
   if($do_link_to_geohack) {
     // see https://www.mediawiki.org/wiki/GeoHack
     $geohack_url = sprintf(
@@ -925,12 +925,40 @@ function render_point($point, $do_link_to_geohack = true, $geohack_link_pagename
   if(isset($point->errorRadius) && $point->errorRadius){
     $markup .= ' +/-' . $point->errorRadius . ' m';
   }
-  if(isset($point->referenceSystem) && $point->referenceSystem){
-    $refsystem = '(' . $point->referenceSystem->representation_L10n . ')';
+  if(isset($point->referenceSystemLabel) && $point->referenceSystemLabel){
+    $refsystem = '(' . $point->referenceSystemLabel . ')';
     $markup = str_replace($refsystem, '', $markup);
     $markup .= ' ' . $refsystem;
   }
   return $markup;
+}
+
+function render_point($point, $do_link_to_geohack = true, $geohack_link_pagename = ''){
+    if (isset($point->class) && $point->class == "PointDTO"){
+        return render_pointDto($point, $do_link_to_geohack, $geohack_link_pagename);
+    }
+    if(!isset($point->sexagesimalString)){
+        return '';
+    }
+    $markup = $point->sexagesimalString;
+    if($do_link_to_geohack) {
+        // see https://www.mediawiki.org/wiki/GeoHack
+        $geohack_url = sprintf(
+            "https://geohack.toolforge.org/geohack.php?language=en&params=%f;%f&pagename=%s",
+            $point->latitude,
+            $point->longitude,
+            $geohack_link_pagename);
+        $markup = l($markup, $geohack_url, ['attributes' => ['target' => 'geohack']]);
+    }
+    if(isset($point->errorRadius) && $point->errorRadius){
+        $markup .= ' +/-' . $point->errorRadius . ' m';
+    }
+    if(isset($point->referenceSystem) && $point->referenceSystem){
+        $refsystem = '(' . $point->referenceSystem->representation_L10n . ')';
+        $markup = str_replace($refsystem, '', $markup);
+        $markup .= ' ' . $refsystem;
+    }
+    return $markup;
 }
 
 /**
