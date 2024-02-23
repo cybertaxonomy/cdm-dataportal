@@ -320,8 +320,13 @@ function relationship_filter_query_parameters()
 
 function create_html_link($link, $openInExternalWindow=false){
     $html = "";
-    if($link->uri && $link->uri!=""){
-        $html .= '<a  href="' . $link->uri . '"';
+    if(isset_not_empty($link->uri)){
+        if (isset_not_empty($link->uri->javaUri)){
+            $html .= '<a  href="' . $link->uri->javaUri . '"';
+        }else{
+            $html .= '<a  href="' . $link->uri . '"';
+        }
+
         if($openInExternalWindow){
             $html .= ' target="_blank"';
         }

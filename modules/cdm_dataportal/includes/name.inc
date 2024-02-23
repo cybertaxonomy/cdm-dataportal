@@ -268,7 +268,7 @@ function get_partDefinition($taxonNameType) {
  *  The markup for a taxon name.
  */
 function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $reference_link = NULL,
-  $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
+  $show_taxon_name_annotations = true, $showRegistrations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
 
   $is_doubtful = false;
   $taxon_base = null;
@@ -409,10 +409,12 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
 
   // Fill with reference.
   if (isset($renderTemplate['referencePart']) && !$is_type_designation) {
+      $registration_markup ="";
 
-    $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
-    $registration_markup = render_registrations($registrations);
-
+    if ($showRegistrations) {
+        $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
+        $registration_markup = render_registrations($registrations);
+    }
     // default separator
     $separator = '';
 
@@ -424,7 +426,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         // drupal message for debugging of #9599
         // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
         //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
-        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->citation->uuid, $microreference);
+        //$citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->nomenclaturalCitation);
+          $citation = $taxon_name->nomenclaturalSource->nomenclaturalCitation;
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
         if (str_beginsWith($citation, ", in")) {
@@ -1630,7 +1633,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
         if (isset($name_type_designation->typeName->nomenclaturalSource->citation)) {
           $referenceUri = url(path_to_reference($name_type_designation->typeName->nomenclaturalSource->citation->uuid));
         }
-        $out .= ': ' . render_taxon_or_name($name_type_designation->typeName, $link_to_name_page, $referenceUri, TRUE, TRUE);
+        $out .= ': ' . render_taxon_or_name($name_type_designation->typeName, $link_to_name_page, $referenceUri, TRUE, true, TRUE);
       }
       RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
       $annotations_and_sources = handle_annotations_and_sources($name_type_designation);
