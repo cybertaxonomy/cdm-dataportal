@@ -503,9 +503,9 @@ function cdm_taxontree_build_tree($taxonUuid = NULL, $hideOtherConcepts = TRUE, 
   // TODO Remove $hideOtherConcepts from method signature.
   if (is_null($vid)) {
     //  TODO remove case, see #7565
-    if ($taxonUuid) {
-      $taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxonUuid);
-    }
+    //if ($taxonUuid) {
+      //$taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON, $taxonUuid);
+    //}
 
     $compact_tree = cdm_taxontree_filters_active() && _get_compact_mode() != 'expanded';
   }
