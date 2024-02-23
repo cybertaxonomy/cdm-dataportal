@@ -321,7 +321,7 @@ function relationship_filter_query_parameters()
 function create_html_link($link, $openInExternalWindow=false){
     $html = "";
     if(isset_not_empty($link->uri)){
-        if (isset_not_empty($link->uri->javaUri)){
+        if (!is_string($link->uri) && isset_not_empty($link->uri->javaUri)){
             $html .= '<a  href="' . $link->uri->javaUri . '"';
         }else{
             $html .= '<a  href="' . $link->uri . '"';
