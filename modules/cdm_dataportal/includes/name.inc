@@ -426,7 +426,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         // drupal message for debugging of #9599
         // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
         //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
-        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->nomenclaturalCitation->uuid, $microreference);
+        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->citation->uuid, $microreference);
 
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
@@ -700,7 +700,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
  *  The markup for a taxon name.
  */
 function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NULL, $reference_link = NULL,
-                              $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
+                              $show_taxon_name_annotations = true, $showRegistrations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
 {
 
     $is_doubtful = false;
@@ -843,9 +843,12 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
     // Fill with reference.
     if (isset($renderTemplate['referencePart']) && !$is_type_designation) {
-
-       // $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
-        //$registration_markup = render_registrations($registrations);
+        $registration_markup = "";
+        if ($showRegistrations){
+            $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
+            $registration_markup = render_registrations($registrations);
+        }
+       //
 
         // default separator
         $separator = '';
@@ -876,7 +879,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
           //  } else {
                 // this is the case for taxon names
                 $options['html']= true;
-                $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text, $skiptags = array(), $tag = 'span', $options);
+                $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text, $skiptags = array(), $tag = 'span', $options). $registration_markup;
           //  }
 
             array_setr('reference', $referenceArray, $renderTemplate);
