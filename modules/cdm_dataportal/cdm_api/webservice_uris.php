@@ -72,7 +72,7 @@ const CDM_WS_PORTAL_TAXON_MEDIA = 'portal/taxon/$0/media';
 const CDM_WS_PORTAL_TAXON_SUBTREE_MEDIA = 'portal/taxon/$0/subtree/media';
 
 const CDM_WS_PORTAL_TAXON_TAXONNODES = 'portal/taxon/$0/taxonNodes';
-const CDM_WS_PORTAL_TAXON_FIND = 'portal/taxon/find';
+const CDM_WS_PORTAL_TAXON_FIND = 'portal/taxon/findDto';
 const CDM_WS_PORTAL_TAXON_SEARCH = 'portal/taxon/search';
 const CDM_WS_TAXON_SEARCH = 'taxon/search';
 const CDM_WS_PORTAL_TAXON_FINDBY_DESCRIPTIONELEMENT_FULLTEXT = 'portal/taxon/findByDescriptionElementFullText';

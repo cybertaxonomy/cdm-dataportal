@@ -832,7 +832,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   // .. Well, for sure not as performant as before, but better than nothing.
   $misapplied_uuids = array();
   foreach ($taxon_list as $taxon) {
-    if (!_cdm_dataportal_acceptedByCurrentView($taxon)) {
+    if ($taxon->entity->class == 'Taxon' && !_cdm_dataportal_acceptedByCurrentView($taxon)) {
       // Assuming that it is a misapplied name, will be further examined below.
       $misapplied_uuids[$taxon->uuid] = $taxon->uuid;
     }
@@ -860,7 +860,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   $itemCnt = -1;
   foreach ($taxon_list as $taxon) {
       $itemCnt++;
-      if ($taxon->class == "Synonym") {
+      if ($taxon->entity->class == "Synonym") {
           $synonym = $taxon;
           $taxonUri = uri_to_synonym($synonym->uuid, $synonym->acceptedTaxonUuid);
           $taxon_type = TAXON_TYPE_SYNONYM;
@@ -907,7 +907,12 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
                   }
               }
           }else{
-              $taxonUri = url(path_to_taxon($taxon->uuid));
+              if (isset_not_empty($taxon->uuid)){
+                  $taxonUri = url(path_to_taxon($taxon->uuid));
+              }else if (isset_not_empty($taxon->entity) && isset_not_empty($taxon->entity->uuid)){
+                  $taxonUri = url(path_to_taxon($taxon->entity->uuid));
+              }
+
               $taxon_type = "Taxon";
           }
 
@@ -918,7 +923,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       }
       //$out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
       $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
-      $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
+      $out .= "<div class=\"item " . $taxon_type . "\">" . render_new_taxon_or_name($taxon, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
       if ($show_classification) {
           $out .= render_classifications_for_taxon($taxon);
       }

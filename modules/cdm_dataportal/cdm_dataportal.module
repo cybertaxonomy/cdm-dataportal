@@ -2922,7 +2922,12 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
     $taxon_nodes = $taxon->taxonNodes;
   }
   else {
-    $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->uuid);
+      if (isset_not_empty($taxon->entity) && isset_not_empty($taxon->entity->uuid)){
+          $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->entity->uuid);
+      }else{
+          $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->uuid);
+      }
+
   }
 
   $taxon_node_classification_uuids = [];
