@@ -59,7 +59,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
 
     @Test
     public void testPageTitle()  {
-        assertEquals(getContext().prepareTitle("Glenodinium apiculatum"), p.getTitle());
+        assertEquals(getContext().prepareTitle("Glenodinium apiculatum"), driver.getTitle());
     }
 
     // @Test no point testing for the tab, the reference portal is set up being tab-less
@@ -155,7 +155,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Germany", cells.get(1).getText());
         assertEquals("28 Mar 2016", cells.get(2).getText());
         assertEquals("Ehrenberg, C.G. D047", cells.get(3).getText());
-         // Only two preserved specimes exepectet in the collection statistics"
+         // Only two preserved specimens expected in the collection statistics"
         assertEquals("B(2), CEDiT, M(3), XKCD", cells.get(4).getText());
         assertTrue(cells.get(5).findElement(By.tagName("img")).getAttribute("src")
                 .endsWith(STEP_DONE_ICON));

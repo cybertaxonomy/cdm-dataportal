@@ -152,18 +152,18 @@
                 return $(this).text().match(rexgexp);
             });
 
-            // --- highlite the matching text
+            // --- highlight the matching text
             matching_items.each(function(){
                 var matching_label = $(this).find('.child-label');
                 var matching_snippet = matching_label.text().match(rexgexp);
                 if(matching_snippet && matching_snippet.length > 0){
-                    // NOTE this will only highlite the first match in the string
+                    // NOTE this will only highlight the first match in the string
                     matching_label.html(matching_label.text().replace(matching_snippet[0], '<span class="highlite">' + matching_snippet[0] + '</span>'));
                 }
                 var matching_label_abbrev = $(this).find('.child-label-abbreviated');
                 matching_snippet = matching_label_abbrev.text().match(rexgexp);
                 if(matching_snippet && matching_snippet.length > 0){
-                  // NOTE this will only highlite the first match in the string
+                  // NOTE this will only highlight the first match in the string
                   matching_label_abbrev.html(matching_label_abbrev.text().replace(matching_snippet[0], '<span class="highlite">' + matching_snippet[0] + '</span>'));
                 }
             });
