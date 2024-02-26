@@ -426,7 +426,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         // drupal message for debugging of #9599
         // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
         //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
-        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->nomenclaturalCitation);
+        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->nomenclaturalCitation->uuid, $microreference);
 
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
@@ -710,7 +710,9 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     $taxon_base = $taxon_name_or_taxon_base_dto;
     if (isset($taxon_name_or_taxon_base_dto->taggedName)) {
         $tagged_name = $taxon_name_or_taxon_base_dto->taggedName;
-    } else {
+    } else if ($taxon_name_or_taxon_base_dto->entity->name->taggedName){
+        $tagged_name = $taxon_name_or_taxon_base_dto->entity->name->taggedName;
+    }else {
         $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base_dto->uuid));
     }
     if (isset($taxon_name_or_taxon_base_dto->doubtful)){
@@ -720,7 +722,9 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     // use the TaxonBase.tagged_title so we have the secRef
     if (isset($taxon_name_or_taxon_base_dto->taggedLabel)){
         $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
-    }else{
+    }else if ($taxon_name_or_taxon_base_dto->entity->taggedTitle){
+        $tagged_title = $taxon_name_or_taxon_base_dto->entity->taggedTitle;
+    }else {
         $tagged_title = $taxon_name_or_taxon_base_dto;
     }
 
