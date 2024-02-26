@@ -426,8 +426,8 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         // drupal message for debugging of #9599
         // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
         //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
-        //$citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->nomenclaturalCitation);
-          $citation = $taxon_name->nomenclaturalSource->nomenclaturalCitation;
+        $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->nomenclaturalCitation);
+
         // Find preceding element of the reference.
         $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
         if (str_beginsWith($citation, ", in")) {
