@@ -1839,15 +1839,16 @@ function cdm_dataportal_taxon_view($uuid, $chapter = 'all') {
  * @throws Exception
  *
  */
-function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
+function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
+{
     // Taxon object.
     $query_parameters = cdm_distribution_filter_query();
 
     //get feature tree uuid
-    $feature_tree_uuid =variable_get(CDM_PROFILE_FEATURETREE_UUID);
+    $feature_tree_uuid = variable_get(CDM_PROFILE_FEATURETREE_UUID);
     //
-    if (isset($feature_tree_uuid) && $feature_tree_uuid !== UUID_DEFAULT_FEATURETREE){
-        $query_parameters['featureTree'] =  $feature_tree_uuid;
+    if (isset($feature_tree_uuid) && $feature_tree_uuid !== UUID_DEFAULT_FEATURETREE) {
+        $query_parameters['featureTree'] = $feature_tree_uuid;
     }
     /*
      * @RequestParam(value = "fallbackAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
@@ -1860,10 +1861,9 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
      */
 
 
-
     if (variable_get(DISTRIBUTION_CONDENSED) || variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
         $query_parameters['part'] = array('mapUriParams');
-        if (variable_get(DISTRIBUTION_CONDENSED)){
+        if (variable_get(DISTRIBUTION_CONDENSED)) {
             $query_parameters['part'][] = 'condensedDistribution';
         }
         if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
@@ -1885,17 +1885,21 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all') {
         $query_parameters['statusColors'] = $customStatusColorsJson;
     }
 
-    if (variable_get(CDM_AREATREE_UUID)){
+    if (variable_get(CDM_AREATREE_UUID)) {
         $query_parameters['areaTree'] = variable_get(CDM_AREATREE_UUID);
     }
 
-    if (variable_get(CDM_STATUSTREE_UUID)){
+    if (variable_get(CDM_STATUSTREE_UUID)) {
         $query_parameters['statusTree'] = variable_get(CDM_STATUSTREE_UUID);
     }
 
 
-
-    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
+    $current_taxon = cache_get('current_taxon');
+    if (isset_not_empty($current_taxon) && isset_not_empty($current_taxon->data) &&  $current_taxon->data->uuid == $uuid) {
+        $taxon_dto = $current_taxon->data;
+    } else {
+        $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
+    }
     if (empty($taxon_dto)) {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
         return null;

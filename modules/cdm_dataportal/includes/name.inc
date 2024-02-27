@@ -710,30 +710,29 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     $taxon_base = $taxon_name_or_taxon_base_dto;
     if (isset($taxon_name_or_taxon_base_dto->taggedName)) {
         $tagged_name = $taxon_name_or_taxon_base_dto->taggedName;
-    } else if ($taxon_name_or_taxon_base_dto->entity->name->taggedName){
+    } else if ($taxon_name_or_taxon_base_dto->entity->name->taggedName) {
         $tagged_name = $taxon_name_or_taxon_base_dto->entity->name->taggedName;
-    }else {
+    } else {
         $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base_dto->uuid));
     }
-    if (isset($taxon_name_or_taxon_base_dto->doubtful)){
+    if (isset($taxon_name_or_taxon_base_dto->doubtful)) {
         $is_doubtful = $taxon_name_or_taxon_base_dto->doubtful;
     }
 
     // use the TaxonBase.tagged_title so we have the secRef
-    if (isset($taxon_name_or_taxon_base_dto->taggedLabel)){
+    if (isset($taxon_name_or_taxon_base_dto->taggedLabel)) {
         $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
-    }else if ($taxon_name_or_taxon_base_dto->entity->taggedTitle){
+    } else if ($taxon_name_or_taxon_base_dto->entity->taggedTitle) {
         $tagged_title = $taxon_name_or_taxon_base_dto->entity->taggedTitle;
-    }else {
+    } else {
         $tagged_title = $taxon_name_or_taxon_base_dto;
     }
 
 
-
     $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
-    if (isset_not_empty($taxon_base->entity) && isset_not_empty($taxon_base->entity->name)){
+    if (isset_not_empty($taxon_base->entity) && isset_not_empty($taxon_base->entity->name)) {
         $partDefinition = get_partDefinition($taxon_base->entity->name->nameType);
-    }else{
+    } else {
         $partDefinition = get_partDefinition($taxon_name_or_taxon_base_dto->nameType);
     }
 
@@ -748,9 +747,10 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
             $renderTemplate[$part]['#uri'] = $uri['#uri'];
         }
     }
-
-    foreach($skip_render_template_parts as $part){
-        unset($renderTemplate[$part]);
+    if (isset_not_empty($skip_render_template_parts)) {
+        foreach ($skip_render_template_parts as $part) {
+            unset($renderTemplate[$part]);
+        }
     }
 
     $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_title);
