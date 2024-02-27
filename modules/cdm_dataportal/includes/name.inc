@@ -855,13 +855,13 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
         // [Eckhard]:"Komma nach dem Taxonnamen ist grundsätzlich falsch,
         // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
-       // if (isset($renderTemplate['referencePart']['reference']) && isset($taggedName->nomenclaturalSource)) {
-            //$microreference = $taxon_name->nomenclaturalSource->citationMicroReference;
-          /*  if(count($nomref_tagged_text) == 0 && isset($taxon_name->nomenclaturalSource->citation)){
+       if (isset($renderTemplate['referencePart']['reference']) && isset($taxon_base->sourceString)) {
+
+          // if(isset($taxon->sourceString)){
                 // drupal message for debugging of #9599
                 // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
                 //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
-                $citation = cdm_ws_getNomenclaturalReference($taxon_name->nomenclaturalSource->citation->uuid, $microreference);
+                $citation = $taxon_base->sourceString;
                 // Find preceding element of the reference.
                 $precedingKey = get_preceding_contentElementKey('reference', $renderTemplate);
                 if (str_beginsWith($citation, ", in")) {
@@ -875,15 +875,15 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                 }
                 $referenceArray['#separator'] = $separator;
                 $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
-                */
-          //  } else {
+
+      /* } else {
                 // this is the case for taxon names
                 $options['html']= true;
                 $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text, $skiptags = array(), $tag = 'span', $options). $registration_markup;
-          //  }
+       }*/
 
             array_setr('reference', $referenceArray, $renderTemplate);
-        //}
+       }
 
         // If authors have been removed from the name part the last named authorteam
         // should be added to the reference citation, otherwise, keep the separator

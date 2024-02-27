@@ -1082,7 +1082,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
         }
         $referenceUri = '';
         if (isset($taxon->entity->name->nomenclaturalSource->citation)) {
-            $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
+            $referenceUri = url(path_to_reference($taxon->entity->name->nomenclaturalSource->citation->uuid));
         }
         //$out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
         $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
