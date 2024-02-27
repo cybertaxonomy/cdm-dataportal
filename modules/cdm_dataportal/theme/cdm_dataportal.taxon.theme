@@ -36,9 +36,13 @@ function theme_cdm_taxon_list_thumbnails($variables) {
   }else{
     $gallery_name = $taxon->entity->uuid;
   }
-  $mediaList = _load_media_for_taxon($taxon->entity);
-
-  $galleryLinkUri = path_to_taxon($taxon->entity->uuid, 'images');
+  if (isset($taxon->entity)){
+    $mediaList = _load_media_for_taxon($taxon->entity);
+    $galleryLinkUri = path_to_taxon($taxon->entity->uuid, 'images');
+  }else{
+    $mediaList = _load_media_for_taxon($taxon);
+    $galleryLinkUri = path_to_taxon($taxon->uuid, 'images');
+  }
 
   $out .= compose_cdm_media_gallery(array(
     'mediaList' => $mediaList,
