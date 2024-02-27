@@ -31,12 +31,14 @@ function theme_cdm_taxon_list_thumbnails($variables) {
   } else {
     $captionElements = array();
   }
+  if ($taxon->uuid){
+    $gallery_name = $taxon->uuid;
+  }else{
+    $gallery_name = $taxon->entity->uuid;
+  }
+  $mediaList = _load_media_for_taxon($taxon->entity);
 
-  $gallery_name = $taxon->uuid;
-
-  $mediaList = _load_media_for_taxon($taxon);
-
-  $galleryLinkUri = path_to_taxon($taxon->uuid, 'images');
+  $galleryLinkUri = path_to_taxon($taxon->entity->uuid, 'images');
 
   $out .= compose_cdm_media_gallery(array(
     'mediaList' => $mediaList,
