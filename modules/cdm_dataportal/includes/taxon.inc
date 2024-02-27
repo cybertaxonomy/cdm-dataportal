@@ -817,171 +817,330 @@ function cdm_accepted_for($accepted_for_uuid) {
  */
 function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $show_classification = false) {
 
-  RenderHints::pushToRenderStack('list_of_taxa');
+    RenderHints::pushToRenderStack('list_of_taxa');
 
-  $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
+    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
 
-  $showMedia_taxa = $gallery_settings['cdm_dataportal_show_taxon_thumbnails'];
-  $showMedia_synonyms = $gallery_settings['cdm_dataportal_show_synonym_thumbnails'];
-  $searched_in_classification = cdm_dataportal_searched_in_classification();
-  $searched_in_classification_uuid = null;
-  if(isset($searched_in_classification->uuid)){
-    $searched_in_classification_uuid = $searched_in_classification->uuid;
-  }
-
-  // .. Well, for sure not as performant as before, but better than nothing.
-  $misapplied_uuids = array();
-  foreach ($taxon_list as $taxon) {
-    if ($taxon->entity->class == 'Taxon' && !_cdm_dataportal_acceptedByCurrentView($taxon)) {
-      // Assuming that it is a misapplied name, will be further examined below.
-      $misapplied_uuids[$taxon->uuid] = $taxon->entity->uuid;
+    $showMedia_taxa = $gallery_settings['cdm_dataportal_show_taxon_thumbnails'];
+    $showMedia_synonyms = $gallery_settings['cdm_dataportal_show_synonym_thumbnails'];
+    $searched_in_classification = cdm_dataportal_searched_in_classification();
+    $searched_in_classification_uuid = null;
+    if(isset($searched_in_classification->uuid)){
+        $searched_in_classification_uuid = $searched_in_classification->uuid;
     }
-      if ($taxon->class == 'Taxon' && !_cdm_dataportal_acceptedByCurrentView($taxon)) {
-          // Assuming that it is a misapplied name, will be further examined below.
-          $misapplied_uuids[$taxon->uuid] = $taxon->uuid;
-      }
-  }
 
-  // Batch service not jet implemented:
-  // $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED,
-  // join(',', $synonym_uuids));
-  // thus ...
-  $table_of_accepted = array();
-  foreach ($misapplied_uuids as $mispplication_uuid) {
-    $taxonRelationsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, array(
-      $mispplication_uuid,
-    ));
-    if(isset($taxonRelationsDTO->relations)){
-      foreach ($taxonRelationsDTO->relations as $relation) {
-        if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_matches_current_view($relation->classificationsUUIDs)) {
-          $table_of_accepted[$mispplication_uuid][] = cdm_ws_get(CDM_WS_TAXON, $relation->taxonUuid);
+    // .. Well, for sure not as performant as before, but better than nothing.
+    $synonym_uuids = array();
+    $misapplied_uuids = array();
+    foreach ($taxon_list as $taxon) {
+        if ($taxon->class == "Synonym") {
+            if (!array_key_exists($taxon->uuid, $synonym_uuids)) {
+                $synonym_uuids[$taxon->uuid] = $taxon->uuid;
+            }
         }
-      }
-    }
-  }
-
-  $out = '<div class="cdm-item-list" style="background-image: none;">';
-  $itemCnt = -1;
-  foreach ($taxon_list as $taxon) {
-      $itemCnt++;
-      if ($taxon->entity->class == "Synonym") {
-          $synonym = $taxon;
-          $taxonUri = uri_to_synonym($synonym->entity->uuid, $synonym->acceptedTaxonUuid);
-          $taxon_type = TAXON_TYPE_SYNONYM;
-      } else {
-          if (isset($table_of_accepted[$taxon->uuid])) {
-              // Its a misapplied name.
-
-              $taxon_type = TAXON_TYPE_MISAPPLIEDNAME;
-
-              $acceptedTaxa = $table_of_accepted[$taxon->uuid];
-
-              if (!is_array($acceptedTaxa)) {
-                  $acceptedTaxa = array($acceptedTaxa);
-              }
-
-              foreach ($acceptedTaxa as $acceptedTaxon) {
-                  if (is_object($acceptedTaxon)) {
-
-                      $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
-                      $referenceUri = '';
-                      if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
-                          $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
-                      }
-                      $skip_render_template_parts =  [];
-                      /*
-                      // $taxon_or_name this is a trick to suppress the sec reference for synonyms
-                      // supplying the name will cause render_taxon_or_name() to not show the sec reference
-                      $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon, $taxonUri, $referenceUri, true, false, $skip_render_template_parts);
-                      if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && isset_not_empty($taxon->secSource) && isset_not_empty($taxon->secSource->citation)) {
-                          if (isset($taxon->secSource->citation->authorship)) {
-                              $authorship = $taxon->secSource->citation->authorship->titleCache;
-                          }
-                          else {
-                              $authorship = $taxon->secSource->citation->titleCache;
-                          }
-                          $out .= ' sensu ' . $authorship;
-                      }
-                      if ($show_classification) {
-                          $out .= render_classifications_for_taxon($taxon);
-                      }
-                      if ($showMedia_synonyms) {
-                          $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
-                      }*/
-                  }
-              }
-          }else{
-              if (isset_not_empty($taxon->uuid)){
-                  $taxonUri = url(path_to_taxon($taxon->uuid));
-              }else if (isset_not_empty($taxon->entity) && isset_not_empty($taxon->entity->uuid)){
-                  $taxonUri = url(path_to_taxon($taxon->entity->uuid));
-              }
-
-              $taxon_type = "Taxon";
-          }
-
-      }
-      $referenceUri = '';
-      if (isset($taxon->name->nomenclaturalSource->citation)) {
-          $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
-      }
-      //$out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
-      $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
-      $out .= "<div class=\"item " . $taxon_type . "\">" . render_new_taxon_or_name($taxon, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
-      if ($show_classification) {
-          $out .= render_classifications_for_taxon($taxon);
-      }
-      if ($showMedia_taxa) {
-          $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
-      }
-
-    /*else {
-      // Its a Taxon.
-      $taxonUri = url(path_to_taxon($taxon->uuid));
-      $referenceUri = '';
-      if (isset($taxon->name->nomenclaturalSource->citation)) {
-        $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
-      }
-      $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
-      if ($show_classification) {
-        $out .= render_classifications_for_taxon($taxon);
-      }
-      if ($showMedia_taxa) {
-        $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
-      }
-    }*/
-
-    /*
-     * the score field will be empty in case of MultiTermQueries like
-     * WildcardQueries, since these are  constant score by default
-     * since Lucene 2.9
-     */
-    if(isset($freetext_search_results[$itemCnt]) && $freetext_search_results[$itemCnt]->score && $freetext_search_results[$itemCnt]->maxScore){
-      $percentage =  ( $freetext_search_results[$itemCnt]->score / $freetext_search_results[$itemCnt]->maxScore ) * 100;
-      $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
-      $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
-    }
-
-    // Render highlighted fragments, these are made available by free text
-    // searches.
-    if (isset($freetext_search_results[$itemCnt]->fieldHighlightMap)) {
-      $field_fragments = (array) $freetext_search_results[$itemCnt]->fieldHighlightMap;
-      if (count($field_fragments) > 0) {
-        $fragments_out = '';
-        foreach ($field_fragments as $fieldName => $fragments) {
-          $fragments_out .= '... <span class="' . $fieldName. '">' . filter_xss(join(" ... ", $fragments), array('b') ) . '</span>';
+        elseif (!_cdm_dataportal_acceptedByCurrentView($taxon)) {
+            // Assuming that it is a misapplied name, will be further examined below.
+            $misapplied_uuids[$taxon->uuid] = $taxon->uuid;
         }
-        $out .= '<div class="fragment_highlight">' . $fragments_out . ' ...</div>';
-      }
+    }
+
+    // Batch service not jet implemented:
+    // $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED,
+    // join(',', $synonym_uuids));
+    // thus ...
+    $table_of_accepted = array();
+
+    foreach ($synonym_uuids as $misapplication_uuid) {
+        $classification_filter = '';
+        if($searched_in_classification_uuid){
+            $classification_filter = 'classificationFilter=' . $searched_in_classification_uuid;
+        }
+        $table_of_accepted[$misapplication_uuid] = cdm_ws_get(
+            CDM_WS_PORTAL_TAXON_ACCEPTED,
+            array($misapplication_uuid),
+            $classification_filter
+        );
+    }
+
+    foreach ($misapplied_uuids as $mispplication_uuid) {
+        $taxonRelationsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, array(
+            $mispplication_uuid,
+        ));
+        if(isset($taxonRelationsDTO->relations)){
+            foreach ($taxonRelationsDTO->relations as $relation) {
+                if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_matches_current_view($relation->classificationsUUIDs)) {
+                    $table_of_accepted[$mispplication_uuid][] = cdm_ws_get(CDM_WS_TAXON, $relation->taxonUuid);
+                }
+            }
+        }
+    }
+
+    $out = '<div class="cdm-item-list" style="background-image: none;">';
+    $itemCnt = -1;
+    foreach ($taxon_list as $taxon) {
+        $itemCnt++;
+
+        if (isset($table_of_accepted[$taxon->uuid])) {
+            // Its a synonym or misapplied name.
+            $is_synonym = isset($synonym_uuids[$taxon->uuid]); //TODO better use the $taxon->class attribute?
+            $taxon_type = $is_synonym ? TAXON_TYPE_SYNONYM :TAXON_TYPE_MISAPPLIEDNAME;
+
+            $acceptedTaxa = $table_of_accepted[$taxon->uuid];
+
+            if (!is_array($acceptedTaxa)) {
+                $acceptedTaxa = array($acceptedTaxa);
+            }
+
+            foreach ($acceptedTaxa as $acceptedTaxon) {
+                if (is_object($acceptedTaxon)) {
+
+                    $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
+                    $referenceUri = '';
+                    if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
+                        $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
+                    }
+                    $skip_render_template_parts = $is_synonym ? ['secReferencePart'] : [];
+                    // $taxon_or_name this is a trick to suppress the sec reference for synonyms
+                    // supplying the name will cause render_taxon_or_name() to not show the sec reference
+                    $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon, $taxonUri, $referenceUri, true, false, $skip_render_template_parts);
+                    if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && isset_not_empty($taxon->secSource) && isset_not_empty($taxon->secSource->citation)) {
+                        if (isset($taxon->secSource->citation->authorship)) {
+                            $authorship = $taxon->secSource->citation->authorship->titleCache;
+                        }
+                        else {
+                            $authorship = $taxon->secSource->citation->titleCache;
+                        }
+                        $out .= ' sensu ' . $authorship;
+                    }
+                    if ($show_classification) {
+                        $out .= render_classifications_for_taxon($taxon);
+                    }
+                    if ($showMedia_synonyms) {
+                        $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
+                    }
+                }
+            }
+        }
+        else {
+            // Its a Taxon.
+            $taxonUri = url(path_to_taxon($taxon->uuid));
+            $referenceUri = '';
+            if (isset($taxon->name->nomenclaturalSource->citation)) {
+                $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
+            }
+            $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
+            if ($show_classification) {
+                $out .= render_classifications_for_taxon($taxon);
+            }
+            if ($showMedia_taxa) {
+                $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
+            }
+        }
+
+        /*
+         * the score field will be empty in case of MultiTermQueries like
+         * WildcardQueries, since these are  constant score by default
+         * since Lucene 2.9
+         */
+        if(isset($freetext_search_results[$itemCnt]) && $freetext_search_results[$itemCnt]->score && $freetext_search_results[$itemCnt]->maxScore){
+            $percentage =  ( $freetext_search_results[$itemCnt]->score / $freetext_search_results[$itemCnt]->maxScore ) * 100;
+            $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
+            $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
+        }
+
+        // Render highlighted fragments, these are made available by free text
+        // searches.
+        if (isset($freetext_search_results[$itemCnt]->fieldHighlightMap)) {
+            $field_fragments = (array) $freetext_search_results[$itemCnt]->fieldHighlightMap;
+            if (count($field_fragments) > 0) {
+                $fragments_out = '';
+                foreach ($field_fragments as $fieldName => $fragments) {
+                    $fragments_out .= '... <span class="' . $fieldName. '">' . filter_xss(join(" ... ", $fragments), array('b') ) . '</span>';
+                }
+                $out .= '<div class="fragment_highlight">' . $fragments_out . ' ...</div>';
+            }
+        }
+
+        $out .= '</div>';
     }
 
     $out .= '</div>';
-  }
+    RenderHints::popFromRenderStack();
 
-  $out .= '</div>';
-  RenderHints::popFromRenderStack();
+    return markup_to_render_array($out); // TODO create render array of all list items in function
+}
 
-  return markup_to_render_array($out); // TODO create render array of all list items in function
+/**
+ * Compose function for a list of taxa.
+ *
+ * This function is for used to:
+ *
+ * 1. Display search results
+ * 2. List the taxa for a taxon name in the name page.
+ *
+ * @param $taxon_list array
+ *   The list of CDM Taxon entities. e.g. The records array as contained in a pager object.
+ * @param $freetext_search_results array
+ * @param $show_classification boolean
+ *
+ * @ingroup compose
+ */
+function compose_list_of_taxon_search_result($taxon_list, $freetext_search_results = array(), $show_classification = false) {
+
+    RenderHints::pushToRenderStack('list_of_taxa');
+
+    $gallery_settings = getGallerySettings(CDM_DATAPORTAL_SEARCH_GALLERY_NAME);
+
+    $showMedia_taxa = $gallery_settings['cdm_dataportal_show_taxon_thumbnails'];
+    $showMedia_synonyms = $gallery_settings['cdm_dataportal_show_synonym_thumbnails'];
+    $searched_in_classification = cdm_dataportal_searched_in_classification();
+    $searched_in_classification_uuid = null;
+    if(isset($searched_in_classification->uuid)){
+        $searched_in_classification_uuid = $searched_in_classification->uuid;
+    }
+
+    // .. Well, for sure not as performant as before, but better than nothing.
+    $misapplied_uuids = array();
+    foreach ($taxon_list as $taxon) {
+        if ($taxon->entity->class == 'Taxon' && !_cdm_dataportal_acceptedByCurrentView($taxon)) {
+            // Assuming that it is a misapplied name, will be further examined below.
+            $misapplied_uuids[$taxon->uuid] = $taxon->entity->uuid;
+        }
+    }
+
+    // Batch service not jet implemented:
+    // $table_of_accepted = cdm_ws_property(CDM_WS_PORTAL_TAXON_ACCEPTED,
+    // join(',', $synonym_uuids));
+    // thus ...
+    $table_of_accepted = array();
+    foreach ($misapplied_uuids as $mispplication_uuid) {
+        $taxonRelationsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, array(
+            $mispplication_uuid,
+        ));
+        if(isset($taxonRelationsDTO->relations)){
+            foreach ($taxonRelationsDTO->relations as $relation) {
+                if ($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR && _cdm_dataportal_matches_current_view($relation->classificationsUUIDs)) {
+                    $table_of_accepted[$mispplication_uuid][] = cdm_ws_get(CDM_WS_TAXON, $relation->taxonUuid);
+                }
+            }
+        }
+    }
+
+    $out = '<div class="cdm-item-list" style="background-image: none;">';
+    $itemCnt = -1;
+    foreach ($taxon_list as $taxon) {
+        $itemCnt++;
+       if ($taxon->entity->class == "Synonym") {
+        $synonym = $taxon;
+        $taxonUri = uri_to_synonym($synonym->entity->uuid, $synonym->acceptedTaxonUuid);
+        $taxon_type = TAXON_TYPE_SYNONYM;
+       }else {
+         if (isset($table_of_accepted[$taxon->entity->uuid])) {
+           // Its a misapplied name.
+           $taxon_type = TAXON_TYPE_MISAPPLIEDNAME;
+           $acceptedTaxa = $table_of_accepted[$taxon->entity->uuid];
+
+           if (!is_array($acceptedTaxa)) {
+               $acceptedTaxa = array($acceptedTaxa);
+           }
+           foreach ($acceptedTaxa as $acceptedTaxon) {
+             if (is_object($acceptedTaxon)) {
+                 $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
+                 $referenceUri = '';
+                 if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
+                     $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
+                 }
+                 $skip_render_template_parts =  [];
+                        /*
+                        // $taxon_or_name this is a trick to suppress the sec reference for synonyms
+                        // supplying the name will cause render_taxon_or_name() to not show the sec reference
+                        $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_or_name($taxon, $taxonUri, $referenceUri, true, false, $skip_render_template_parts);
+                        if($taxon_type == TAXON_TYPE_MISAPPLIEDNAME && isset_not_empty($taxon->secSource) && isset_not_empty($taxon->secSource->citation)) {
+                            if (isset($taxon->secSource->citation->authorship)) {
+                                $authorship = $taxon->secSource->citation->authorship->titleCache;
+                            }
+                            else {
+                                $authorship = $taxon->secSource->citation->titleCache;
+                            }
+                            $out .= ' sensu ' . $authorship;
+                        }
+                        if ($show_classification) {
+                            $out .= render_classifications_for_taxon($taxon);
+                        }
+                        if ($showMedia_synonyms) {
+                            $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $acceptedTaxon));
+                        }*/
+             }
+           }
+         }else{
+           if (isset_not_empty($taxon->entity) && isset_not_empty($taxon->entity->uuid)){
+              $taxonUri = url(path_to_taxon($taxon->entity->uuid));
+           }
+           $taxon_type = "Taxon";
+         }
+
+        }
+        $referenceUri = '';
+        if (isset($taxon->entity->name->nomenclaturalSource->citation)) {
+            $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
+        }
+        //$out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
+        $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
+        $out .= "<div class=\"item " . $taxon_type . "\">" . render_new_taxon_or_name($taxon, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
+        if ($show_classification) {
+            $out .= render_classifications_for_taxon($taxon);
+        }
+        if ($showMedia_taxa) {
+            $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
+        }
+
+        /*else {
+          // Its a Taxon.
+          $taxonUri = url(path_to_taxon($taxon->uuid));
+          $referenceUri = '';
+          if (isset($taxon->name->nomenclaturalSource->citation)) {
+            $referenceUri = url(path_to_reference($taxon->name->nomenclaturalSource->citation->uuid));
+          }
+          $out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
+          if ($show_classification) {
+            $out .= render_classifications_for_taxon($taxon);
+          }
+          if ($showMedia_taxa) {
+            $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
+          }
+        }*/
+
+        /*
+         * the score field will be empty in case of MultiTermQueries like
+         * WildcardQueries, since these are  constant score by default
+         * since Lucene 2.9
+         */
+        if(isset($freetext_search_results[$itemCnt]) && $freetext_search_results[$itemCnt]->score && $freetext_search_results[$itemCnt]->maxScore){
+            $percentage =  ( $freetext_search_results[$itemCnt]->score / $freetext_search_results[$itemCnt]->maxScore ) * 100;
+            $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
+            $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
+        }
+
+        // Render highlighted fragments, these are made available by free text
+        // searches.
+        if (isset($freetext_search_results[$itemCnt]->fieldHighlightMap)) {
+            $field_fragments = (array) $freetext_search_results[$itemCnt]->fieldHighlightMap;
+            if (count($field_fragments) > 0) {
+                $fragments_out = '';
+                foreach ($field_fragments as $fieldName => $fragments) {
+                    $fragments_out .= '... <span class="' . $fieldName. '">' . filter_xss(join(" ... ", $fragments), array('b') ) . '</span>';
+                }
+                $out .= '<div class="fragment_highlight">' . $fragments_out . ' ...</div>';
+            }
+        }
+
+        $out .= '</div>';
+    }
+
+    $out .= '</div>';
+    RenderHints::popFromRenderStack();
+
+    return markup_to_render_array($out); // TODO create render array of all list items in function
 }
 
 
