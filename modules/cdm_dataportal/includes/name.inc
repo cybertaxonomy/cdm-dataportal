@@ -731,7 +731,12 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
 
     $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
-    $partDefinition = get_partDefinition($taxon_name_or_taxon_base_dto->nameType);
+    if (isset_not_empty($taxon_base->entity)){
+        $partDefinition = get_partDefinition($taxon->entity->name->nameType);
+    }else{
+        $partDefinition = get_partDefinition($taxon_name_or_taxon_base_dto->nameType);
+    }
+
 
     // Apply definitions to template.
     foreach ($renderTemplate as $part => $uri) {
