@@ -45,7 +45,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
         }
     }
     if ($derived_unit_dto->preferredStableUri) {
-        if (isset_not_empty($derived_unit_dto->preferredStableUri) && isset_not_empty($derived_unit_dto->preferredStableUri->javaUri)){
+        if (isset_not_empty($derived_unit_dto->preferredStableUri) && !is_string($derived_unit_dto->preferredStableUri)){
             $stableIdentifierLink = l($derived_unit_dto->preferredStableUri->javaUri, $derived_unit_dto->preferredStableUri->javaUri);
         }else{
             $stableIdentifierLink = l($derived_unit_dto->preferredStableUri, $derived_unit_dto->preferredStableUri);
