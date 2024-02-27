@@ -834,7 +834,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
   foreach ($taxon_list as $taxon) {
     if ($taxon->entity->class == 'Taxon' && !_cdm_dataportal_acceptedByCurrentView($taxon)) {
       // Assuming that it is a misapplied name, will be further examined below.
-      $misapplied_uuids[$taxon->uuid] = $taxon->uuid;
+      $misapplied_uuids[$taxon->uuid] = $taxon->entity->uuid;
     }
   }
 
@@ -862,7 +862,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       $itemCnt++;
       if ($taxon->entity->class == "Synonym") {
           $synonym = $taxon;
-          $taxonUri = uri_to_synonym($synonym->uuid, $synonym->acceptedTaxonUuid);
+          $taxonUri = uri_to_synonym($synonym->entity->uuid, $synonym->acceptedTaxonUuid);
           $taxon_type = TAXON_TYPE_SYNONYM;
       } else {
           if (isset($table_of_accepted[$taxon->uuid])) {
