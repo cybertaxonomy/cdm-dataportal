@@ -2920,8 +2920,9 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
 
   if (isset($taxon->taxonNodes)) {
     $taxon_nodes = $taxon->taxonNodes;
-  }
-  else {
+  }else if (isset_not_empty($taxon->entity->taxonNodes)) {
+    $taxon_nodes = $taxon->entity->taxonNodes;
+  }else {
       if (isset_not_empty($taxon->entity) && isset_not_empty($taxon->entity->uuid)){
           $taxon_nodes = cdm_ws_get(CDM_WS_PORTAL_TAXON_TAXONNODES, $taxon->entity->uuid);
       }else{
@@ -2931,9 +2932,9 @@ function _cdm_dataportal_acceptedByCurrentView($taxon) {
   }
 
   $taxon_node_classification_uuids = [];
-  if ($taxon->class == "Taxon" && isset($taxon_nodes)) {
+  if (($taxon->class == "Taxon" || $taxon->entity->class == "Taxon")&& isset($taxon_nodes)) {
     foreach ($taxon_nodes as $node) {
-      if($node->class == 'TaxonNodeDto' && isset($node->classificationUUID)){
+      if($node->class == 'TaxonNodeDto' && (isset($node->classificationUUID) )){
         // case of TaxonNodeDto
         $taxon_node_classification_uuids[] = $node->classificationUUID;
       } else if($node->class == 'TaxonNode' && isset($node->classification->uuid)) {
