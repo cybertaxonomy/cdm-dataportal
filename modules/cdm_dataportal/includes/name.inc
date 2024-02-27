@@ -850,7 +850,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     if (isset($renderTemplate['referencePart']) && !$is_type_designation) {
         $registration_markup = "";
         if ($showRegistrations){
-            $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
+            $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_base->nameUuid, "registrations"));
             $registration_markup = render_registrations($registrations);
         }
        //
