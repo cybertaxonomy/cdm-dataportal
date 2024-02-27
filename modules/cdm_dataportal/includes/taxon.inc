@@ -836,6 +836,10 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
       // Assuming that it is a misapplied name, will be further examined below.
       $misapplied_uuids[$taxon->uuid] = $taxon->entity->uuid;
     }
+      if ($taxon->class == 'Taxon' && !_cdm_dataportal_acceptedByCurrentView($taxon)) {
+          // Assuming that it is a misapplied name, will be further examined below.
+          $misapplied_uuids[$taxon->uuid] = $taxon->uuid;
+      }
   }
 
   // Batch service not jet implemented:
