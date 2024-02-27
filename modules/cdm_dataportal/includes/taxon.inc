@@ -1081,7 +1081,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
 
         }
         $referenceUri = '';
-        if (isset($taxon->entity->name->nomenclaturalSource->citation)) {
+        if (isset_not_empty($taxon->entity->name->nomenclaturalSource) && isset_not_empty($taxon->entity->name->nomenclaturalSource->citation)) {
             $referenceUri = url(path_to_reference($taxon->entity->name->nomenclaturalSource->citation->uuid));
         }
         //$out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
