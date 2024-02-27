@@ -45,7 +45,12 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
         }
     }
     if ($derived_unit_dto->preferredStableUri) {
-        $stableIdentifierLink = l($derived_unit_dto->preferredStableUri, $derived_unit_dto->preferredStableUri);
+        if (isset_not_empty($derived_unit_dto->preferredStableUri->javaUri)){
+            $stableIdentifierLink = l($derived_unit_dto->preferredStableUri->javaUri, $derived_unit_dto->preferredStableUri->javaUri);
+        }else{
+            $stableIdentifierLink = l($derived_unit_dto->preferredStableUri, $derived_unit_dto->preferredStableUri);
+        }
+
         $detail_html .= create_label("Preferred stable URI") . $stableIdentifierLink . "<br>";
     }
     if ($with_full_details) {
@@ -1135,10 +1140,10 @@ function compose_compressed_specimen_derivate_table($root_units) {
       //assemble specimen details
       if ($sob_dto->derivatives) {
         $derivatives_orderd = [];
+        usort($sob_dto->derivatives, 'compare_specimen_or_observation_dtos');
         foreach ($sob_dto->derivatives as $derivative_dto) {
           $derivatives_orderd[$derivative_dto->specimenShortTitle] = $derivative_dto;
         }
-        //ksort($derivatives_orderd);
         foreach ($derivatives_orderd as $derivative_dto) {
           $detail_html .= "<br>";
           $detail_html .= render_cdm_specimenDTO_page($derivative_dto);
