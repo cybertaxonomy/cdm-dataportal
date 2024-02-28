@@ -707,7 +707,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
         $block_weight = $block_weight + FEATURE_BLOCK_WEIGHT_INCREMENT;
 
         if ((isset($feature_node->facts->items[0]) )){
-               // || has_feature_node_description_elements($feature_node)) && $feature_node->term->uuid != UUID_IMAGE) { // skip empty or suppressed features
+                //|| has_feature_node_description_elements($feature_node)) && $feature_node->term->uuid != UUID_IMAGE) { // skip empty or suppressed features
 
             RenderHints::pushToRenderStack($feature_node->uuid);
 
@@ -722,7 +722,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
             $block->content = array();
             $block_content_is_empty = TRUE;
 
-            if(array_search($feature_node->term->uuid, $use_description_features) !== false) {
+            if(array_search($feature_node->uuid, $use_description_features) !== false) {
                 // do not show features which belong to the UseDescriptions, these are
                 // handled by compose_feature_block_items_use_records() where the according descriptions are
                 // fetched again separately.
@@ -1714,7 +1714,7 @@ function compose_new_feature_block_wrap_elements(array $description_element_rend
                         'html' => TRUE,
                     ));
             }
-        }else if (isset($source->originalInfo) ) {
+        }else if (isset_not_empty($source->originalInfo) ) {
       // the name used in source can not be expressed as valid taxon name,
       // so the editor has chosen to put the freetext name into ReferencedEntityBase.originalInfo
       // field
