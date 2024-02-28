@@ -1004,7 +1004,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
     foreach ($taxon_list as $taxon) {
         if ($taxon->entity->class == 'Taxon' && !_cdm_dataportal_acceptedByCurrentView($taxon)) {
             // Assuming that it is a misapplied name, will be further examined below.
-            $misapplied_uuids[$taxon->uuid] = $taxon->entity->uuid;
+            $misapplied_uuids[$taxon->entity->uuid] = $taxon->entity->uuid;
         }
     }
 
@@ -1045,7 +1045,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
            }
            foreach ($acceptedTaxa as $acceptedTaxon) {
              if (is_object($acceptedTaxon)) {
-                 $taxonUri = uri_to_synonym($taxon->uuid, $acceptedTaxon->uuid);
+                 $taxonUri = uri_to_synonym($taxon->entity->uuid, $acceptedTaxon->uuid);
                  $referenceUri = '';
                  if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
                      $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
