@@ -1908,24 +1908,19 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['doKeys'] = true;
         $query_parameters['doMedia'] = true;
     }else if ($chapter == 'images'){
-
         $query_parameters['doMedia'] = true;
-    }else if ($chapter == 'synonyms'){
+    }else if ($chapter == 'synonymy'){
         $query_parameters['doSynonyms'] = true;
-
     }else if ($chapter == 'description'){
-
         $query_parameters['doFacts'] = true;
-
     }else if ($chapter == 'keys'){
-
         $query_parameters['doKeys'] = true;
-
     }
 
 
     $current_taxon = cache_get('current_taxon');
-    if (isset_not_empty($current_taxon) && isset_not_empty($current_taxon->data) &&  $current_taxon->data->uuid == $uuid && cache_get('current_chapter') == $chapter) {
+    $current_chapter = cache_get('current_chapter');
+    if (isset_not_empty($current_taxon) && isset_not_empty($current_taxon->data) &&  $current_taxon->data->uuid == $uuid && $current_chapter->data == $chapter) {
         $taxon_dto = $current_taxon->data;
     } else {
         $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
