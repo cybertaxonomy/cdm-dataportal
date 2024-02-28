@@ -423,10 +423,8 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description'){
   // --- GET polytomousKeys --- //
     $identificationKeyCount = 0;
     if ($tabsToDisplay["Keys"] != '0'){
-        $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
-        if ($polytomousKeysPager) {
-            $identificationKeyCount += $polytomousKeysPager->count;
-        }
+        $identificationKeyCount = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "countByTaxonomicScope=$taxon->uuid");
+
     }
   if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
     taxon_page_tabs_hidden_add('keys');
@@ -670,9 +668,14 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
     }
 
     // --- GET specimensOrObservations --- //
-   // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon_dto->uuid, 'specimensOrObservationsCount'));
     $specimensOrObservations = $taxon_dto -> rootSpecimens;
-    $specimensOrObservationsCount = $specimensOrObservations != null ? sizeof($specimensOrObservations): 0;
+    if (($tabsToDisplay["Specimens"] != '0') && $specimensOrObservations == null){
+        $query_parameter = getOccurrrenceQuery_parameters();
+        $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array($taxon_dto->uuid, 'specimensOrObservationsCount'), queryString($query_parameter));
+        $specimensOrObservationsCount = $specimensOrObservations != null ? $specimensOrObservations->result : 0;
+    }else{
+        $specimensOrObservationsCount = $specimensOrObservations != null ? sizeof($specimensOrObservations): 0;
+    }
     if ($specimensOrObservationsCount == 0 || ($tabsToDisplay["Specimens"] == '0')) {
         taxon_page_tabs_hidden_add('specimens');
     }
@@ -682,6 +685,8 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
     $identificationKeyCount = 0;
     if ($polytomousKeysPager) {
         $identificationKeyCount += $polytomousKeysPager->count;
+    }else{
+        $identificationKeyCount = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "countByTaxonomicScope=$taxon->uuid");
     }
     if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
         taxon_page_tabs_hidden_add('keys');
