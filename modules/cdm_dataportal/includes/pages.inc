@@ -423,11 +423,11 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description'){
   // --- GET polytomousKeys --- //
     $identificationKeyCount = 0;
     if ($tabsToDisplay["Keys"] != '0'){
-        $identificationKeyCount = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "countByTaxonomicScope=$taxon->uuid");
-        /*$polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
+       // $identificationKeyCount = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "countByTaxonomicScope=$taxon->uuid");
+        $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
         if ($polytomousKeysPager) {
             $identificationKeyCount += $polytomousKeysPager->count;
-        }*/
+        }
     }
   if ($identificationKeyCount == 0 || ($tabsToDisplay["Keys"] == '0')) {
     taxon_page_tabs_hidden_add('keys');
@@ -523,7 +523,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description'){
 
   // --- PAGE PART: KEYS --- //
   if(!taxon_page_tabs_hidden_check('keys')){
-      $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
+      //$polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon->uuid");
     if ($identificationKeyCount == 1 && $page_part == 'keys'){
       drupal_goto(path_to_key($polytomousKeysPager->records[0]->class, $polytomousKeysPager->records[0]->uuid));
     }
