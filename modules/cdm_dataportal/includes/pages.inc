@@ -792,6 +792,7 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
 
     // --- PAGE PART: KEYS --- //
     if(!taxon_page_tabs_hidden_check('keys')){
+        $polytomousKeysPager = cdm_ws_get(CDM_WS_POLYTOMOUSKEY, NULL, "findByTaxonomicScope=$taxon_dto->uuid");
         if ($identificationKeyCount == 1 && $page_part == 'keys'){
             drupal_goto(path_to_key($polytomousKeysPager->records[0]->class, $polytomousKeysPager->records[0]->uuid));
         }
