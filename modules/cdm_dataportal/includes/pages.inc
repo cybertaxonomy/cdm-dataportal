@@ -724,7 +724,11 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
     // -------------------------------------------- //
 
     if(variable_get(CDM_TAXONPAGE_TAXON_NODE_SHOW_STATES, 1) && ( $page_part == 'description' || $page_part == 'synonymy' || $page_part == 'all')){
-        $taxon_nodes = $taxon_dto->taxonNodes-> items;
+        $taxon_nodes = null;
+        if (isset_not_empty($taxon_dto-> taxonNodes)){
+            $taxon_nodes = $taxon_dto->taxonNodes-> items;
+        }
+
         if(is_array($taxon_nodes)){
             $render_array['taxon_node_status'] = compose_taxon_node_new_status($taxon_nodes);
             $render_array['taxon_node_status']['#weight'] = -100;

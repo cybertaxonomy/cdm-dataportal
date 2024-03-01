@@ -1916,7 +1916,8 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     }else if ($chapter == 'keys'){
         $query_parameters['doKeys'] = true;
     }
-
+    $query_parameters['doTaxonNodes'] = true;
+    $query_parameters['doTaxonRelations'] = true;
 
     $current_taxon = cache_get('current_taxon');
     $current_chapter = cache_get('current_chapter');
