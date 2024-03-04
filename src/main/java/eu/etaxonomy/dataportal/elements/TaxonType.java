@@ -16,6 +16,7 @@ package eu.etaxonomy.dataportal.elements;
 public enum TaxonType {
 
 	Taxon,
-	Synonym
+	Synonym,
+	misapplied-name
 
 }
