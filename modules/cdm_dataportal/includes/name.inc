@@ -873,7 +873,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                     $citation = substr($citation, 2);
                     $separator = ' ';
                 }
-                elseif (!str_beginsWith($citation, "in") && $precedingKey == 'authors') {
+                elseif (isset_not_empty($citation) && !str_beginsWith($citation, "in") && $precedingKey == 'authors') {
                     $separator = ', ';
                 } else {
                     $separator = ' ';
