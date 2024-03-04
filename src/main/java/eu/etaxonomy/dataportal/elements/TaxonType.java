@@ -17,6 +17,6 @@ public enum TaxonType {
 
 	Taxon,
 	Synonym,
-	misapplied-name
+	MisappliedName
 
 }
