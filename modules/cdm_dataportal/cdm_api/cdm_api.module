@@ -617,6 +617,9 @@ function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD")
       $end_str = partialToDate($period->end, $stripZeros, $format);
       $dateString .= ($dateString && $end_str ? ' ' . t('to') . ' ' : '') . $end_str;
     }
+    if (is_string($period)){
+        $dateString = $period;
+    }
   }
   return $dateString;
 }

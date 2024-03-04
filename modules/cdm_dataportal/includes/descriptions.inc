@@ -474,11 +474,11 @@ function compose_description_element($element, $feature_block_settings, $element
 
 
   $timescope_markup = '';
-  if(isset($element->timeperiod)){
+  if(isset_not_empty($element->timeperiod)){
     $timescope_markup = ' ' . timePeriodToString($element->timeperiod, true);
   }
   $modifier_markup = '';
-    if(isset($element->modifyingText_l10n)){
+    if(isset_not_empty($element->modifyingText_l10n)){
         $modifier_markup = ' ' . $element->modifyingText_l10n;
     }
 
