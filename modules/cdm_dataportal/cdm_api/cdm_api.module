@@ -1064,6 +1064,7 @@ function cdm_ws_base_uri($cdm_type_simple)
     case 'CommonTaxonName':
     case 'CategoricalData':
     case 'FactDto':
+    case 'CommonNameDto':
       $ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
       break;
 
