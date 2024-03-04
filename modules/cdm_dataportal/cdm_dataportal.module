@@ -1893,20 +1893,12 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['statusTree'] = variable_get(CDM_STATUSTREE_UUID);
     }
 
-    /*
-     *   @RequestParam(value = "doSynonyms", required = false) boolean doSynonyms,
-            @RequestParam(value = "doFacts", required = false) boolean doFacts,
-            @RequestParam(value = "doSpecimens", required = false) boolean doSpecimens,
-            @RequestParam(value = "doKeys", required = false) boolean doKeys,
-            @RequestParam(value = "doMedia", required = false) boolean doMedia,
-            @RequestParam(value = "doTaxonNodes", required = false) boolean doTaxonNodes,
-            @RequestParam(value = "doTaxonRelations", r
-     */
     if ($chapter == 'all'){
         $query_parameters['doSynonyms'] = true;
         $query_parameters['doFacts'] = true;
         $query_parameters['doKeys'] = true;
         $query_parameters['doMedia'] = true;
+        $query_parameters['doSpecimens'] = true;
     }else if ($chapter == 'images'){
         $query_parameters['doMedia'] = true;
     }else if ($chapter == 'synonymy'){
@@ -1915,6 +1907,8 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['doFacts'] = true;
     }else if ($chapter == 'keys'){
         $query_parameters['doKeys'] = true;
+    }else if ($chapter == 'specimens'){
+        $query_parameters['doSpecimens'] = true;
     }
     $query_parameters['doTaxonNodes'] = true;
     $query_parameters['doTaxonRelations'] = true;
@@ -1925,8 +1919,8 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $taxon_dto = $current_taxon->data;
     } else {
         $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
-        cache_set('current_chapter', $chapter);
     }
+    cache_set('current_chapter', $chapter);
     if (empty($taxon_dto)) {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
         return null;

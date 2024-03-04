@@ -230,7 +230,7 @@ function feature_block($feature_name, $feature) {
   //$block->module = 'cdm_dataportal';
   $block->region = NULL;
   $class_attribute = html_class_attribute_ref($feature);
-  $block_delta = $feature->class !== 'PseudoFeature' ? $feature_name : $feature->label;
+  $block_delta = isset_not_empty($feature->class) && $feature->class !== 'PseudoFeature' ? $feature_name : $feature->label;
   $block->delta = generalizeString($block_delta);
   $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '">'
     . theme('cdm_feature_name', array('feature_name' => $feature_name))
@@ -422,22 +422,42 @@ function compose_description_element($element, $feature_block_settings, $element
 
         );
     }else{
-        $render_array = array(
-            '#type' => 'html_tag',
-            '#tag' => cdm_feature_block_element_tag_name($feature_block_settings),
+        if (isset_not_empty($element->typedLabel[0])){
+            $render_array = array(
+                '#type' => 'html_tag',
+                '#tag' => cdm_feature_block_element_tag_name($feature_block_settings),
 
-            '#attributes' => array(
-                'class' => array(
-                    'DescriptionElement',
-                    'DescriptionElement-' . $element->typedLabel[0]->cdmClass,
-                    html_class_attribute_ref($element)
-                )
-            ),
+                '#attributes' => array(
+                    'class' => array(
+                        'DescriptionElement',
+                        'DescriptionElement-' . $element->typedLabel[0]->cdmClass,
+                        html_class_attribute_ref($element)
+                    )
+                ),
 
-            '#value' => '',
-            '#value_suffix' => NULL
+                '#value' => '',
+                '#value_suffix' => NULL
 
-        );
+            );
+        }else{
+            $render_array = array(
+                '#type' => 'html_tag',
+                '#tag' => cdm_feature_block_element_tag_name($feature_block_settings),
+
+                '#attributes' => array(
+                    'class' => array(
+                        'DescriptionElement',
+                        'DescriptionElement-' . $element->clazz,
+                        html_class_attribute_ref($element)
+                    )
+                ),
+
+                '#value' => '',
+                '#value_suffix' => NULL
+
+            );
+        }
+
     }
 
 
@@ -1576,8 +1596,13 @@ function statistical_measure_term2min_max_key($term){
     }
 
     $render_array['elements']['children'] = $description_element_render_arrays;
-
-    $render_array['elements']['#prefix'] = '<' . $enclosing_tag . ' class="feature-block-elements" id="' . $feature->representation_L10n . '">';
+    $label = "";
+    if (isset_not_empty($feature->representation_L10n)){
+        $label =  $feature->representation_L10n;
+    }elseif (isset_not_empty($feature->label)){
+        $label = $feature-> label;
+    }
+    $render_array['elements']['#prefix'] = '<' . $enclosing_tag . ' class="feature-block-elements" id="' . $label . '">';
     $render_array['elements']['#suffix'] = '</' . $enclosing_tag . '>';
 
     return $render_array;
@@ -1868,9 +1893,19 @@ function compose_new_feature_block_items_generic($description_elements, $feature
              *
              * TODO provide api_hook as extension point for this?
              */
-            $feature_block_settings = get_feature_block_settings($description_element->typedLabel[0]->uuid);
+            if ($description_element->clazz == 'IndividualsAssociationDto'){
+                $feature_block_settings = get_feature_block_settings('DEFAULT');
+            }else{
+                $feature_block_settings = get_feature_block_settings($description_element->typedLabel[0]->uuid);
+            }
 
-            switch ($description_element->typedLabel[0]->cdmClass) {
+            if (isset_not_empty($description_element->typedLabel[0]) && isset_not_empty($description_element->typedLabel[0]-> cdmClass)){
+                $switch_var =$description_element->typedLabel[0]->cdmClass;
+            }else{
+                $switch_var = $description_element->clazz;
+            }
+
+            switch ($switch_var) {
                 case 'TextData':
                     $elements_out_array[] = compose_new_description_element_text_data($description_element, $description_element->uuid, $feature_block_settings);
                     break;
@@ -1882,6 +1917,9 @@ function compose_new_feature_block_items_generic($description_elements, $feature
                     //$elements_out_array[] = compose_description_element_quantitative_data($description_element, $feature_block_settings);
                     break;
                 case 'IndividualsAssociation':
+                    $elements_out_array[] = compose_description_element_individuals_association($description_element, $feature_block_settings);
+                    break;
+                case 'IndividualsAssociationDto':
                     $elements_out_array[] = compose_description_element_individuals_association($description_element, $feature_block_settings);
                     break;
                 case 'TaxonInteraction':
@@ -1900,7 +1938,10 @@ function compose_new_feature_block_items_generic($description_elements, $feature
                     $feature_block_has_content = true;
                     $elements_out_array[] = markup_to_render_array('<li>No method for rendering unknown description class: ' . $description_element->class . '</li>');
             }
-            $elements_out_array_last_item = $elements_out_array[count($elements_out_array) - 1];
+            if (isset_not_empty($elements_out_array)){
+                $elements_out_array_last_item = $elements_out_array[count($elements_out_array) - 1];
+            }
+
             // considering not empty as long as the last item added is a render array
             $feature_block_has_content = $feature_block_has_content || !empty($elements_out_array_last_item['#type']);
         }

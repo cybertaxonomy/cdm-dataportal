@@ -955,8 +955,14 @@ function uri_uriByProxy($uri, $theme = FALSE) {
  *   The CDM entity to construct the annotations pager uri for
  */
 function cdm_compose_annotations_uri($cdm_entity) {
+    $cdm_entity_type = "";
+    if (isset_not_empty($cdm_entity->class)){
+        $cdm_entity_type = $cdm_entity->class;
+    }elseif(isset_not_empty($cdm_entity->clazz)){
+        $cdm_entity_type = $cdm_entity->clazz;
+    }
 
-  $cdm_entity_type = $cdm_entity->class;
+
 
   if($cdm_entity_type == 'DerivedUnitFacade'){
     // TODO with the below code we may miss annotations.
@@ -1057,6 +1063,7 @@ function cdm_ws_base_uri($cdm_type_simple)
     case 'IndividualsAssociation':
     case 'CommonTaxonName':
     case 'CategoricalData':
+    case 'FactDto':
       $ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
       break;
 

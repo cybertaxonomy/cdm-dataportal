@@ -198,7 +198,7 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
     if ($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE || $current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TREE){
         // get fieldUnitDTOs
         //$root_unit_dtos = $taxon_dto->rootSpecimens-> items;
-        $root_unit_dtos = $taxon_dto->rootSpecimens;
+        $root_unit_dtos = $taxon_dto->occurrenceInfo->rootSpecimens;
         //$root_unit_dtos = order_fieldUnitDtos_by_date_and_type($root_unit_dtos);
     } else {
         // $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array( $taxon->uuid, 'specimensOrObservations'));
@@ -266,6 +266,11 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
             $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_dtos);
         }
 
+        if (!isset_not_empty($_REQUEST['q'])){
+            $path = $_GET['q'];
+        }else{
+            $path = $_REQUEST['q'];
+        }
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
                 'pager' => $root_unit_dtos,
@@ -668,12 +673,16 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
 
     $media = $taxon_dto-> media;
 
-    if ($media -> count == 0 || ($tabsToDisplay["Images"] == '0')) {
+    if (!isset_not_empty($media) || $media -> count == 0 || ($tabsToDisplay["Images"] == '0')) {
         taxon_page_tabs_hidden_add('images');
     }
 
     // --- GET specimensOrObservations --- //
-    $specimensOrObservations = $taxon_dto -> rootSpecimens;
+    $specimensOrObservations = null;
+    if (isset_not_empty($taxon_dto->occurrenceInfo) && isset_not_empty($taxon_dto->occurrenceInfo->rootSpecimens)){
+        $specimensOrObservations = $taxon_dto->occurrenceInfo->rootSpecimens;
+    }
+
     if (($tabsToDisplay["Specimens"] != '0') && $specimensOrObservations == null){
         $query_parameter = getOccurrrenceQuery_parameters();
         $specimensOrObservations = cdm_ws_get(CDM_WS_TAXON, array($taxon_dto->uuid, 'specimensOrObservationsCount'), queryString($query_parameter));
@@ -937,7 +946,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
     $representationPart = new stdClass();
     $attributes = array();
-    if ($media -> count > 0) {
+    if (isset_not_empty($media) && $media -> count > 0) {
       // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
       // which only contains the thumbnail representation even if the height and width filters are not set.
       // -->
