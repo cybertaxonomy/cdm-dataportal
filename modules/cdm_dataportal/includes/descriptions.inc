@@ -2438,6 +2438,9 @@ function merged_taxon_new_feature_tree($taxon) {
 
     // 1. fetch descriptions_by_featuretree but exclude the distribution feature
     //$merged_tree = cdm_ws_descriptions_by_featuretree(get_profile_feature_tree(), $taxon->uuid, array(UUID_DISTRIBUTION));
+    if (!isset_not_empty($taxon->taxonFacts)){
+        return array();
+    }
     $merged_tree =  $taxon-> taxonFacts->items;
     if ($merged_tree == null){
         return array();
