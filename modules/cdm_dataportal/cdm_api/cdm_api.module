@@ -607,20 +607,23 @@ function partialToDate($partial, $stripZeros = TRUE, $format= "YYYY-MM-DD") {
  */
 function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD") {
   $dateString = '';
-  if($period->freeText){
-    $dateString = $period->freeText;
-  } else {
-    if ($period->start) {
-      $dateString = partialToDate($period->start, $stripZeros, $format);
-    }
-    if ($period->end) {
-      $end_str = partialToDate($period->end, $stripZeros, $format);
-      $dateString .= ($dateString && $end_str ? ' ' . t('to') . ' ' : '') . $end_str;
-    }
-    if (is_string($period)){
+  if (is_string($period)){
         $dateString = $period;
-    }
+  }else{
+      if($period->freeText){
+          $dateString = $period->freeText;
+      } else {
+          if ($period->start) {
+              $dateString = partialToDate($period->start, $stripZeros, $format);
+          }
+          if ($period->end) {
+              $end_str = partialToDate($period->end, $stripZeros, $format);
+              $dateString .= ($dateString && $end_str ? ' ' . t('to') . ' ' : '') . $end_str;
+          }
+
+      }
   }
+
   return $dateString;
 }
 
@@ -1068,6 +1071,7 @@ function cdm_ws_base_uri($cdm_type_simple)
     case 'CategoricalData':
     case 'FactDto':
     case 'CommonNameDto':
+    case 'IndividualsAssociationDto':
       $ws_base_uri = CDM_WS_DESCRIPTIONELEMENT;
       break;
 
