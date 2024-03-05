@@ -109,7 +109,7 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
             //WebElement h_gombenseElement = hieracium_gombense.getElement();
             WebDriverWait wait = searchResultPage.getWait();
             assertEquals("Hieracium gombense", hieracium_gombense.getFullTaxonName());
-            assertEquals("Hieracium gombense ⸺ Hieracium gombense subsp. purkynei (Čelak.) Zahn in Engler, Pflanzenr. 77: 837. 1921 sec. Greuter (founder) & Cichorieae Portal editors 2006+, rel. sec. Greuter (founder) & Cichorieae Portal editors 2006+", hieracium_gombense.getText());
+            assertEquals("Hieracium gombense ⸺ Hieracium gombense subsp. purkynei (Čelak.) Zahn in Engler, Pflanzenr. 77: 837. 1921 sec. Greuter, . 2005-2006, rel. sec. Greuter, . 2005-2006", hieracium_gombense.getText());
 
 
 
