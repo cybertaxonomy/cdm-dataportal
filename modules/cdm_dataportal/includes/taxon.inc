@@ -1058,7 +1058,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
                  //    $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
                  //}
                  $out .= createOutput($taxon_type, $taxon, $taxonUri, $referenceUri);
-                 $out .= $relation->cache;
+                 $out .= " as ". cdm_tagged_text_to_markup($relation->taggedText);
                  if ($index<$taxa_count) {
                      $out .= "</div>";
                  }
@@ -1135,6 +1135,7 @@ function createOutput($taxon_type, $taxon, $taxonUri, $referenceUri): string
 {
     $out = "";
     $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
+    $skip_render_template_parts = $taxon_type == TAXON_TYPE_MISAPPLIEDNAME ? ['referencePart', 'secReferencePart'] : [];
     $out .= "<div class=\"item " . $taxon_type . "\">" . render_new_taxon_or_name($taxon, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
     return $out;
 }
