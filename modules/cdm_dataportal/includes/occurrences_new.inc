@@ -49,7 +49,7 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_de
   if (!$sob_dto) {
     return $render_array;
   }
-  if ($sob_dto->type == 'FieldUnit') {
+  if ($sob_dto->type == 'FieldUnit' || $sob_dto->type == "eu.etaxonomy.cdm.model.occurrence.FieldUnit") {
     $render_array['field-unit'] = compose_cdm_field_unit_dto_details($sob_dto, $full_details);
     if (isset($sob_dto->gatheringEvent)) {
       $render_array['gathering'] = compose_cdm_gathering_dto_details($sob_dto->gatheringEvent, $full_details);
@@ -133,10 +133,10 @@ function sob_dto_details_rows($sob_dto, $full_details = FALSE) {
   }
   if (isset_not_empty($sob_dto->preferredStableUri)) {
       $uri = "";
-      if (isset_not_empty($sob_dto->preferredStableUri->javaUri)){
-          $uri = $sob_dto->preferredStableUri->javaUri;
-      }else{
+      if (is_string($sob_dto->preferredStableUri)){
           $uri = $sob_dto->preferredStableUri;
+      }else{
+          $uri = $sob_dto->preferredStableUri->javaUri;
       }
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('preferredStableUri'),

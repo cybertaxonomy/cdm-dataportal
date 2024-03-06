@@ -248,7 +248,7 @@ class DerivationTreeComposer {
     if($has_sub_derivatives){
       $unit_header_wrapper_sub_items_class_attr = ' unit-header-wrapper-with-sub-items';
     }
-    if( $sob_dto->type == 'FieldUnit' ){
+    if( $sob_dto->type == 'FieldUnit' || $sob_dto->type == 'eu.etaxonomy.cdm.model.occurrence.FieldUnit'){
       if($this->useFieldUnitShortLabel() && isset_not_empty($sob_dto->collectingString)){
         $label = $sob_dto->collectingString;
       } else {

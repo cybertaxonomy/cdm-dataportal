@@ -1792,7 +1792,7 @@ function specimen_id_and_collection_for($specimen) {
  *  The markup for the collection,
  */
 function render_collection_dto($collection_dto){
-  return render_collection($collection_dto);
+  return render_collection($collection_dto, true);
 }
 
 /**
@@ -1808,17 +1808,17 @@ function render_collection_dto($collection_dto){
  * @return string
  *  The markup for the collection,
  */
-function render_collection($collection, $do_link = false /* to be made true, see #9250 */ ){
+function render_collection($collection, $is_dto = false, $do_link = false /* to be made true, see #9250 */ ){
   if(!is_object($collection)){
     return '';
   }
-  $is_dto = $collection->class == 'CollectionDTO';
+ // $is_dto = $collection->class == 'CollectionDTO';
   $collection_str_list = [];
   $super_collection = $collection;
   while($super_collection){
     $collection_str = $is_dto ? $super_collection->label : $super_collection->titleCache;
     if(
-    ($is_dto && $super_collection->institute) ||
+    (($is_dto && is_string($super_collection->institute) ))||
     (isset_not_empty($super_collection->institute) && isset_not_empty($super_collection->institute->titleCache))){
       $collection_str .= ' at ' . ($is_dto ? $super_collection->institute : $super_collection->institute->titleCache);
     }
