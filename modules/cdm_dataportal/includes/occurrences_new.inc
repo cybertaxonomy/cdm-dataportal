@@ -132,9 +132,15 @@ function sob_dto_details_rows($sob_dto, $full_details = FALSE) {
       cdm_term_representation($sob_dto->kindOfUnit));
   }
   if (isset_not_empty($sob_dto->preferredStableUri)) {
+      $uri = "";
+      if (isset_not_empty($sob_dto->preferredStableUri->javaUri)){
+          $uri = $sob_dto->preferredStableUri->javaUri;
+      }else{
+          $uri = $sob_dto->preferredStableUri;
+      }
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('preferredStableUri'),
-      cdm_external_uri($sob_dto->preferredStableUri, false));
+      cdm_external_uri($uri, false));
   }
   if (isset_not_empty($sob_dto->sex)) {
     $table_row_data[] = cdm_sob_dto_table_row(
