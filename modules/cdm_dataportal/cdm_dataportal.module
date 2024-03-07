@@ -1897,7 +1897,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['doSynonyms'] = true;
         $query_parameters['doFacts'] = true;
         $query_parameters['doKeys'] = true;
-        $query_parameters['doMedia'] = true;
+
         $query_parameters['doSpecimens'] = true;
     }else if ($chapter == 'images'){
         $query_parameters['doMedia'] = true;
@@ -1910,6 +1910,8 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     }else if ($chapter == 'specimens'){
         $query_parameters['doSpecimens'] = true;
     }
+    //TODO: need to be adapted!!!
+    $query_parameters['doMedia'] = true;
     $query_parameters['doTaxonNodes'] = true;
     $query_parameters['doTaxonRelations'] = true;
 
