@@ -104,7 +104,7 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
             assertEquals(getContext().prepareTitle("Search results"), searchResultPage.getTitle());
 
-            TaxonListElement hieracium_gombense = searchResultPage.getResultItem(3);
+            TaxonListElement hieracium_gombense = searchResultPage.getResultItem(4);
 
             //WebElement h_gombenseElement = hieracium_gombense.getElement();
             WebDriverWait wait = searchResultPage.getWait();
