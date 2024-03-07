@@ -96,7 +96,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         subNode1.getHeader().getElement().click(); // make the  content visible
         LinkElement pageLink = subNode1.getHeader().getLinksInElement().get(0);
         assertTrue(pageLink.getUrl().endsWith("cdm_dataportal/occurrence/2d424df6-f927-472a-8fb5-4c2d2eeb4484"));
-        assertEquals("Preparation: Liebm., Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM), 2020-01-03", subNode1.getDerivationEvent());
+        assertEquals("Preparation: Liebm., Botanic Garden and Botanical Museum Berlin-Dahlem (BGBM), 3 Jan 2020", subNode1.getDerivationEvent());
 
         DetailsTable tissueSampleTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Tissue Sample"));
         assertEquals("Tissue Sample", tissueSampleTable.getHeaderText());
@@ -195,7 +195,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("Ehrenberg, C.G.", gatheringTable.getDetailsValueCellText("Collector"));
         assertEquals("Berlin", gatheringTable.getDetailsValueCellText("Locality"));
         assertEquals("Germany", gatheringTable.getDetailsValueCellText("Country"));
-       // assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", gatheringTable.getDetailsValueCellText("Exact location"));
+        assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", gatheringTable.getDetailsValueCellText("Exact location"));
         assertEquals("165 m", gatheringTable.getDetailsValueCellText("Altitude"));
 
         // --- node 1
