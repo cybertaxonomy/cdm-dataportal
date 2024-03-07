@@ -50,9 +50,9 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         assertNotNull(fb);
 
         assertEquals(3, fb.getFeatureBlockElements().size());
-        assertEquals("Flowers with white blossoms on Testisland A. 0000-05 to 0000-06 (Lem: New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(0).getText());
-        assertEquals("Flowers with white blossoms on Testisland B. Mai to June (Lem: New Species in the solar system: p.99)", fb.getFeatureBlockElements().get(1).getText());
-        assertEquals("Flowers with white blossoms on Testisland C. 2000 to 2000-05", fb.getFeatureBlockElements().get(2).getText());
+        assertEquals("Flowers with white blossoms on Testisland A. May–JunB", fb.getFeatureBlockElements().get(0).getText());
+        assertEquals("Flowers with white blossoms on Testisland B. Mai to JuneB", fb.getFeatureBlockElements().get(1).getText());
+        assertEquals("Flowers with white blossoms on Testisland C. 2000", fb.getFeatureBlockElements().get(2).getText());
     }
 
 
@@ -65,9 +65,9 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         assertNotNull(flowering_season);
         assertEquals(1, flowering_season.getFeatureBlockElements().size());
         // FIXME assertEquals(1, flowering_season.getDescriptionElement(0).getSources().size());
-        assertEquals("6 Mar–JunC", flowering_season.getFeatureBlockElements().get(0).getText());
+        assertEquals("6 Mar–JunA", flowering_season.getFeatureBlockElements().get(0).getText());
 
-        FeatureBlock fruiting_period = p.getFeatureBlockAt(2, "fruiting_period", "div", "span");
+        FeatureBlock fruiting_period = p.getFeatureBlockAt(0, "fruiting_period", "div", "span");
         assertNotNull(fruiting_period);
         assertEquals(1, fruiting_period.getFeatureBlockElements().size());
         assertEquals(0, fruiting_period.getDescriptionElement(0).getSources().size());
