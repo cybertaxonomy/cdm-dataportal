@@ -1896,7 +1896,7 @@ function compose_new_feature_block_items_generic($description_elements, $feature
             if ($description_element->clazz == 'IndividualsAssociationDto'){
                 $feature_block_settings = get_feature_block_settings('DEFAULT');
             }else{
-                $feature_block_settings = get_feature_block_settings($description_element->typedLabel[0]->uuid);
+                $feature_block_settings = get_feature_block_settings($feature_uuid);
             }
 
             if (isset_not_empty($description_element->typedLabel[0]) && isset_not_empty($description_element->typedLabel[0]-> cdmClass)){
@@ -1907,7 +1907,7 @@ function compose_new_feature_block_items_generic($description_elements, $feature
 
             switch ($switch_var) {
                 case 'TextData':
-                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $description_element->uuid, $feature_block_settings);
+                    $elements_out_array[] = compose_new_description_element_text_data($description_element, $feature_uuid, $feature_block_settings);
                     break;
                 case 'CategoricalData':
                     $elements_out_array[] = compose_description_element_categorical_data($description_element, $feature_block_settings);
