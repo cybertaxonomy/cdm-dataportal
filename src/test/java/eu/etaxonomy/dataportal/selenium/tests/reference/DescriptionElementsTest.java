@@ -61,13 +61,13 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
 
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
 
-        FeatureBlock flowering_season = p.getFeatureBlockAt(0, "flowering_season", "div", "span");
+        FeatureBlock flowering_season = p.getFeatureBlockAt(1, "flowering_season", "div", "span");
         assertNotNull(flowering_season);
         assertEquals(1, flowering_season.getFeatureBlockElements().size());
         // FIXME assertEquals(1, flowering_season.getDescriptionElement(0).getSources().size());
-        assertEquals("6 Mar–JunA", flowering_season.getFeatureBlockElements().get(0).getText());
+        assertEquals("6 Mar–JunC", flowering_season.getFeatureBlockElements().get(0).getText());
 
-        FeatureBlock fruiting_period = p.getFeatureBlockAt(0, "fruiting_period", "div", "span");
+        FeatureBlock fruiting_period = p.getFeatureBlockAt(2, "fruiting_period", "div", "span");
         assertNotNull(fruiting_period);
         assertEquals(1, fruiting_period.getFeatureBlockElements().size());
         assertEquals(0, fruiting_period.getDescriptionElement(0).getSources().size());
