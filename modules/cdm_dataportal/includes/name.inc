@@ -346,7 +346,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   }
 
   // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
-    if (count($tagged_title)>1){
+    if (is_array($tagged_title) && count($tagged_title)>1){
         while($tagged_title[count($tagged_title)-1]->type == "appendedPhrase"){
             $appended_phrase_tagged_text[] = array_pop($tagged_title);
         }

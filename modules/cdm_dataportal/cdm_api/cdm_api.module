@@ -609,10 +609,12 @@ function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD")
   $dateString = '';
   if (is_string($period)){
         $dateString = $period;
-  }else{
-      if($period->freeText){
+  }else {
+      if ($period->freeText) {
           $dateString = $period->freeText;
-      } else {
+      }elseif(isset_not_empty($period->timePeriod)){
+          $dateString = $period->timePeriod;
+      }else {
           if ($period->start) {
               $dateString = partialToDate($period->start, $stripZeros, $format);
           }
