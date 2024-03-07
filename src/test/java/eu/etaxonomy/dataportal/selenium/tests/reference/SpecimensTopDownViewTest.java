@@ -77,7 +77,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         DescriptionList dl3 = new DescriptionList(contentElements.get(2).findElement(By.tagName("dl")));
         assertEquals("Field Unit", dl3.joinedDescriptionElementText("Record basis:"));
         assertEquals("D047", dl3.joinedDescriptionElementText("Collecting number:"));
-        assertEquals("2016-03-28", dl3.joinedDescriptionElementText("Gathering date"));
+        assertEquals("28 Mar 2016", dl3.joinedDescriptionElementText("Gathering date"));
         assertEquals("Germany", dl3.joinedDescriptionElementText("Country:"));
         assertEquals("Berlin", dl3.joinedDescriptionElementText("Locality:"));
         assertEquals("52°31'1.2\"N, 13°21'E +/-20 m (WGS84)", dl3.joinedDescriptionElementText("Exact location:"));
