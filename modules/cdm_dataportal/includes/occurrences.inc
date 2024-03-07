@@ -1817,8 +1817,7 @@ function render_collection($collection, $is_dto = false, $do_link = false /* to 
   $super_collection = $collection;
   while($super_collection){
     $collection_str = $is_dto ? $super_collection->label : $super_collection->titleCache;
-    if(
-    (($is_dto && is_string($super_collection->institute) ))||
+    if(($is_dto && (is_string($super_collection->institute) && !empty($super_collection->institute) ))||
     (isset_not_empty($super_collection->institute) && isset_not_empty($super_collection->institute->titleCache))){
       $collection_str .= ' at ' . ($is_dto ? $super_collection->institute : $super_collection->institute->titleCache);
     }
