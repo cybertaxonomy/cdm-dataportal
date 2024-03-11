@@ -436,7 +436,7 @@ function compose_cdm_sob_dto_determinations($sob_dto, $full_details = FALSE) {
 
   foreach ($sob_dto->determinations as $det_event) {
     // FIXME use $det_event->determination->taggedText instead of loading the entity
-    if($det_event->determination->type == "TaxonName") {
+    if(($det_event->determination->type == "TaxonName") || ($det_event->determination->type == "eu.etaxonomy.cdm.model.name.TaxonName")) {
       $link_path = path_to_name($det_event->determination->uuid);
       $taxon_or_name = cdm_ws_get(CDM_WS_PORTAL_NAME, [$det_event->determination->uuid]);
     } else {

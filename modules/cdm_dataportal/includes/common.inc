@@ -934,7 +934,7 @@ function render_pointDto($point, $do_link_to_geohack = true, $geohack_link_pagen
 }
 
 function render_point($point, $do_link_to_geohack = true, $geohack_link_pagename = ''){
-    if (isset($point->class) && $point->class == "PointDTO"){
+    if ((isset($point->class) && $point->class == "PointDTO" )|| isset_not_empty($point->label)){
         return render_pointDto($point, $do_link_to_geohack, $geohack_link_pagename);
     }
     if(!isset($point->sexagesimalString)){
