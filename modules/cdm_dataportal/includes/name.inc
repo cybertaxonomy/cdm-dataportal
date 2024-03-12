@@ -1006,7 +1006,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     if (array_setr('description', TRUE, $renderTemplate)) {
         $external_links = $taxon_name_or_taxon_base_dto->protologues;
         //$external_links = cdm_ws_get(CDM_WS_NAME_PROTOLOGUE_LINKS, $taxon_name->uuid);
-        if($external_links){
+        if(isset_not_empty($external_links)){
             foreach ($external_links as $link) {
                 if (!empty($link->javaUri)) {
                     // for the link see also cdm_external_uri()
