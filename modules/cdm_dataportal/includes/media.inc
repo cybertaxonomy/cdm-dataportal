@@ -504,7 +504,7 @@ function cdm_media_gallery_entry_image($thumbnailImage, $maxExtend, $addPassePar
     $size = $thumbnailImage->getSize();
     $h = @$size->height;
     $w = @$size->width;
-    $thumbnail_image_uri = $thumbnailImage->getUrl();
+    $thumbnail_image_uri = is_string($thumbnailImage->getUrl())?$thumbnailImage->getUrl(): $thumbnailImage->getUrl()->javaUri ;
     if (!($w && $h)) {
       // Take url and replace spaces.
       // TODO this should go into the ImageMediaItem

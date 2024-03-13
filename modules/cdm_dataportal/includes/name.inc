@@ -860,9 +860,9 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
 
         // [Eckhard]:"Komma nach dem Taxonnamen ist grundsätzlich falsch,
         // Komma nach dem Autornamen ist überall dort falsch, wo ein "in" folgt."
-       if (isset($renderTemplate['referencePart']['reference']) && isset($taxon_base->sourceString)) {
+       if (isset($renderTemplate['referencePart']['reference']) && (isset($nomref_tagged_text) || isset_not_empty($taxon_base->sourceString))) {
 
-          // if(isset($taxon->sourceString)){
+           if(isset_not_empty($taxon_base->sourceString)){
                 // drupal message for debugging of #9599
                 // drupal_set_message("reference/$0/nomenclaturalCitation' must no longer be used (type: "
                 //  . $taxon_name_or_taxon_base->class . (isset($taxon_name_or_taxon_base->type) ? " - " +$taxon_name_or_taxon_base->type : ""  . ")"), "error");
@@ -881,11 +881,11 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
                 $referenceArray['#separator'] = $separator;
                 $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
 
-      /* } else {
+       } else {
                 // this is the case for taxon names
                 $options['html']= true;
                 $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text, $skiptags = array(), $tag = 'span', $options). $registration_markup;
-       }*/
+       }
 
             array_setr('reference', $referenceArray, $renderTemplate);
        }

@@ -947,28 +947,21 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
     $representationPart = new stdClass();
     $attributes = array();
     if (isset_not_empty($media) && $media -> count > 0) {
-      // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
-      // which only contains the thumbnail representation even if the height and width filters are not set.
-      // -->
-      $preferred_media = cdm_ws_get(CDM_WS_MEDIA, $media-> items[0]->uuid);
-      $preferred_representations = cdm_preferred_media_representations($preferred_media, array(
-        'image/jpg',
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-      ),
-        $taxon_profile_image_settings['maxextend'],
-        $taxon_profile_image_settings['maxextend']
-      );
-      if(count($preferred_representations) > 0){
+      //if(count($preferred_representations) > 0){
+        if (isset_not_empty($media->items[0])){
+        $representationPart = array_shift($media->items[0]->representations->items);
 
-        $representation = array_shift($preferred_representations);
-        $representationPart = $representation->parts[0];
-        $attributes['alt'] = $representationPart->uri;
+        $uri_String = "";
+        if (is_string($representationPart->uri)){
+            $uri_String = $representationPart->uri;
+        }else{
+            $uri_String = $representationPart->uri->javaUri;
+        }
+        $attributes['alt'] = $uri_String;
 
         if (!empty($taxon_profile_image_settings['media_uri_query'])) {
-          $representationPart->uri = $representationPart->uri
-            . (strpos($representationPart->uri, '?') !== FALSE ? '&' : '?')
+          $representationPart->uri = $uri_String
+            . (strpos($uri_String, '?') !== FALSE ? '&' : '?')
             . $taxon_profile_image_settings['media_uri_query'];
         }
       }
