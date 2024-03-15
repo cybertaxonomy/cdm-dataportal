@@ -1058,7 +1058,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
                  //    $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
                  //}
                  $out .= createOutput($taxon_type, $taxon, $taxonUri, $referenceUri);
-                 $out .= " as ". cdm_tagged_text_to_markup($relation->taggedText, ['reference', 'secReference']);
+                 $out .= " as ". cdm_tagged_text_to_markup($relation->taggedText, ['reference', 'secReference', 'relSecReference']);
                  if ($index<$taxa_count) {
                      $out .= "</div>";
                  }
