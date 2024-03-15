@@ -1021,7 +1021,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
         if(isset($taxonRelationsDTO->relations)){
             $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
             foreach ($taxonRelationsDTO->relations as $relation) {
-                if (in_array($relation->type->uuid, $taxon_relationship_types))    {
+                if (in_array($relation->type->uuid, $taxon_relationship_types) && in_array($searched_in_classification->uuid,$relation->classificationsUUIDs)  )  {
                 //if (($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $relation->typeUuid == UUID_MISAPPLIED_NAME_FOR || $relation->type->uuid == UUID_PROPARTE_SYNONYM_FOR || $relation->typeUuid == UUID_PROPARTE_SYNONYM_FOR) && _cdm_dataportal_matches_current_view($relation->classificationsUUIDs)) {
                  //   $table_of_accepted[$mispplication_uuid][] = cdm_ws_get(CDM_WS_TAXON, $relation);
                     $table_of_accepted[$mispplication_uuid][] = $relation;
@@ -1058,7 +1058,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
                  //    $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
                  //}
                  $out .= createOutput($taxon_type, $taxon, $taxonUri, $referenceUri);
-                 $out .= " as ". cdm_tagged_text_to_markup($relation->taggedText);
+                 $out .= " as ". cdm_tagged_text_to_markup($relation->taggedText, ['reference', 'secReference']);
                  if ($index<$taxa_count) {
                      $out .= "</div>";
                  }

@@ -161,9 +161,10 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
   $was_separator = false;
   $last_type = null;
   $last_suffix = '';
+  $last_text = '';
   $i = 0;
   foreach ($taggedtxt as $tt) {
-    if (!in_array($tt->type, $skiptags) && $tt->text) {
+    if (!in_array($tt->type, $skiptags) && $tt->text && !(is_tagged_text_sepatator_type($tt->type) && in_array($taggedtxt[$i+1]->type, $skiptags)) ) {
 
       $is_first = $i == 0;
       $is_separator = is_tagged_text_sepatator_type($tt->type);
@@ -218,7 +219,10 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
         $was_separator = $is_separator;
         $last_type = $tt->type;
         $last_suffix = $suffix;
+        $last_text = $tt->text;
       }
+    }else if ($was_separator){
+       //$out = str_replace( $last_text, '', $out);
     }
     $i++;
   }
