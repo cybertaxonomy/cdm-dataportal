@@ -1361,7 +1361,9 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
           if(!isset($specimen_type_designation_refs[$type_status])){
             $specimen_type_designation_refs[$type_status] =  $entity_reference_list;
           } else {
-            array_push($specimen_type_designation_refs[$type_status], $entity_reference_list);
+              foreach ($entity_reference_list as $entity_ref){
+                  array_push($specimen_type_designation_refs[$type_status] ,$entity_ref);
+              }
           }
         }
       } else {
