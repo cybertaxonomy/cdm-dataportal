@@ -1082,7 +1082,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
         //$out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
        // $out = createOutput($taxon_type, $taxon, $taxonUri, $referenceUri, $out);
         if ($show_classification) {
-            $out .= render_classifications_for_taxon($taxon);
+            $out .= render_classifications_for_taxon($taxon-> entity);
         }
         if ($showMedia_taxa) {
             $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
@@ -1143,6 +1143,7 @@ function createOutput($taxon_type, $taxon, $taxonUri, $referenceUri): string
 
 function render_classifications_for_taxon($taxon) {
   $unclassified_snippet = '<span class="unclassified">' . t('unclassified') . '</span>';
+
   $classifications = get_classifications_for_taxon($taxon);
   $classification_titles = array();
   foreach ($classifications as $classification) {
