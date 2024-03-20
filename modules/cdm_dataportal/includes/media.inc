@@ -358,7 +358,7 @@ function compose_cdm_media_gallery($configuration) {
       if(!$media){
         continue;
       }
-      if (isset_not_empty($media->representation)){
+      if (isset_not_empty($media->representations)){
           $complete_media = $media;
       }else{
         //TODO
