@@ -948,23 +948,26 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
     $attributes = array();
     if (isset_not_empty($media) && $media -> count > 0) {
       //if(count($preferred_representations) > 0){
-        if (isset_not_empty($media->items[0])){
-        $representationPart = array_shift($media->items[0]->representations->items);
+        if (isset_not_empty($media->items[0])) {
+            $representationPart = array_shift($media->items[0]->representations->items);
 
-        $uri_String = "";
-        if (is_string($representationPart->uri)){
-            $uri_String = $representationPart->uri;
-        }else{
-            $uri_String = $representationPart->uri->javaUri;
-        }
-        $attributes['alt'] = $uri_String;
+            $uri_String = "";
+            if (isset_not_empty($representationPart->uri)) {
+                if (is_string($representationPart->uri)) {
+                    $uri_String = $representationPart->uri;
+                } else {
+                    $uri_String = $representationPart->uri->javaUri;
+                }
+                $attributes['alt'] = $uri_String;
+            }
 
-        if (!empty($taxon_profile_image_settings['media_uri_query'])) {
-          $representationPart->uri = $uri_String
-            . (strpos($uri_String, '?') !== FALSE ? '&' : '?')
-            . $taxon_profile_image_settings['media_uri_query'];
+
+            if (!empty($taxon_profile_image_settings['media_uri_query'])) {
+              $representationPart->uri = $uri_String
+                . (strpos($uri_String, '?') !== FALSE ? '&' : '?')
+                . $taxon_profile_image_settings['media_uri_query'];
+            }
         }
-      }
     }
     else {
       if ($taxon_profile_image_settings['custom_placeholder_enabled']) {
