@@ -57,14 +57,14 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertNotNull(regItem);
 
         List<LinkElement> footnoteKeys = regItem.getFootNoteKeys();
-        assertEquals(5, footnoteKeys.size());
+        assertEquals(6, footnoteKeys.size());
         // check footnote keys are in right order
         assertEquals("1", footnoteKeys.get(0).getText());
         assertEquals("2", footnoteKeys.get(1).getText());
         assertEquals("3", footnoteKeys.get(2).getText());
         assertEquals("4", footnoteKeys.get(3).getText());
         assertEquals("5", footnoteKeys.get(4).getText());
-
+        assertEquals("6", footnoteKeys.get(4).getText());
         // check content of footnotes
         List<BaseElement> footnotes = regItem.getFootNotes();
         assertEquals(5, footnotes.size());
@@ -72,12 +72,14 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("2. editorial note on the fieldunit", footnotes.get(1).getText());
         //assertEquals("3. Art. 77.7; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
           //      footnotes.get(2).getText());
-        assertEquals("3. Art. 77.7",
-                 footnotes.get(2).getText());
+        assertEquals("3. Test of several paratypes",
+                            footnotes.get(2).getText());
+        assertEquals("4. Art. 77.7",
+                 footnotes.get(3).getText());
         assertEquals("4. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glashütten: Koeltz Botanical Books",
-                footnotes.get(3).getText());
-        assertEquals("5. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                 footnotes.get(4).getText());
+        assertEquals("5. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
+                footnotes.get(5).getText());
     }
 
     @Test
@@ -90,7 +92,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertNotNull(pageContent);
 
         List<LinkElement> footnoteKeys = pageContent.getFootNoteKeys();
-        assertEquals(6, footnoteKeys.size());
+        assertEquals(7, footnoteKeys.size());
         // check footnote keys are in right order
         assertEquals("1", footnoteKeys.get(0).getText());
         assertEquals("2", footnoteKeys.get(1).getText());
@@ -98,7 +100,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("4", footnoteKeys.get(3).getText());
         assertEquals("5", footnoteKeys.get(4).getText());
         assertEquals("6", footnoteKeys.get(5).getText());
-
+        assertEquals("7", footnoteKeys.get(5).getText());
         // check content of footnotes
         List<BaseElement> footnotes = pageContent.getFootNotes();
         assertEquals(6, footnotes.size());
@@ -123,6 +125,8 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("http://testbank.org/100004", linksInFootnote5.get(1).getText());
         assertTrue("unexpected url in footnote: " + linksInFootnote5.get(1).getUrl(), linksInFootnote5.get(1).getUrl().endsWith("cdm_dataportal/registration?identifier=http%3A//testbank.org/100004"));
         assertEquals("6. editorial note on the fieldunit", footnotes.get(5).getText());
+        assertEquals("7. Test of several paratypes", footnotes.get(6).getText());
+
     }
 
     @Test

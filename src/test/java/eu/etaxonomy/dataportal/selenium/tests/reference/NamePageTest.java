@@ -55,7 +55,8 @@ public class NamePageTest extends CdmDataPortalTestBase{
         assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/name/" + name_nodosilinea_radiophila_uuid.toString()));
         WebElement typeDesignationsContainer = p.getDataPortalContent().getElement().findElement(By.cssSelector("div.typeDesignations"));
         List<WebElement> typeDesignations = typeDesignationsContainer.findElements(By.xpath("./div"));
-        assertEquals(1, typeDesignations.size());
+        //change to 3 because 2 paratypes are added to test #10482
+        assertEquals(3, typeDesignations.size());
         typeDesignations.get(0);
         assertTrue(typeDesignations.get(0).getAttribute("class").contains("cdm:SpecimenTypeDesignation uuid:dbf91118-1c09-40f6-a3d0-2d9d4b88ac34"));
     }
