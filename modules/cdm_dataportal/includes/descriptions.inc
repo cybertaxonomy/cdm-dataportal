@@ -2258,14 +2258,23 @@ function compose_description_elements_distribution($description_elements){
     $annotations_and_sources = handle_annotations_and_sources(
       $description_element, $description_element->area->representation_L10n, UUID_DISTRIBUTION
     );
+    $status = [];
+    if (isset_not_empty($description_element->status)){
+        $status = distribution_status_label_and_markup([$description_element->status]);
+    }
 
-    $status = distribution_status_label_and_markup([$description_element->status]);
 
     $out = '';
-    $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid
-      . ' " title="' . $status['label']. '">'
-      . $description_element->area->representation_L10n
-      . $status['markup'];
+
+    $out .= '<' . $enclosingTag . ' class="descriptionElement descriptionElement-' . $description_element->uuid;
+      if (array_key_exists('label', $status)){
+            $out .= ' " title="' . $status['label']. '">';
+      }
+      $out .= $description_element->area->representation_L10n;
+      if (array_key_exists('markup', $status)){
+          $out .= $status['markup'];;
+      }
+
     if($annotations_and_sources->hasSourceReferences()){
       $out .= ' ' . join(' ', $annotations_and_sources->getSourceReferences());
     }
@@ -2291,8 +2300,10 @@ function compose_description_elements_distribution($description_elements){
     foreach($distribution_status as $status) {
       if(isset($status->representation_L10n)){
           $status_label .= ($status_label ? $status_glue : '') . $status->representation_L10n ;
-      }else{
+      }elseif (isset_not_empty($status->label)){
           $status_label .= ($status_label ? $status_glue : '') . $status->label ;
+      }else{
+          $status_label .= '';
       }
       if (isset($status->idInVocabulary)){
           $status_markup .=  '<span class="distributionStatus"> '
@@ -2301,12 +2312,14 @@ function compose_description_elements_distribution($description_elements){
               .  $status->representation_L10n
               . '</span></span>';
 
-      }else{
+      }elseif (isset_not_empty($status->label)){
           $status_markup .=  '<span class="distributionStatus"> '
               . ($status_markup ? $status_glue : '')
               . '<span class="distributionStatus-' . $status->label . '">'
               .  $status->label
               . '</span></span>';
+      }else{
+          $status_markup = '';
       }
 
     };

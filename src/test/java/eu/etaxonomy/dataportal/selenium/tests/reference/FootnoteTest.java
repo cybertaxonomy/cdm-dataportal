@@ -124,8 +124,8 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("", linksInFootnote5.get(0).getText());
         assertEquals("http://testbank.org/100004", linksInFootnote5.get(1).getText());
         assertTrue("unexpected url in footnote: " + linksInFootnote5.get(1).getUrl(), linksInFootnote5.get(1).getUrl().endsWith("cdm_dataportal/registration?identifier=http%3A//testbank.org/100004"));
-        assertEquals("7. editorial note on the fieldunit", footnotes.get(5).getText());
-        assertEquals("8. Test of several paratypes", footnotes.get(6).getText());
+        assertEquals("7. editorial note on the fieldunit", footnotes.get(6).getText());
+        assertEquals("8. Test of several paratypes", footnotes.get(7).getText());
 
     }
 
