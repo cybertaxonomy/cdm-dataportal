@@ -682,7 +682,7 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
     $config = RenderHints::getAnnotationsAndSourceConfig();
 
     if ($config['sources_as_content']) {
-        foreach ($sources as $source) {
+        foreach ($sources->items as $source) {
             if (_is_original_source_type($source)) {
                 $reference_citation = render_original_source(
                     $source,
