@@ -948,8 +948,19 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
     $attributes = array();
     if (isset_not_empty($media) && $media -> count > 0) {
       //if(count($preferred_representations) > 0){
+        //get first image with representations
+
+
         if (isset_not_empty($media->items[0])) {
-            $representationPart = array_shift($media->items[0]->representations->items);
+            $valid_item = null;
+            foreach($media->items as $item){
+                if (isset_not_empty($item->representations)){
+                    $valid_item = $item;
+                    break;
+                }
+            }
+
+            $representationPart = array_shift($valid_item->representations->items);
 
             $uri_String = "";
             if (isset_not_empty($representationPart->uri)) {
