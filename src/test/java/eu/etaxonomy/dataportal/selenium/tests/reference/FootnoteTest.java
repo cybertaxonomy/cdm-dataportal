@@ -64,7 +64,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("3", footnoteKeys.get(2).getText());
         assertEquals("4", footnoteKeys.get(3).getText());
         assertEquals("5", footnoteKeys.get(4).getText());
-        assertEquals("6", footnoteKeys.get(4).getText());
+        assertEquals("6", footnoteKeys.get(5).getText());
         // check content of footnotes
         List<BaseElement> footnotes = regItem.getFootNotes();
         assertEquals(5, footnotes.size());
@@ -100,7 +100,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("4", footnoteKeys.get(3).getText());
         assertEquals("5", footnoteKeys.get(4).getText());
         assertEquals("6", footnoteKeys.get(5).getText());
-        assertEquals("7", footnoteKeys.get(5).getText());
+        assertEquals("7", footnoteKeys.get(6).getText());
         // check content of footnotes
         List<BaseElement> footnotes = pageContent.getFootNotes();
         assertEquals(6, footnotes.size());

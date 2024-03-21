@@ -58,7 +58,7 @@ public class NamePageTest extends CdmDataPortalTestBase{
         //change to 3 because 2 paratypes are added to test #10482
         assertEquals(3, typeDesignations.size());
         typeDesignations.get(0);
-        assertTrue(typeDesignations.get(1).getAttribute("class").contains("cdm:SpecimenTypeDesignation uuid:dbf91118-1c09-40f6-a3d0-2d9d4b88ac34"));
+        assertTrue(typeDesignations.get(2).getAttribute("class").contains("cdm:SpecimenTypeDesignation uuid:dbf91118-1c09-40f6-a3d0-2d9d4b88ac34"));
     }
     /**
          * related to https://dev.e-taxonomy.eu/redmine/issues/9967

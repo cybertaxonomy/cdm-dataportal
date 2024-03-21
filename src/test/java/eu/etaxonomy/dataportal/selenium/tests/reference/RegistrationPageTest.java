@@ -141,10 +141,10 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "Holotype: Iran, Talesh Mahalleh, Ramsar., alt. 20 m, 36°52'58.8\"N, 50°40'58.8\"E (CBFS: A–83–1)2",
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         assertEquals(
-                "Paratype: Iran, Talesh Mahalleh, 25 Dec 2023, N. Abarca (B: 345)",
+                "Paratype: Iran, Talesh Mahalleh, 24 Dec 2023, Bansemer, Jana (B: 123)3",
                 regItem.getSpecimenTypeDesignations().get(1).getText());
         assertEquals(
-               "Paratype: Iran, Talesh Mahalleh, 24 Dec 2023, Bansemer, Jana (B: 123)3",
+               "Paratype: Iran, Talesh Mahalleh, 25 Dec 2023, N. Abarca (B: 345)",
                 regItem.getSpecimenTypeDesignations().get(2).getText());
         assertEquals(
                 "published in: Heidari, F., Zima, J., Riahi, H. & Hauer, T. 2018: New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149",
