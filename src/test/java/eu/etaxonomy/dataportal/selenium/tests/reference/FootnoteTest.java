@@ -76,9 +76,9 @@ public class FootnoteTest extends CdmDataPortalTestBase {
                             footnotes.get(2).getText());
         assertEquals("4. Art. 77.7",
                  footnotes.get(3).getText());
-        assertEquals("4. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glashütten: Koeltz Botanical Books",
+        assertEquals("5. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glashütten: Koeltz Botanical Books",
                 footnotes.get(4).getText());
-        assertEquals("5. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
+        assertEquals("6. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                 footnotes.get(5).getText());
     }
 
@@ -115,8 +115,8 @@ public class FootnoteTest extends CdmDataPortalTestBase {
                 footnotes.get(2).getText());
         assertEquals("4. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                         footnotes.get(3).getText());
-        BaseElement footnote5 = footnotes.get(4);
-        assertEquals("5. Heidari, F. & Hauer, T. 2018 – In: Heidari, F., Zima, J., Riahi, H. & Hauer, T., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2) Registration: http://testbank.org/100004, 2019-02-06",
+        BaseElement footnote5 = footnotes.get(5); //new number 5 is annotation of paratype
+        assertEquals("6. Heidari, F. & Hauer, T. 2018 – In: Heidari, F., Zima, J., Riahi, H. & Hauer, T., New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2) Registration: http://testbank.org/100004, 2019-02-06",
                         footnote5.getText());
         List<LinkElement> linksInFootnote5 = footnote5.getLinksInElement();
         assertEquals(2, linksInFootnote5.size());
