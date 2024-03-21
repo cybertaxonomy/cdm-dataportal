@@ -150,7 +150,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "published in: Heidari, F., Zima, J., Riahi, H. & Hauer, T. 2018: New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149",
                 regItem.getCitation().getText());
         assertEquals(
-                "Registration on 2019-02-06 13:16:45 +0100",
+                "Registration on 2024-03-20 15:13:18 +0100",
                 regItem.getMetadata().getText());
     }
 

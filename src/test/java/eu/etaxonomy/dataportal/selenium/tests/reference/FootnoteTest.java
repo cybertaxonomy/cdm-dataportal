@@ -67,7 +67,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("6", footnoteKeys.get(5).getText());
         // check content of footnotes
         List<BaseElement> footnotes = regItem.getFootNotes();
-        assertEquals(5, footnotes.size());
+        assertEquals(6, footnotes.size());
         assertEquals("1. Editorial note on Nodosilinea radiophila", footnotes.get(0).getText());
         assertEquals("2. editorial note on the fieldunit", footnotes.get(1).getText());
         //assertEquals("3. Art. 77.7; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
@@ -103,7 +103,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals("7", footnoteKeys.get(6).getText());
         // check content of footnotes
         List<BaseElement> footnotes = pageContent.getFootNotes();
-        assertEquals(6, footnotes.size());
+        assertEquals(7, footnotes.size());
         assertEquals("1. Editorial note on Nodosilinea radiophila",
                 footnotes.get(0).getText());
         //assertEquals("2. Art. 77.7; Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017: 22",
