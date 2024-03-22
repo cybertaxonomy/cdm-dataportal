@@ -1076,7 +1076,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
         $dto_out_array[] = $distribution_tree_render_array;
       }
 
-      // --- sorted element list
+      /* --- sorted element list
       if (is_array($distribution_info_dto->elements) && count($distribution_info_dto->elements) > 0) {
         foreach ($distribution_info_dto->elements as $descriptionElement) {
           if (is_object($descriptionElement->area)) {
@@ -1088,7 +1088,7 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
         $distribution_element_render_array = compose_description_elements_distribution($distributionElements);
         $dto_out_array[] = $distribution_element_render_array;
 
-      }
+      }*/
       //
       $block->content[] = compose_feature_block_wrap_elements(
         $dto_out_array, $feature, $distribution_glue, $distribution_sortOutArray
@@ -2309,7 +2309,7 @@ function compose_description_elements_distribution($description_elements){
           $status_markup .=  '<span class="distributionStatus"> '
               . ($status_markup ? $status_glue : '')
               . '<span class="distributionStatus-' . $status->idInVocabulary . '">'
-              .  $status->representation_L10n
+              .  $status->label
               . '</span></span>';
 
       }elseif (isset_not_empty($status->label)){
