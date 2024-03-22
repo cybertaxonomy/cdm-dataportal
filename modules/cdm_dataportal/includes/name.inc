@@ -288,9 +288,9 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     // assuming this is a TaxonName
     $taxon_name = $taxon_name_or_taxon_base;
     if(isset($taxon_name->taggedFullTitle)){
-      $tagged_title = $taxon_name_or_taxon_base->taggedFullTitle;
+        $tagged_title = $taxon_name_or_taxon_base->taggedFullTitle;
     } else if (isset($taxon_name->taggedLabel)){
-      $tagged_title = $taxon_name_or_taxon_base->taggedLabel;
+        $tagged_title = $taxon_name_or_taxon_base->taggedLabel;
     }else {
         $tagged_title = $taxon_name_or_taxon_base->taggedName;
     }
@@ -791,7 +791,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     // Got to use second entry as first one, see ToDo comment below ...
     if ($is_valid_tagged_title) {
 
-        $taggedName = $tagged_name;
+        $taggedName = $tagged_title;
         $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
         $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
 
