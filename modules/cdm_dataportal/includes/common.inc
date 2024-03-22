@@ -219,7 +219,10 @@ function compare_original_sources($a, $b){
   $a_string = '';
   if (isset($a-> label) && is_array($a->label)){
       $a_string = $a->label[0]->label;
-      if (isset($a->originalInfo) && strlen($a->originalInfo)){
+      if (isset_not_empty($a->nameInSource) && is_array($a->nameInSource)){
+          $a_string .= cdm_tagged_text_to_string($a->nameInSource);
+      }
+      if (isset($a->originalInfo) && strlen($a->originalInfo)>0){
           $a_string .= $a->originalInfo;
       }
   }else{
@@ -234,7 +237,10 @@ function compare_original_sources($a, $b){
   }
   if (isset($b-> label) && is_array($b->label)){
       $b_string = $b->label[0]->label;
-      if (isset($b->originalInfo) && strlen($b->originalInfo)){
+      if (isset_not_empty($b->nameInSource) && is_array($b->nameInSource)){
+          $b_string .= cdm_tagged_text_to_string($b->nameInSource);
+      }
+      if (isset($b->originalInfo) && strlen($b->originalInfo)>0){
           $b_string .= $b->originalInfo;
       }
   }else{
@@ -252,7 +258,7 @@ function compare_original_sources($a, $b){
   if ($a_string == $b_string) {
     return 0;
   }
-  return ($a_string < $b_string) ? -1 : 1;
+  return strcmp($a_string, $b_string);//($a_string < $b_string) ? -1 : 1;
 }
 
 /**

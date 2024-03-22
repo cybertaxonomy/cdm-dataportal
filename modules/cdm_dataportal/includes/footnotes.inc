@@ -669,20 +669,18 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
     }
 
     // some entity types only have single sources: TODO maybe we do not need this anymore and do all sorting on serverside
-   // $sources = cdm_entity_new_sources_sorted($entity);
-    if (isset($entity->sources)){
-        $sources = $entity->sources;
-    }else{
+
+    if (!isset($entity->sources)){
         return $annotationsAndSources;
     }
-
+    $sources = cdm_entity_new_sources_sorted($entity);
     //if ($sources == null){
     //    return $annotationsAndSources;
     //}
     $config = RenderHints::getAnnotationsAndSourceConfig();
 
     if ($config['sources_as_content']) {
-        foreach ($sources->items as $source) {
+        foreach ($sources as $source) {
             if (_is_original_source_type($source)) {
                 $reference_citation = render_original_source(
                     $source,
@@ -777,7 +775,7 @@ function cdm_entity_sources_sorted($entity) {
  * @return array
  */
 function cdm_entity_new_sources_sorted($entity) {
-    if (isset($entity->source) && is_object($entity->source)) {
+    if (isset_not_empty($entity->source) && is_object($entity->source)) {
         $sources = [$entity->source];
     }
     else if (isset($entity->sources)) {
@@ -785,12 +783,18 @@ function cdm_entity_new_sources_sorted($entity) {
     }
     else {
         // try to load the sources
-        if(isset_not_empty($entity->uuid)){
+        if(isset_not_empty($entity->uuid) && isset_not_empty($entity->class)){
             $sources = cdm_ws_fetch_all(cdm_compose_url('portal/' . cdm_ws_base_uri($entity->class), [ $entity->uuid, 'sources']));
+            if (!is_array($sources)){
+                $sources = [];
+            }
         } else {
             // this may happen with DerivedUnitFaced, also with others?
             $sources = [];
         }
+    }
+    if (!is_array($sources) && isset_not_empty($sources->items)){
+        $sources = $sources->items;
     }
     usort($sources, 'compare_original_sources');
     return $sources;
