@@ -141,7 +141,7 @@ function cdm_tagged_text_expand_entity_references(array $taggedtxt, $skiptags = 
  * See also cdm_tagged_text_add_options()
  *
  * The algorithm of this functions is basically the same as for
- * eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper.createString(List<TaggedText> tags, HTMLTagRules htmlRules)
+ * eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter.createString(List<TaggedText> tags, HTMLTagRules htmlRules)
  *
  * @param array $taggedtxt
  *   Array with text items to convert.
@@ -239,7 +239,7 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
  * TaggedText item.
  *
  * The algorithm of this functions is basically the same as for
- * eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper.createString(List<TaggedText> tags)
+ * eu.etaxonomy.cdm.strategy.cache.TaggedTextFormatter.createString(List<TaggedText> tags)
  *
  * @param array $taggedtxt
  *   Array with text items to convert.
