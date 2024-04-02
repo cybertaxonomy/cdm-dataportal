@@ -64,16 +64,13 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
         assertTrue(
                 "The target page should be a name page, no redirect must have happened.",
                 p.getDrupalPagePath().startsWith("cdm_dataportal/name/" + name_achilllea_santolina_uuid.toString()));
-
     }
-
 
     /**
      * related to https://dev.e-taxonomy.eu/redmine/issues/8304
      */
     @Test
     public void testRedirectToTaxon() throws MalformedURLException {
-
 
         WaitForPageToLoad wait = new WaitForPageToLoad();
         String timeout = "5";
@@ -91,7 +88,5 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
         assertTrue(
                 "The target page should be a taxon page, the name page must have been redirected to the according taxon page.",
                 p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + taxon_achilllea_santolina_uuid.toString()));
-
     }
-
 }

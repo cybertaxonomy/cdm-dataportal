@@ -16,9 +16,7 @@ import eu.etaxonomy.drush.DrushExecuter;
 import eu.etaxonomy.drush.DrushExecutionFailure;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
 public class DataPortalContext {
 
@@ -45,11 +43,7 @@ public class DataPortalContext {
         return siteName;
     }
 
-
     /**
-     *
-     * @param pageHeader
-     *
      * @return The drupal site title as it is produced by drupal
      */
     public String prepareTitle(String pageHeader) {
@@ -64,5 +58,4 @@ public class DataPortalContext {
         dex.setSshUser(sshUser);
         return dex;
     }
-
 }

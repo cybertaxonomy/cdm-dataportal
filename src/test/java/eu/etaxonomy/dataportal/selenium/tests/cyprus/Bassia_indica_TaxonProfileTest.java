@@ -33,9 +33,9 @@ public class Bassia_indica_TaxonProfileTest extends CdmDataPortalTestBase{
 
     private static final Logger logger = LogManager.getLogger();
 
-    static UUID taxonUuid = UUID.fromString("5250a30a-9e6f-4f2f-9663-93127a1a3829");
+    private static UUID taxonUuid = UUID.fromString("5250a30a-9e6f-4f2f-9663-93127a1a3829");
 
-    TaxonProfilePage p = null;
+    private TaxonProfilePage p = null;
 
     @Before
     public void setUp() throws MalformedURLException {
