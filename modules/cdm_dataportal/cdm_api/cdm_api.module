@@ -2123,7 +2123,7 @@ function &cdm_feature_tree_new_find_distributionNode($feature_tree_nodes){
     // 1. scan this level
     $nodes = array();
     foreach ($feature_tree_nodes as $node){
-        if($node->facts->items[0]->clazz == 'DistributionInfoDto'){
+        if(isset_not_empty($node->facts) && isset_not_empty($node->facts->items) && $node->facts->items[0]->clazz == 'DistributionInfoDto'){
             $nodes[] = $node;
         }
     }
