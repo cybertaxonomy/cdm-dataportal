@@ -1394,7 +1394,7 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
   if(!isset($media)) {
     $media = array();
   }
-  if (!isset($media[$taxon->uuid])) {
+  if (!isset($media[$taxon->uuid]) && $taxon->class != "Synonym") {
 
 
     $mediaQueryParameters = taxon_media_query_parameters();
