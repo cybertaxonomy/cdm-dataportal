@@ -118,11 +118,14 @@ function cdm_merge_description_elements($target, $source) {
   static $fields_to_merge = array('annotations', 'markers', 'sources', 'media');
 
   foreach ($fields_to_merge as $field) {
-    if (is_array($source->$field)) {
-      if (!is_array($target->$field)) {
+    if (isset_not_empty($source->$field) && is_array($source->$field)) {
+      if (isset($target->$field) && !is_array($target->$field)) {
         $target->$field = $source->$field;
       }
       else {
+          if(!isset($target->$field)){
+              $target->$field = array();
+          }
         $target->$field = array_merge($target->$field, $source->$field);
       }
     }
