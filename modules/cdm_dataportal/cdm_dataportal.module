@@ -1416,8 +1416,10 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
         queryString($mediaQueryParameters)
        );
   }
-
-  return $media[$taxon->uuid];
+    if (array_key_exists($media, $taxon->uuid)){
+        return $media[$taxon->uuid];
+    }
+  return null;
 }
 
 /**
