@@ -1416,7 +1416,7 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
         queryString($mediaQueryParameters)
        );
   }
-    if (array_key_exists($media, $taxon->uuid)){
+    if (array_key_exists($taxon->uuid, $media)){
         return $media[$taxon->uuid];
     }
   return null;
