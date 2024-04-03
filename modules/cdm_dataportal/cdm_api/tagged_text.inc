@@ -164,7 +164,7 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
   $last_text = '';
   $i = 0;
   foreach ($taggedtxt as $tt) {
-    if (!in_array($tt->type, $skiptags) && $tt->text && !(is_tagged_text_sepatator_type($tt->type) && count($taggedtxt) > $i && in_array($taggedtxt[$i+1]->type, $skiptags)) ) {
+    if (!in_array($tt->type, $skiptags) && $tt->text && !(is_tagged_text_sepatator_type($tt->type) && count($taggedtxt) > $i+1 && in_array($taggedtxt[$i+1]->type, $skiptags)) ) {
 
       $is_first = $i == 0;
       $is_separator = is_tagged_text_sepatator_type($tt->type);
