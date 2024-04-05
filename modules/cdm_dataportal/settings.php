@@ -2383,9 +2383,19 @@ function cdm_settings_layout_taxon() {
     '#description' => 'This option ins only applicable when distributions are hierachically orderd (see option above)!
     Areas which belong to the selected area levels will be hidden in the portal.',
   );
+    $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show TextData elements on top of the map'),
+        '#default_value' => variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0),
+        '#description' => t('Check this if you want to appear all <code>TextData</code>
+      elements on top of the map. Otherwise all <code>TextData</code>
+      distribution elements will be listed below the other area elements.
+      This option is useful if you need to have descriptive texts for each
+      distribution map.'),
+    );
     /* ====AREA TREE ===*/
     // ---- AREA TREE BLOCKS ---- //
-    $form['taxon_profile']['area_trees'] = array(
+    $form['taxon_profile']['distribution_layout']['area_trees'] = array(
         '#type' => 'fieldset',
         '#title' => t('Area Tree'),
         '#collapsible' => TRUE,
@@ -2402,7 +2412,7 @@ function cdm_settings_layout_taxon() {
     //if(!isset($areaTrees['options'][$profile_area_tree_uuid])) {
     //    $profile_area_tree_uuid = UUID_DEFAULT_AREATREE;
     //}
-    $form['taxon_profile']['area_trees'][CDM_AREATREE_UUID] = array(
+    $form['taxon_profile']['distribution_layout']['area_trees'][CDM_AREATREE_UUID] = array(
         '#type' => 'radios',
         '#title' => t('Distribution area tree') . ':',
         //  '#default_value' => $profile_area_tree_uuid,
@@ -2416,7 +2426,7 @@ function cdm_settings_layout_taxon() {
     );
     /* ====STATUS TREE ===*/
     // ----STATUS TREE BLOCKS ---- //
-    $form['taxon_profile']['status_trees'] = array(
+    $form['taxon_profile']['distribution_layout']['status_trees'] = array(
         '#type' => 'fieldset',
         '#title' => t('Status Tree'),
         '#collapsible' => TRUE,
@@ -2429,7 +2439,7 @@ function cdm_settings_layout_taxon() {
     $options = array_merge($statusTrees_temp['options'], $statusTrees['options']);
     $statusTrees['options'] = $options;
 
-    $form['taxon_profile']['status_trees'][CDM_STATUSTREE_UUID] = array(
+    $form['taxon_profile']['distribution_layout']['status_trees'][CDM_STATUSTREE_UUID] = array(
         '#type' => 'radios',
         '#title' => t('Distribution status tree') . ':',
         //  '#default_value' => $profile_area_tree_uuid,
@@ -2442,24 +2452,15 @@ function cdm_settings_layout_taxon() {
         ),
     );
 
-    $form['taxon_profile']['distribution_layout'][DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Show TextData elements on top of the map'),
-    '#default_value' => variable_get(DISTRIBUTION_TEXTDATA_DISPLAY_ON_TOP, 0),
-    '#description' => t('Check this if you want to appear all <code>TextData</code>
-      elements on top of the map. Otherwise all <code>TextData</code>
-      distribution elements will be listed below the other area elements.
-      This option is useful if you need to have descriptive texts for each
-      distribution map.'),
-  );
-    $form['taxon_profile']['status_colours'] = array(
+
+    $form['taxon_profile']['distribution_layout']['status_colours'] = array(
         '#type' => 'fieldset',
         '#title' => t('Distribution Status Colours'),
         '#collapsible' => TRUE,
         '#collapsed' => FALSE,
 
     );
-  $form['taxon_profile']['status_colours'][DISTRIBUTION_STATUS_COLORS] = array(
+  $form['taxon_profile']['distribution_layout']['status_colours'][DISTRIBUTION_STATUS_COLORS] = array(
       '#type' => 'textarea',
       '#title' => t('Custom status colors'),
       '#element_validate' => array('form_element_validate_json'),
