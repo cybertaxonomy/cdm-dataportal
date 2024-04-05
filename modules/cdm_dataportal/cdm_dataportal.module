@@ -1876,12 +1876,16 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['etAlPos'][] = variable_get(ET_AL_POS);
     }
 
-    /*$query_parameters['omitLevels'] = array();
-    foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid) {
-        if (is_uuid($uuid)) {
-            $query_parameters['omitLevels'][] = $uuid;
+    //$query_parameters['omitLevels'] = array();
+    $omit_level = variable_get(DISTRIBUTION_TREE_OMIT_LEVELS);
+    $query_parameters['omitLevels'] = array();
+    foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $a_uuid) {
+        if (is_uuid($a_uuid)) {
+            $query_parameters['omitLevels'][] = $a_uuid;
         }
-    }*/
+    }
+
+
     $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
     if ($customStatusColorsJson) {
         $query_parameters['statusColors'] = $customStatusColorsJson;

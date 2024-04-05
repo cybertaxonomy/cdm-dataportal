@@ -699,7 +699,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
  * @return string
  *  The markup for a taxon name.
  */
-function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NULL, $reference_link = NULL,
+function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true, $name_link = NULL, $reference_link = NULL,
                               $show_taxon_name_annotations = true, $showRegistrations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
 {
 
@@ -760,7 +760,11 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     $nom_status_tagged_text = tagged_text_extract_nomstatus($tagged_name);
     $appended_phrase_tagged_text = array(); // this is filled later
 
+    if ($isName){
+        $tagged_title = $tagged_name;
+    }
     normalize_tagged_text($tagged_title);
+
 
     $is_valid_tagged_title =
         isset($tagged_title)
@@ -792,6 +796,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $name_link = NU
     if ($is_valid_tagged_title) {
 
         $taggedName = $tagged_title;
+       
         $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
         $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
 

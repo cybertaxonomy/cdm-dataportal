@@ -751,7 +751,7 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
     if (!isset($referenceUri)) {
         $referenceUri = FALSE;
     }
-    $out_taxon_part = render_new_taxon_or_name($taxon_dto, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
+    $out_taxon_part = render_new_taxon_or_name($taxon_dto, true, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
     $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
     //TODO the name uuid is not available!!!
     $name_relations_render_array = compose_new_name_relationships_inline($name_relations, $taxon_dto->uuid, $taxon_dto->nameType);
@@ -1136,7 +1136,7 @@ function createOutput($taxon_type, $taxon, $taxonUri, $referenceUri): string
     $out = "";
     $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
     $skip_render_template_parts = $taxon_type == TAXON_TYPE_MISAPPLIEDNAME ? ['referencePart', 'secReferencePart'] : [];
-    $out .= "<div class=\"item " . $taxon_type . "\">" . render_new_taxon_or_name($taxon, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
+    $out .= "<div class=\"item " . $taxon_type . "\">" . render_new_taxon_or_name($taxon, true, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
     return $out;
 }
 

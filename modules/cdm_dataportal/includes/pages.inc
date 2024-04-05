@@ -1370,7 +1370,7 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
     }
 
     $accepted_name .= '<div class="accepted-name">';
-    $accepted_name .= render_new_taxon_or_name($taxon_dto, NULL, $referenceUri);
+    $accepted_name .= render_new_taxon_or_name($taxon_dto, true, NULL, $referenceUri);
 
     $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
     if (isset($name_relations)&& isset($name_relations[0])){
