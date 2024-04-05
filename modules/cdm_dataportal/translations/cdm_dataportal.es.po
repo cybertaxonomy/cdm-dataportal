@@ -2210,7 +2210,7 @@ msgstr "Contenido"
 
 #: includes/pages.inc:736
 msgid "Bibliography"
-msgstr ""
+msgstr "Bibliografía"
 
 #: includes/pages.inc:797
 msgid "Expert"
