@@ -2675,7 +2675,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
                 $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
                 $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $show_name_cache_only);
                 $label = $name_rel->relType;
-                $symbol = cdm_relationship_type_term_symbol($name_rel->type);
+                $symbol = $name_rel->relType;
                 $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
                 $relationship_markup = $symbol_markup . $relationship_markup;
             }
