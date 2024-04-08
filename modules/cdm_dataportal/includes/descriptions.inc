@@ -2132,7 +2132,7 @@ function compose_new_feature_block_items_feature_common_name($elements, $weight 
                 }
 
             }
-            elseif ($element->class == 'TextData') {
+            elseif ($element->typedLabel[0]->cdmClass == 'TextData') {
                 $textData_commonNames[] = $element;
             }
         }
@@ -2183,7 +2183,7 @@ function compose_new_feature_block_items_feature_common_name($elements, $weight 
         /* footnotes are not handled correctly in compose_description_element_text_data,
            need to set 'common-names-feature-block' as $footnote_key_suggestion */
         RenderHints::setFootnoteListKey($footnote_key_suggestion);
-        $text_data_render_array = compose_description_element_text_data($text_data_element, $text_data_element->feature->uuid, $feature_block_settings);
+        $text_data_render_array = compose_new_description_element_text_data($text_data_element, $text_data_element->feature->uuid, $feature_block_settings);
         $text_data_out[] = drupal_render($text_data_render_array);
     }
 
