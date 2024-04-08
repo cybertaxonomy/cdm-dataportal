@@ -796,7 +796,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
     if ($is_valid_tagged_title) {
 
         $taggedName = $tagged_title;
-       
+
         $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
         $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
 
@@ -2673,7 +2673,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
 
                 //$is_inverse_relation = $current_name_uuid == $name_rel->nameUuid;
                 $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
-                $relationship_markup = name_relationship_markup( $name_rel, $current_taxon_uuid, $show_name_cache_only);
+                $relationship_markup = name_relationship_markup( $current_taxon_uuid, $name_rel, $show_name_cache_only);
                 $label = $name_rel->relType;
                 $symbol = cdm_relationship_type_term_symbol($name_rel->type);
                 $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
