@@ -1169,7 +1169,7 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_typ
 
     $appended_phrase_tagged_text = array(); // this is filled later
 
-    normalize_tagged_text($tagged_title);
+    normalize_tagged_text($taggedLabel);
 
     $is_valid_tagged_title =
         isset($taggedLabel)
@@ -1186,9 +1186,9 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_typ
 
     if($doubtful_marker){
         $doubtful_marker_markup = '<span class="doubtful">' . $doubtful_marker . '</span>';
-        if($tagged_title[0]->text == '?' ){
+        if($taggedLabel[0]->text == '?' ){
             // remove the first tagged text element
-            unset($tagged_title[0]);
+            unset($taggedLabel[0]);
         }
     }
 
@@ -2673,7 +2673,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
 
                 //$is_inverse_relation = $current_name_uuid == $name_rel->nameUuid;
                 $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
-                $relationship_markup = name_relationship_markup( $current_taxon_uuid, $name_rel, $show_name_cache_only);
+                $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $show_name_cache_only);
                 $label = $name_rel->relType;
                 $symbol = cdm_relationship_type_term_symbol($name_rel->type);
                 $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
