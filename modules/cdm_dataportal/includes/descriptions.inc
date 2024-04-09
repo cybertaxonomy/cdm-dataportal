@@ -2376,17 +2376,19 @@ function compose_description_elements_distribution($description_elements){
               }
               if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
                   $query_parameters['part'][] = 'tree';
+                  $query_parameters['omitLevels'] = array();
+
+                  foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid) {
+                      if (is_uuid($uuid)) {
+                          $query_parameters['omitLevels'][] = $uuid;
+                      }
+                  }
               } else {
                   $query_parameters['part'][] = 'elements';
               }
 
 
-              $query_parameters['omitLevels'] = array();
-              foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $uuid) {
-                  if (is_uuid($uuid)) {
-                      $query_parameters['omitLevels'][] = $uuid;
-                  }
-              }
+
               $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
               if ($customStatusColorsJson) {
                   $query_parameters['statusColors'] = $customStatusColorsJson;
@@ -2655,8 +2657,8 @@ function merged_taxon_new_feature_tree($taxon) {
         $status = distribution_status_label_and_markup($distribution_aggregate->status, $level_style['status_glue']);
       }
 
-      $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'
-        . join(' descriptionElement-', $distribution_uuids)
+      $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement '
+        . join(' ', $distribution_uuids)
         . ' level_index_' . $level_index
         . ' " title="' . $status['label'] . '">'
         . '<span class="area_label">' . $label
