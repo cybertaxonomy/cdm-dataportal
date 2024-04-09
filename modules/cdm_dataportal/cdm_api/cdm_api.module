@@ -3063,9 +3063,9 @@ function queryString($elements) {
       }
     }
     else {
-        if (is_numeric($value) || !empty($value)){
+        //if (is_numeric($value) || !empty($value)){
             $query .= (strlen($query) > 0 ? '&' : '') . $key . '=' . urlencode($value);
-        }
+        //}
 
     }
   }
