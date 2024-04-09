@@ -496,7 +496,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     }
   }
 
-  if (isset($renderTemplate['secReference'])){
+  if (isset($renderTemplate['secReferencePart'])){
     if(isset($secref_tagged_text[1])){
       $post_separator_markup = $is_reference_year ? '.': '';
       if(isset($nom_status_tagged_text[count($nom_status_tagged_text) - 1]) && ($nom_status_tagged_text[count($nom_status_tagged_text) - 1]->type ==  'postSeparator')){
@@ -799,7 +799,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
 
         $hasNamePart_with_Authors = isset($renderTemplate['namePart']) && isset($renderTemplate['namePart']['authors']);
         $hasNameAuthorPart_with_Authors = isset($renderTemplate['nameAuthorPart']) && isset($renderTemplate['nameAuthorPart']['authors']);
-
+        $hasStatusPart = isset($renderTemplate['statusPart']);
 
         if (!(($hasNamePart_with_Authors) || ($hasNameAuthorPart_with_Authors))) {
             // Find author and split off from name.
@@ -815,7 +815,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
             $taggedNameNew = array();
             $nameInSourceActive = false;
             foreach ($taggedName as $element) {
-                if ($element->type != 'authors' && $element->type != 'nameInSourceSeparator' && !$nameInSourceActive) {
+                if ($element->type != 'authors' && $element->type != 'nameInSourceSeparator' && !$nameInSourceActive && ($element->type != 'nomStatus' && !$hasStatusPart)) {
                     $taggedNameNew[] = $element;
                 } else if ($element->type == 'nameInSourceSeparator' && !$nameInSourceActive) {
                     $nameInSourceActive = true;
@@ -825,9 +825,23 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
                     $lastAuthorElementString = $element->text;
                 }
             }
+            normalize_tagged_text($taggedNameNew);
+            $revers_taggedName = array_reverse($taggedNameNew);
+            $new_reverse_name = $revers_taggedName;
+            foreach ($revers_taggedName as $element){
+                //remove all separator from the end
+                if (strpos($element->type, 'separator') !== false || strpos($element->type, 'Separator') !== false){
+                    array_shift($new_reverse_name);
+                }else{
+                    break;
+                }
+            }
+            $taggedNameNew = array_reverse($new_reverse_name);
             $taggedName = $taggedNameNew;
+
             unset($taggedNameNew);
         }
+
         $name = '<span class="' . "TaxonName" . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
     }
     else {
