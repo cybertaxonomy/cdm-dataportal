@@ -547,8 +547,8 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $misapplied[$name_dedup_key]['out'] = uuid_anchor($taxon_relation->relTaxonUuid, $misapplied[$name_dedup_key]['out']);
     } else {
         // We need to add the anchors for all of the other misapplied names not
-        // being rendered explicitly.
-        $misapplied[$name_dedup_key]['out'] = uuid_anchor($taxon_relation->taxonUuid, $misapplied[$name_dedup_key]['out']);
+        // being rendered explicitly. TODO!!
+       // $misapplied[$name_dedup_key]['out'] = uuid_anchor($taxon_relation->taxonUuid, $misapplied[$name_dedup_key]['out']);
     }
 
 }
