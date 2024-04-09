@@ -3057,7 +3057,7 @@ function _is_cdm_ws_uri($uri) {
 function queryString($elements) {
   $query = '';
   foreach ($elements as $key => $value) {
-    if (is_array($value) && !empty($value)) {
+    if (is_array($value)){//} && !empty($value)) {
       foreach ($value as $v) {
         $query .= (strlen($query) > 0 ? '&' : '') . $key . '=' . urlencode($v);
       }
