@@ -496,7 +496,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     }
   }
 
-  if (isset($renderTemplate['secReferencePart'])){
+  if (isset($renderTemplate['secReference'])){
     if(isset($secref_tagged_text[1])){
       $post_separator_markup = $is_reference_year ? '.': '';
       if(isset($nom_status_tagged_text[count($nom_status_tagged_text) - 1]) && ($nom_status_tagged_text[count($nom_status_tagged_text) - 1]->type ==  'postSeparator')){
