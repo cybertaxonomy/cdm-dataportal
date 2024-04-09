@@ -55,7 +55,7 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
          * AQ. Komarov, V. L., Flora SSSR 29. 1964 (as Lactuca altaica),
          * AR. Komarov, V. L., Flora SSSR 29. 1964,
         */
-        WebElement northCaucasus = distributionBlock.getElement().findElement(By.className("descriptionElement617733b9-d59d-4215-9e77-728a5f60e627"));
+        WebElement northCaucasus = distributionBlock.getElement().findElement(By.className("617733b9-d59d-4215-9e77-728a5f60e627"));
         assertEquals("North CaucasusAN,AO,AP,AQ,AR", northCaucasus.getText());
         assertEquals("AO. Galuško, A. I. 1980: Flora severnogo Kavkaza 3. – Rostov-na-Donu (as Lactuca altaica)", distributionBlock.getFootNote(40).getText());
         assertEquals("AN. Galuško, A. I. 1980: Flora severnogo Kavkaza 3. – Rostov-na-Donu", distributionBlock.getFootNote(39).getText());
