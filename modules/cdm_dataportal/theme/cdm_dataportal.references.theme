@@ -141,7 +141,7 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
             }
             $doi = cdm_doi($reference_dto->doi, false);
     }
-    $out = '<span class="reference">' . $citation . $icon_link . $doi . ' </span>';
+    $out = '<span class="reference">' . $citation . $icon_link . $doi . '</span>';
   }
 
 
