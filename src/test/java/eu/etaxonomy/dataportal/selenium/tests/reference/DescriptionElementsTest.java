@@ -51,8 +51,8 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
 
         assertEquals(3, fb.getFeatureBlockElements().size());
         //for now we order by id, not by label
-        assertEquals("Flowers with white blossoms on Testisland D. May–JunB", fb.getFeatureBlockElements().get(0).getText());
-        assertEquals("Flowers with white blossoms on Testisland B. Mai to JuneB", fb.getFeatureBlockElements().get(1).getText());
+        assertEquals("Flowers with white blossoms on Testisland D. May–JunA", fb.getFeatureBlockElements().get(0).getText());
+        assertEquals("Flowers with white blossoms on Testisland B. Mai to JuneA", fb.getFeatureBlockElements().get(1).getText());
         assertEquals("Flowers with white blossoms on Testisland C. 2000", fb.getFeatureBlockElements().get(2).getText());
     }
 
@@ -66,9 +66,9 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         assertNotNull(flowering_season);
         assertEquals(1, flowering_season.getFeatureBlockElements().size());
         // FIXME assertEquals(1, flowering_season.getDescriptionElement(0).getSources().size());
-        assertEquals("6 Mar–JunA", flowering_season.getFeatureBlockElements().get(0).getText());
+        assertEquals("6 Mar–JunB", flowering_season.getFeatureBlockElements().get(0).getText());
 
-        FeatureBlock fruiting_period = p.getFeatureBlockAt(0, "fruiting_period", "div", "span");
+        FeatureBlock fruiting_period = p.getFeatureBlockAt(2, "fruiting_period", "div", "span");
         assertNotNull(fruiting_period);
         assertEquals(1, fruiting_period.getFeatureBlockElements().size());
         assertEquals(0, fruiting_period.getDescriptionElement(0).getSources().size());
