@@ -2642,8 +2642,14 @@ function merged_taxon_new_feature_tree($taxon) {
               }else{
                   $annotations = $distribution->annotations->items;
               }
-           $distribution_aggregate->annotations = array_merge($distribution_aggregate->annotations,
-              $annotations);
+              if (is_array($distribution_aggregate->annotations)){
+                  $distribution_aggregate->annotations = array_merge($distribution_aggregate->annotations,
+                      $annotations);
+              } else{
+                  $distribution_aggregate->annotations = array_merge($distribution_aggregate->annotations->items,
+                      $annotations);
+              }
+
           }
         }
       }
@@ -2657,8 +2663,8 @@ function merged_taxon_new_feature_tree($taxon) {
         $status = distribution_status_label_and_markup($distribution_aggregate->status, $level_style['status_glue']);
       }
 
-      $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement '
-        . join(' ', $distribution_uuids)
+      $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'
+        . join(' descriptionElement', $distribution_uuids)
         . ' level_index_' . $level_index
         . '" title="' . $status['label'] . '">'
         . '<span class="area_label">' . $label
