@@ -1146,7 +1146,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
     return $out;
 }
 
-function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_type = null, $name_link = NULL, $reference_link = NULL,
+function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $year = null, $name_type = null, $name_link = NULL, $reference_link = NULL,
                                   $show_taxon_name_annotations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
 {
 
@@ -1246,16 +1246,12 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_typ
     array_setr('name', $name , $renderTemplate);
 
     $is_reference_year = false;
-    if (isset($renderTemplate['referenceYearPart']['reference.year'])) {
-        if(isset($taggedLabel->nomenclaturalSource->citation->datePublished)){
-            $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taggedLabel->nomenclaturalSource->citation->datePublished) . '</span>';
-            array_setr('reference.year', $referenceArray, $renderTemplate);
-            $is_reference_year = true;
-        }
+    if (isset($renderTemplate['referenceYearPart']['reference.year']) && $year != null) {
+        $referenceArray['#html'] = ' <span class="reference">' . $year. '</span>';
+        array_setr('reference.year', $referenceArray, $renderTemplate);
+        $is_reference_year = true;
+
     }
-
-
-
 
     $out = '';
     if(isset($_REQUEST['RENDER_PATH'])){
@@ -2222,7 +2218,7 @@ function name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type
         $annotations_and_sources = handle_annotations_and_sources($other_name);
         $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
     } else {
-        $relationship_markup = render_new_name_for_name_rels($other_name, $name_rel-> nameUuid, $name_type,
+        $relationship_markup = render_new_name_for_name_rels($other_name, $name_rel-> nameUuid, $name_rel->year, $name_type,
             url(path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
         );
     }
