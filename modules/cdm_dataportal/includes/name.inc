@@ -1245,7 +1245,14 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $name_typ
     // Fill name into $renderTemplate.
     array_setr('name', $name , $renderTemplate);
 
-
+    $is_reference_year = false;
+    /*if (isset($renderTemplate['referenceYearPart']['reference.year'])) {
+        if(isset($taggedLabel->nomenclaturalSource->citation->datePublished)){
+            $referenceArray['#html'] = ' <span class="reference">' . timePeriodToString($taxon_name->nomenclaturalSource->citation->datePublished) . '</span>';
+            array_setr('reference.year', $referenceArray, $renderTemplate);
+            $is_reference_year = true;
+        }
+    }*/
 
 
 

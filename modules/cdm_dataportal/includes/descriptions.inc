@@ -2660,7 +2660,7 @@ function merged_taxon_new_feature_tree($taxon) {
       $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement '
         . join(' ', $distribution_uuids)
         . ' level_index_' . $level_index
-        . ' " title="' . $status['label'] . '">'
+        . '" title="' . $status['label'] . '">'
         . '<span class="area_label">' . $label
         . $level_style['label_suffix'] . '</span>'
         . $status['markup']

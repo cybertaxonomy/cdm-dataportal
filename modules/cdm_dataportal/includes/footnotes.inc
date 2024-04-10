@@ -670,7 +670,7 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
 
     // some entity types only have single sources: TODO maybe we do not need this anymore and do all sorting on serverside
 
-    if (!isset($entity->sources)){
+    if (!isset($entity->sources) && !isset($entity->annotations)){
         return $annotationsAndSources;
     }
     $sources = cdm_entity_new_sources_sorted($entity);
@@ -710,10 +710,10 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
         } // END of loop over sources
 
         // annotations footnotes separate from sources
-        $footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
-        $annotationsAndSources->addAllFootNoteKeys($footnote_keys);
+
 
     } // END of references inline
+    $footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
 
     // footnotes for sources and annotations or put into bibliography if requested ...
     $do_foonotes_as_content = isset($config['annotations_as_content']) && $config['annotations_as_content'];
