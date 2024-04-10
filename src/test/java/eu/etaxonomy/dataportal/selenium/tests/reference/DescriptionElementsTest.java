@@ -50,7 +50,8 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         assertNotNull(fb);
 
         assertEquals(3, fb.getFeatureBlockElements().size());
-        assertEquals("Flowers with white blossoms on Testisland A. May–JunB", fb.getFeatureBlockElements().get(0).getText());
+        //for now we order by id, not by label
+        assertEquals("Flowers with white blossoms on Testisland D. May–JunB", fb.getFeatureBlockElements().get(0).getText());
         assertEquals("Flowers with white blossoms on Testisland B. Mai to JuneB", fb.getFeatureBlockElements().get(1).getText());
         assertEquals("Flowers with white blossoms on Testisland C. 2000", fb.getFeatureBlockElements().get(2).getText());
     }
