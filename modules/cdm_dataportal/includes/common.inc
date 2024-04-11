@@ -258,7 +258,7 @@ function compare_original_sources($a, $b){
   if ($a_string == $b_string) {
     return 0;
   }
-  return strcmp($a_string, $b_string);//($a_string < $b_string) ? -1 : 1;
+  return ($a_string < $b_string) ? -1 : 1;
 }
 
 /**
