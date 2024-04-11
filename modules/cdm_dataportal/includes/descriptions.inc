@@ -1239,6 +1239,9 @@ function cdm_new_description_element_media($descriptionElement, $mimeTypePrefere
       // TODO replacement of \n by <br> should be configurable
       $element_markup = str_replace("\n", "<br/>", $element->typedLabel[0]->label);
     }
+    if ($element_markup == null){
+        return null;
+    }
 
     $render_array = compose_description_element($element, $feature_block_settings, $element_markup, $footnote_list_key_suggestion, $prepend_feature_label);
 
