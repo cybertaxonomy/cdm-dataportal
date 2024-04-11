@@ -89,9 +89,16 @@ function compose_taxon_node_new_status(array $taxon_nodes){
             $annotations_and_sources = handle_new_annotations_and_sources($taxon_node);
 
             if(isset($taxon_node->status)){
-                $state_label = strtolower($taxon_node->status->representation_L10n);
+                if (is_string($taxon_node->status)){
+                    $state_label = strtolower($taxon_node->status);
+                }else{
+                    $state_label = strtolower($taxon_node->status->representation_L10n);
+                }
+
                 if(isset($taxon_node->statusNote_L10n)){
                     $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote_L10n . ')</span>';
+                }else if (isset_not_empty($taxon_node->statusNote)){
+                    $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote . ')</span>';
                 }
                 $classification = cdm_ws_get(CDM_WS_CLASSIFICATION, array($taxon_node->classificationUUID));
                 $status_markup_tokens[$state_label . '-' . $taxon_node->uuid]  = [
