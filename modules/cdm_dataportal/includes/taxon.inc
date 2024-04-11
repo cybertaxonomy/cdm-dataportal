@@ -323,12 +323,12 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                 drupal_set_message("Problem fetching sensu reference with uuid " . $sensu_uuid, 'error');
             }
             //TODO: Check whether this still needs to be handled
-           //if($sensu_strings['order_by_key'] != $sensu_reference->titleCache){
+           if($sensu_strings['order_by_key'] != $sensu_strings['longCitation']){
                 $sensu_reference_markup = $sensu_strings['markup'];
                 $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
                 $footnote_key = render_footnote_key($footnote_key);
-                $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['shortCitation'] . $footnote_key . '</span>';
-            //}
+                $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['order_by_key'] . $footnote_key . '</span>';
+           }
         }
     }
 
@@ -502,7 +502,9 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $name_dedup_key = str_replace(cdm_tagged_text_to_string($sensu_tagged_text), ' ', $name_dedup_key);
         $appended_phrase_text = $appended_phrase_text . array_shift($sensu_tagged_text)->text; // remove first element which contains the "sensu", this will be added later in this code
         $sensu_citation_detail = trim(join(' ', cdm_tagged_text_values($sensu_tagged_text, array('secMicroReference'))));
-        //$sensu_citation_short_markup = cdm_tagged_text_to_markup($sensu_tagged_text);
+        if (isset_not_empty($taxon_relation->secSource) && isset_not_empty($taxon_relation->secSource->label[0])){
+            $sensu_citation_long = $taxon_relation->secSource->label[0]->label;
+        }
         $sensu_citation_short_markup = render_original_source($taxon_relation->secSource, FALSE);
         $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);
         //$sensu_citation_short = $taxon_relation->secSource->label;
@@ -514,7 +516,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
             $joined_refs[$ref_key] = array(
                 'order_by_key' => $sensu_citation_short,
                 'markup' => $sensu_citation_short_markup,
-                'shortCitation' => $sensu_citation_short// the footnote key will be appended later
+                'longCitation' => $sensu_citation_long// the footnote key will be appended later
             );
         }
     } else if ($appended_phrase_text) {
@@ -527,6 +529,10 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $appended_phrase_text = array_shift($relsec_tagged_text)->text; // remove first element which contains the "err. sec", this will be added later in this code
         $relsec_citation_detail = trim(join(' ', cdm_tagged_text_values($relsec_tagged_text, array('secMicroReference'))));
         $relsec_citation_short_markup = render_original_source($taxon_relation->relSource, FALSE);
+        if (isset_not_empty($taxon_relation->relSource) && isset_not_empty($taxon_relation->relSource->label[0])){
+            $relsec_citation_long = $taxon_relation->relSource->label[0]->label;
+        }
+
         $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
         $relsec_uuid = $relsec_tagged_text[0]->entityReference->uuid;
         $misapplied[$name_dedup_key]['relsec_uuids'][] = array('uuid' => $relsec_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $relsec_citation_detail);;
@@ -536,7 +542,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
             $joined_refs[$ref_key] = array(
                 'order_by_key' => $relsec_citation_short,
                 'markup' => $relsec_citation_short_markup,
-                'shortCitation' => $relsec_citation_short// the footnote key will be appended later
+                'longCitation' => $relsec_citation_long// the footnote key will be appended later
             );
         }
     }
