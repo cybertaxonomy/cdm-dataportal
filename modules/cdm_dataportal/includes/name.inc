@@ -1073,7 +1073,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
                     //}
                     // merge
                     $additional_citations = array_merge($additional_citations, $additional_data);
-                    $additional_pub_markup .= join(',', $additional_citations);
+                    $additional_pub_markup .= ", " . join(',', $additional_citations);
                 }
             }
         }
