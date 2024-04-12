@@ -100,10 +100,19 @@ function compose_taxon_node_new_status(array $taxon_nodes){
                 }else if (isset_not_empty($taxon_node->statusNote)){
                     $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote . ')</span>';
                 }
-                $classification = cdm_ws_get(CDM_WS_CLASSIFICATION, array($taxon_node->classificationUUID));
+                if (isset($taxon_node->classificationUUID)){
+                    $classificationUuid = $taxon_node->classificationUUID;
+                    $classification = cdm_ws_get(CDM_WS_CLASSIFICATION, array($classificationUuid));
+                    $classificationLabel = $classification->titleCache;
+                }else{
+                    $classificationUuid = $taxon_node->classificationUuid;
+                    $classificationLabel = $taxon_node->classificationLabel;
+                }
+
+
                 $status_markup_tokens[$state_label . '-' . $taxon_node->uuid]  = [
-                    'status' => '<span class="' . html_class_attribute_ref($taxon_node) .'">' . $state_label . $annotations_and_sources->footNoteKeysMarkup()  .  '%s</span>', // %s will be replaced by the $classification_markup or by '',
-                    'classification' => ' <span class="' . html_class_attribute_ref($classification) .'">[' . $classification->titleCache . ']</span>'
+                    'status' => '<span class="cdm:TaxonNode uuid:'. $taxon_node->uuid.'">' . $state_label . $annotations_and_sources->footNoteKeysMarkup()  .  '%s</span>', // %s will be replaced by the $classification_markup or by '',
+                    'classification' => ' <span class="cdm:Classification uuid:'. $classificationUuid.'">[' . $classificationLabel . ']</span>'
                 ];
             }
 
