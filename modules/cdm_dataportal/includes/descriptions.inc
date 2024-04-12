@@ -729,7 +729,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
 
         $block_weight = $block_weight + FEATURE_BLOCK_WEIGHT_INCREMENT;
 
-        if ((isset($feature_node->facts->items[0]) )){
+        if ((isset($feature_node->facts->items[0]) ) || isset_not_empty($feature_node->subFeatures)){
                 //|| has_feature_node_description_elements($feature_node)) && $feature_node->term->uuid != UUID_IMAGE) { // skip empty or suppressed features
 
             RenderHints::pushToRenderStack($feature_node->uuid);
@@ -804,7 +804,11 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                 if (isset($feature_node->childNodes[0])) {
                     $child_elements_render_array = compose_feature_block_items_nested($feature_node, $media_list, $feature_block_settings);
                     $elements_render_array = array_merge($elements_render_array, $child_elements_render_array);
+                }else if (isset($feature_node->subFeatures)){
+                    $child_elements_render_array = compose_new_feature_block_items_nested($feature_node, $media_list, $feature_block_settings);
+                    $elements_render_array = array_merge($elements_render_array, $child_elements_render_array);
                 }
+
                 $block_content_is_empty = $block_content_is_empty && empty($media_list) && empty($elements_render_array);
                 if(!$block_content_is_empty){
                     $block->content[] = compose_new_feature_block_wrap_elements($elements_render_array, $feature_node->uuid, $feature_node->label, $feature_block_settings['glue']);
@@ -904,6 +908,56 @@ function compose_feature_block_items_nested($feature_node, &$media_list, $featur
 
   return $render_arrays;
 }
+
+function compose_new_feature_block_items_nested($feature_node, &$media_list, $feature_block_settings, $main_feature = NULL)
+{
+
+    if(!$main_feature){
+        $main_feature = $feature_node->term;
+    }
+    /*
+     * TODO should be configurable, options; YES, NO, AUTOMATIC
+     * (automatic will only place the label if the first word of the description element text is not the same)
+     */
+    $prepend_feature_label = false;
+
+    $render_arrays = array();
+    foreach ($feature_node->subFeatures->items as $child_feature) {
+        if (isset($child_feature->facts->items[0])) {
+            foreach ($child_feature->facts->items as $element) {
+
+                if (isset($element->media[0])) {
+                    // Append media of subordinate elements to list of main
+                    // feature.
+                    $media_list = array_merge($media_list, $element->media);
+                }
+
+                $child_node_element = null;
+                switch ($element->typedLabel[0]->cdmClass) {
+                    case 'TextData':
+                        $child_node_element = compose_new_description_element_text_data($element, $element->uuid, $feature_block_settings, $prepend_feature_label);
+                        break;
+                    case 'CategoricalData':
+                        $child_node_element = compose_description_element_categorical_data($element, $feature_block_settings, $prepend_feature_label);
+                        break;
+                    case 'QuantitativeData':
+                        $child_node_element = compose_new_description_element_text_data($element, $feature_block_settings, $prepend_feature_label);
+
+                }
+                if (is_array($child_node_element)) {
+                    $render_arrays[] = $child_node_element;
+                }
+            }
+        }
+
+        if(isset($child_feature->subFeatures)){
+            $render_arrays = array_merge($render_arrays, compose_new_feature_block_items_nested($child_feature, $media_list, $feature_block_settings, $main_feature ));
+        }
+    }
+
+    return $render_arrays;
+}
+
 
   /**
    *
