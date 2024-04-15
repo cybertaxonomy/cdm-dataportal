@@ -423,14 +423,17 @@ function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misa
     $reltype_weight = 99;
   }
   $name_dedup_key = str_pad( $reltype_weight, 2, '0', STR_PAD_LEFT) . '-' . $name_dedup_key;
-
+  $skipTags = array();
+  $skipTags[] = "secMicroReference";
   if (isset($sensu_tagged_text[1])) {
     // for de-duplication everything else needs to be equal except for appendedPhrase + MAN.sec + MAN.secDetail. see #7658#note-21
     $name_dedup_key = str_replace(cdm_tagged_text_to_string($sensu_tagged_text), ' ', $name_dedup_key);
     $appended_phrase_text = $appended_phrase_text . array_shift($sensu_tagged_text)->text; // remove first element which contains the "sensu", this will be added later in this code
     $sensu_citation_detail = trim(join(' ', cdm_tagged_text_values($sensu_tagged_text, array('secMicroReference'))));
+    //TODO: add footnote placeholder in front of the secMicroReference
     $sensu_citation_short_markup = cdm_tagged_text_to_markup($sensu_tagged_text);
-    $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);
+    //only one footnote for a reference undependent of detail
+    $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text, array('secMicroReference'));
     $sensu_uuid = $sensu_tagged_text[0]->entityReference->uuid;
     $name_dedup_key = preg_replace('/\s+/', ' ', $name_dedup_key); // sanitize multiple whitespace characters
     $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => $sensu_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $sensu_citation_detail);
@@ -451,7 +454,7 @@ function cdm_taxonRelationships_process_relationship_dto($taxon_relation, &$misa
     $appended_phrase_text = array_shift($relsec_tagged_text)->text; // remove first element which contains the "err. sec", this will be added later in this code
     $relsec_citation_detail = trim(join(' ', cdm_tagged_text_values($relsec_tagged_text, array('secMicroReference'))));
     $relsec_citation_short_markup = cdm_tagged_text_to_markup($relsec_tagged_text);
-    $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
+    $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text, array('secMicroReference'));
     $relsec_uuid = $relsec_tagged_text[0]->entityReference->uuid;
     $misapplied[$name_dedup_key]['relsec_uuids'][] = array('uuid' => $relsec_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $relsec_citation_detail);;
     $ref_key = $relsec_uuid . ($relsec_citation_detail ? '#' . $relsec_citation_detail : '');
@@ -736,15 +739,10 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
     homotypic group (ordered correctly by the java cdm_lib).
     */
     //TODO: how it is implemented in new dto???
-    /*if (isset($taxon_dto->name) && is_array($taxon_dto->name->status)) {
-        foreach ($taxon->name->status as $status) {
-            if (in_array($status->type->uuid , $nom_status_invalid_type_uuids)) {
-                $relsign = $relsign_invalid;
-                break;
-            }
-        }
+    if (isset($taxon_dto->taggedLabel) ) {
+        //if ()
     }
-*/
+
     // Now rendering starts ..
     RenderHints::pushToRenderStack('related_taxon');
 //TODO: actually the uuid of the nomenclatural source is not available in taxon dto

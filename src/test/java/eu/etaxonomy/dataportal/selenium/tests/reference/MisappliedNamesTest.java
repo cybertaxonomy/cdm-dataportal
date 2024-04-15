@@ -76,9 +76,9 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
-        assertEquals(UTF8.EM_DASH_DOUBLE + "(p.p.)\nOssaea glomerata sec. A&S1; sec. Species solaris", p.getMisappliedName(1).getText());
+        assertEquals("p.p. MAN for Ossaea glomerata sec. A&S1; sec. Species solaris", p.getMisappliedName(1).getText());
 
-        assertEquals(UTF8.EM_DASH_DOUBLE + "(part.)\nOssaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(2).getText());
+        assertEquals("partial MAN for Ossaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(2).getText());
 
         // no sensu but with Combination Authors:
         assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
@@ -90,7 +90,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         // with doubtful flag
         assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(5).getText());
 
-        assertEquals(UTF8.EM_DASH_DOUBLE + "\nOssaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
+        assertEquals("misapplied for Ossaea maculata sec. Lem2, rel. sec. A&S1", p.getMisappliedName(6).getText());
 
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
