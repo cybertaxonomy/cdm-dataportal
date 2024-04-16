@@ -304,12 +304,12 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
     //}
 
     // Sort the $joined_refs and create footnotes and footnote keys.
-    uasort($joined_refs, function($a, $b) {
+    /*uasort($joined_refs, function($a, $b) {
         if ($a['order_by_key'] == $b['order_by_key']) {
             return 0;
         }
         return ($a['order_by_key'] < $b['order_by_key']) ? -1 : 1;
-    });
+    });*/
 
 
     foreach ($joined_refs as $ref_key => $sensu_strings) {
@@ -508,7 +508,12 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         if (isset_not_empty($taxon_relation->secSource) && isset_not_empty($taxon_relation->secSource->label[0])){
             $sensu_citation_long = $taxon_relation->secSource->label[0]->label;
         }
-        $sensu_citation_long_markup = render_original_source($taxon_relation->secSource, FALSE);
+        $sec_without_microReference = $taxon_relation->secSource;
+        //if (isset_not_empty($sensu_citation_detail)){
+        //    $sec_without_microReference->label[0]->label = str_replace($sensu_citation_detail, $taxon_relation->secSource->label[0]->label);
+        //}
+
+        $sensu_citation_long_markup = render_original_source($sec_without_microReference, FALSE);
         $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);
         $sensu_citation_short_without_detail = cdm_tagged_text_to_string($sensu_tagged_text, array('secMicroReference'));
         $sensu_uuid = $sensu_tagged_text[0]->entityReference->uuid;
@@ -740,8 +745,8 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
     homotypic group (ordered correctly by the java cdm_lib).
     */
     //TODO: how it is implemented in new dto???
-    if (isset($taxon_dto->taggedLabel) ) {
-        //if ()
+    if ($taxon_dto->name->invalid ) {
+        $relsign = $relsign_invalid;
     }
 
     // Now rendering starts ..
@@ -756,6 +761,7 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
     if (!isset($referenceUri)) {
         $referenceUri = FALSE;
     }
+
     $out_taxon_part = render_new_taxon_or_name($taxon_dto, true, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
     $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
     //TODO the name uuid is not available!!!
