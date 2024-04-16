@@ -40,7 +40,7 @@ class GalleryItemMedia {
 
   private function findRepresentations($media) {
 
-    if (isset($media->representations[0]->parts[0])) {
+    if (is_array($media->representations) && isset($media->representations[0]->parts[0])) {
       $thumbnail_representations = cdm_preferred_media_representations($media, $this->image_mime_type_list,
           $this->thumbnail_width, $this->thumbnail_height, FALSE, FALSE);
         
@@ -61,7 +61,28 @@ class GalleryItemMedia {
       if (isset_not_empty($web_app_representations)) {
         $this->web_app_representation = array_shift($web_app_representations);
       }
-    }
+    } else if (isset($media->representations->items[0])) {
+          $thumbnail_representations = cdm_preferred_media_representations($media, $this->image_mime_type_list,
+              $this->thumbnail_width, $this->thumbnail_height, FALSE, FALSE);
+
+          $full_size_representations = cdm_preferred_media_representations($media, $this->image_mime_type_list);
+          $web_app_representations = cdm_preferred_media_representations($media, $this->image_mime_type_list, NULL, NULL, TRUE);
+
+          if (isset_not_empty($media->representations)) {
+              // can be used as last resort fall back
+              $this->first_representation = $media->representations[0];
+          }
+
+          if (isset_not_empty($this->thumbnail_representation)) {
+              $this->thumbnail_representation = array_shift($thumbnail_representations);
+          }
+          if (isset_not_empty($full_size_representations)) {
+              $this->full_size_representation = array_shift($full_size_representations);
+          }
+          if (isset_not_empty($web_app_representations)) {
+              $this->web_app_representation = array_shift($web_app_representations);
+          }
+      }
   }
 
   public function getThumbnailImageMediaItem() {
