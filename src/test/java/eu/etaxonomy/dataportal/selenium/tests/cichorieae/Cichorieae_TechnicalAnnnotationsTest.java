@@ -41,7 +41,7 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
 
         List<LinkElement> tocLinks = p.getTableOfContentLinks();
-        // Description mus not be included !!!
+        // Description must not be included !!!
         assertEquals("Distribution", tocLinks.get(0).getText());
         assertEquals("Credits", tocLinks.get(1).getText());
 
