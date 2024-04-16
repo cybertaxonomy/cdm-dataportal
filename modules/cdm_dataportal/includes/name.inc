@@ -1141,7 +1141,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
         $annotations_and_sources->addFootNoteKey($nom_status_fkey);
     }
     if ($show_taxon_name_annotations) {
-       $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto,
+       $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto->name,
             null, null, $annotations_and_sources);
     }
     $out .= $annotations_and_sources->footNoteKeysMarkup();
