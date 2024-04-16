@@ -3038,8 +3038,13 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
   // Avoiding a warning box in Drupal for Flora Malesiana.
   if (isset($descriptionElements) && is_array($descriptionElements)) {
     foreach ($descriptionElements as $descriptionElement) {
-      if (isset($descriptionElement->media) && is_array($descriptionElement->media)) {
-        foreach ($descriptionElement->media as $media) {
+      if (isset($descriptionElement->media) ) {
+        if (is_array($descriptionElement->media)){
+            $media_array = $descriptionElement->media;
+        }else{
+            $media_array = $descriptionElement->media->items;
+        }
+          foreach ($media_array as $media) {
           if (is_object($media)) {
             $outArrayOfMedia[] = $media;
           }
@@ -3047,6 +3052,7 @@ function cdm_dataportal_media_from_descriptionElements($descriptionElements) {
       }
     }
   }
+
   return $outArrayOfMedia;
 }
 
