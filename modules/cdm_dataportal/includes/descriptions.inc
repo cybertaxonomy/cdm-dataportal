@@ -974,6 +974,8 @@ function compose_new_feature_block_items_nested($feature_node, &$media_list, $fe
 
     if (isset($feature_node->descriptionElements)) {
       $media_list = array_merge($media_list, cdm_dataportal_media_from_descriptionElements($feature_node->descriptionElements));
+    }else if (isset($feature_node->facts)){
+        $media_list = array_merge($media_list, cdm_dataportal_media_from_descriptionElements($feature_node->facts->items));
     }
 
     $captionElements = array('title', 'rights');
@@ -981,7 +983,7 @@ function compose_new_feature_block_items_nested($feature_node, &$media_list, $fe
     if (isset($media_list[0]) && isset($gallery_settings['cdm_dataportal_media_maxextend']) && isset($gallery_settings['cdm_dataportal_media_cols'])) {
       $gallery = compose_cdm_media_gallery(array(
         'mediaList' => $media_list,
-        'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $feature_node->term->uuid,
+        'galleryName' => CDM_DATAPORTAL_DESCRIPTION_GALLERY_NAME . '_' . $feature_node->label,
         'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
         'cols' => $gallery_settings['cdm_dataportal_media_cols'],
         'captionElements' => $captionElements,
@@ -1375,7 +1377,22 @@ function compose_description_element_individuals_association($element, $feature_
 
   return $render_array;
 }
+function compose_new_description_element_individuals_association($element, $feature_block_settings, $feature_uuid) {
 
+    $out = '';
+
+    //$render_array = compose_cdm_specimen_or_observation($element->associatedSpecimenOrObservation);
+
+    if (isset($element->occurrence)) {
+        $out .=  ' ' . $element->occurrence;
+    }
+
+    $out .= drupal_render($render_array);
+
+    $render_array = compose_description_element($element, $feature_block_settings, $out, $feature_uuid);
+
+    return $render_array;
+}
 
 
 /**
@@ -1977,10 +1994,10 @@ function compose_new_feature_block_items_generic($description_elements, $feature
                     //$elements_out_array[] = compose_description_element_quantitative_data($description_element, $feature_block_settings);
                     break;
                 case 'IndividualsAssociation':
-                    $elements_out_array[] = compose_description_element_individuals_association($description_element, $feature_block_settings);
+                    $elements_out_array[] = compose_new_description_element_individuals_association($description_element, $feature_block_settings);
                     break;
                 case 'IndividualsAssociationDto':
-                    $elements_out_array[] = compose_description_element_individuals_association($description_element, $feature_block_settings);
+                    $elements_out_array[] = compose_new_description_element_individuals_association($description_element, $feature_block_settings, $feature_uuid);
                     break;
                 case 'TaxonInteraction':
                     $elements_out_array[] = compose_description_element_taxon_interaction($description_element, $feature_block_settings);
