@@ -902,8 +902,16 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
 
        } else {
                 // this is the case for taxon names
-                $options['html']= true;
-                $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text, $skiptags = array(), $tag = 'span', $options). $registration_markup;
+               $options['html']= true;
+
+               $skip_tags = array();
+               if (is_tagged_text_sepatator_type($nomref_tagged_text[0]->type) ) {
+                   $nomref_tagged_separator = array_shift($nomref_tagged_text);
+
+               }
+
+
+                $referenceArray['#html'] = $nomref_tagged_separator->text . cdm_tagged_text_to_markup($nomref_tagged_text, $skiptags = array(), $tag = 'span', $options). $registration_markup;
        }
 
             array_setr('reference', $referenceArray, $renderTemplate);
