@@ -2736,9 +2736,12 @@ function merged_taxon_new_feature_tree($taxon) {
         );
         $status = distribution_status_label_and_markup($distribution_aggregate->status, $level_style['status_glue']);
       }
-
-      $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement'
-        . join(' descriptionElement', $distribution_uuids)
+      if (count($distribution_uuids) > 0){
+          $test = 'descriptionElement-';
+      }
+      $test .= join('descriptionElement-', $distribution_uuids);
+      $per_node_markup[$node_index] .= '<' . $enclosingTag . ' class="descriptionElement '
+        . $test
         . ' level_index_' . $level_index
         . '" title="' . $status['label'] . '">'
         . '<span class="area_label">' . $label
