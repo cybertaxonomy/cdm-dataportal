@@ -78,12 +78,12 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         assertEquals("p.p. MAN for Ossaea glomerata sec. A&S1; sec. Species solaris", p.getMisappliedName(1).getText());
 
-        assertEquals("partial MAN for Ossaea glomerata sec. A&S: 331; auct. sec. A&S1", p.getMisappliedName(2).getText());
+        assertEquals("partial MAN for Ossaea glomerata sec. A&S1: 33; auct. sec. A&S1", p.getMisappliedName(2).getText());
 
         // no sensu but with Combination Authors:
         assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
         //
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S: 221; sensu A&S: 331; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(4).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S1: 22; sensu A&S1: 33; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(4).getText());
 
 
         // TODO the order of the MANs is not always defined please see #7766
