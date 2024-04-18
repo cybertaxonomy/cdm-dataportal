@@ -136,7 +136,7 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
   else {
     $doi = "";
     if(isset($reference_dto->doi) && $reference_dto->doi != null){
-                if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
+                if (!endsWith($citation, ".") && !endsWith($citation, ",") && !endsWith($citation, ";")){
                           $citation .= ".";
             }
             $doi = cdm_doi($reference_dto->doi, false);
