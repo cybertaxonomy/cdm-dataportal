@@ -100,7 +100,9 @@ function theme_cdm_new_heterotypicSynonymyGroup($variables) {
   }
 
   if (isset($type_designations) && count($type_designations) > 0) {
-    $out .= cdm_tagged_text_to_markup($type_designations);
+        $out .= '<ul class="typeDesignations">';
+        $out .=  cdm_tagged_text_to_markup($type_designations);
+        $out .= '</ul>';
   }
   $out .= '</ul>';
 
