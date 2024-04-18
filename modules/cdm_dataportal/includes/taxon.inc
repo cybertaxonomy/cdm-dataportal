@@ -327,7 +327,12 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                 $sensu_reference_markup = $sensu_strings['markup'];
                 $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
                 $footnote_key = render_footnote_key($footnote_key);
-                $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['shortCitation'] . $footnote_key . '</span>';
+                if (isset_not_empty($sensu_strings['detail'])){
+                    $detail = ': '.$sensu_strings['detail'];
+                }else{
+                    $detail = '';
+                }
+                $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['order_by_key'] .  $footnote_key . $detail . '</span>';
            }
         }
     }
@@ -346,8 +351,12 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                 $sensu_refs_with_fkey = array();
                 foreach ($misapplied_name['sensu_uuids'] as $sensu_data) {
                     if($sensu_data['uuid']){
-                        $joined_ref_key = $sensu_data['uuid'] . ($sensu_data['citation_detail'] ? '#' .  $sensu_data['citation_detail'] : '');
-                        $sensu_refs_with_fkey[$sensu_data['prefix'] . $joined_refs[$joined_ref_key]['shortCitation']] = $sensu_data['prefix'] . $joined_refs[$joined_ref_key]['markup'];
+                        $citation_detail = '';
+                        if (isset_not_empty($sensu_data['citation_detail'] )){
+                            $citation_detail = '#' .$sensu_data['citation_detail'];
+                        }
+                        $joined_ref_key = $sensu_data['uuid'] . $citation_detail;
+                        $sensu_refs_with_fkey[$sensu_data['prefix'] .  $joined_ref_key] = $sensu_data['prefix'] . $joined_refs[$joined_ref_key]['markup'];
                     } else {
                         $sensu_refs_with_fkey[$sensu_data['prefix']] = $sensu_data['prefix'];
                     }
@@ -509,9 +518,15 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
             $sensu_citation_long = $taxon_relation->secSource->label[0]->label;
         }
         $sec_without_microReference = $taxon_relation->secSource;
-        //if (isset_not_empty($sensu_citation_detail)){
-        //    $sec_without_microReference->label[0]->label = str_replace($sensu_citation_detail, $taxon_relation->secSource->label[0]->label);
-        //}
+        if (isset_not_empty($sensu_citation_detail)){
+            $sensu_citation_detail_page = '';
+            if (is_numeric($sensu_citation_detail) && $sensu_citation_detail>0 && $sensu_citation_detail < 10000){
+                $sensu_citation_detail_page = 'p ' . $sensu_citation_detail;
+            }
+            $label = $taxon_relation->secSource->label[0]->label;
+            $label = str_replace($sensu_citation_detail_page, '', $label);
+            $sec_without_microReference->label[0]->label = $label;
+        }
 
         $sensu_citation_long_markup = render_original_source($sec_without_microReference, FALSE);
         $sensu_citation_short = cdm_tagged_text_to_string($sensu_tagged_text);
@@ -524,7 +539,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
             $joined_refs[$ref_key] = array(
                 'order_by_key' => $sensu_citation_short_without_detail,
                 'markup' => $sensu_citation_long_markup,
-                'shortCitation' => $sensu_citation_short,
+                'detail' => $sensu_citation_detail,
                 'longCitation' => $sensu_citation_long// the footnote key will be appended later
             );
         }
@@ -550,7 +565,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
             $joined_refs[$ref_key] = array(
                 'order_by_key' => $relsec_citation_short_without_detail,
                 'markup' => $relsec_citation_long_markup,
-                'shortCitation' => $relsec_citation_short,
+                'detail' => $relsec_citation_detail,
                 'longCitation' => $relsec_citation_long// the footnote key will be appended later
             );
         }

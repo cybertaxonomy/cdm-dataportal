@@ -218,8 +218,10 @@ function theme_cdm_new_homotypicSynonymyGroup($variables) {
 
   //$type_designations = type_designations_for_synonymy_group($synonymList, $accepted_taxon_name_uuid);
   $type_designations = $synonymGroup -> taggedTypes;
+  $homotypic_synonym_group_end = '';
   if ((isset($type_designations) && count($type_designations) > 0)|| is_array($synonymList)) {
     $out .= '<ul class="homotypicSynonyms">';
+    $homotypic_synonym_group_end = '</ul>';
     //if (!empty($prependedSynonyms)) {
     //  foreach ($prependedSynonyms as $taxon) {
     //    $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
@@ -233,12 +235,15 @@ function theme_cdm_new_homotypicSynonymyGroup($variables) {
     }
 
     if (isset($type_designations) && count($type_designations) > 0) {
-      $out .= cdm_tagged_text_to_markup($type_designations);
+      $out .= '<ul class="typeDesignations">';
+      $out .=  cdm_tagged_text_to_markup($type_designations);
+      $out .= '</ul>';
     }
 
   }
 
-  $out .= '</ul>';
+  //$out .= '</ul>';
+  $out .= $homotypic_synonym_group_end;
 
   // ------- footnotes ------- //
 
