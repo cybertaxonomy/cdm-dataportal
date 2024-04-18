@@ -48,11 +48,11 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Cichorium"), driver.getTitle());
         assertEquals("Cichorium L., Sp. Pl.: 813. 1753", p.getAcceptedNameText());
         List<TypeDesignationElement> typeDesignations;
-        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+        //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE) == TRUE){
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
-        }else{
+        /*}else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        }
+        }*/
 
         assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
@@ -64,11 +64,11 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), scorzonera_tuzgoluensis_Uuid);
         assertEquals(getContext().prepareTitle("Scorzonera tuzgoluensis"), driver.getTitle());
         List<TypeDesignationElement> typeDesignations;
-        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+        //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
-        }else{
+        /*}else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        }
+        }*/
         assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Holotype: Turkey, B4 Konya, Cihanbeyli, between Gölyazı-Tuzgölü, alt. 908 m, 38°32'33.12\"N, 33°21'11.28\"E, A. Duran, B. Doğan & S. Makbul (KNYA)", typeDesignations.get(0).getText());
@@ -79,11 +79,11 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), lactuca_glandulifera_Uuid);
         assertEquals(getContext().prepareTitle("Lactuca glandulifera"), driver.getTitle());
         List<TypeDesignationElement> typeDesignations;
-        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+        //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHeterotypicalGroupTypeDesignations(1);
-        }else{
+        /*}else{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(1);
-        }
+        }*/
 
         assertEquals("Expecting 7 Typedesignation", 7, typeDesignations.size());
 
@@ -97,11 +97,11 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals("Syntype: [Tanzania] \"Kilimandscharo\", Volkens 1238", typeDesignations.get(i++).getText());
         assertEquals("Syntype: \"Uganda\", Scott Elliot 7328", typeDesignations.get(i++).getText());
 
-        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+        //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHeterotypicalGroupTypeDesignations(2);
-        }else{
+        /*}else{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
-        }
+        }*/
         //typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
         assertEquals("Expecting 3 Typedesignation", 3, typeDesignations.size());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
@@ -117,11 +117,11 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Hypochaeris maculata"), driver.getTitle());
         assertEquals("Hypochaeris maculata L., Sp. Pl.: 810. 1753", p.getAcceptedNameText());
         List<TypeDesignationElement> typeDesignations;
-        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+        //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
-        }else{
+        /*}else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        }
+        }*/
         //List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
         assertEquals("Expecting two Typedesignation", 2, typeDesignations.size());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
@@ -136,20 +136,20 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Hypochaeris"), driver.getTitle());
         assertEquals("Hypochaeris L., Sp. Pl.: 810. 17531", p.getAcceptedNameText());
         List<TypeDesignationElement> typeDesignations;
-        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+        //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
-        }else{
+        /*}else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        }
+        }*/
         //List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
         assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Lectotype (designated by Green, M.L.: 1783): Hypochaeris radicata L.", typeDesignations.get(0).getText());
-        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+        //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHeterotypicalGroupTypeDesignations(2);
-        }else{
+        /*}else{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
-        }
+        }*/
         //typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
         assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
