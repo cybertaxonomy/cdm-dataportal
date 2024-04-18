@@ -114,7 +114,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
          * @throws IOException
          * @throws InterruptedException
          */
-        protected String getDrupalVar(String varKey) throws IOException, InterruptedException, DrushExecutionFailure {
+        protected Object getDrupalVar(String varKey) throws IOException, InterruptedException, DrushExecutionFailure {
             DrushExecuter dex = getContext().drushExecuter();
             List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
             assertTrue(0 <= result.size() && result.size() <= 1);
