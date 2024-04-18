@@ -59,6 +59,8 @@ const CDM_SPECIMEN_RELATION_OPTION_CDET = 'CDET';
  const CDM_SEC_INTERNAL_LINK = 'internal_link';
  const CDM_SEC_WITHOUT_COMPLETE_REF = 'without_complete_ref';
 
+ const CDM_DTO_PORTAL_PAGE = 'cdm_dto_mode';
+
   define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE', 'cdm_synonymy_accepted_taxon_sec_separate');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE', 'cdm_synonymy_accepted_taxon_sec_footnote');
@@ -1819,12 +1821,13 @@ function cdm_settings_layout_taxon() {
         '#collapsed' => TRUE,
         //'#description' => 'Data can be accessed as cdm objects or as so named data transfer objects. The current standard is accessing the cdm objects.'
     );
-    $form['taxon_access']['cdm_dto_mode'] = array(
+    $form['taxon_access'][CDM_DTO_PORTAL_PAGE] = array(
         '#type' => 'checkbox',
         '#title' => 'Use Dto page',
         '#collapsible' => TRUE,
         '#collapsed' => FALSE,
-        '#default_value' => variable_get('cdm_dto_mode', FALSE),
+        '#default_value' => variable_get(CDM_DTO_PORTAL_PAGE, FALSE),
+        '#default_value' => variable_get(CDM_DTO_PORTAL_PAGE, FALSE),
         '#description' => 'When this is activated the data are loaded as data portal optimized DTOs which results in less webservice calls and smaller objects.
         This should improve the performance but at the moment it is only usable for some portals and is in experimental state. 
         Please contact the EDIT team for more information.'
