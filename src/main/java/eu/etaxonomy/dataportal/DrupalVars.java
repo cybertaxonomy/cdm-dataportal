@@ -21,4 +21,5 @@ public class DrupalVars {
     public static final String CDM_SPECIMEN_LIST_VIEW_MODE = "cdm_specimen_list_view_mode";
 
     public static final String CDM_SPECIMEN_DERIVATE_TREE_OPTIONS = "cdm_specimen_derivate_tree_options";
+    public static final String CDM_DTO_PORTAL_PAGE = "cdm_dto_mode";
 }

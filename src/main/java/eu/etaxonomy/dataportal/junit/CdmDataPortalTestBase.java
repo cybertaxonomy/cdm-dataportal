@@ -104,6 +104,28 @@ public abstract class CdmDataPortalTestBase extends Assert{
         result = dex.execute(DrushExecuter.variableSet, varKey, varValue);
     }
 
+    /**
+         * Get the value of a Drupal variable. If the variable does not exist, it returns null
+         *
+         * @param varKey The key of the Drupal variable to get. In {@link DrupalVars}
+         * predefined variable key constants can be found.
+         *
+         *
+         * @throws IOException
+         * @throws InterruptedException
+         */
+        protected String getDrupalVar(String varKey) throws IOException, InterruptedException, DrushExecutionFailure {
+            DrushExecuter dex = getContext().drushExecuter();
+            List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
+            assertTrue(0 <= result.size() && result.size() <= 1);
+            if(result.size() == 1){
+                return result.get(0);
+            }
+            return null;
+
+        }
+
+
     protected void setDrupalVarJson(String varKey, String varValue) throws IOException, InterruptedException, DrushExecutionFailure {
         DrushExecuter dex = getContext().drushExecuter();
         List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);

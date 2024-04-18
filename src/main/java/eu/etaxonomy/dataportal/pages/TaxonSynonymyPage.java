@@ -126,6 +126,15 @@ public class TaxonSynonymyPage extends TaxonPage {
         }
         return typeDesignations;
     }
+    public List<TypeDesignationElement> getNewHomotypicalGroupTypeDesignations() {
+            List<WebElement> typeDesignationElements = synonymy.findElements(By
+                    .xpath("./div[contains(@class,'homotypic-synonymy-group')]/ul[contains(@class,'homotypicSynonyms')]/ul[contains(@class,'typeDesignations')]"));
+            List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
+            for (WebElement el : typeDesignationElements) {
+                typeDesignations.add(new TypeDesignationElement(el));
+            }
+            return typeDesignations;
+        }
 
     public List<LinkElement> getHomotypicalGroupFootNoteKeys() {
         List<WebElement> fnkListElements = synonymy.findElements(
@@ -186,6 +195,22 @@ public class TaxonSynonymyPage extends TaxonPage {
         }
         return typeDesignations;
     }
+
+    /**
+     * @param heterotypicalGroupIndex
+     *            the 1-based index of the heterotypical group
+     */
+    public List<TypeDesignationElement> getNewHeterotypicalGroupTypeDesignations(Integer heterotypicalGroupIndex) {
+        List<WebElement> typeDesignationElements = synonymy.findElements(By
+                .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
+                        + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'typeDesignations')]"));
+        List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
+        for (WebElement el : typeDesignationElements) {
+            typeDesignations.add(new TypeDesignationElement(el));
+        }
+        return typeDesignations;
+    }
+
 
     /**
      * @param heterotypicalGroupIndex
