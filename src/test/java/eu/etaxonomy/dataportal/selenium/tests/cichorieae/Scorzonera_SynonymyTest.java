@@ -55,7 +55,7 @@ public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals("= Gelasia Cass. in Bull. Sci. Soc. Philom. Paris 1818: 33. 1818", p.getHeterotypicalGroupSynonymName(1, 1));
         //List<TypeDesignationElement> heterotypicalGroupTypeDesignations = p.getHeterotypicalGroupTypeDesignations(1);
         typeDesignations = p.getNewHeterotypicalGroupTypeDesignations(1);
-        assertEquals("Gelasia villosa (Scop.) Cass.", heterotypicalGroupTypeDesignations.getText());
+        assertEquals("Gelasia villosa (Scop.) Cass.", typeDesignations.getText());
        // assertEquals("Type: Gelasia villosa (Scop.) Cass.", heterotypicalGroupTypeDesignations.get(0).getText());
         //assertEquals(TypeDesignationType.nameTypeDesignation, heterotypicalGroupTypeDesignations.get(0).getTypeDesignationType());
 
