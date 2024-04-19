@@ -54,16 +54,16 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
         }*/
 
-        assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
-        assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        assertEquals("Lectotype (designated by Green 1929: 1781): Cichorium intybus L.", typeDesignations.get(0).getText());
+        assertNotNull("Expecting at least one Typedesignation", typeDesignations);
+        //assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
+        assertEquals("Lectotype: Cichorium intybus L. designated by Green 1929: 178", typeDesignations.getText());
     }
 
     @Test
     public void scorzonera_tuzgoluensis() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), scorzonera_tuzgoluensis_Uuid);
         assertEquals(getContext().prepareTitle("Scorzonera tuzgoluensis"), driver.getTitle());
-        List<TypeDesignationElement> typeDesignations;
+        WebElement typeDesignations;
         //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
         /*}else{

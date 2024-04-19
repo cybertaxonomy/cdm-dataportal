@@ -126,14 +126,14 @@ public class TaxonSynonymyPage extends TaxonPage {
         }
         return typeDesignations;
     }
-    public List<TypeDesignationElement> getNewHomotypicalGroupTypeDesignations() {
-            List<WebElement> typeDesignationElements = synonymy.findElements(By
+    public WebElement getNewHomotypicalGroupTypeDesignations() {
+            WebElement typeDesignationElement = synonymy.findElement(By
                     .xpath("./div[contains(@class,'homotypic-synonymy-group')]/ul[contains(@class,'homotypicSynonyms')]/ul[contains(@class,'typeDesignations')]"));
-            List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
+            /*List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
             for (WebElement el : typeDesignationElements) {
                 typeDesignations.add(new TypeDesignationElement(el));
-            }
-            return typeDesignations;
+            }*/
+            return typeDesignationElement;
         }
 
     public List<LinkElement> getHomotypicalGroupFootNoteKeys() {
@@ -200,15 +200,15 @@ public class TaxonSynonymyPage extends TaxonPage {
      * @param heterotypicalGroupIndex
      *            the 1-based index of the heterotypical group
      */
-    public List<TypeDesignationElement> getNewHeterotypicalGroupTypeDesignations(Integer heterotypicalGroupIndex) {
-        List<WebElement> typeDesignationElements = synonymy.findElements(By
+    public WebElement getNewHeterotypicalGroupTypeDesignations(Integer heterotypicalGroupIndex) {
+        WebElement typeDesignationElement = synonymy.findElement(By
                 .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
                         + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'typeDesignations')]"));
-        List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
+        /*List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
         for (WebElement el : typeDesignationElements) {
             typeDesignations.add(new TypeDesignationElement(el));
-        }
-        return typeDesignations;
+        }*/
+        return typeDesignationElement;
     }
 
 
