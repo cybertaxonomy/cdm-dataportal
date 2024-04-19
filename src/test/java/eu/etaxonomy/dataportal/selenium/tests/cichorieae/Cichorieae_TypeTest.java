@@ -47,7 +47,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), cichorium_uuid);
         assertEquals(getContext().prepareTitle("Cichorium"), driver.getTitle());
         assertEquals("Cichorium L., Sp. Pl.: 813. 1753", p.getAcceptedNameText());
-        List<TypeDesignationElement> typeDesignations;
+        WebElement typeDesignations;
         //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE) == TRUE){
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
         /*}else{
