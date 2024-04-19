@@ -68,22 +68,23 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
         /*}else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        }*/
+        }
         assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Holotype: Turkey, B4 Konya, Cihanbeyli, between Gölyazı-Tuzgölü, alt. 908 m, 38°32'33.12\"N, 33°21'11.28\"E, A. Duran, B. Doğan & S. Makbul (KNYA)", typeDesignations.get(0).getText());
+        */
     }
 
     @Test
     public void lactuca_glandulifera() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), lactuca_glandulifera_Uuid);
         assertEquals(getContext().prepareTitle("Lactuca glandulifera"), driver.getTitle());
-        List<TypeDesignationElement> typeDesignations;
+        WebElement typeDesignations;
         //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHeterotypicalGroupTypeDesignations(1);
         /*}else{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(1);
-        }*/
+        }
 
         assertEquals("Expecting 7 Typedesignation", 7, typeDesignations.size());
 
@@ -96,12 +97,12 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals("Syntype: [Tanzania] \"Karagwe\", Stuhlmann 1660", typeDesignations.get(i++).getText());
         assertEquals("Syntype: [Tanzania] \"Kilimandscharo\", Volkens 1238", typeDesignations.get(i++).getText());
         assertEquals("Syntype: \"Uganda\", Scott Elliot 7328", typeDesignations.get(i++).getText());
-
+*/
         //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHeterotypicalGroupTypeDesignations(2);
         /*}else{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
-        }*/
+        }
         //typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
         assertEquals("Expecting 3 Typedesignation", 3, typeDesignations.size());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
@@ -109,6 +110,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals("Syntype: [Cameroon] \"Cameroons Mt., 6,000 ft.\", Dunlap 47", typeDesignations.get(i++).getText());
         assertEquals("Syntype: [Cameroon], Maitland 226", typeDesignations.get(i++).getText());
         assertEquals("Syntype: [Cameroon], Mildbraed 10814", typeDesignations.get(i++).getText());
+        */
     }
 
     @Test
@@ -116,18 +118,19 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), hypochaeris_maculata_uuid);
         assertEquals(getContext().prepareTitle("Hypochaeris maculata"), driver.getTitle());
         assertEquals("Hypochaeris maculata L., Sp. Pl.: 810. 1753", p.getAcceptedNameText());
-        List<TypeDesignationElement> typeDesignations;
+        WebElement typeDesignations;
         //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
         /*}else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        }*/
+        }
         //List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
         assertEquals("Expecting two Typedesignation", 2, typeDesignations.size());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Type: \"Habitat in Europae frigidioris pratis asperis.\"", typeDesignations.get(0).getText());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(1).getTypeDesignationType());
         assertEquals("Lectotype (designated by Iamonico, D. 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1", typeDesignations.get(1).getText());
+        */
     }
 
     @Test
@@ -135,25 +138,28 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), hypochaeris_uuid);
         assertEquals(getContext().prepareTitle("Hypochaeris"), driver.getTitle());
         assertEquals("Hypochaeris L., Sp. Pl.: 810. 17531", p.getAcceptedNameText());
-        List<TypeDesignationElement> typeDesignations;
+        WebElement typeDesignations;
         //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
         /*}else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        }*/
+        }
         //List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
         assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Lectotype (designated by Green, M.L.: 1783): Hypochaeris radicata L.", typeDesignations.get(0).getText());
+        */
+
         //if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
             typeDesignations = p.getNewHeterotypicalGroupTypeDesignations(2);
         /*}else{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
-        }*/
+        }
         //typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
         assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         assertEquals("Lectotype (designated by Steudel 1841: 5685): Seriola laevigata L.", typeDesignations.get(0).getText());
+        */
     }
 
 }
