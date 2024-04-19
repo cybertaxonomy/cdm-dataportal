@@ -72,8 +72,10 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         }
         assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        assertEquals("Holotype: Turkey, B4 Konya, Cihanbeyli, between Gölyazı-Tuzgölü, alt. 908 m, 38°32'33.12\"N, 33°21'11.28\"E, A. Duran, B. Doğan & S. Makbul (KNYA)", typeDesignations.get(0).getText());
         */
+
+        assertEquals("Holotype: Turkey, B4 Konya, Cihanbeyli, between Gölyazı-Tuzgölü, alt. 908 m, 38°32'33.12\"N, 33°21'11.28\"E, A. Duran, B. Doğan & S. Makbul (KNYA)", typeDesignations.getText());
+
     }
 
     @Test
@@ -91,7 +93,15 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
 
         assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         int i = 0;
-        assertEquals("Syntype: [Cameroon] \"Bamenda\", Ledermann 1889", typeDesignations.get(i++).getText());
+        */
+        String expectedString = "Syntype: \"Uganda\", Scott Elliot 7328; Syntype: [Cameroon] \"Bamenda\", Ledermann 1889; " +
+                "Syntype: [Kenya] \"Mt. Aberdare: Ostseite\", 12 Mar 1922, R. E. Fries 2172; " +
+                "Syntype: [Kenya] \"Mt. Kenia: Nordostseite bei Meru\", 17 Feb 1922, R. E. Fries 1677; " +
+                "Syntype: [Malawi] \"Kyimbila\", Stolz 306; " +
+                "Syntype: [Tanzania] \"Karagwe\", Stuhlmann 1660; " +
+                "Syntype: [Tanzania] \"Kilimandscharo\", Volkens 1238";
+        assertEquals(expectedString, typeDesignations.getText());
+/*
         assertEquals("Syntype: [Kenya] \"Mt. Aberdare: Ostseite\", 12 Mar 1922, R. E. Fries 2172", typeDesignations.get(i++).getText());
         assertEquals("Syntype: [Kenya] \"Mt. Kenia: Nordostseite bei Meru\", 17 Feb 1922, R. E. Fries 1677", typeDesignations.get(i++).getText());
         assertEquals("Syntype: [Malawi] \"Kyimbila\", Stolz 306", typeDesignations.get(i++).getText());
@@ -105,10 +115,13 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
         }
         //typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
-        assertEquals("Expecting 3 Typedesignation", 3, typeDesignations.size());
-        assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        i = 0;
-        assertEquals("Syntype: [Cameroon] \"Cameroons Mt., 6,000 ft.\", Dunlap 47", typeDesignations.get(i++).getText());
+        */
+        expectedString = "Syntype: [Cameroon] \"Cameroons Mt., 6,000 ft.\", Dunlap 47; Syntype: [Cameroon], Maitland 226; Syntype: [Cameroon], Mildbraed 10814";
+        //assertEquals("Expecting 3 Typedesignation", 3, typeDesignations.size());
+        //assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
+        //i = 0;
+        assertEquals(expectedString, typeDesignations.getText());
+        /*
         assertEquals("Syntype: [Cameroon], Maitland 226", typeDesignations.get(i++).getText());
         assertEquals("Syntype: [Cameroon], Mildbraed 10814", typeDesignations.get(i++).getText());
         */
@@ -124,12 +137,13 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
         /*}else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        }
+        }*/
+        String expectedString = "\"Habitat in Europae frigidioris pratis asperis.\"; Lectotype: [s. loc.], Herb. Linnaeus, no. 959.1 designated by Iamonico 2012: ??";
         //List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
-        assertEquals("Expecting two Typedesignation", 2, typeDesignations.size());
-        assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        assertEquals("Type: \"Habitat in Europae frigidioris pratis asperis.\"", typeDesignations.get(0).getText());
-        assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(1).getTypeDesignationType());
+        //assertEquals("Expecting two Typedesignation", 2, typeDesignations.size());
+        //assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
+        assertEquals(expectedString, typeDesignations.getText());
+        /*assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(1).getTypeDesignationType());
         assertEquals("Lectotype (designated by Iamonico, D. 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1", typeDesignations.get(1).getText());
         */
     }
@@ -157,10 +171,13 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
         }
         //typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
+
         assertEquals("Expecting two Typedesignation", 1, typeDesignations.size());
         assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-        assertEquals("Lectotype (designated by Steudel 1841: 5685): Seriola laevigata L.", typeDesignations.get(0).getText());
         */
+        String expectedString = "Lectotype: Hypochaeris radicata L. designated by Green 1929: 178";
+        assertEquals(expectedString, typeDesignations.getText());
+
     }
 
 }
