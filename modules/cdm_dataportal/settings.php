@@ -79,11 +79,13 @@ const CDM_SPECIMEN_RELATION_OPTION_CDET = 'CDET';
   if (in_array(UUID_ANNOTATION_TYPE_TECHNICAL, $annotationTypeKeys)) {
     $annotationTypeKeys = array_flip($annotationTypeKeys);
 
+
     // Technical annotation are off by default.
     unset($annotationTypeKeys[UUID_ANNOTATION_TYPE_TECHNICAL]);
     $annotationTypeKeys = array_flip($annotationTypeKeys);
+    $annotationTypeKeys[] = UUID_ANNOTATION_TYPE_UNTYPED;
     // Additional value for the NULL case.
-    $annotationTypeKeys[] = 'NULL_VALUE';
+    //$annotationTypeKeys[] = 'NULL_VALUE';
   }
 
   const ANNOTATION_TYPES_VISIBLE = 'annotations_types_as_footnotes';

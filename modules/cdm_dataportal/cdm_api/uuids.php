@@ -179,6 +179,8 @@
 
   // Annotation type vocabulary.
   define('UUID_ANNOTATION_TYPE_TECHNICAL', '6a5f9ea4-1bdd-4906-89ad-6e669f982d69');
+  define('UUID_ANNOTATION_TYPE_EDITORIAL','e780d5fd-abfc-4025-938a-46deb751d808');
+  define('UUID_ANNOTATION_TYPE_UNTYPED','3ccf04c8-2739-43ad-ab53-de4b83b56e8b');
 
   // DerivationEventType
   define('UUID_DERIVATIONEVENTTYPE_DUPLICATE', '8f54c7cc-eb5e-4652-a6e4-3a4ba429b327');

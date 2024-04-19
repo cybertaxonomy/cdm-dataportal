@@ -1898,6 +1898,14 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     if (variable_get(CDM_STATUSTREE_UUID)) {
         $query_parameters['statusTree'] = variable_get(CDM_STATUSTREE_UUID);
     }
+    if (variable_get(ANNOTATION_TYPES_VISIBLE)) {
+        foreach (variable_get(ANNOTATION_TYPES_VISIBLE, array()) as $a_uuid) {
+            if (is_uuid($a_uuid)) {
+                $query_parameters['annotationTypes'][] = $a_uuid;
+            }
+        }
+
+    }
 
     if ($chapter == 'all'){
         $query_parameters['doSynonyms'] = true;
