@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
+import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
