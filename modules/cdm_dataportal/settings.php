@@ -1435,7 +1435,7 @@ function cdm_settings_layout() {
 
   $annotation_type_options = cdm_terms_by_type_as_option('AnnotationType');
   // Additional option for the NULL case.
-  $annotation_type_options['NULL_VALUE'] = t('untyped');
+  $annotation_type_options[UUID_ANNOTATION_TYPE_UNTYPED] = t('untyped');
   $annotations_types_visible = variable_get(ANNOTATION_TYPES_VISIBLE, unserialize(EXTENSION_TYPES_VISIBLE_DEFAULT));
   $form['annotations'][ANNOTATION_TYPES_VISIBLE] = array(
     '#type' => 'checkboxes',
