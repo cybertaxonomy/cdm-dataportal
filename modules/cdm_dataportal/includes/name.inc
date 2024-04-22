@@ -1150,6 +1150,9 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
        $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto->name,
             null, null, $annotations_and_sources);
     }
+    //handle annotations of taxonbase
+    $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto,
+        null, null, $annotations_and_sources);
     $out .= $annotations_and_sources->footNoteKeysMarkup();
 
     return $out;
