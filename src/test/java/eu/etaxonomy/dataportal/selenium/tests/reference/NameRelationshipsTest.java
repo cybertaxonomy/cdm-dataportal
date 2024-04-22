@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.elements.RegistrationItemFull;
