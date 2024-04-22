@@ -169,7 +169,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         WebElement synonym1 = p.getHeterotypicalGroupSynonym(1, 1);
         assertEquals("=\nNepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858", synonym1.getText());
         WebElement synonym2 = p.getHeterotypicalGroupSynonym(1, 2);
-        assertEquals("≡\nNepenthes tupmanniana Bonstedt in Parey Blumeng. 1: 663. 1931 [non Nepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858]", synonym2.getText());
+        assertEquals(UTF8.EN_DASH+"\nNepenthes tupmanniana Bonstedt in Parey Blumeng. 1: 663. 1931 [non Nepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858]", synonym2.getText());
         assertEquals("is misspelling for", synonym2.findElement(By.className("symbol")).getAttribute("title"));
     }
 
