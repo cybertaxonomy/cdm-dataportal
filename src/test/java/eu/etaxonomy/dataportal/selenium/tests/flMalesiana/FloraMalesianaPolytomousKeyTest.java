@@ -65,7 +65,12 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
         keyLineData = new KeyLineData("1",
                 "Trees or shrubs, exceptionally lianas. Leaves simple, unifoliolate, (bi)pinnate or digitate. Inflorescences without basal tendrils",
                 LinkClass.nodeLinkToNode, "2");
-        targetPage = p.followPolytomousKeyLine(0, keyLineData);
+        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE){
+            targetPage = p.followPolytomousKeyLine(0, keyLineData, true);
+        }else{
+            targetPage = p.followPolytomousKeyLine(0, keyLineData, false);
+        }
+
 
         //FIXME:
         //Assert.assertTrue(targetPage.toString().startsWith(p.getPageURL().toString() + "#"));

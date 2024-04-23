@@ -127,7 +127,7 @@ public class PolytomousKeyPage extends PortalPage {
 		nodeLinkToTaxon;
 	}
 
-	public PortalPage followPolytomousKeyLine(int lineIndex, KeyLineData data) throws Exception {
+	public PortalPage followPolytomousKeyLine(int lineIndex, KeyLineData data, boolean isDtoPage) throws Exception {
 
 		keyTableRows = keyTable.findElements(By.xpath("tbody/tr"));
 		WebElement keyEntry = keyTableRows.get(lineIndex);
@@ -142,11 +142,11 @@ public class PolytomousKeyPage extends PortalPage {
 
 		// click and wait
 		link.click();
-		if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
-		    logger.info("portal page is dto " +  getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE));
+		if (isDtoPage){
+		    logger.info("portal page is dto");
 		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("content"))));
 		}else{
-		    logger.info("portal page is not dto " +  getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE));
+		    logger.info("portal page is not dto");
 		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("container"))));
 		}
 		PortalPage nextPage = null;
