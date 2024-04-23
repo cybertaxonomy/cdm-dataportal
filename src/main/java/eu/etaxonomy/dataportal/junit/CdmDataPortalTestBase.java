@@ -119,7 +119,7 @@ public abstract class CdmDataPortalTestBase extends Assert{
             List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
             assertTrue(0 <= result.size() && result.size() <= 1);
             if(result.size() == 1){
-                logger.info("Var value: "  result.get(0).toString());
+                logger.info("Var value: " + result.get(0).toString());
                 return result.get(0);
             }
 
