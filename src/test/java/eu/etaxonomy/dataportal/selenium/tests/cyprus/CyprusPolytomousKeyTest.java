@@ -60,11 +60,11 @@ public class CyprusPolytomousKeyTest extends CdmDataPortalTestBase {
         keyLineData = new KeyLineData("1",
                 "Capitula without ligulate ray-florets; leaves entire or subentire",
                 LinkClass.nodeLinkToTaxon, "Achillea maritima subsp. maritima");
-        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString())){
+        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString() == "1"){
             targetPage = p.followPolytomousKeyLine(0, keyLineData, true);
         }else{
             //logger.info("portal page " + getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString());
-            targetPage = p.followPolytomousKeyLine(0, keyLineData, true);
+            targetPage = p.followPolytomousKeyLine(0, keyLineData, false);
         }
 
         Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkText()), driver.getTitle());
