@@ -141,13 +141,13 @@ public class PolytomousKeyPage extends PortalPage {
 
 		// click and wait
 		link.click();
-		try{
+		if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+		    logger.info("portal page is dto " +  getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE));
 		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("content"))));
-		}catch (Exception e){
+		}else{
+		    logger.info("portal page is not dto " +  getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE));
 		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("container"))));
 		}
-
-
 		PortalPage nextPage = null;
 		if(data.linkClass.equals(LinkClass.nodeLinkToTaxon)){
 			nextPage = new TaxonProfilePage(driver, context);
