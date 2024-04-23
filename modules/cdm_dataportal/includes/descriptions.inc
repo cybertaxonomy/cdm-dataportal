@@ -128,7 +128,18 @@ function cdm_merge_description_elements($target, $source) {
           }
         $target->$field = array_merge($target->$field, $source->$field);
       }
-    }
+    }else if (isset_not_empty($source->$field) && is_array($source->$field->items)) {
+          if (isset($target->$field) && !is_array($target->$field->items)) {
+              $target->$field = $source->$field;
+          }
+          else {
+              if(!isset($target->$field->items)){
+                  $target->$field->items = array();
+              }
+              $target->$field->items = array_merge($target->$field->items, $source->$field->items);
+              $target->$field->count = $target->$field->count + $source->$field->count;
+          }
+      }
   }
 }
 
