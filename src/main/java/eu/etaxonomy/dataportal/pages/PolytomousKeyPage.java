@@ -141,7 +141,12 @@ public class PolytomousKeyPage extends PortalPage {
 
 		// click and wait
 		link.click();
-		wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("content"))));
+		try{
+		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("content"))));
+		}catch (Exception e){
+		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("container"))));
+		}
+
 
 		PortalPage nextPage = null;
 		if(data.linkClass.equals(LinkClass.nodeLinkToTaxon)){
