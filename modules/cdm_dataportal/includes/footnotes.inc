@@ -337,11 +337,13 @@ function handle_name_relationship_as_footnote($name_rel, $code_edition_source = 
         if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered) {
             $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span>';
         }
-        if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered && isset($name_rel->codeEditionSource->citation)){
+        if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered && (isset($name_rel->codeEditionSource->citation) || isset($name_rel->codeEditionSource->label))){
             $footnote_markup .= '; ';
         }
         if (isset($name_rel->codeEditionSource->citation)) {
             $footnote_markup .= '<span class="reference">' . $name_rel->codeEditionSource->citation->titleCache . '</span>';
+        }else if (isset($name_rel->codeEditionSource) && isset_not_empty($name_rel->codeEditionSource->label) && isset($name_rel->codeEditionSource->label[0]->label)){
+            $footnote_markup .= '<span class="reference">' . $name_rel->codeEditionSource->label[0]->label . '</span>';
         }
 
         if ($footnote_markup) {

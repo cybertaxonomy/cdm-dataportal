@@ -949,10 +949,16 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
                 if($tt->type == 'nomStatus'&& isset($tt->entityReference)) {
                     //$nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
                     $nom_status = $nom_status_tagged_text;
-                    $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
+
                     $tt_to_markup_options['html'] = true;
                 }
             }
+            if (isset_not_empty($taxon_base->nomenclaturalStatus) && isset_not_empty($taxon_base->nomenclaturalStatus->items)){
+                foreach($taxon_base->nomenclaturalStatus->items as $nom_status){
+                    $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
+                }
+            }
+
             array_setr(
                 'status',
                 '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator'), 'span', $tt_to_markup_options) . '</span>',
