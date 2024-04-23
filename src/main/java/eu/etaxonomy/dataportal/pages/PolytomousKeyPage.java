@@ -27,7 +27,7 @@ import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.selenium.AllTrue;
 import eu.etaxonomy.dataportal.selenium.UrlLoaded;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
-import eu.etaxonomy.dataportal.DrupalVars;
+
 
 public class PolytomousKeyPage extends PortalPage {
 

@@ -20,6 +20,7 @@ import eu.etaxonomy.dataportal.pages.PolytomousKeyPage;
 import eu.etaxonomy.dataportal.pages.PolytomousKeyPage.KeyLineData;
 import eu.etaxonomy.dataportal.pages.PolytomousKeyPage.LinkClass;
 import eu.etaxonomy.dataportal.pages.PortalPage;
+import eu.etaxonomy.dataportal.DrupalVars;
 
 /**
  * @author a.kohlbecker
