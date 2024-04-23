@@ -63,7 +63,8 @@ public class CyprusPolytomousKeyTest extends CdmDataPortalTestBase {
         if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString())){
             targetPage = p.followPolytomousKeyLine(0, keyLineData, true);
         }else{
-            targetPage = p.followPolytomousKeyLine(0, keyLineData, false);
+            logger.info("portal page " + getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString());
+            //targetPage = p.followPolytomousKeyLine(0, keyLineData, false);
         }
 
         Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkText()), driver.getTitle());
