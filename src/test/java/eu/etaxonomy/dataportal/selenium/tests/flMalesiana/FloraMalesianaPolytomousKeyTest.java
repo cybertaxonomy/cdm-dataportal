@@ -66,7 +66,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
         keyLineData = new KeyLineData("1",
                 "Trees or shrubs, exceptionally lianas. Leaves simple, unifoliolate, (bi)pinnate or digitate. Inflorescences without basal tendrils",
                 LinkClass.nodeLinkToNode, "2");
-        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE))){
+        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString())){
             targetPage = p.followPolytomousKeyLine(0, keyLineData, true);
         }else{
             targetPage = p.followPolytomousKeyLine(0, keyLineData, false);
@@ -80,7 +80,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
         keyLineData = new KeyLineData("1'", "Herbaceous or woody climbers. Leaves biternate. Inflorescences with basal tendrils",
                 LinkClass.nodeLinkToTaxon, "Cardiospermum L.", ", Sp. Pl.: 366. 1753");
         p = new PolytomousKeyPage(driver, getContext(), keyUuid);
-        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE))){
+        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString())){
                     targetPage = p.followPolytomousKeyLine(1, keyLineData, true);
                 }else{
                     targetPage = p.followPolytomousKeyLine(1, keyLineData, false);
@@ -92,7 +92,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
         // -------- //
         keyLineData = new KeyLineData("2", "Leaves simple, unifoliolate, (im)paripinnate or digitate", LinkClass.nodeLinkToNode, "3");
         p = new PolytomousKeyPage(driver, getContext(), keyUuid);
-        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE))){
+        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString())){
                     targetPage = p.followPolytomousKeyLine(2, keyLineData, true);
                 }else{
                     targetPage = p.followPolytomousKeyLine(2, keyLineData, false);
@@ -104,7 +104,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
         // -------- //
         keyLineData = new KeyLineData("2'", "Leaves bipinnate", LinkClass.nodeLinkToTaxon, "Tristiropsis Radlk.", " in Dur., Index Gen. Phan.: 76. 1888");
         p = new PolytomousKeyPage(driver, getContext(), keyUuid);
-        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE))){
+        if (Boolean.valueOf(getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString())){
                     targetPage = p.followPolytomousKeyLine(3, keyLineData, true);
                 }else{
                     targetPage = p.followPolytomousKeyLine(3, keyLineData, false);
