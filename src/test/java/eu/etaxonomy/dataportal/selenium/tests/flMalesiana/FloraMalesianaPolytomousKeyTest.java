@@ -80,21 +80,36 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
         keyLineData = new KeyLineData("1'", "Herbaceous or woody climbers. Leaves biternate. Inflorescences with basal tendrils",
                 LinkClass.nodeLinkToTaxon, "Cardiospermum L.", ", Sp. Pl.: 366. 1753");
         p = new PolytomousKeyPage(driver, getContext(), keyUuid);
-        targetPage = p.followPolytomousKeyLine(1, keyLineData);
+        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+                    targetPage = p.followPolytomousKeyLine(1, keyLineData, true);
+                }else{
+                    targetPage = p.followPolytomousKeyLine(1, keyLineData, false);
+                }
+       // targetPage = p.followPolytomousKeyLine(1, keyLineData);
         Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkTextWithSuffix()), targetPage.getTitle());
         p.get();
 
         // -------- //
         keyLineData = new KeyLineData("2", "Leaves simple, unifoliolate, (im)paripinnate or digitate", LinkClass.nodeLinkToNode, "3");
         p = new PolytomousKeyPage(driver, getContext(), keyUuid);
-        targetPage = p.followPolytomousKeyLine(2, keyLineData);
+        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+                    targetPage = p.followPolytomousKeyLine(2, keyLineData, true);
+                }else{
+                    targetPage = p.followPolytomousKeyLine(2, keyLineData, false);
+                }
+        //targetPage = p.followPolytomousKeyLine(2, keyLineData);
         //FIXME (same as above):
         //Assert.assertEquals(p, targetPage);
 
         // -------- //
         keyLineData = new KeyLineData("2'", "Leaves bipinnate", LinkClass.nodeLinkToTaxon, "Tristiropsis Radlk.", " in Dur., Index Gen. Phan.: 76. 1888");
         p = new PolytomousKeyPage(driver, getContext(), keyUuid);
-        targetPage = p.followPolytomousKeyLine(3, keyLineData);
+        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE)){
+                    targetPage = p.followPolytomousKeyLine(3, keyLineData, true);
+                }else{
+                    targetPage = p.followPolytomousKeyLine(3, keyLineData, false);
+                }
+        //targetPage = p.followPolytomousKeyLine(3, keyLineData);
         Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkTextWithSuffix()), targetPage.getTitle());
         p.get();
 
