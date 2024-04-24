@@ -169,7 +169,8 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
       $is_first = $i == 0;
       $is_separator = is_tagged_text_sepatator_type($tt->type);
       if(str_beginsWith($tt->type, 'PLACEHOLDER_')){
-        $out .=  '{'. $tt->type . '}';
+          $out .= '</' . $tag . '>' . $last_suffix;
+          $out .=  '{'. $tt->type . '}';
       } else {
 
         // attributes
