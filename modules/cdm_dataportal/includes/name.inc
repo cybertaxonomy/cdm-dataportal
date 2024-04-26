@@ -2683,7 +2683,8 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
             $non_nec_markup = '';
             $show_name_cache_only = FALSE;
             foreach ($non_nec_name_rels as $name_rel) {
-
+                RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
+                $annotations_and_sources = handle_new_annotations_and_sources($name_rel);
                 $is_inverse_relation = $name_rel->inverse;
                 $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
                 $relationship_markup = name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type, $show_name_cache_only);
@@ -2692,6 +2693,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
                 $symbol = $non_nec_markup ? ' nec ' : 'non';
                 $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
                 $non_nec_markup .= $symbol_markup . $relationship_markup;
+                $non_nec_markup .= $annotations_and_sources->footNoteKeysMarkup();
             }
             if ($non_nec_markup) {
                 $render_array['list']['items'][] = markup_to_render_array($non_nec_markup,

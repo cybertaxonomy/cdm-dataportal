@@ -219,7 +219,7 @@ function is_uuid($str) {
  */
 function is_cdm_entity($object) {
   return
-    isset($object->class) && is_string($object->class) && strlen($object->class) > 2
+    isset_not_empty($object->class) && is_string($object->class) && strlen($object->class) > 2
     && !(str_endsWith($object->class, 'EntityReference') || str_endsWith($object->class, 'DTO'))
     && (isset_not_empty($object->uuid) && is_uuid($object->uuid));
 }
