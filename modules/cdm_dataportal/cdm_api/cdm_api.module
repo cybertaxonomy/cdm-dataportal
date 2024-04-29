@@ -1933,7 +1933,7 @@ function cdm_ws_fetch_annotations(&$cdm_entity_or_dto, $include_types = FALSE) {
  */
 function annotation_has_type($annotation, array $include_types) {
   return (isset($annotation->annotationType->uuid) && in_array($annotation->annotationType->uuid, $include_types, TRUE))
-    || (!isset($annotation->annotationType) && in_array('NULL_VALUE', $include_types, TRUE));
+    || (!isset($annotation->annotationType) && in_array(UUID_ANNOTATION_TYPE_UNTYPED, $include_types, TRUE));
 }
 
 /**
@@ -1944,7 +1944,7 @@ function annotation_has_type($annotation, array $include_types) {
  */
 function annotation_dto_has_type($annotation_dto, array $include_types) {
   return (isset($annotation_dto->annotationTypeUuid) && in_array($annotation_dto->annotationTypeUuid, $include_types, TRUE))
-    || ($annotation_dto->annotationTypeUuid === NULL && in_array('NULL_VALUE', $include_types, TRUE));
+    || ($annotation_dto->annotationTypeUuid === NULL && in_array(UUID_ANNOTATION_TYPE_UNTYPED, $include_types, TRUE));
 }
 
 /**
