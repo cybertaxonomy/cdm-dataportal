@@ -2707,7 +2707,8 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
         if (count($orthographic_variants) > 0) {
             $show_name_cache_only = TRUE;
             foreach ($orthographic_variants as $name_rel) {
-
+add                 RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
+                $annotations_and_sources = handle_new_annotations_and_sources($name_rel);
                 //$is_inverse_relation = $current_name_uuid == $name_rel->nameUuid;
                 $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
                 $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $show_name_cache_only);
@@ -2715,6 +2716,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
                 $symbol = $name_rel->relType;
                 $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
                 $relationship_markup = $symbol_markup . $relationship_markup;
+                $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
             }
             if (isset($relationship_markup) && $relationship_markup) {
                 $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
