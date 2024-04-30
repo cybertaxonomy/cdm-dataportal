@@ -63,11 +63,14 @@ function cdm_entity_footnotes(
   $do_link_to_reference = FALSE,
   $do_link_to_name_used_in_source = FALSE,
   $is_bibliography_aware = FALSE,
-  $add_annotations = TRUE
+  $add_annotations = TRUE,
+  $add_sources = TRUE
 )
 {
+    if ($add_sources){
+        $sources = cdm_entity_sources_sorted($cdm_entity);
+    }
 
-    $sources = cdm_entity_sources_sorted($cdm_entity);
 
     if (!isset($footnote_list_key) || !$footnote_list_key) {
         $footnote_list_key = RenderHints::getFootnoteListKey();
@@ -102,7 +105,10 @@ function cdm_entity_footnotes(
                     $original_source_footnote_tag
                 );
                 // Ensure uniqueness of the footnote keys.
-                if (array_search($fn_key, $footnote_keys) === false) {
+                if (isset_not_empty($footnote_keys) && array_search($fn_key, $footnote_keys) === false) {
+                    $footnote_keys[] = $fn_key;
+                }
+                if (!isset_not_empty($footnote_keys) ){
                     $footnote_keys[] = $fn_key;
                 }
             }
@@ -735,6 +741,115 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
     }
     return $annotationsAndSources;
 }
+function handle_new_only_sources($entity, $inline_text_prefix = null, $footnote_list_key_suggestion = null, AnnotationsAndSources $annotationsAndSources = null) {
+
+    if($annotationsAndSources == null){
+        $annotationsAndSources = new AnnotationsAndSources();
+    }
+
+    // some entity types only have single sources: TODO maybe we do not need this anymore and do all sorting on serverside
+
+    if (!isset($entity->sources) && !isset($entity->source)){
+        return $annotationsAndSources;
+    }
+    $sources = cdm_entity_new_sources_sorted($entity);
+    //if ($sources == null){
+    //    return $annotationsAndSources;
+    //}
+    $config = RenderHints::getAnnotationsAndSourceConfig();
+
+    if ($config['sources_as_content']) {
+        foreach ($sources as $source) {
+            if (_is_original_source_type($source)) {
+                $reference_citation = render_original_source(
+                    $source,
+                    $config['link_to_reference'],
+                    $config['link_to_name_used_in_source']
+                );
+
+                if ($reference_citation) {
+                    if (empty($inline_text_prefix)) {
+                        $annotationsAndSources->addSourceReferencesCitation($reference_citation);
+                    } else {
+                        $annotationsAndSources->addSourceReferencesCitation(' (' . $reference_citation . ')');
+                    }
+                }
+
+                // also put the name in source into the array, these are already included in the $reference_citation but are
+                // still required to be available separately in some contexts.
+                $name_in_source_render_array = compose_name_in_source(
+                    $source,
+                    $config['link_to_name_used_in_source']
+                );
+
+                if (!empty($name_in_source_render_array)) {
+                    $annotationsAndSources->putNamesUsedInSource($name_in_source_render_array['#_plaintext'], drupal_render($name_in_source_render_array));
+                }
+            }
+        } // END of loop over sources
+
+
+
+    } // END of references inline
+
+
+
+    //TODO
+    if ($config['add_footnote_keys']) {
+        $annotationsAndSources->addAllFootNoteKeys(cdm_entity_footnotes(
+            $entity,
+            $footnote_list_key_suggestion,
+            $config['link_to_reference'],
+            $config['link_to_name_used_in_source'],
+            (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE),
+            false
+        ));
+    }
+    return $annotationsAndSources;
+}
+function handle_new_only_annotations($entity, $inline_text_prefix = null, $footnote_list_key_suggestion = null, AnnotationsAndSources $annotationsAndSources = null) {
+
+    if($annotationsAndSources == null){
+        $annotationsAndSources = new AnnotationsAndSources();
+    }
+
+    // some entity types only have single sources: TODO maybe we do not need this anymore and do all sorting on serverside
+
+    if (!isset($entity->annotations)){
+        return $annotationsAndSources;
+    }
+
+    $config = RenderHints::getAnnotationsAndSourceConfig();
+
+    if ($config['sources_as_content']) {
+
+        // annotations footnotes separate from sources
+        $footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
+        $annotationsAndSources->addAllFootNoteKeys($footnote_keys);
+
+    } // END of references inline
+
+    // footnotes for sources and annotations or put into bibliography if requested ...
+    $do_foonotes_as_content = isset($config['annotations_as_content']) && $config['annotations_as_content'];
+    if($do_foonotes_as_content){
+        $annotationsAndSources->setAnnotations(cdm_entity_annotations_as_content($entity));
+    }
+    //TODO
+    if ($config['add_footnote_keys']) {
+        $annotationsAndSources->addAllFootNoteKeys(cdm_entity_footnotes(
+            $entity,
+            $footnote_list_key_suggestion,
+            $config['link_to_reference'],
+            $config['link_to_name_used_in_source'],
+            (!empty($config['bibliography_aware']) ? $config['bibliography_aware'] : FALSE),
+            !$do_foonotes_as_content,
+            false
+        ));
+    }
+    return $annotationsAndSources;
+}
+
+
 /**
  * Get the source or the sources from a cdm entity and return them ordered by see compare_original_sources()
  * (Some entity types only have single sources)

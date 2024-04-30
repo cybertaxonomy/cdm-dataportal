@@ -1255,7 +1255,7 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $year = n
                     $lastAuthorElementString = $element->text;
                 }
             }
-
+        $taggedName = $taggedNameNew;
             unset($taggedNameNew);
         }
         $name = '<span class="' . "TaxonName" . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
@@ -2227,7 +2227,7 @@ function name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type
     //cdm_load_tagged_full_title($other_name);
 
     $highlited_synonym_uuid = isset ($name_rel->nameUuid) ? $name_rel->nameUuid : '';
-    if($show_name_cache_only){
+   /* if($show_name_cache_only){
         $relationship_markup = l(
             '<span class="' . html_class_attribute_ref($other_name) . '"">' . cdm_tagged_text_to_markup($other_name) . '</span>',
             path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
@@ -2235,11 +2235,11 @@ function name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type
         );
         $annotations_and_sources = handle_annotations_and_sources($other_name);
         $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
-    } else {
+    } else {*/
         $relationship_markup = render_new_name_for_name_rels($other_name, $name_rel-> nameUuid, $name_rel->year, $name_type,
             url(path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
         );
-    }
+    //}
 
     return $relationship_markup;
 }
@@ -2708,14 +2708,24 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
             $show_name_cache_only = TRUE;
             foreach ($orthographic_variants as $name_rel) {
                 RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
-                $annotations_and_sources = handle_new_annotations_and_sources($name_rel);
+
                 //$is_inverse_relation = $current_name_uuid == $name_rel->nameUuid;
-                $rel_footnote_key_markup = render_footnote_key(handle_name_relationship_as_footnote($name_rel),'');
-                $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $show_name_cache_only);
+                $fnKeys = array();
+                $fnKeys[] = handle_name_relationship_as_footnote($name_rel);
+
+                $annotations_and_sources =  handle_new_only_sources($name_rel);
+
+                $fnKeys = array_merge($annotations_and_sources->getFootNoteKeys(), $fnKeys);
+                asort($fnKeys);
+                $rel_footnote_key_markup = render_footnote_keys($fnKeys, ',');
+               // $rel_footnote_key_markup .= render_footnote_key($fnKeys[1]);
+                $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $name_type, true);
                 $label = $name_rel->relType;
                 $symbol = $name_rel->relType;
                 $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
+                $annotations_and_sources = handle_new_only_annotations($name_rel);
                 $relationship_markup = $symbol_markup . $relationship_markup;
+
                 $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
             }
             if (isset($relationship_markup) && $relationship_markup) {
