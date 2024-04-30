@@ -700,7 +700,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
  *  The markup for a taxon name.
  */
 function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true, $name_link = NULL, $reference_link = NULL,
-                              $show_taxon_name_annotations = true, $showRegistrations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
+                              $show_taxon_name_annotations = true,  $show_taxon_annotations = true, $showRegistrations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
 {
 
     $is_doubtful = false;
@@ -1157,10 +1157,11 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
             null, null, $annotations_and_sources);
     }
     //handle annotations of taxonbase
-    $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto,
-        null, null, $annotations_and_sources);
-    $out .= $annotations_and_sources->footNoteKeysMarkup();
-
+    if ($show_taxon_annotations) {
+        $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto,
+            null, null, $annotations_and_sources);
+        $out .= $annotations_and_sources->footNoteKeysMarkup();
+    }
     return $out;
 }
 
