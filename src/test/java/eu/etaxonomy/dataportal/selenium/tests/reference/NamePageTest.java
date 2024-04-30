@@ -67,7 +67,8 @@ public class NamePageTest extends CdmDataPortalTestBase{
     public void testNotDesignatedTypeDesignation() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensenia_uuid);
-        List<WebElement> typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
+        WebElement typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
+        List<WebElement> typeDesignations = typeDesignationsContainer.findElements(By.xpath("./div"));
         //GenericPortalPage p = new GenericPortalPage(driver, getContext(), "taxon/" + name_nodosilinea_sensenia_uuid.toString() + "/synonymy");
         // expecting to land on name page, see NamePageRedirectTest for other cases
        // assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + name_nodosilinea_sensenia_uuid.toString()));
