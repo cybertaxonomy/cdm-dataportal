@@ -91,6 +91,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Lactuca glandulifera"), driver.getTitle());
         WebElement typeDesignationsContainer;
         List<TypeDesignationElement> typeDesignations;
+        int i = 0;
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations(1);
             String expectedString = "Syntype: \"Uganda\", Scott Elliot 7328; Syntype: [Cameroon] \"Bamenda\", Ledermann 1889; " +
@@ -104,7 +105,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(1);
             assertEquals("Expecting 7 Typedesignation", 7, typeDesignations.size());
             assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-            int i = 0;
+
             assertEquals("Syntype: [Kenya] \"Mt. Aberdare: Ostseite\", 12 Mar 1922, R. E. Fries 2172", typeDesignations.get(i++).getText());
             assertEquals("Syntype: [Kenya] \"Mt. Kenia: Nordostseite bei Meru\", 17 Feb 1922, R. E. Fries 1677", typeDesignations.get(i++).getText());
             assertEquals("Syntype: [Malawi] \"Kyimbila\", Stolz 306", typeDesignations.get(i++).getText());
