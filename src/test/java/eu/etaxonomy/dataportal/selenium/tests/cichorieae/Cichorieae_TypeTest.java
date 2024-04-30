@@ -178,7 +178,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             expectedString = "Lectotype: Seriola laevigata L. designated by Steudel 1841: 568";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
-            List<TypeDesignationElement> typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
+            typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
             assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
             assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
 
