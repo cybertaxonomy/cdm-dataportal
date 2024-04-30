@@ -44,7 +44,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
     static UUID hypochaeris_maculata_uuid = UUID.fromString("90943959-f2ef-4a3a-8744-c8bcd935c8c2");
 
     @Test
-    public void cichorium() throws MalformedURLException {
+    public void cichorium() throws Exception {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), cichorium_uuid);
         assertEquals(getContext().prepareTitle("Cichorium"), driver.getTitle());
         assertEquals("Cichorium L., Sp. Pl.: 813. 1753", p.getAcceptedNameText());
@@ -65,7 +65,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void scorzonera_tuzgoluensis() throws MalformedURLException {
+    public void scorzonera_tuzgoluensis() throws Exception {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), scorzonera_tuzgoluensis_Uuid);
         assertEquals(getContext().prepareTitle("Scorzonera tuzgoluensis"), driver.getTitle());
         WebElement typeDesignationsContainer;
@@ -86,7 +86,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void lactuca_glandulifera() throws MalformedURLException {
+    public void lactuca_glandulifera() throws Exception {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), lactuca_glandulifera_Uuid);
         assertEquals(getContext().prepareTitle("Lactuca glandulifera"), driver.getTitle());
         WebElement typeDesignationsContainer;
@@ -133,7 +133,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void hypochaeris_maculata() throws MalformedURLException {
+    public void hypochaeris_maculata() throws Exception {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), hypochaeris_maculata_uuid);
         assertEquals(getContext().prepareTitle("Hypochaeris maculata"), driver.getTitle());
         assertEquals("Hypochaeris maculata L., Sp. Pl.: 810. 1753", p.getAcceptedNameText());
@@ -153,7 +153,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void hypochaeris() throws MalformedURLException {
+    public void hypochaeris() throws Exception {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), hypochaeris_uuid);
         assertEquals(getContext().prepareTitle("Hypochaeris"), driver.getTitle());
         assertEquals("Hypochaeris L., Sp. Pl.: 810. 17531", p.getAcceptedNameText());
