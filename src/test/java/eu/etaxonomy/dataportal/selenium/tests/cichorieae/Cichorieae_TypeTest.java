@@ -92,9 +92,10 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         WebElement typeDesignationsContainer;
         List<TypeDesignationElement> typeDesignations;
         int i = 0;
+        String expectedString = "";
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations(1);
-            String expectedString = "Syntype: \"Uganda\", Scott Elliot 7328; Syntype: [Cameroon] \"Bamenda\", Ledermann 1889; " +
+            expectedString = "Syntype: \"Uganda\", Scott Elliot 7328; Syntype: [Cameroon] \"Bamenda\", Ledermann 1889; " +
                             "Syntype: [Kenya] \"Mt. Aberdare: Ostseite\", 12 Mar 1922, R. E. Fries 2172; " +
                             "Syntype: [Kenya] \"Mt. Kenia: Nordostseite bei Meru\", 17 Feb 1922, R. E. Fries 1677; " +
                             "Syntype: [Malawi] \"Kyimbila\", Stolz 306; " +
