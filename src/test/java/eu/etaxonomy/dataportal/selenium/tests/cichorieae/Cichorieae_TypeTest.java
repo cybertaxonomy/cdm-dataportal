@@ -181,7 +181,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
             assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
 
-            expectedString = "Lectotype (designated by Steudel 1841: 5686): Seriola laevigata L."
+            expectedString = "Lectotype (designated by Steudel 1841: 5686): Seriola laevigata L.";
             assertEquals(expectedString, typeDesignations.get(0).getText());
         }
 
