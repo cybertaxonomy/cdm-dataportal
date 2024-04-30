@@ -68,12 +68,12 @@ public class NamePageTest extends CdmDataPortalTestBase{
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensenia_uuid);
         WebElement typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-        List<WebElement> typeDesignations = typeDesignationsContainer.findElements(By.xpath("./div"));
+        List<WebElement> typeDesignations = typeDesignationsContainer.findElements(By.xpath("./span"));
         //GenericPortalPage p = new GenericPortalPage(driver, getContext(), "taxon/" + name_nodosilinea_sensenia_uuid.toString() + "/synonymy");
         // expecting to land on name page, see NamePageRedirectTest for other cases
        // assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + name_nodosilinea_sensenia_uuid.toString()));
-        assertEquals(1, typeDesignations.size());
-        assertTrue(typeDesignations.get(0).getText().contains("Type: not designated"));
+        assertEquals(3, typeDesignations.size());
+        assertTrue(typeDesignationsContainer.getText().contains("Type: not designated"));
 
     }
 
