@@ -15,6 +15,8 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.dataportal.DataPortalSite;
