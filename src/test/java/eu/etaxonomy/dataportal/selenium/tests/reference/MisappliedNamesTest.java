@@ -104,7 +104,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         // no sensu but with Combination Authors:
         assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
         //
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S1: 22; sensu A&S1: 33; sensu Lem2; sensu Species solaris; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(4).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S1; sensu A&S1: 22; sensu A&S1: 33; sensu Species solaris; sensu Lem2; auct.; auct. sensu A&S1; auctrs. afr.", p.getMisappliedName(4).getText());
 
 
         // TODO the order of the MANs is not always defined please see #7766
