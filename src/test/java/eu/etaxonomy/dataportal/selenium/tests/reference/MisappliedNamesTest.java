@@ -46,10 +46,12 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
     static final UUID trichocentrum_undulatum_Uuid = UUID.fromString("7e86b2a4-ba71-4494-b544-ae5656e02ed2");
 
     static final UUID nepenthes_abalata_Uuid = UUID.fromString("9b588d8a-c4fa-430a-b9c7-026bf715ecf6");
+    private static final Logger logger = LogManager.getLogger();
 
     @Before
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
+
     }
 
     /**
