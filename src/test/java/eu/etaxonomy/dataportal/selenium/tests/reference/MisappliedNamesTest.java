@@ -97,10 +97,10 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         //logger.debug("misapplied name 1 text " + p.getMisappliedName(1).findElements(By.xpath("./span[contains(@class,'name')]")).getText());
         logger.debug("misapplied name 2 text " + p.getMisappliedName(2).getText());
         logger.debug("misapplied name 3 text " + p.getMisappliedName(3).getText());
-        assertEquals("p.p. MAN for", p.getMisappliedName(1).findElement(By.className("symbol").getText());
-        assertEquals("Ossaea glomerata", p.getMisappliedName(1).findElement(By.className("name").getText());
-        assertEquals("partial MAN for", p.getMisappliedName(2).findElement(By.className("symbol").getText());
-        assertEquals("Ossaea glomerata", p.getMisappliedName(2).findElement(By.className("name").getText());
+        assertEquals("p.p. MAN for", p.getMisappliedName(1).findElement(By.className("symbol")).getText());
+        assertEquals("Ossaea glomerata", p.getMisappliedName(1).findElement(By.className("name")).getText());
+        assertEquals("partial MAN for", p.getMisappliedName(2).findElement(By.className("symbol")).getText());
+        assertEquals("Ossaea glomerata", p.getMisappliedName(2).findElement(By.className("name")).getText());
         // no sensu but with Combination Authors:
         assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
         //
