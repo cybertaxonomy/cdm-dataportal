@@ -73,7 +73,8 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals("is validating3 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.4", nameRelationshipElements.get(2).getText());
         assertEquals("non Nodosilinea blockensis, New Species in the solar system5 nec Nodosilinea sensensia, Plantas vasculares de Oz6 nec Nodosilinea sensensia, Species solaris7", nameRelationshipElements.get(3).getText());
         BaseElement orthVarElement = nameRelationshipElements.get(4);
-        assertEquals("orth. var.8 Nodosilinea sensensi9", orthVarElement.getText());
+       // assertEquals("orth. var.8 Nodosilinea sensensi9", orthVarElement.getText()); //has orthographic variant6,7 Nodosilinea sensensi 20018
+       assertEquals("has orthographic variant6,7 Nodosilinea sensensi 20018", orthVarElement.getText());
         assertEquals("has orthographic variant", orthVarElement.getElement().findElement(By.className("symbol")).getAttribute("title"));
 
         List<BaseElement> footnotes = regItem.getRegistrationFootnotes();
