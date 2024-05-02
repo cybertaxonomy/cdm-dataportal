@@ -93,10 +93,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         for (WebElement element: elements){
             logger.debug("misapplied name 1 name text " + element.getText());
         }
-        //logger.debug("misapplied name 1 text " + p.getMisappliedName(1).findElements(By.className("symbol")));
-        //logger.debug("misapplied name 1 text " + p.getMisappliedName(1).findElements(By.xpath("./span[contains(@class,'name')]")).getText());
-        logger.debug("misapplied name 2 text " + p.getMisappliedName(2).getText());
-        logger.debug("misapplied name 3 text " + p.getMisappliedName(3).getText());
+
         assertEquals("p.p. MAN for", p.getMisappliedName(1).findElement(By.className("symbol")).getText());
         assertEquals("Ossaea glomerata", p.getMisappliedName(1).findElement(By.className("name")).getText());
         assertEquals("partial MAN for", p.getMisappliedName(2).findElement(By.className("symbol")).getText());

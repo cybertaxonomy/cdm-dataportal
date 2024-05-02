@@ -119,7 +119,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 + "nec Nodosilinea sensensia4 nec Nodosilinea blockensis5 has orthographic variant6,7 Nodosilinea sensensi 20018]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
-        assertEquals(7, footnotes.size());
+        assertEquals(8, footnotes.size()); //source of relationship is shown as footnote as well
         assertEquals(
                 "1. Art. 99.9; Turland, N.J., Wiersema, J.H., Barrie, F.R., Greuter, W., Hawksworth, D.L., Herendeen, P.S., Knapp, S., Kusber, W.-H., Li, D.-Z., Marhold, K., May, T.W., McNeill, J., Monro, A.M., Prado, J., Price, M.J. & Smith, G.F. (eds.) 2018: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code), adopted by the Nineteenth International Botanical Congress, Shenzhen, China, July 2017. Regnum Vegetabile 159. – Glashütten: Koeltz Botanical Books",
                 footnotes .get(0).getText());
@@ -139,8 +139,12 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "6. Art. 88.9",
                 footnotes.get(5).getText());
         assertEquals(
-                "7. Editorial annotation on Nodosilinea sensensi",
+                "7. Turland, N.J., Wiersema, J.H., Barrie, F.R. & al.: International Code of Nomenclature for algae, fungi, and plants (Shenzhen Code) adopted by the Nineteenth International Botanical Congress Shenzhen, China, July 2017. p 33",
                 footnotes.get(6).getText());
+        assertEquals(
+                "8. Editorial annotation on Nodosilinea sensensi",
+                 footnotes.get(7).getText());
+
 
     }
 
