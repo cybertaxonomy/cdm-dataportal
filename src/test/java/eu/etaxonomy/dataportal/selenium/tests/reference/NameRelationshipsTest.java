@@ -74,7 +74,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals("non Nodosilinea blockensis, New Species in the solar system5 nec Nodosilinea sensensia, Plantas vasculares de Oz6 nec Nodosilinea sensensia, Species solaris7", nameRelationshipElements.get(3).getText());
         BaseElement orthVarElement = nameRelationshipElements.get(4);
        // assertEquals("orth. var.8 Nodosilinea sensensi9", orthVarElement.getText()); //has orthographic variant6,7 Nodosilinea sensensi 20018
-       assertEquals("has orthographic variant6,7 Nodosilinea sensensi 20018", orthVarElement.getText());
+       assertEquals("orth. var.8 Nodosilinea sensensi9", orthVarElement.getText());
         assertEquals("has orthographic variant", orthVarElement.getElement().findElement(By.className("symbol")).getAttribute("title"));
 
         List<BaseElement> footnotes = regItem.getRegistrationFootnotes();
@@ -116,7 +116,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
         WebElement accName = p.getAcceptedName();
         assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2 [non Nodosilinea sensensia3 "
-                + "nec Nodosilinea sensensia4 nec Nodosilinea blockensis5 orth. var.6 Nodosilinea sensensi7]", accName.getText());
+                + "nec Nodosilinea sensensia4 nec Nodosilinea blockensis5 has orthographic variant6,7 Nodosilinea sensensi 20018]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
         assertEquals(7, footnotes.size());
