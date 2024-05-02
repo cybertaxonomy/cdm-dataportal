@@ -79,8 +79,8 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
     public void tesIssue5647() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
-        logger.debug("misapplied name 1 text " + p.getMisappliedName(1).findElement(By.xpath("./span[contains(@class,'symbol')]").getText());
-        logger.debug("misapplied name 1 text " + p.getMisappliedName(1).findElement(By.xpath("./span[contains(@class,'name')]").getText());
+        logger.debug("misapplied name 1 text " + p.getMisappliedName(1).findElement(By.xpath("./span[contains(@class,'symbol')]")).getText());
+        logger.debug("misapplied name 1 text " + p.getMisappliedName(1).findElement(By.xpath("./span[contains(@class,'name')]")).getText());
         logger.debug("misapplied name 2 text " + p.getMisappliedName(2).getText());
         logger.debug("misapplied name 3 text " + p.getMisappliedName(3).getText());
         assertEquals("p.p. MAN for", p.getMisappliedName(1).getText());
