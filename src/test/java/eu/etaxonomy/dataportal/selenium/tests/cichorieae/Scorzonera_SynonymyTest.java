@@ -21,6 +21,7 @@ import eu.etaxonomy.dataportal.elements.TypeDesignationType;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
+import eu.etaxonomy.dataportal.DrupalVars;
 
 /**
  * @author a.kohlbecker
