@@ -32,7 +32,7 @@ public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
     static UUID scorzonera_Uuid = UUID.fromString("c1e8a3f2-2b65-4aad-ad25-1cf9df92e290");
 
     @Test
-    public void scorzonera_typeDesignations() throws MalformedURLException {
+    public void scorzonera_typeDesignations() throws Exception {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), scorzonera_Uuid);
         assertEquals(getContext().prepareTitle("Scorzonera"), p.getTitle());
         assertEquals("Scorzonera L., Sp. Pl.: 790. 1753", p.getAcceptedNameText());
