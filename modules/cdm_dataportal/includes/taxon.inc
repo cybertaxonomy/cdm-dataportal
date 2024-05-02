@@ -730,16 +730,18 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
     $skip_render_template_keys = array();
 
     $is_invalid = false;
-
+    $is_synonym = false;
 
     switch ($reltype_uuid) {
         case UUID_HETEROTYPIC_SYNONYM_OF:
         case UUID_SYNONYM_OF:
             $relsign = $relsign_hetero;
+            $is_synonym = true;
             break;
 
         case UUID_HOMOTYPIC_SYNONYM_OF:
             $relsign = $relsign_homo;
+            $is_synonym = true;
             break;
 
         case UUID_MISAPPLIED_NAME_FOR:
@@ -777,7 +779,7 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
         $referenceUri = FALSE;
     }
 
-    $out_taxon_part = render_new_taxon_or_name($taxon_dto, true, $taxonUri, $referenceUri, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
+    $out_taxon_part = render_new_taxon_or_name($taxon_dto, true, $taxonUri, $referenceUri, TRUE, $is_synonym, $skip_render_template_keys, $is_invalid);
     $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
     //TODO the name uuid is not available!!!
     $name_relations_render_array = compose_new_name_relationships_inline($name_relations, $taxon_dto->uuid, $taxon_dto->nameType);
