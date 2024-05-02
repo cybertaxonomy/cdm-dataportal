@@ -36,7 +36,13 @@ public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Scorzonera"), p.getTitle());
         assertEquals("Scorzonera L., Sp. Pl.: 790. 1753", p.getAcceptedNameText());
         WebElement typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
-        assertEquals("Lectotype: Scorzonera humilis L. designated by Green 1929: 177", typeDesignations.getText());
+        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
+            assertEquals("        Lectotype (designated by Green 1929: 1771): Scorzonera humilis L.", typeDesignations.getText());
+        }else{
+            assertEquals("Lectotype: Scorzonera humilis L. designated by Green 1929: 177", typeDesignations.getText());
+        }
+
+
 
         // check type designation for accepted taxon
         //List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
