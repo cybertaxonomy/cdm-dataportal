@@ -140,7 +140,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         WebElement typeDesignationsContainer;
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-            String expectedString = "\"Habitat in Europae frigidioris pratis asperis.\"; Lectotype: [s. loc.], Herb. Linnaeus, no. 959.1 designated by Iamonico 2012: ??";
+            String expectedString = "\"Habitat in Europae frigidioris pratis asperis.\"; Lectotype: [s. loc.], Herb. Linnaeus, no. 959.1 designated by Iamonico 2012: ??1";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
             List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
@@ -162,7 +162,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         String expectedString = "";
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-            expectedString = "Lectotype: Hypochaeris radicata L. designated by Green 1929: 178";
+            expectedString = "Lectotype: Hypochaeris radicata L. designated by Green 1929: 1783";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
@@ -176,7 +176,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
 
          if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations(2);
-            expectedString = "Lectotype: Seriola laevigata L. designated by Steudel 1841: 568";
+            expectedString = "Lectotype: Seriola laevigata L. designated by Steudel 1841: 5686";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);
