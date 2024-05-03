@@ -3317,3 +3317,53 @@ function cdm_new_homotypicSynonymyGroup($variables) {
     RenderHints::popFromRenderStack();
     return $out;
 }
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function cdm_new_heterotypicSynonymyGroup($variables) {
+    $synonymGroup= $variables['homotypicalGroup'];
+    $synonymList = $synonymGroup -> synonyms;
+    //$homotypical_group = $variables['homotypicalGroup'];
+    RenderHints::pushToRenderStack('heterotypicSynonymyGroup');
+
+    $out = '';
+
+    $out = '<div class="heterotypic-synonymy-group"><ul class="heterotypicSynonymyGroup">';
+
+    $footnoteListKey = (isset($synonymGroup->synonyms->items[0]) ? $synonymGroup->synonyms->items[0]->uuid : 'NULL');
+    RenderHints::setFootnoteListKey($footnoteListKey);
+
+    // $type_designations= new_type_designations_for_synonymy_group($synonymGroup);
+    $type_designations = $synonymGroup->taggedTypes;
+    $is_first_entry = TRUE;
+    foreach ($synonymList->items as $synonym) {
+        if ($is_first_entry) {
+            $is_first_entry = FALSE;
+            // Is first list entry.
+            $out .= '<li class="firstentry synonym">' . cdm_new_related_taxon($synonym, UUID_HETEROTYPIC_SYNONYM_OF) . '</li>';
+        }
+        else {
+            $out .= '<li class="synonym">' . cdm_new_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+        }
+    }
+
+    if (isset($type_designations) && count($type_designations) > 0) {
+        $out .= '<ul class="typeDesignations">';
+        $out .=  cdm_tagged_text_with_ref_footnote_to_markup($type_designations);
+        //$out .=  cdm_tagged_text_to_markup($type_designations);
+        $out .= '</ul>';
+    }
+    $out .= '</ul>';
+
+    // ------- footnotes ------- //
+    $out .= '<ul class="footnotes">';
+    $out .= render_footnotes(RenderHints::getFootnoteListKey(), 'li');
+    $out .= '</ul>';
+
+    $out .= '</div>';
+
+    RenderHints::popFromRenderStack();
+
+    return $out;
+}
