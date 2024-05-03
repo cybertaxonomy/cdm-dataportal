@@ -233,6 +233,96 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
   return $out;
 }
 
+function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags = array(), $tag = 'span', $annotations_and_sources = null) {
+
+    $out = '';
+    $was_separator = false;
+    $last_type = null;
+    $last_suffix = '';
+    $last_text = '';
+    $i = 0;
+    foreach ($taggedtxt as $tt) {
+        if (!in_array($tt->type, $skiptags) && $tt->text && !(is_tagged_text_sepatator_type($tt->type) && count($taggedtxt) > $i+1 && in_array($taggedtxt[$i+1]->type, $skiptags)) ) {
+
+            $is_first = $i == 0;
+            $is_separator = is_tagged_text_sepatator_type($tt->type);
+            if(str_beginsWith($tt->type, 'PLACEHOLDER_')){
+                $out .= '</' . $tag . '>' . $last_suffix;
+                $out .=  '{'. $tt->type . '}';
+            } else {
+
+                // attributes
+                $attributes = array();
+                if(isset($tt->attributes)){
+                    $attributes = $tt->attributes;
+                }
+                if(!isset($attributes['class'])){
+                    $attributes['class'] = array();
+                }
+                $attributes['class'][] = $tt->type;
+                if(isset($tt->entityReference)){
+                    $attributes['class'][] = html_class_attribute_ref($tt->entityReference);
+                }
+
+                // prefix and suffix
+                $prefix = '';
+                $suffix = '';
+                if(isset($tt->prefix)){
+                    $prefix = $tt->prefix;
+                }
+                if(isset($tt->suffix)){
+                    $suffix = $tt->suffix;
+                }
+
+                if(($last_suffix || $last_type && $last_type != $tt->type) && $tag) {
+                    $out .= '</' . $tag . '>' . $last_suffix;
+                }
+                if(($prefix || !$last_type || $last_type != $tt->type) && $tag){
+                    $out .= $prefix . '<' . $tag . drupal_attributes($attributes) . '>';
+                }
+                if(!$is_separator && !$was_separator && !$is_first){
+                    $out .= " ";
+                }else if ($is_separator){
+                    $out = rtrim($out);
+                }
+                if(isset($options['html']) &&  $options['html']){
+                    $out .= $tt->text;
+                } else {
+                    if (is_array($tt->text ))
+                    {
+                        $temp = $tt->text[0];
+                        $tt->text = "[\"".$temp."\"]";
+                    }
+                    $out .= t('@text', array('@text' => $tt->text));
+                }
+                $footnote_markup = '';
+                $annotations_and_sources = new AnnotationsAndSources();
+                if ($tt->type == 'reference' && isset_not_empty($tt->entityReference)){
+                    $footnote_markup .= '<span class="reference">' . $tt->entityReference->label . '</span>';
+                }
+                if ($footnote_markup) {
+                    $foot_note_key_type_des = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
+                    if(isset($foot_note_key_type_des)){
+                        $annotations_and_sources->addFootNoteKey($foot_note_key_type_des);
+                        $out .= $annotations_and_sources->footNoteKeysMarkup();
+                    }
+                }
+                $was_separator = $is_separator;
+                $last_type = $tt->type;
+                $last_suffix = $suffix;
+                $last_text = $tt->text;
+            }
+        }else if ($was_separator){
+            //$out = str_replace( $last_text, '', $out);
+        }
+        $i++;
+    }
+    if($tag) {
+        $out .= '</' . $tag . '>';
+    }
+    return $out;
+}
+
 /**
  * Converts an array of TaggedText items into corresponding plain text string
  *

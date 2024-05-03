@@ -2252,6 +2252,8 @@ function name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type
 
 
 
+
+
 /**
  * Determined the other name which is contained in the NameRelationship entity.
  *
@@ -3223,4 +3225,95 @@ function type_designation_dto_status_label_markup($type_designation)
   return '<span class="type-status">'
     . ((isset($type_designation->typeStatus_L10n)) ? ucfirst($type_designation->typeStatus_L10n) : t('Type')) . '</span>'
     ;
+}
+/**
+ * TODO: This needs to be adapted to the new DTO implementation
+ * Renders the homotypic synonymy group for the accepted taxon in the synonymy.
+ *
+ * Foonotes of the accepted taxon will also be rendered here in the
+ * homotypic synonymy group even if the synonymList or prependedSynonyms are
+ * empty. Therefore  the homotypic group and accepted taxon share the  same
+ * footnote key.
+ *
+ * @param $variables
+ *   an associative array:
+ *   - synonymList: the list of cdm Synonym entities
+ *   - accepted_taxon_uuid: the uuid of the accepted taxon
+ *   - prependedSynonyms: further synonyms which should be prepended
+ *      before the actual list of synonyms
+ *
+ * @return string the markup
+ * @throws \Exception
+ */
+function cdm_new_homotypicSynonymyGroup($variables) {
+    $synonymGroup= $variables['synonyms'];
+    $synonymList = $synonymGroup -> synonyms -> items;
+    $accepted_taxon_name_uuid = $variables['accepted_taxon_name_uuid'];
+    //$prependedSynonyms = $variables['prependedSynonyms'];
+
+    RenderHints::pushToRenderStack('homotypicSynonymyGroup');
+
+    $type_designations_in_group = NULL;
+
+    $out = '<div class="homotypic-synonymy-group">';
+
+    //$type_designations = type_designations_for_synonymy_group($synonymList, $accepted_taxon_name_uuid);
+    $type_designations = $synonymGroup -> taggedTypes;
+    $homotypic_synonym_group_end = '';
+    if ((isset($type_designations) && count($type_designations) > 0)|| is_array($synonymList)) {
+        $out .= '<ul class="homotypicSynonyms">';
+        $homotypic_synonym_group_end = '</ul>';
+        //if (!empty($prependedSynonyms)) {
+        //  foreach ($prependedSynonyms as $taxon) {
+        //    $out .= '<li class="synonym">' . cdm_related_taxon($taxon, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+        //  }
+        //}
+
+        if (isset($synonymList[0])) {
+            foreach ($synonymList as $synonym) {
+                $out .= '<li class="synonym">' . cdm_new_related_taxon($synonym, UUID_HOMOTYPIC_SYNONYM_OF) . '</li>';
+            }
+        }
+        $footnote_markup = '';
+        if (isset($type_designations) && count($type_designations) > 0) {
+            $out .= '<ul class="typeDesignations">';
+            $annotations_and_sources = new AnnotationsAndSources();
+            $out .=  cdm_tagged_text_with_ref_footnote_to_markup($type_designations, array(), 'span', $annotations_and_sources);
+
+            /*$ref_tagged_text = tagged_text_extract($type_designations, 'reference');
+            if ($ref_tagged_text){
+                $footnote_markup .= '<span class="reference">' . $ref_tagged_text[0]->entityReference->label . '</span>';
+            }*/
+            //if (isset($secref_tagged_text[1]->entityReference) ){//&& isset($taxon_base->secSource->citationMicroReference)) {
+            //    $footnote_markup .= (isset_not_empty($taxon_base->secSource->citationMicroReference) ? ': <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>' : '');
+            //}
+            /*if ($footnote_markup) {
+                $foot_note_key_type_des = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
+                if(isset($foot_note_key_type_des)){
+                    // the nomenclatural status footnote key refers to the source citation
+                    $annotations_and_sources->addFootNoteKey($foot_note_key_type_des);
+                    $out .= $annotations_and_sources->footNoteKeysMarkup();
+                }
+            }*/
+            $out .= '</ul>';
+        }
+
+    }
+
+    //$out .= '</ul>';
+    $out .= $homotypic_synonym_group_end;
+
+    // ------- footnotes ------- //
+
+    // all foonotes of the homotypic group and also of the accepted taxon are
+    // rendered here, both should have the same footnote key
+    $out .= '<ul class="footnotes">';
+    $out .= render_footnotes(RenderHints::getFootnoteListKey(), 'li');
+    $out .= '</ul>';
+
+    $out .= '</div>';
+
+
+    RenderHints::popFromRenderStack();
+    return $out;
 }

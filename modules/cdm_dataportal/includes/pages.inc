@@ -1390,14 +1390,18 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
     $out .= $accepted_name;
   }
 
-  // Render the homotypicSynonymyGroup including the type information.
+  /* Render the homotypicSynonymyGroup including the type information.
   $out .= theme(
     'cdm_new_homotypicSynonymyGroup',
     array(
       'synonyms' => $homotypic_synomyms,
       'accepted_taxon_name_uuid' => $taxon_dto->uuid
     )
-  );
+  );*/
+    $out .= cdm_new_homotypicSynonymyGroup(array(
+        'synonyms' => $homotypic_synomyms,
+        'accepted_taxon_name_uuid' => $taxon_dto->uuid
+    ));
 
 
   // Render accepted taxon heterotypic synonymy groups.
