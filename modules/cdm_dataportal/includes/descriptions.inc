@@ -95,12 +95,14 @@ function cdm_distribution_filter_query() {
     $temp_hidden = '';
     foreach ($cdm_distribution_filter['hiddenAreaMarkerType'] as $marker_type => $enabled) {
       if ($enabled) {
-        $query['fallbackAreaMarkerType'] .= ($query['fallbackAreaMarkerType'] ? ',' : '') . $marker_type;
+          if (array_key_exists('fallbackAreaMarkerType', $query)){
+            $query['fallbackAreaMarkerType'] .= ($query['fallbackAreaMarkerType'] ? ',' : '') . $marker_type;
+          }
       }
     }
-    if ($temp_hidden){
-        $query['fallbackAreaMarkerType'] = $temp_hidden;
-    }
+    //if ($temp_hidden){
+    //    $query['fallbackAreaMarkerType'] = $temp_hidden;
+    //}
   }
 
   return $query;
