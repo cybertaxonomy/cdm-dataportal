@@ -948,13 +948,13 @@ function compose_new_feature_block_items_nested($feature_node, &$media_list, $fe
                 $child_node_element = null;
                 switch ($element->typedLabel[0]->cdmClass) {
                     case 'TextData':
-                        $child_node_element = compose_new_description_element_text_data($element, $element->uuid, $feature_block_settings, false);
+                        $child_node_element = compose_new_description_element_text_data($element, $feature_node->uuid, $feature_block_settings, false);
                         break;
                     case 'CategoricalData':
                         $child_node_element = compose_description_element_categorical_data($element, $feature_block_settings, false);
                         break;
                     case 'QuantitativeData':
-                        $child_node_element = compose_new_description_element_text_data($element, $feature_block_settings, false);
+                        $child_node_element = compose_new_description_element_text_data($element, $feature_node->uuid, $feature_block_settings, false);
 
                 }
                 if (is_array($child_node_element)) {
