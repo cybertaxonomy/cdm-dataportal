@@ -717,13 +717,12 @@ function handle_new_annotations_and_sources($entity, $inline_text_prefix = null,
             }
         } // END of loop over sources
 
-
-
+     //annotations footnotes separate from sources
+        $footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
+        $annotationsAndSources->addAllFootNoteKeys($footnote_keys);
 
     } // END of references inline
-    // annotations footnotes separate from sources
-    //$footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
-    //$annotationsAndSources->addAllFootNoteKeys($footnote_keys);
+
     // footnotes for sources and annotations or put into bibliography if requested ...
     $do_foonotes_as_content = isset($config['annotations_as_content']) && $config['annotations_as_content'];
     if($do_foonotes_as_content){
