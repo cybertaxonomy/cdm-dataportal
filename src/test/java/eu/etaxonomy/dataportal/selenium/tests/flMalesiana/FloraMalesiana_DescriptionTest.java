@@ -63,7 +63,7 @@ public class FloraMalesiana_DescriptionTest extends CdmDataPortalTestBase{
         assertNotNull(descriptionBlock);
         List<WebElement> featureBlockElements = descriptionBlock.getFeatureBlockElements();
 //annotations of nested factual data were not shown, now they are handled like the annotations of all other factual data
-        assertEquals(" Tree, up to 35(-53) m, dbh up to at least 6 cm, often with buttresses up to 3 m high, 4 m wide, and 3 cm thick.1", featureBlockElements.get(0).getText());
+        assertEquals("Tree, up to 35(-53) m, dbh up to at least 6 cm, often with buttresses up to 3 m high, 4 m wide, and 3 cm thick.1", featureBlockElements.get(0).getText());
         assertEquals("Branchlets 4-10 mm thick, fulvous -tomentose, glabrescent and then shiny purple-brown, older parts more or less pustular lenti-cellate.2", featureBlockElements.get(1).getText());
         assertEquals("Leaves up to 2 m long;3", featureBlockElements.get(2).getText());
         assertEquals("Sepals cream to greenish, persistent and black in fruit,4", featureBlockElements.get(3).getText());
