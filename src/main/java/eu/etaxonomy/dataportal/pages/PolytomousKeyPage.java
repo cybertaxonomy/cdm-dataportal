@@ -165,6 +165,40 @@ public class PolytomousKeyPage extends PortalPage {
 		return nextPage;
 	}
 
+	public PortalPage followPolytomousKeyLine(int lineIndex, KeyLineData data, String idString) throws Exception {
+
+    		keyTableRows = keyTable.findElements(By.xpath("tbody/tr"));
+    		WebElement keyEntry = keyTableRows.get(lineIndex);
+    		Assert.assertEquals("node number", data.nodeNumber, keyEntry.findElement(By.className("nodeNumber")).getText());
+    		Assert.assertEquals("edge text", composeFullEdgeText(data), keyEntry.findElement(By.className("edge")).getText());
+    		WebElement linkContainer = keyEntry.findElement(By.className(data.linkClass.name()));
+    		WebElement link = linkContainer.findElement(By.tagName("a"));
+    		Assert.assertEquals("link text", data.linkText, link.getText());
+    		String linkUrl = link.getAttribute("href");
+
+    		logger.info("clicking on " +  data.linkClass.name() + " : " + linkUrl);
+
+    		// click and wait
+    		link.click();
+
+    		wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id(idString))));
+
+    		PortalPage nextPage = null;
+    		if(data.linkClass.equals(LinkClass.nodeLinkToTaxon)){
+    			nextPage = new TaxonProfilePage(driver, context);
+    		} else {
+    			// must be PolytomousKeyPage then
+    			if( !isOnPage()){
+    				nextPage = new PolytomousKeyPage(driver, context);
+    			} else {
+    				nextPage = this;
+    			}
+    		}
+
+    		return nextPage;
+    	}
+
+
     private String composeFullEdgeText(KeyLineData data) {
         return data.edgeText + "\n" + data.getLinkTextWithSuffix();
     }

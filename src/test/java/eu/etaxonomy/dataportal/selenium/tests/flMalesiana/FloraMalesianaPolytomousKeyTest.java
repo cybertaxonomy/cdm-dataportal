@@ -84,7 +84,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
       // if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
       //              targetPage = p.followPolytomousKeyLine(1, keyLineData, true);
       //          }else{
-                    targetPage = p.followPolytomousKeyLine(1, keyLineData, false);
+                    targetPage = p.followPolytomousKeyLine(1, keyLineData, "contento");
        //         }
        // targetPage = p.followPolytomousKeyLine(1, keyLineData);
         Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkTextWithSuffix()), targetPage.getTitle());
