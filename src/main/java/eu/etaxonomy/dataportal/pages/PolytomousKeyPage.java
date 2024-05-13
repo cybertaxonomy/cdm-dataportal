@@ -144,7 +144,8 @@ public class PolytomousKeyPage extends PortalPage {
 		link.click();
 		if (isDtoPage){
 		    logger.info("portal page is dto");
-		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("content"))));
+		    logger.info(linkUrl);
+		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("identificationKey"))));
 		}else{
 		    logger.info("portal page is not dto");
 		    wait.until(new AllTrue(new UrlLoaded(linkUrl), new VisibilityOfElementLocated(By.id("container"))));
