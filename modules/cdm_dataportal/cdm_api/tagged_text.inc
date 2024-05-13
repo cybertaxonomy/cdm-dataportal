@@ -351,7 +351,7 @@ function cdm_tagged_text_to_string(array $taggedtxt, $skiptags = array()) {
  * @return bool
  */
 function is_tagged_text_sepatator_type($tagged_text_type){
-  static $separator_names = array('separator', 'postSeparator', 'secNameInSourceSeparator');
+  static $separator_names = array('separator', 'postSeparator', 'secNameInSourceSeparator', 'nameInSourceSeparator');
   $result = array_search($tagged_text_type, $separator_names) !== false;
   return $result;
 }

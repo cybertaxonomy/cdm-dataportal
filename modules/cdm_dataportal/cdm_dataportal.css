@@ -59,7 +59,10 @@ dd.sublist-container div dl , dd.sublist-container div h3 {
 .authors,
 .appended-phrase,
 .doubtful,
-.separator{
+.separator,
+.nameInSourceSeparator,
+.secNameInSourceSeparator,
+.postSeparator{
   font-style: normal;
 }
 
