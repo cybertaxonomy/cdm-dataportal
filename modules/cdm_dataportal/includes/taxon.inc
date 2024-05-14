@@ -971,11 +971,12 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
          * WildcardQueries, since these are  constant score by default
          * since Lucene 2.9
          */
-        if(isset($freetext_search_results[$itemCnt]) && $freetext_search_results[$itemCnt]->score && $freetext_search_results[$itemCnt]->maxScore){
+        //currently only complete matches are returned, so we can remove this.
+        /*if(isset($freetext_search_results[$itemCnt]) && $freetext_search_results[$itemCnt]->score && $freetext_search_results[$itemCnt]->maxScore){
             $percentage =  ( $freetext_search_results[$itemCnt]->score / $freetext_search_results[$itemCnt]->maxScore ) * 100;
             $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
             $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
-        }
+        }*/
 
         // Render highlighted fragments, these are made available by free text
         // searches.

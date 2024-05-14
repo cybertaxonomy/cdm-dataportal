@@ -157,7 +157,11 @@ function theme_cdm_search_taxa_results($variables)
   // List results.
   if (isset($pager->records) && count($pager->records) > 0) {
     $out .= '<div id="search_results">';
-    $list_of_taxa = compose_list_of_taxon_search_result($pager->records, $freetextSearchResults, $classification === NULL);
+    if (isset_not_empty($freetextSearchResults)){
+        $list_of_taxa = compose_list_of_taxa($pager->records, $freetextSearchResults, $classification === NULL);
+    }else{
+        $list_of_taxa = compose_list_of_taxon_search_result($pager->records, $freetextSearchResults, $classification === NULL);
+    }
     $out .= drupal_render($list_of_taxa);
     $out .= '</div>';
     $out .= theme('cdm_pager', array(
