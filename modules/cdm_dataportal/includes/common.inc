@@ -84,6 +84,9 @@ function html_class_attribute_ref($cdm_entity) {
       }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->facts )){
           //maybe change to the specific feature?
           $attributes = "cdm:Feature"  . " uuid:" . $cdm_entity->uuid;
+      }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->typedLabel) && isset_not_empty($cdm_entity->typedLabel[0]) && isset_not_empty($cdm_entity->typedLabel[0]->cdmClass)){
+          //maybe change to the specific feature?
+          $attributes = "cdm:".$cdm_entity->typedLabel[0]->cdmClass  . " uuid:" . $cdm_entity->typedLabel[0]->uuid;
       }
 
 
