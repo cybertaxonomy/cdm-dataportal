@@ -937,6 +937,13 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
   $taxon_profile_image_settings = variable_get(CDM_TAXON_PROFILE_IMAGE, unserialize(CDM_TAXON_PROFILE_IMAGE_DEFAULT));
 
   $hide_taxon_profile_image = FALSE;
+  if($add_synonymy){
+        $synonymy_a = compose_cdm_taxon_page_new_synonymy($taxon_dto, true);
+        $synonymy_a['#weight'] = -102;
+        $synonymy_a['#prefix'] = '<div id="synonymy">';
+        $synonymy_a['#suffix'] = '</div>';
+        $render_array['synonymy'] = $synonymy_a;
+  }
   if (variable_get('image_hide_rank', '0') != '0' && isset($taxon_dto->name->rank->uuid)) {
     $rankCompare = rank_compare($taxon_dto->name->rank->uuid, variable_get('image_hide_rank', '-99'));
     $hide_taxon_profile_image = ($rankCompare > -1);
@@ -1020,13 +1027,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
     }
   }
 
-  if($add_synonymy){
-    $synonymy_a = compose_cdm_taxon_page_new_synonymy($taxon_dto, true);
-    $synonymy_a['#weight'] = -102;
-    $synonymy_a['#prefix'] = '<div id="synonymy">';
-    $synonymy_a['#suffix'] = '</div>';
-    $render_array['synonymy'] = $synonymy_a;
-  }
+
 
   //  $pseudo_feature_block_toc_items = array();
 
