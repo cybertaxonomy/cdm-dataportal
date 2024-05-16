@@ -1938,7 +1938,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
 
     $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
     $profile_image = variable_get(CDM_TAXON_PROFILE_IMAGE);
-    if ((isset_not_empty($profile_image) && $profile_image-> show) || $tabsToDisplay['Images']){
+    if ((isset_not_empty($profile_image) && $profile_image['show']) || $tabsToDisplay['Images']){
         $query_parameters['doMedia'] = 1;
     }else{
         $query_parameters['doMedia'] = 0;
