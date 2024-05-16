@@ -699,7 +699,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
  * @return string
  *  The markup for a taxon name.
  */
-function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true, $name_link = NULL, $reference_link = NULL,
+function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = true, $name_link = NULL, $reference_link = NULL,
                               $show_taxon_name_annotations = true,  $show_taxon_annotations = true, $showRegistrations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
 {
 
@@ -760,7 +760,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
     $nom_status_tagged_text = tagged_text_extract_nomstatus($tagged_name);
     $appended_phrase_tagged_text = array(); // this is filled later
 
-    if ($isName){
+    if ($isNotTitle){
         $tagged_title = $tagged_name;
     }
     normalize_tagged_text($tagged_title);
@@ -979,8 +979,9 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
                 $secRef_markup = cdm_tagged_text_to_markup($secref_name_inSource_tagged_text);
             }
             $foot_note_key_secRef = "";
-            if (isset($secref_tagged_text[1]->entityReference) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE) {
-                $footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($secref_tagged_text[1]->entityReference) . '</span>';
+            if (isset($secref_tagged_text[1]->entityReference) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE && $isNotTitle) {
+                //$footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($secref_tagged_text[1]->entityReference) . '</span>';
+                $footnote_markup .= '<span class="sec_reference">' . $taxon_name_or_taxon_base_dto->secTitleCache . '</span>';
 //TODO: handle microReference
                 //if (isset($secref_tagged_text[1]->entityReference) ){//&& isset($taxon_base->secSource->citationMicroReference)) {
                 //    $footnote_markup .= (isset_not_empty($taxon_base->secSource->citationMicroReference) ? ': <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>' : '');
@@ -994,10 +995,10 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isName = true,
                     }
                 }
             }
-            if (isset($secref_tagged_text[1]->entityReference) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_INTERNAL_LINK) {
+            if (isset($secref_tagged_text[1]->entityReference) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_INTERNAL_LINK && $isNotTitle) {
 
-                $icon_link = cdm_internal_link(path_to_reference($taxon_base->secSource->citation->uuid));
-                $secRef_markup = l($secRef_markup, path_to_reference($taxon_base->secSource->citation->uuid), array(
+                $icon_link = cdm_internal_link(path_to_reference($secref_tagged_text[1]->entityReference->uuid));
+                $secRef_markup = l($secRef_markup, path_to_reference($secref_tagged_text[1]->entityReference->uuid), array(
                     'attributes' => array(
                         "class" => "sec_reference",
                     ),
