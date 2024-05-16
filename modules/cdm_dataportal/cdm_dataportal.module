@@ -1872,8 +1872,9 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
             $query_parameters['part'][] = 'tree';
         }
     }
-    if (!(variable_get(ET_AL_POS) === null)) {
-        $query_parameters['etAlPos'][] = variable_get(ET_AL_POS);
+    $et_al = variable_get(ET_AL_POS);
+    if (isset_not_empty($et_al)) {
+        $query_parameters['etAlPos'][] = $et_al;
     }
 
     //$query_parameters['omitLevels'] = array();
@@ -1895,9 +1896,6 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['areaTree'] = variable_get(CDM_AREATREE_UUID);
     }
 
-    if (variable_get(ET_AL_POS)) {
-        $query_parameters['etAlPos'] = variable_get(ET_AL_POS);
-    }
 
     if (variable_get(CDM_STATUSTREE_UUID)) {
         $query_parameters['statusTree'] = variable_get(CDM_STATUSTREE_UUID);
@@ -1929,15 +1927,19 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['doSpecimens'] = true;
     }
     //TODO: need to be adapted!!!
-    $query_parameters['doMedia'] = true;
+
     $query_parameters['doTaxonNodes'] = true;
     if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS)){
         $query_parameters['doTaxonRelations'] = variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS);
     }
 
-
-    $current_taxon = cache_get('current_taxon');
-    $current_chapter = cache_get('current_chapter');
+    $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
+    $profile_image = variable_get(CDM_TAXON_PROFILE_IMAGE);
+    if ((isset_not_empty($profile_image) && $profile_image-> show) || $tabsToDisplay['Images']){
+        $query_parameters['doMedia'] = true;
+    }else{
+        $query_parameters['doMedia'] = 0;
+    }
 
     $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
 
