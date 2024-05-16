@@ -1895,6 +1895,10 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['areaTree'] = variable_get(CDM_AREATREE_UUID);
     }
 
+    if (variable_get(ET_AL_POS)) {
+        $query_parameters['etAlPos'] = variable_get(ET_AL_POS);
+    }
+
     if (variable_get(CDM_STATUSTREE_UUID)) {
         $query_parameters['statusTree'] = variable_get(CDM_STATUSTREE_UUID);
     }
