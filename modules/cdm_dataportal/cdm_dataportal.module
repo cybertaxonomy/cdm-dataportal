@@ -1908,27 +1908,30 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         }
 
     }
-
+    $synonymy_as_tab = variable_get(CDM_SYNONYMY_AS_TAB);
     if ($chapter == 'all'){
-        $query_parameters['doSynonyms'] = true;
-        $query_parameters['doFacts'] = true;
-        $query_parameters['doKeys'] = true;
+        $query_parameters['doSynonyms'] = 1;
+        $query_parameters['doFacts'] = 1;
+        $query_parameters['doKeys'] = 1;
 
-        $query_parameters['doSpecimens'] = true;
+        $query_parameters['doSpecimens'] = 1;
     }else if ($chapter == 'images'){
-        $query_parameters['doMedia'] = true;
+        $query_parameters['doMedia'] = 1;
     }else if ($chapter == 'synonymy'){
-        $query_parameters['doSynonyms'] = true;
-    }else if ($chapter == 'description'){
-        $query_parameters['doFacts'] = true;
+        $query_parameters['doSynonyms'] = 1;
+    }else if ($chapter == 'description' ){
+        if (!$synonymy_as_tab){
+            $query_parameters['doSynonyms'] = 1;
+        }
+        $query_parameters['doFacts'] = 1;
     }else if ($chapter == 'keys'){
-        $query_parameters['doKeys'] = true;
+        $query_parameters['doKeys'] = 1;
     }else if ($chapter == 'specimens'){
-        $query_parameters['doSpecimens'] = true;
+        $query_parameters['doSpecimens'] = 1;
     }
     //TODO: need to be adapted!!!
 
-    $query_parameters['doTaxonNodes'] = true;
+    $query_parameters['doTaxonNodes'] = 1;
     if (variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS)){
         $query_parameters['doTaxonRelations'] = variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS);
     }
@@ -1936,7 +1939,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
     $profile_image = variable_get(CDM_TAXON_PROFILE_IMAGE);
     if ((isset_not_empty($profile_image) && $profile_image-> show) || $tabsToDisplay['Images']){
-        $query_parameters['doMedia'] = true;
+        $query_parameters['doMedia'] = 1;
     }else{
         $query_parameters['doMedia'] = 0;
     }
