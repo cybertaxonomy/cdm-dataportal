@@ -311,18 +311,16 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
         return ($a['order_by_key'] < $b['order_by_key']) ? -1 : 1;
     });*/
 
-
+/*
     foreach ($joined_refs as $ref_key => $sensu_strings) {
         if(!empty($sensu_strings)) {
             $ref_key_tokens = explode('#', $ref_key);
             $sensu_uuid = $ref_key_tokens[0];
-            //TODO!!!
-            //$sensu_reference = cdm_ws_get(CDM_WS_REFERENCE, $sensu_uuid);
             $sensu_reference = $sensu_strings['markup'];
             if(!$sensu_reference){
                 drupal_set_message("Problem fetching sensu reference with uuid " . $sensu_uuid, 'error');
             }
-            //TODO: Check whether this still needs to be handled
+
            if($sensu_strings['order_by_key'] != $sensu_strings['longCitation']){
                 $sensu_reference_markup = $sensu_strings['markup'];
                 $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
@@ -335,7 +333,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                 $joined_refs[$ref_key]['markup'] = '<span class="sensu">' . $sensu_strings['order_by_key'] .  $footnote_key . $detail . '</span>';
            }
         }
-    }
+    }*/
 
     // ---- Generate output ---- //
     $out = '<div class="taxon-relationships">';
@@ -345,23 +343,42 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
         // create the list entries per misapplied name
         foreach ($misapplied as $misapplied_name) {
+            //first sort the sensu references then create footnotes
+
             $misapplied_name_markup = $misapplied_name['out'];
             // all sensu and auct. for this MAN
             if (isset($misapplied_name['sensu_uuids'])) {
                 $sensu_refs_with_fkey = array();
+                asort($misapplied_name['sensu_uuids']);
                 foreach ($misapplied_name['sensu_uuids'] as $sensu_data) {
+
                     if($sensu_data['uuid']){
                         $citation_detail = '';
                         if (isset_not_empty($sensu_data['citation_detail'] )){
                             $citation_detail = '#' .$sensu_data['citation_detail'];
                         }
                         $joined_ref_key = $sensu_data['uuid'] . $citation_detail;
+                        /****/
+
+                        $sensu_reference_markup = $joined_refs[$joined_ref_key]['markup'];
+                        $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
+                        $footnote_key = render_footnote_key($footnote_key);
+                        if (isset_not_empty($joined_refs[$joined_ref_key]['detail'])){
+                            $detail = ': '.$joined_refs[$joined_ref_key]['detail'];
+                        }else{
+                            $detail = '';
+                        }
+                        $joined_refs[$joined_ref_key]['markup'] = '<span class="sensu">' . $joined_refs[$joined_ref_key]['order_by_key'] .  $footnote_key . $detail . '</span>';
+
+
+                        /****/
+
                         $sensu_refs_with_fkey[$sensu_data['prefix'] .  $joined_ref_key] = $sensu_data['prefix'] . $joined_refs[$joined_ref_key]['markup'];
                     } else {
                         $sensu_refs_with_fkey[$sensu_data['prefix']] = $sensu_data['prefix'];
                     }
                 }
-                ksort($sensu_refs_with_fkey);
+                //ksort($sensu_refs_with_fkey);
                 $sensu_refs_with_fkey_markup = join('; ', $sensu_refs_with_fkey);
                 if(strpos($misapplied_name_markup, '{PLACEHOLDER_secReference}') !== false){
                     $misapplied_name_markup = str_replace('{PLACEHOLDER_secReference}', $sensu_refs_with_fkey_markup, $misapplied_name_markup);
@@ -373,12 +390,28 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                 }
             }
 
+
             // append the err. sec. if there is any for this MAN
             if (isset($misapplied_name['relsec_uuids'])) {
                 $relsec_refs_with_fkey = array();
                 foreach ($misapplied_name['relsec_uuids'] as $relsec_data) {
+                    $citation_detail = '';
+                    if (isset_not_empty($relsec_data['citation_detail'] )){
+                        $citation_detail = '#' .$relsec_data['citation_detail'];
+                    }
+                    $joined_ref_key = $relsec_data['uuid'] . $citation_detail;
+                    $sensu_reference_markup = $joined_refs[$joined_ref_key]['markup'];
+                    $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $sensu_reference_markup);
+                    $footnote_key = render_footnote_key($footnote_key);
+                    if (isset_not_empty($joined_refs[$joined_ref_key]['detail'])){
+                        $detail = ': '.$joined_refs[$joined_ref_key]['detail'];
+                    }else{
+                        $detail = '';
+                    }
+                    $markup = '<span class="sensu">' . $joined_refs[$joined_ref_key]['order_by_key'] .  $footnote_key . $detail . '</span>';
+
                     if($relsec_data['uuid']) {
-                        $relsec_refs_with_fkey[$relsec_data['prefix'] . $joined_refs[$relsec_data['uuid']]['order_by_key']] = $relsec_data['prefix'] . $joined_refs[$relsec_data['uuid']]['markup'];
+                        $relsec_refs_with_fkey[$relsec_data['prefix'] . $joined_refs[$relsec_data['uuid']]['order_by_key']] = $relsec_data['prefix'] . $markup;
                     }
                 }
                 ksort($relsec_refs_with_fkey);
@@ -533,7 +566,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $sensu_citation_short_without_detail = cdm_tagged_text_to_string($sensu_tagged_text, array('secMicroReference'));
         $sensu_uuid = $sensu_tagged_text[0]->entityReference->uuid;
         $name_dedup_key = preg_replace('/\s+/', ' ', $name_dedup_key); // sanitize multiple whitespace characters
-        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => $sensu_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $sensu_citation_detail);
+        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => $sensu_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $sensu_citation_detail, 'sensu_citation'=> $sensu_citation_short_without_detail);
         $ref_key = $sensu_uuid . ($sensu_citation_detail ? '#' . $sensu_citation_detail : '');
         if (!isset($joined_refs[$ref_key])) {
             $joined_refs[$ref_key] = array(
@@ -559,7 +592,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $relsec_citation_short_without_detail = cdm_tagged_text_to_string($relsec_tagged_text, array('secMicroReference'));
         $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
         $relsec_uuid = $relsec_tagged_text[0]->entityReference->uuid;
-        $misapplied[$name_dedup_key]['relsec_uuids'][] = array('uuid' => $relsec_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $relsec_citation_detail);;
+        $misapplied[$name_dedup_key]['relsec_uuids'][] = array('uuid' => $relsec_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $relsec_citation_detail, 'relsec_citation'=> $relsec_citation_short_without_detail);;
         $ref_key = $relsec_uuid . ($relsec_citation_detail ? '#' . $relsec_citation_detail : '');
         if (!isset($joined_refs[$ref_key])) {
             $joined_refs[$ref_key] = array(
