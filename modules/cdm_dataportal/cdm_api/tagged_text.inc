@@ -300,7 +300,11 @@ function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags
                 if ($tt->type == 'reference' && isset_not_empty($tt->entityReference)){
                     $footnote_markup .= '<span class="reference">' . $tt->entityReference->label . '</span>';
                 }
+                if ($tt->type == 'secReference' && isset_not_empty($tt->entityReference)){
+                    $footnote_markup .= '<span class="secReference">' . $tt->entityReference->label . '</span>';
+                }
                 if ($footnote_markup) {
+                    $test = RenderHints::getFootnoteListKey();
                     $foot_note_key_type_des = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
                     if(isset($foot_note_key_type_des)){
                         $annotations_and_sources->addFootNoteKey($foot_note_key_type_des);

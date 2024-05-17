@@ -801,6 +801,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
              * Content/ALL OTHER FEATURES.
              */
             else {
+                RenderHints::setFootnoteListKey($feature_node->uuid);
 
                 $media_list = array();
                 $elements_render_array = array();
@@ -809,6 +810,7 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
                 if (isset($feature_node->facts->items[0])) {
                     $elements_render_array = compose_new_feature_block_items_generic($feature_node->facts, $feature_node-> uuid);
                 }
+
 
                 // Content/ALL OTHER FEATURES/Subordinate Features
                 // subordinate features are printed inline in one floating text,
@@ -836,7 +838,9 @@ function make_feature_block_new_list($mergedFeatureNodes, $taxon) {
 
             // allows modifying the block contents via a the hook_cdm_feature_node_block_content_alter
             drupal_alter('cdm_feature_node_block_content', $block->content, $feature_node->label, $feature_node->descriptionElements);
-
+           /* $out = '<ul class="footnotes">';
+            $out .= render_footnotes(RenderHints::getFootnoteListKey(), 'li');
+            $out .= '</ul>';*/
             if(!$block_content_is_empty){ // skip empty block content
                 $block_list[$block_weight] = $block;
                 cdm_toc_list_add_item(cdm_term_representation($feature_node->label), $feature_node->uuid, null, FALSE, $block_weight);
@@ -1359,8 +1363,27 @@ function compose_description_element_taxon_interaction($element, $feature_block_
   $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid);
 
   return $render_array;
-}
 
+
+}
+function compose_new_description_element_taxon_interaction($element, $feature_block_settings)
+{
+
+    $out = '';
+
+    if (isset($element->taxon)) {
+        $out = cdm_tagged_text_with_ref_footnote_to_markup($element->taxon);
+    }
+    /*
+    $out .= '<ul class="footnotes">';
+    $out .= render_footnotes(RenderHints::getFootnoteListKey(), 'li');
+    $out .= '</ul>';
+    */
+    $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid);
+
+
+    return $render_array;
+}
 
 /**
  * Renders a single instance of the type IndividualsAssociations.
@@ -2012,8 +2035,8 @@ function compose_new_feature_block_items_generic($description_elements, $feature
                 case 'IndividualsAssociationDto':
                     $elements_out_array[] = compose_new_description_element_individuals_association($description_element, $feature_block_settings, $feature_uuid);
                     break;
-                case 'TaxonInteraction':
-                    $elements_out_array[] = compose_description_element_taxon_interaction($description_element, $feature_block_settings);
+                case 'TaxonInteractionDto':
+                    $elements_out_array[] = compose_new_description_element_taxon_interaction($description_element, $feature_block_settings);
                     break;
                 case 'CommonTaxonName':
                     $elements_out_array[] = compose_description_element_common_taxon_name($description_element, $feature_block_settings);

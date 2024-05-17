@@ -573,10 +573,26 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
 
     if (!isset($misapplied[$name_dedup_key]['out'])) {
         // helpful for debugging: // cdm_tagged_text_add_options($taxon_relation->taggedText, array(array('filter-type' => 'symbol', 'attributes' => array('title' =>  array($taxon_relation->type->representations[0]->label)))));
+        $skipSecReference = array();
+        $skipSecReference[0] = 'PLACEHOLDER_secReference';
+        $text_without_placeholder = $taxon_relation->taggedLabel;
+        $contains_placeholder = true;
+        while ($contains_placeholder){
+            $bla = $text_without_placeholder[count($text_without_placeholder)-1];
+            if (strpos($bla->type, 'PLACEHOLDER') ){
+                array_pop($text_without_placeholder);
+            }else{
+                $contains_placeholder = false;
+            }
+        }
+
+        $outWithoutSecRefPlaceholder = cdm_tagged_text_to_markup($text_without_placeholder);
         $out = cdm_tagged_text_to_markup($taxon_relation->taggedLabel);
+
         $out = uuid_anchor($taxon_relation->relTaxonUuid, $out);
         $annotations_and_sources = handle_annotations_and_sources($taxon_relation);
-        $out .= $annotations_and_sources->footNoteKeysMarkup();
+        $outWithoutSecRefPlaceholderWithFootnotes = $outWithoutSecRefPlaceholder . $annotations_and_sources->footNoteKeysMarkup();
+        $out = str_replace($outWithoutSecRefPlaceholder, $outWithoutSecRefPlaceholderWithFootnotes, $out);
         $misapplied[$name_dedup_key]['out'] = $out;
     } else {
         // We need to add the anchors for all of the other misapplied names not
