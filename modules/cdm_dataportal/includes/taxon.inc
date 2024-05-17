@@ -368,12 +368,12 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                         }else{
                             $detail = '';
                         }
-                        $joined_refs[$joined_ref_key]['markup'] = '<span class="sensu">' . $joined_refs[$joined_ref_key]['order_by_key'] .  $footnote_key . $detail . '</span>';
+                        $joined_refs[$joined_ref_key]['markup_with_footnote_key'] = '<span class="sensu">' . $joined_refs[$joined_ref_key]['order_by_key'] .  $footnote_key . $detail . '</span>';
 
 
                         /****/
 
-                        $sensu_refs_with_fkey[$sensu_data['prefix'] .  $joined_ref_key] = $sensu_data['prefix'] . $joined_refs[$joined_ref_key]['markup'];
+                        $sensu_refs_with_fkey[$sensu_data['prefix'] .  $joined_ref_key] = $sensu_data['prefix'] . $joined_refs[$joined_ref_key]['markup_with_footnote_key'];
                     } else {
                         $sensu_refs_with_fkey[$sensu_data['prefix']] = $sensu_data['prefix'];
                     }
