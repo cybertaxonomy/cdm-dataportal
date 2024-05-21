@@ -582,7 +582,13 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
     } else if ($appended_phrase_text) {
         // appended phrase without reference
         $name_dedup_key = preg_replace('/\s+/', ' ', $name_dedup_key); // sanitize multiple whitespace characters
-        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => null, 'prefix' => $appended_phrase_text);
+
+        $out = '';
+        $annotations_and_sources = handle_annotations_and_sources($taxon_relation);
+        $out .= $appended_phrase_text . $annotations_and_sources->footNoteKeysMarkup();
+
+        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => null, 'prefix' => $out);
+
     }
 
     if (isset($relsec_tagged_text[1])) {
@@ -615,6 +621,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $out .= $annotations_and_sources->footNoteKeysMarkup();
         $misapplied[$name_dedup_key]['out'] = $out;
     } else {
+
         // We need to add the anchors for all of the other misapplied names not
         // being rendered explicitly. TODO!!
        // $misapplied[$name_dedup_key]['out'] = uuid_anchor($taxon_relation->taxonUuid, $misapplied[$name_dedup_key]['out']);
