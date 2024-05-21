@@ -397,6 +397,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
             // append the err. sec. if there is any for this MAN
             if (isset($misapplied_name['relsec_uuids'])) {
                 $relsec_refs_with_fkey = array();
+                usort($misapplied_name['relsec_uuids'], 'compare_MAN_citation');
                 foreach ($misapplied_name['relsec_uuids'] as $relsec_data) {
                     $citation_detail = '';
                     if (isset_not_empty($relsec_data['citation_detail'] )){
@@ -417,7 +418,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                         $relsec_refs_with_fkey[$relsec_data['prefix'] . $joined_refs[$relsec_data['uuid']]['order_by_key']] = $relsec_data['prefix'] . $markup;
                     }
                 }
-                ksort($relsec_refs_with_fkey);
+
                 $relsec_refs_with_fkey_markup = join('; ', $relsec_refs_with_fkey);
                 $misapplied_name_markup = str_replace('{PLACEHOLDER_relSecReference}', $relsec_refs_with_fkey_markup, $misapplied_name_markup);
             }
