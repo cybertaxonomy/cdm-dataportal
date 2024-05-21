@@ -1936,6 +1936,14 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['doTaxonRelations'] = variable_get(CDM_DATAPORTAL_DISPLAY_TAXON_RELATIONSHIPS);
     }
 
+    if (variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES)){
+        foreach (variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, array()) as $a_uuid) {
+            if (is_uuid($a_uuid)) {
+                $query_parameters['nameRelationsDirect'][] = $a_uuid;
+            }
+        }
+    }
+
     $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
     $profile_image = variable_get(CDM_TAXON_PROFILE_IMAGE);
     if ((isset_not_empty($profile_image) && $profile_image['show']) || $tabsToDisplay['Images']){
