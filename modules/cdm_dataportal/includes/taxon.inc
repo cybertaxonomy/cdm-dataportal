@@ -349,7 +349,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
             // all sensu and auct. for this MAN
             if (isset($misapplied_name['sensu_uuids'])) {
                 $sensu_refs_with_fkey = array();
-                //asort($misapplied_name['sensu_uuids']);
+                ksort($misapplied_name['sensu_uuids']);
                 foreach ($misapplied_name['sensu_uuids'] as $sensu_data) {
 
                     if($sensu_data['uuid']){
@@ -381,7 +381,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
                         $sensu_refs_with_fkey[$sensu_data['prefix']] = $sensu_data['prefix'];
                     }
                 }
-                ksort($sensu_refs_with_fkey);
+
                 $sensu_refs_with_fkey_markup = join('; ', $sensu_refs_with_fkey);
                 if(strpos($misapplied_name_markup, '{PLACEHOLDER_secReference}') !== false){
                     $misapplied_name_markup = str_replace('{PLACEHOLDER_secReference}', $sensu_refs_with_fkey_markup, $misapplied_name_markup);
