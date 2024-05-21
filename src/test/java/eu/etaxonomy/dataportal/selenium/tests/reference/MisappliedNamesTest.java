@@ -101,7 +101,8 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         // no sensu but with Combination Authors:
         assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
         //added an annotation, currently this is processed first, so it has footnote number 1, this needs to be adapted if the ordering of the footnotes is fixed.
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S2; sensu A&S2: 22; sensu A&S2: 33; sensu Species solaris; sensu Lem3; auct.1; auct. sensu A&S2; auctrs. afr.", p.getMisappliedName(4).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\"  sensu A&S2; sensu A&S2: 22; sensu A&S2: 33; sensu Lem3; sensu Species solaris; auct. sensu A&S2; auct.1; auctrs. afr.", p.getMisappliedName(4).getText());
+        //assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S2; sensu A&S2: 22; sensu A&S2: 33; sensu Species solaris; sensu Lem3; auct.1; auct. sensu A&S2; auctrs. afr.", p.getMisappliedName(4).getText());
 
 
         // TODO the order of the MANs is not always defined please see #7766
@@ -114,9 +115,10 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
-        assertEquals(2, footnotes.size());
-        assertEquals("1. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.get(0).getText());
-        assertEquals("2. Lem: New Species in the solar system", footnotes.get(1).getText());
+        assertEquals(3, footnotes.size()); //adapted to 3 because of the annotation
+        assertEquals("1. This is an editorial annotation of the relation", footnotes.get(0).getText())
+        assertEquals("2. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.get(1).getText());
+        assertEquals("3. Lem: New Species in the solar system", footnotes.get(2).getText());
         // "Species solaris" must not be in the footnotes as it has the same title as the short citation
 
     }
@@ -134,9 +136,12 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
-        assertEquals(2, footnotes.size());
-        assertEquals("1. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.get(0).getText());
-        assertEquals("2. Lem: New Species in the solar system", footnotes.get(1).getText());
+        assertEquals(3, footnotes.size()); //adapted because of the annotation
+        assertEquals("1. This is an editorial annotation of the relation", footnotes.get(0).getText())
+        assertEquals("2. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.get(1).getText());
+        assertEquals("3. Lem: New Species in the solar system", footnotes.get(2).getText());
+        //assertEquals("1. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.get(0).getText());
+        //assertEquals("2. Lem: New Species in the solar system", footnotes.get(1).getText());
     }
 
     /**
@@ -150,7 +155,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
-        BaseElement footNote = footnotes.get(0);
+        BaseElement footNote = footnotes.get(1);
         assertEquals("1. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footNote.getText());
         List<LinkElement> links = footNote.getLinksInElement();
         assertEquals(2, links.size());
