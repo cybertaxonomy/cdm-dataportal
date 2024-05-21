@@ -1943,6 +1943,13 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
             }
         }
     }
+    if (variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES)){
+        foreach (variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, array()) as $a_uuid) {
+            if (is_uuid($a_uuid)) {
+                $query_parameters['nameRelationsInverse'][] = $a_uuid;
+            }
+        }
+    }
 
     $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
     $profile_image = variable_get(CDM_TAXON_PROFILE_IMAGE);
