@@ -349,7 +349,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
             // all sensu and auct. for this MAN
             if (isset($misapplied_name['sensu_uuids'])) {
                 $sensu_refs_with_fkey = array();
-                ksort($misapplied_name['sensu_uuids']);
+                usort($misapplied_name['sensu_uuids'], 'compare_MAN_citation');
                 foreach ($misapplied_name['sensu_uuids'] as $sensu_data) {
 
                     if($sensu_data['uuid']){
