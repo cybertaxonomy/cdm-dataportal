@@ -116,7 +116,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(3, footnotes.size()); //adapted to 3 because of the annotation
-        assertEquals("1. This is an editorial annotation of the relation", footnotes.get(0).getText())
+        assertEquals("1. This is an editorial annotation of the relation", footnotes.get(0).getText());
         assertEquals("2. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.get(1).getText());
         assertEquals("3. Lem: New Species in the solar system", footnotes.get(2).getText());
         // "Species solaris" must not be in the footnotes as it has the same title as the short citation
@@ -137,7 +137,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(3, footnotes.size()); //adapted because of the annotation
-        assertEquals("1. This is an editorial annotation of the relation", footnotes.get(0).getText())
+        assertEquals("1. This is an editorial annotation of the relation", footnotes.get(0).getText());
         assertEquals("2. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.get(1).getText());
         assertEquals("3. Lem: New Species in the solar system", footnotes.get(2).getText());
         //assertEquals("1. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.get(0).getText());
