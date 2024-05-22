@@ -378,7 +378,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
                         $sensu_refs_with_fkey[$sensu_data['prefix'] .  $joined_ref_key] = $sensu_data['prefix'] . $joined_refs[$joined_ref_key]['markup_with_footnote_key'];
                     } else {
-                        $sensu_refs_with_fkey[$sensu_data['prefix']] = $sensu_data['prefix'];
+                        $sensu_refs_with_fkey[$sensu_data['prefix']] = $sensu_data['out'];
                     }
                 }
 
@@ -588,7 +588,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $annotations_and_sources = handle_annotations_and_sources($taxon_relation);
         $out .= $appended_phrase_text . $annotations_and_sources->footNoteKeysMarkup();
 
-        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => null, 'prefix' => $out);
+        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => null, 'prefix' => $appended_phrase_text, 'out' => $out);
 
     }
 

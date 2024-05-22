@@ -59,7 +59,7 @@ function html_class_attribute_ref($cdm_entity) {
         }
         break;
     }
-  }elseif (isset($cdm_entity->class)) {
+  }elseif (isset_not_empty($cdm_entity->class)) {
       // DTOs
       if (isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)) {
           $attributes = "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
@@ -279,8 +279,8 @@ function compare_text_data($a, $b) {
 }
 
 function compare_MAN_citation($a, $b) {
-    $a_complete_string = $a['prefix'];
-    $b_complete_string = $b['prefix'];
+    $a_complete_string = trim($a['prefix']);
+    $b_complete_string = trim($b['prefix']);
     if (isset_not_empty($a['sensu_citation'])){
         $a_complete_string .= ' ' . $a['sensu_citation'];
         if (isset_not_empty($a['citation_detail'])){
@@ -294,7 +294,7 @@ function compare_MAN_citation($a, $b) {
         }
     }
 
-    return ($a_complete_string < $b_complete_string) ? -1 : 1;
+    return strcmp($a_complete_string, $b_complete_string);
 
 }
 

@@ -1635,7 +1635,7 @@ function compose_cdm_taxon_page_new_experts($taxon){
             $taxon_node_agent_relation->agent,
             // specifying both ends of the relationship will return only one record in the pager
             cdm_compose_ws_url(CDM_WS_PORTAL_AGENT,
-                array($taxon_node_agent_relation->uuid, 'taxonNodeAgentRelations'),
+                array($taxon_node_agent_relation->agentUuid, 'taxonNodeAgentRelations'),
                 'taxon_uuid=' . $taxon->uuid . '&relType_uuid=' . $taxon_node_agent_relation->typeUuid),
             'cdm_taxon_expert',
             'Click for details',
@@ -1653,7 +1653,7 @@ function compose_cdm_taxon_page_new_experts($taxon){
                 ),
                 array(
                     'data' => $taxon_node_agent_relation->type,
-                    'class' => array(html_class_attribute_ref($taxon_node_agent_relation->type))
+                    'class' => 'TaxonAgentRelationshipType'
                 )
             )
         );
