@@ -285,7 +285,9 @@ function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags
                 }else if ($is_separator){
                     $out = rtrim($out);
                 }
-                if(isset($options['html']) &&  $options['html']){
+                if ($tt->type == 'typeDesignation' && isset_not_empty($tt->link)){
+                    $out .= create_html_link($tt);
+                }elseif(isset($options['html']) &&  $options['html']){
                     $out .= $tt->text;
                 } else {
                     if (is_array($tt->text ))
@@ -303,6 +305,7 @@ function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags
                 if ($tt->type == 'secReference' && isset_not_empty($tt->entityReference)){
                     $footnote_markup .= '<span class="secReference">' . $tt->entityReference->label . '</span>';
                 }
+
                 if ($footnote_markup) {
                     $test = RenderHints::getFootnoteListKey();
                     $foot_note_key_type_des = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);

@@ -325,7 +325,7 @@ function relationship_filter_query_parameters()
 
 function create_html_link($link, $openInExternalWindow=false){
     $html = "";
-    if(isset_not_empty($link->uri)){
+    if(isset_not_empty($link->uri) ){
         if (!is_string($link->uri) && isset_not_empty($link->uri->javaUri)){
             $html .= '<a  href="' . $link->uri->javaUri . '"';
         }else{
@@ -336,6 +336,9 @@ function create_html_link($link, $openInExternalWindow=false){
             $html .= ' target="_blank"';
         }
         $html .= '>' . $link->linkText . '</a>';
+    }elseif (isset_not_empty($link->link->javaUri)){
+        $html .= '<a  href="' . $link->link->javaUri . '"';
+        $html .= '>' . $link->text . '</a>';
     }
     else{
         $html .= $link->linkText;
