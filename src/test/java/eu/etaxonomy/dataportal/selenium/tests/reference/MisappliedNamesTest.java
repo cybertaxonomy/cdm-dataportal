@@ -101,7 +101,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         // no sensu but with Combination Authors:
         assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
         //added an annotation, currently this is processed first, so it has footnote number 1, this needs to be adapted if the ordering of the footnotes is fixed.
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" auct.1; auct. sensu A&S2; auctrs. afr.; sensu A&S2; sensu A&S2: 22; sensu A&S2: 33; sensu Lem3]; sensu Species solaris", p.getMisappliedName(4).getText());
+        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" auct.1; auct. sensu A&S2; auctrs. afr.; sensu A&S2; sensu A&S2: 22; sensu A&S2: 33; sensu Lem3; sensu Species solaris", p.getMisappliedName(4).getText());
         //assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S2; sensu A&S2: 22; sensu A&S2: 33; sensu Species solaris; sensu Lem3; auct.1; auct. sensu A&S2; auctrs. afr.", p.getMisappliedName(4).getText());
 
 
