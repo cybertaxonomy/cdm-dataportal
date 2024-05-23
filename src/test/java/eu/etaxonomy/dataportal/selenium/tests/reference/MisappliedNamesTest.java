@@ -107,7 +107,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         // TODO the order of the MANs is not always defined please see #7766
         // with doubtful flag
-        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S1", p.getMisappliedName(5).getText());
+        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S2", p.getMisappliedName(5).getText());
 
         assertEquals("misapplied for", p.getMisappliedName(6).findElement(By.className("symbol")).getText());
         assertEquals("Ossaea maculata", p.getMisappliedName(6).findElement(By.className("name")).getText());
