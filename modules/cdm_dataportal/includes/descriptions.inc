@@ -2733,7 +2733,7 @@ function merged_taxon_new_feature_tree($taxon) {
                     $distribution->sources);
           }else{
             if(isset($distribution->sources) && $distribution->sources->count >0) {
-                if (!isset($distribution_aggregate->sources) || $distribution_aggregate->sources->count == 0){
+                if (!isset_not_empty($distribution_aggregate->sources) || (!is_array($distribution_aggregate->sources) && $distribution_aggregate->sources->count == 0)){
                     $distribution_aggregate -> sources = $distribution->sources;
                 }else{
                     //$distribution_aggregate->sources->items= array_merge($distribution_aggregate->sources->items,
