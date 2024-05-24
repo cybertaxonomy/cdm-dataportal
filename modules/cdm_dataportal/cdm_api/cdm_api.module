@@ -3058,13 +3058,13 @@ function queryString($elements) {
   $query = '';
   foreach ($elements as $key => $value) {
     if (is_array($value) && isset_not_empty($value)){//} && !empty($value)) {
-        $query .= (strlen($query) > 0 ? '&' : '') . $key. '=' ;
+       // $query .= (strlen($query) > 0 ? '&' : '') . $key. '=' ;
       foreach ($value as $v) {
-        $query .=  urlencode($v) . ',';
+          $query .= (strlen($query) > 0 ? '&' : '') . $key . '=' . urlencode($v);
       }
-      if (',' === substr($query, -1) ){
-          $query = substr_replace($query, '', -1);
-      }
+      //if (',' === substr($query, -1) ){
+      //    $query = substr_replace($query, '', -1);
+      //}
     }
     else {
         if (!empty($value)){
