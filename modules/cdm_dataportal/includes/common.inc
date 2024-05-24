@@ -279,8 +279,19 @@ function compare_text_data($a, $b) {
 }
 
 function compare_MAN_citation($a, $b) {
-    $a_complete_string = trim($a['prefix']);
-    $b_complete_string = trim($b['prefix']);
+
+    if (isset_not_empty($a['sensu_citation_sortable_date'])){
+        $a_complete_string = $a['sensu_citation_sortable_date'];
+    }else{
+        $a_complete_string = 'zzzz-zz-zz';
+    }
+    if (isset_not_empty($b['sensu_citation_sortable_date'])){
+        $b_complete_string = $b['sensu_citation_sortable_date'];
+    }else{
+        $b_complete_string = 'zzzz-zz-zz';
+    }
+    $a_complete_string .= trim($a['prefix']);
+    $b_complete_string .= trim($b['prefix']);
     if (isset_not_empty($a['sensu_citation'])){
         $a_complete_string .= ' ' . $a['sensu_citation'];
         if (isset_not_empty($a['citation_detail'])){

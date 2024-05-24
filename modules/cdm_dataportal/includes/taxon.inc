@@ -551,8 +551,11 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $name_dedup_key = str_replace(cdm_tagged_text_to_string($sensu_tagged_text), ' ', $name_dedup_key);
         $appended_phrase_text = $appended_phrase_text . array_shift($sensu_tagged_text)->text; // remove first element which contains the "sensu", this will be added later in this code
         $sensu_citation_detail = trim(join(' ', cdm_tagged_text_values($sensu_tagged_text, array('secMicroReference'))));
+        $sensu_citation_long = '';
+        $sensu_citation_sortable_date = '';
         if (isset_not_empty($taxon_relation->secSource) && isset_not_empty($taxon_relation->secSource->label[0])){
             $sensu_citation_long = $taxon_relation->secSource->label[0]->label;
+            $sensu_citation_sortable_date = $taxon_relation->secSource->sortableDate;
         }
         $sec_without_microReference = $taxon_relation->secSource;
         if (isset_not_empty($sensu_citation_detail)){
@@ -570,7 +573,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $sensu_citation_short_without_detail = cdm_tagged_text_to_string($sensu_tagged_text, array('secMicroReference'));
         $sensu_uuid = $sensu_tagged_text[0]->entityReference->uuid;
         $name_dedup_key = preg_replace('/\s+/', ' ', $name_dedup_key); // sanitize multiple whitespace characters
-        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => $sensu_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $sensu_citation_detail, 'sensu_citation'=> $sensu_citation_short_without_detail);
+        $misapplied[$name_dedup_key]['sensu_uuids'][] = array('uuid' => $sensu_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $sensu_citation_detail, 'sensu_citation'=> $sensu_citation_short_without_detail, 'sortableDate' => $sensu_citation_sortable_date);
         $ref_key = $sensu_uuid . ($sensu_citation_detail ? '#' . $sensu_citation_detail : '');
         if (!isset($joined_refs[$ref_key])) {
             $joined_refs[$ref_key] = array(
@@ -578,6 +581,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
                 'markup' => $sensu_citation_long_markup,
                 'detail' => $sensu_citation_detail,
                 'longCitation' => $sensu_citation_long// the footnote key will be appended later
+
             );
         }
     } else if ($appended_phrase_text) {
@@ -596,13 +600,16 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
         $appended_phrase_text = array_shift($relsec_tagged_text)->text; // remove first element which contains the "err. sec", this will be added later in this code
         $relsec_citation_detail = trim(join(' ', cdm_tagged_text_values($relsec_tagged_text, array('secMicroReference'))));
         $relsec_citation_long_markup = render_original_source($taxon_relation->relSource, FALSE);
+        $relsec_citation_long = '';
+        $relsec_citation_sortable_date = '';
         if (isset_not_empty($taxon_relation->relSource) && isset_not_empty($taxon_relation->relSource->label[0])){
             $relsec_citation_long = $taxon_relation->relSource->label[0]->label;
+            $relsec_citation_sortable_date = $taxon_relation->relSource->sortableDate;
         }
         $relsec_citation_short_without_detail = cdm_tagged_text_to_string($relsec_tagged_text, array('secMicroReference'));
         $relsec_citation_short = cdm_tagged_text_to_string($relsec_tagged_text);
         $relsec_uuid = $relsec_tagged_text[0]->entityReference->uuid;
-        $misapplied[$name_dedup_key]['relsec_uuids'][] = array('uuid' => $relsec_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $relsec_citation_detail, 'relsec_citation'=> $relsec_citation_short_without_detail);;
+        $misapplied[$name_dedup_key]['relsec_uuids'][] = array('uuid' => $relsec_uuid, 'prefix' => $appended_phrase_text, 'citation_detail' => $relsec_citation_detail, 'relsec_citation'=> $relsec_citation_short_without_detail, 'sortableDate' => $relsec_citation_sortable_date);;
         $ref_key = $relsec_uuid . ($relsec_citation_detail ? '#' . $relsec_citation_detail : '');
         if (!isset($joined_refs[$ref_key])) {
             $joined_refs[$ref_key] = array(
@@ -610,6 +617,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
                 'markup' => $relsec_citation_long_markup,
                 'detail' => $relsec_citation_detail,
                 'longCitation' => $relsec_citation_long// the footnote key will be appended later
+
             );
         }
     }
