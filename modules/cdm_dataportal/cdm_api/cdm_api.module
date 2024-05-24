@@ -3057,15 +3057,19 @@ function _is_cdm_ws_uri($uri) {
 function queryString($elements) {
   $query = '';
   foreach ($elements as $key => $value) {
-    if (is_array($value)){//} && !empty($value)) {
+    if (is_array($value) && isset_not_empty($value)){//} && !empty($value)) {
+        $query .= (strlen($query) > 0 ? '&' : '') . $key. '=' ;
       foreach ($value as $v) {
-        $query .= (strlen($query) > 0 ? '&' : '') . $key . '=' . urlencode($v);
+        $query .=  urlencode($v) . ',';
+      }
+      if (',' === substr($query, -1) ){
+          $query = substr_replace($query, '', -1);
       }
     }
     else {
-        //if (is_numeric($value) || !empty($value)){
+        if (!empty($value)){
             $query .= (strlen($query) > 0 ? '&' : '') . $key . '=' . urlencode($value);
-        //}
+        }
 
     }
   }
