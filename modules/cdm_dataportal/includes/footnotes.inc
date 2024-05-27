@@ -151,7 +151,7 @@ function cdm_entity_annotations_as_footnote_keys(stdClass $cdm_entity, $footnote
     }else if (isset($cdm_entity->citation)) {
         //the cdm_entity is already a source
         return $foot_note_keys;
-    }else{
+    }else if (is_cdm_entity($cdm_entity)){
         $annotations_or_dtos = cdm_fetch_visible_annotations($cdm_entity);
     }
 
