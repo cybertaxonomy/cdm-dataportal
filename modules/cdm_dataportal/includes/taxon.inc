@@ -1027,11 +1027,11 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
          * since Lucene 2.9
          */
         //currently only complete matches are returned, so we can remove this.
-        /*if(isset($freetext_search_results[$itemCnt]) && $freetext_search_results[$itemCnt]->score && $freetext_search_results[$itemCnt]->maxScore){
+        if(isset($freetext_search_results[$itemCnt]) && $freetext_search_results[$itemCnt]->score && $freetext_search_results[$itemCnt]->maxScore && isset_not_empty($freetext_search_results[$itemCnt]->fieldHighlightMap)){
             $percentage =  ( $freetext_search_results[$itemCnt]->score / $freetext_search_results[$itemCnt]->maxScore ) * 100;
             $out .= '<div class="score-bar"><div class="score-bar-indicator" style="width:' . $percentage .'% "></div></div>';
             $out .= '<div class="score-bar-value">' . number_format($percentage, 2) .'%</div>';
-        }*/
+        }
 
         // Render highlighted fragments, these are made available by free text
         // searches.
