@@ -1852,6 +1852,12 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     if (isset($feature_tree_uuid) && $feature_tree_uuid !== UUID_DEFAULT_FEATURETREE) {
         $query_parameters['featureTree'] = $feature_tree_uuid;
     }
+    $dto_loading =variable_get(CDM_DTO_LOADING);
+    if (isset_not_empty($dto_loading)){
+        $query_parameters['dtoLoading'] = $dto_loading;
+    }else{
+        $query_parameters['dtoLoading'] = 0;
+    }
     /*
      * @RequestParam(value = "fallbackAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> fallbackAreaMarkerTypeList,
             @RequestParam(value = "areaTree", required = false ) UUID areaTreeUuid,
@@ -1879,12 +1885,16 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
 
     //$query_parameters['omitLevels'] = array();
     $omit_level = variable_get(DISTRIBUTION_TREE_OMIT_LEVELS);
-    $query_parameters['omitLevels'] = array();
-    foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $a_uuid) {
-        if (is_uuid($a_uuid)) {
-            $query_parameters['omitLevels'][] = $a_uuid;
+    //
+    if (isset_not_empty($omit_level)){
+        //$query_parameters['omitLevels'] = array();
+        foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $a_uuid) {
+            if (is_uuid($a_uuid)) {
+                $query_parameters['omitLevels'][] = $a_uuid;
+            }
         }
     }
+
 
 
     $customStatusColorsJson = variable_get(DISTRIBUTION_STATUS_COLORS, NULL);
@@ -1958,9 +1968,10 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     }else{
         $query_parameters['doMedia'] = 0;
     }
-
+    $query_parameters['uuid'] = $uuid;
+    //$json_post_object = json_encode($query_parameters, JSON_FORCE_OBJECT);
+    //$taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, $json_post_object, 'POST');
     $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
-
     cache_set('current_chapter', $chapter);
     if (empty($taxon_dto)) {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
