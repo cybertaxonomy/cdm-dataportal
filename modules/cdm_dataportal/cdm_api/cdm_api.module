@@ -2344,7 +2344,7 @@ function cdm_ws_get($uri, $pathParameters = array(), $query_string = NULL, $meth
       }
       cdm_ws_debug_add($uri, $method, $data, $duration_fetch, $duration_parse, strlen($response_body), $status);
     }
-    if ($set_cacheL2) {
+    if ($set_cacheL2 && !$cacheL2_entry) {
       // Store the object in cache L2.
       // Comment @WA perhaps better if Drupal serializedatas here? Then the
       // flag serialized is set properly in the cache table.
