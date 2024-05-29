@@ -788,8 +788,10 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
     }
 
     // split off all appendedPhrase item  from the end of the array (usually there only should  be one)
-    while($tagged_title[count($tagged_title)-1]->type == "appendedPhrase"){
-        $appended_phrase_tagged_text[] = array_pop($tagged_title);
+    if (isset_not_empty($tagged_title) && is_array($tagged_title)){
+        while($tagged_title[count($tagged_title)-1]->type == "appendedPhrase"){
+            $appended_phrase_tagged_text[] = array_pop($tagged_title);
+        }
     }
 
     // Got to use second entry as first one, see ToDo comment below ...
@@ -846,7 +848,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
     }
     else {
         // use titleCache instead
-        $name = '<span class="' . $taxon_name->class . '_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxon_name->titleCache . $name_encasement . '</span>';
+        $name = '<span class="TaxonName_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxon_name_or_taxon_base_dto->label  . $name_encasement . '</span>';
     }
 
 

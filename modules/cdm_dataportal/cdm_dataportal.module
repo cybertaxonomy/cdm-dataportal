@@ -1870,12 +1870,12 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
 
 
     if (variable_get(DISTRIBUTION_CONDENSED) || variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
-        $query_parameters['part'] = array('mapUriParams');
+        $query_parameters['part'] = 'mapUriParams';
         if (variable_get(DISTRIBUTION_CONDENSED)) {
-            $query_parameters['part'][] = 'condensedDistribution';
+            $query_parameters['part'] .= ',condensedDistribution';
         }
         if (variable_get(DISTRIBUTION_ORDER_MODE, DISTRIBUTION_ORDER_MODE_DEFAULT) == 'TREE') {
-            $query_parameters['part'][] = 'tree';
+            $query_parameters['part'] .= ',tree';
         }
     }
     $et_al = variable_get(ET_AL_POS);
@@ -1887,12 +1887,13 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     $omit_level = variable_get(DISTRIBUTION_TREE_OMIT_LEVELS);
     //
     if (isset_not_empty($omit_level)){
-        //$query_parameters['omitLevels'] = array();
+        $tmpArray = array();
         foreach (variable_get(DISTRIBUTION_TREE_OMIT_LEVELS, array()) as $a_uuid) {
             if (is_uuid($a_uuid)) {
-                $query_parameters['omitLevels'][] = $a_uuid;
+                $tmpArray[] = $a_uuid ;
             }
         }
+        $query_parameters['omitLevels'] = implode(',', $tmpArray);
     }
 
 
@@ -1911,12 +1912,13 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         $query_parameters['statusTree'] = variable_get(CDM_STATUSTREE_UUID);
     }
     if (variable_get(ANNOTATION_TYPES_VISIBLE)) {
+        $tmpArray = array();
         foreach (variable_get(ANNOTATION_TYPES_VISIBLE, array()) as $a_uuid) {
             if (is_uuid($a_uuid)) {
-                $query_parameters['annotationTypes'][] = $a_uuid;
+                $tmpArray[] = $a_uuid;
             }
         }
-
+        $query_parameters['annotationTypes'] = implode(',',$tmpArray);
     }
     $synonymy_as_tab = variable_get(CDM_SYNONYMY_AS_TAB);
     if ($chapter == 'all'){
@@ -1947,18 +1949,23 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     }
 
     if (variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES)){
+        $tmpArray = array();
         foreach (variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, array()) as $a_uuid) {
             if (is_uuid($a_uuid)) {
-                $query_parameters['nameRelationsDirect'][] = $a_uuid;
+                 $tmpArray[] = $a_uuid;
             }
         }
+        $query_parameters['nameRelationsDirect'] = implode(',',$tmpArray);
+
     }
     if (variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES)){
+        $tmpArray = array();
         foreach (variable_get(CDM_NAME_RELATIONSHIP_INLINE_TYPES, array()) as $a_uuid) {
             if (is_uuid($a_uuid)) {
-                $query_parameters['nameRelationsInverse'][] = $a_uuid;
+                $tmpArray[] = $a_uuid;
             }
         }
+        $query_parameters['nameRelationsInverse'] = implode(',', $tmpArray);
     }
 
     $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
@@ -1968,10 +1975,10 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     }else{
         $query_parameters['doMedia'] = 0;
     }
-    //$query_parameters['uuid'] = $uuid;
-    //$json_post_object = json_encode($query_parameters, JSON_FORCE_OBJECT);
-    //$taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, $json_post_object, 'POST');
-    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
+    $query_parameters['uuid'] = $uuid;
+    $json_post_object = json_encode($query_parameters, JSON_FORCE_OBJECT);
+    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, $json_post_object, 'POST');
+    //$taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
     cache_set('current_chapter', $chapter);
     if (empty($taxon_dto)) {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
