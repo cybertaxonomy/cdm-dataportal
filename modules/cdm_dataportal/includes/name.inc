@@ -1060,6 +1060,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
                     $additional_citations = [];
                     $additional_data = [];
                     //if ($description->label == "Additional Publication") {
+                        if (isset_not_empty($description->facts->items)){
                         foreach ($description->facts->items as $description_element) {
                             if (isset($description_element->typedLabel) ) {
                                 RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
@@ -1085,7 +1086,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
                                 }
                             }
                         }
-                    //}
+                    }
                     // merge
                     $additional_citations = array_merge($additional_citations, $additional_data);
                     if (!empty($additional_pub_markup)){
