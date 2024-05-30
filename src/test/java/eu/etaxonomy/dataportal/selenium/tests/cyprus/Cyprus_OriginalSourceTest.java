@@ -36,13 +36,12 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
     private static final Logger logger = LogManager.getLogger();
 
     // Taxon Cistus creticus subsp. creticus
-    static UUID taxonUuid = UUID.fromString("2e58b1ab-03a9-4693-bcec-3b8e7f04b572");
+    private static UUID taxonUuid = UUID.fromString("2e58b1ab-03a9-4693-bcec-3b8e7f04b572");
 
-    TaxonProfilePage p = null;
+    private TaxonProfilePage p = null;
 
     @Before
     public void setUp() throws MalformedURLException {
-
         p = new TaxonProfilePage(driver, getContext(), taxonUuid);
     }
 
@@ -89,5 +88,4 @@ public class Cyprus_OriginalSourceTest extends CdmDataPortalTestBase{
         assertTrue(linksInFeatureBlock.get(3).getAttribute("href").endsWith("cdm_dataportal/reference/07a97be7-b3fa-4f76-838d-ac7e1e6e9d70"));
         assertTrue(linksInFeatureBlock.get(4).getAttribute("href").contains("cdm_dataportal/name/a1dfcc80-2121-46bb-b8b2-c267a9e0725b"));
     }
-
 }
