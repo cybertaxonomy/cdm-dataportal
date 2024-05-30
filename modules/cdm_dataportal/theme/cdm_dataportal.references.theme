@@ -128,11 +128,11 @@ function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_ico
   $citation = trim($reference_dto->label[0]->label);
   $icon_link = "";
   if((isset($do_icon_link) && $do_icon_link === TRUE)) {
-    $icon_link = cdm_internal_link(path_to_reference($reference_dto->uuid));
+    $icon_link = cdm_internal_link(path_to_reference($reference_dto->linkedUuid));
   }
   if (isset($do_text_link) && $do_text_link === TRUE) {
     $out = '<span class="reference">';
-    $out .= l($citation, path_to_reference($reference_dto->uuid), array(
+    $out .= l($citation, path_to_reference($reference_dto->linkedUuid), array(
       'attributes' => array(
         "class" => "reference",
       ),
