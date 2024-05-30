@@ -1977,8 +1977,8 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     }
     $query_parameters['uuid'] = $uuid;
     $json_post_object = json_encode($query_parameters, JSON_FORCE_OBJECT);
-    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, $json_post_object, 'POST');
-    //$taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
+   // $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, $json_post_object, 'POST');
+    $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, queryString($query_parameters));
     cache_set('current_chapter', $chapter);
     if (empty($taxon_dto)) {
         drupal_set_title(t('Taxon does not exist'), PASS_THROUGH);
