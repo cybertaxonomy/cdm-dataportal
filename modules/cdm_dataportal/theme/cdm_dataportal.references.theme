@@ -260,7 +260,7 @@ function cdm_doi($doi, $iconified = false) {
     if (isset($doi->prefix)){
         $doi_resolve_uri = ' https://doi.org/' . $doi->prefix;
     }else{ //this should not be possible because a doi without prefix is not allowed in cdm
-        $doi_resolve_uri = ' https://doi.org/' . $doi;
+        $doi_resolve_uri = $doi;
     }
     if (isset($doi->suffix)) {
       $doi_resolve_uri .= '/' . $doi->suffix;
