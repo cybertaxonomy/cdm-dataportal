@@ -1060,7 +1060,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
                     $additional_citations = [];
                     $additional_data = [];
                     //if ($description->label == "Additional Publication") {
-                        if (isset_not_empty($description->facts->items)){
+                        if (isset_not_empty($description->facts)){
                         foreach ($description->facts->items as $description_element) {
                             if (isset($description_element->typedLabel) ) {
                                 RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
@@ -2728,7 +2728,9 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
                 $annotations_and_sources =  handle_new_only_sources($name_rel);
 
                 $fnKeys = array_merge($annotations_and_sources->getFootNoteKeys(), $fnKeys);
-                asort($fnKeys);
+                usort($fnKeys, function($a, $b) {
+                    return strlen($a) - strlen($b) ?: strcmp($a, $b);
+                });
                 $rel_footnote_key_markup = render_footnote_keys($fnKeys, ',');
                // $rel_footnote_key_markup .= render_footnote_key($fnKeys[1]);
                 $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $name_type, true);

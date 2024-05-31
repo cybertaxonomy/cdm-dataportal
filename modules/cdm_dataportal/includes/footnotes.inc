@@ -204,6 +204,14 @@ function cdm_entity_annotations_as_content(stdClass $cdm_entity) {
 function render_footnote_keys(array $footnote_keys, $separator) {
 
   $footnotes_markup = '';
+  if (isset_not_empty($footnote_keys)){
+      usort($footnote_keys, function($a, $b) {
+
+          return strlen($a->keyStr) - strlen($b->keyStr) ?: strcmp($a->keyStr, $b->keyStr);});
+  }else{
+      return $footnotes_markup;
+  }
+
   foreach ($footnote_keys as $foot_note_key) {
     try {
       $footnotes_markup .= render_footnote_key($foot_note_key, ($footnotes_markup ? $separator : ''));
