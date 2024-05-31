@@ -127,13 +127,13 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "2. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                 footnotes.get(1).getText());
         assertEquals(
-                "5. Editorial annotation on Nodosilinea blockensis, New Species in the solar system",
+                "3. Editorial annotation on Nodosilinea blockensis, New Species in the solar system",
                 footnotes.get(2).getText());
         assertEquals(
-                "3. Editorial annotation on Nodosilinea sensensia, Plantas vasculares de Oz",
+                "4. Editorial annotation on Nodosilinea sensensia, Plantas vasculares de Oz",
                 footnotes.get(3).getText());
         assertEquals(
-                "4. Editorial annotation on Nodosilinea sensensia, Species solaris",
+                "5. Editorial annotation on Nodosilinea sensensia, Species solaris",
                 footnotes.get(4).getText());
         assertEquals(
                 "6. Art. 88.9",
