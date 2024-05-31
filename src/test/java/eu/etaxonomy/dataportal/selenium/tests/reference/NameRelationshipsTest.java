@@ -115,8 +115,8 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensensia_uuid);
 
         WebElement accName = p.getAcceptedName();
-        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2 [non Nodosilinea sensensia3 "
-                + "nec Nodosilinea sensensia4 nec Nodosilinea blockensis5 has orthographic variant6,7 Nodosilinea sensensi 20018]", accName.getText());
+        assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2 [non Nodosilinea blockensis 19843 "
+                + "nec Nodosilinea sensensia Bukht. 19874 nec Nodosilinea sensensia Bonstedt 19885 has orthographic variant6,7 Nodosilinea sensensi 20018]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
         assertEquals(8, footnotes.size()); //source of relationship is shown as footnote as well
@@ -127,13 +127,13 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
                 "2. Editorial annotation on Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem",
                 footnotes.get(1).getText());
         assertEquals(
-                "3. Editorial annotation on Nodosilinea sensensia, Plantas vasculares de Oz",
+                "5. Editorial annotation on Nodosilinea blockensis, New Species in the solar system",
                 footnotes.get(2).getText());
         assertEquals(
-                "4. Editorial annotation on Nodosilinea sensensia, Species solaris",
+                "3. Editorial annotation on Nodosilinea sensensia, Plantas vasculares de Oz",
                 footnotes.get(3).getText());
         assertEquals(
-                "5. Editorial annotation on Nodosilinea blockensis, New Species in the solar system",
+                "4. Editorial annotation on Nodosilinea sensensia, Species solaris",
                 footnotes.get(4).getText());
         assertEquals(
                 "6. Art. 88.9",
