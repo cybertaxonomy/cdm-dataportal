@@ -8,8 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.MalformedURLException;
 import java.util.UUID;
 
@@ -21,18 +19,14 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class HomonymTest extends CdmDataPortalTestBase{
 
     static UUID pilosella_guthnikiana_Uuid = UUID.fromString("6d711fa0-77c3-42df-9d44-83fdc78f3482");
     static UUID lactuca_glandulifera_Uuid = UUID.fromString("6ece0be7-ba4a-4363-b103-4e60429988e5");
     static UUID dubyaea_hispida_Uuid = UUID.fromString("e72f3bc5-70d7-404c-bfd7-125fec7387bb");
-
 
     @Test
     public void pilosella_guthnikiana_homonyms() throws MalformedURLException {
@@ -42,7 +36,6 @@ public class HomonymTest extends CdmDataPortalTestBase{
 
         assertEquals("= Hieracium multiflorum Gaudin, Fl. Helv. 5: 87. 1829 [non Hieracium multiflorum Gray 1821]", p.getHeterotypicalGroupSynonymName(1, 1));
         assertEquals("= Hieracium cruentum Nägeli & Peter, Hierac. Mitt.-Eur. 1: 455, 811. 1885, nom. illeg. [non Hieracium cruentum Jord. 1849]", p.getHeterotypicalGroupSynonymName(6, 1));
-
    }
 
     @Test

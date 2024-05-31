@@ -2923,9 +2923,9 @@ function cdm_settings_layout_name_page()
   $form['name_relations'][CDM_NAME_RELATIONSHIP_LIST_TYPES] = array(
     '#type' => 'checkboxes',
     '#title' => t('Name relationship types') . ':',
-    '#description' => 'This setting only affects specific types of name relations which are displayed as list. Another representations 
+    '#description' => 'This setting only affects specific types of name relations which are displayed as list. Another representation 
     is the inline style used in the synonymy which may show a different (reduced) set of name relations. 
-    The according settings can be adjusted in the ' . l('taxon page settings section synonmy', 'admin/config/cdm_dataportal/settings/layout/taxon') . '.',
+    The according settings can be adjusted in the ' . l(' synonmy section of the taxon page settings', 'admin/config/cdm_dataportal/settings/layout/taxon') . '.',
     '#options' => $name_relationship_type_options,
     '#default_value' => variable_get(CDM_NAME_RELATIONSHIP_LIST_TYPES, cdm_vocabulary_as_defaults(UUID_NAME_RELATIONSHIP_TYPE)),
   );

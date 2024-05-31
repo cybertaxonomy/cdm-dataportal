@@ -11,6 +11,7 @@ package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -27,7 +28,6 @@ import eu.etaxonomy.dataportal.pages.GenericPortalPage;
 import eu.etaxonomy.dataportal.pages.PortalPage;
 import eu.etaxonomy.dataportal.pages.TaxonSearchResultPage;
 import eu.etaxonomy.dataportal.selenium.VisibilityOfElementLocated;
-import junit.framework.Assert;
 
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
@@ -38,10 +38,8 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
     @Before
     public void setUp() throws Exception {
-
         driver.get(getContext().getSiteUri().toString());
         homePage = new GenericPortalPage(driver, getContext());
-
     }
 
     // @Test
