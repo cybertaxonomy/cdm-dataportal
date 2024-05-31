@@ -169,7 +169,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertEquals(2, footnotes.size());
         BaseElement footnote1 = footnotes.get(1);
         assertEquals("1. editorial note on the type name of Ramsaria", footnotes.get(0).getText());
-        assertEquals("2. Species solaris", footnote1.getText());
+        assertEquals("2. 1988: Species solaris", footnote1.getText());
         List<LinkElement> linksInFootnote3 = footnote1.getLinksInElement();
         assertEquals(1, linksInFootnote3.size());
         assertTrue(linksInFootnote3.get(0).getUrl().endsWith("cdm_dataportal/reference/5e5d9d08-8c28-4b22-b30a-6214c8641163"));
