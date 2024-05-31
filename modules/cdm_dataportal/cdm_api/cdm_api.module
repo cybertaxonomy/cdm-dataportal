@@ -2468,7 +2468,7 @@ function cdm_ws_debug_add($uri, $method, $post_data, $duration_fetch, $duration_
       $data_links .= '<a href="' . $json_uri . '" target="data">json</a>-';
       $data_links .= '<a href="' . url('cdm_api/proxy/' . urlencode($json_uri)) . '" target="data">proxied</a>';
     } else {
-      $js_link_activation = 'class="http-' . $method . '-link" data-cdm-http-post="' . $post_data . '" type="application/x-www-form-urlencoded"';
+      $js_link_activation = 'class="http-' . $method . '-link" data-cdm-http-post="' . urlencode($post_data) . '" type="application/json"';
       $data_links .= '<a ' . $js_link_activation . ' href="' . url('cdm_api/proxy/' . urlencode($xml_uri)) . '" target="data">xml-proxied</a>';
       $data_links .= '<br/>';
       $data_links .= '<a ' . $js_link_activation . ' href="' . url('cdm_api/proxy/' . urlencode($json_uri)) . '" target="data">json-proxied</a>';
@@ -2598,35 +2598,29 @@ function cdm_http_request($uri, $method = "GET", $data = NULL) {
     $header['Accept-Language'] = $acceptLanguage;
     $header['Accept-Charset'] = 'UTF-8';
   }
+    if($method == "POST") {
+        // content type is application/x-www-form-urlencoded, so the request body uses the same format as the query string
+        if (strpos($data, '=')){ // params in key-value
+            $header['Content-Type'] = 'application/x-www-form-urlencoded';
+        }else{//data in json format
+            $header['Content-Type'] = 'application/json';
+        }
+
+    }
+
     $context_resource = null;
     if(!variable_get('cdm_webservice_url_ssl_verify', 1)){
         $context_resource = stream_context_create(array('ssl' => array('verify_peer' => FALSE, 'verify_peer_name' => FALSE)));
     }
     cdm_dd($uri);
-  if($method == "POST") {
-    // content type is application/x-www-form-urlencoded, so the request body uses the same format as the query string
-    //$header['Content-Type'] = 'application/x-www-form-urlencoded';
-      $header['Content-Type'] = 'application/json';
-      return drupal_http_request($uri, array(
-              'headers' => $header,
-              'method' => $method,
-              'data' => $data,
-              'timeout' => CDM_HTTP_REQUEST_TIMEOUT,
-              'context' => $context_resource
-          )
-      );
-  }
-
-
-
-  return drupal_http_request($uri, array(
-          'headers' => $header,
-          'method' => $method,
-          'data' => $data,
-          'timeout' => CDM_HTTP_REQUEST_TIMEOUT,
-          'context' => $context_resource
-      )
-  );
+    return drupal_http_request($uri, array(
+            'headers' => $header,
+            'method' => $method,
+            'data' => $data,
+            'timeout' => CDM_HTTP_REQUEST_TIMEOUT,
+            'context' => $context_resource
+        )
+    );
 
 
 }
