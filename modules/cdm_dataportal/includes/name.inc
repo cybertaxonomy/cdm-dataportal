@@ -2729,7 +2729,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
 
                 $fnKeys = array_merge($annotations_and_sources->getFootNoteKeys(), $fnKeys);
                 usort($fnKeys, function($a, $b) {
-                    return strlen($a) - strlen($b) ?: strcmp($a, $b);
+                    return strlen($a->keyStr) - strlen($b->keyStr) ?: strcmp($a->keyStr, $b->keyStr);
                 });
                 $rel_footnote_key_markup = render_footnote_keys($fnKeys, ',');
                // $rel_footnote_key_markup .= render_footnote_key($fnKeys[1]);
