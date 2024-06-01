@@ -1378,7 +1378,7 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
 
     $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
     if (isset($name_relations)&& isset($name_relations[0])){
-        $name_relationships = compose_new_name_relationships_inline($name_relations, $taxon_dto->name->uuid, $taxon_dto->uuid);
+        $name_relationships = compose_new_name_relationships_inline($name_relations, $taxon_dto->nameUuid, $taxon_dto->uuid);
     }
 
     // Render relationships of accepted name.
