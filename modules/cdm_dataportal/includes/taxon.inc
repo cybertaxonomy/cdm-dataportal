@@ -817,7 +817,7 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
     homotypic group (ordered correctly by the java cdm_lib).
     */
     //TODO: how it is implemented in new dto???
-    if ($taxon_dto->name->invalid ) {
+    if ($taxon_dto->invalid ) {
         $relsign = $relsign_invalid;
     }
 

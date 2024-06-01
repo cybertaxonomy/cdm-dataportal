@@ -1156,10 +1156,10 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
         // the nomenclatural status footnote key refers to the source citation
         $annotations_and_sources->addFootNoteKey($nom_status_fkey);
     }
-    if ($show_taxon_name_annotations) {
-       $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto->name,
-            null, null, $annotations_and_sources);
-    }
+    //if ($show_taxon_name_annotations) {
+    //   $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto->name,
+    //        null, null, $annotations_and_sources);
+    //}
     //handle annotations of taxonbase
     if ($show_taxon_annotations) {
         $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto,
