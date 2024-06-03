@@ -92,17 +92,12 @@ function cdm_distribution_filter_query() {
     $query['subAreaPreference'] = 1;
   }
   if (is_array($cdm_distribution_filter['hiddenAreaMarkerType']) && count($cdm_distribution_filter['hiddenAreaMarkerType']) > 0) {
-    $temp_hidden = '';
-    foreach ($cdm_distribution_filter['hiddenAreaMarkerType'] as $marker_type => $enabled) {
-      if ($enabled) {
-          if (array_key_exists('fallbackAreaMarkerType', $query)){
-            $query['fallbackAreaMarkerType'] .= ($query['fallbackAreaMarkerType'] ? ',' : '') . $marker_type;
+
+      foreach ($cdm_distribution_filter['hiddenAreaMarkerType'] as $marker_type => $enabled) {
+          if ($enabled) {
+              $query['fallbackAreaMarkerType'] .= ($query['fallbackAreaMarkerType'] ? ',' : '') . $marker_type;
           }
       }
-    }
-    //if ($temp_hidden){
-    //    $query['fallbackAreaMarkerType'] = $temp_hidden;
-    //}
   }
 
   return $query;
