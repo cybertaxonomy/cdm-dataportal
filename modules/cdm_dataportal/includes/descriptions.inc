@@ -92,7 +92,7 @@ function cdm_distribution_filter_query() {
     $query['subAreaPreference'] = 1;
   }
   if (is_array($cdm_distribution_filter['hiddenAreaMarkerType']) && count($cdm_distribution_filter['hiddenAreaMarkerType']) > 0) {
-
+      $query['fallbackAreaMarkerType'] = '';
       foreach ($cdm_distribution_filter['hiddenAreaMarkerType'] as $marker_type => $enabled) {
           if ($enabled) {
               $query['fallbackAreaMarkerType'] .= ($query['fallbackAreaMarkerType'] ? ',' : '') . $marker_type;
