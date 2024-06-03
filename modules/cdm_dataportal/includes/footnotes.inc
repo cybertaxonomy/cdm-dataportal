@@ -212,9 +212,9 @@ function render_footnote_keys(array $footnote_keys, $separator) {
           if (is_numeric($a->keyStr) && is_numeric($b->keyStr)){
               return $a->keyStr - $b->keyStr;
           }else if (is_numeric($b->keyStr) && !is_numeric($a->keyStr)){
-              return 1;
-          }else if (is_numeric($a->keyStr) && !is_numeric($b->keyStr)){
               return -1;
+          }else if (is_numeric($a->keyStr) && !is_numeric($b->keyStr)){
+              return 1;
           }
           return strlen($a->keyStr) - strlen($b->keyStr) ?: strcmp($a->keyStr, $b->keyStr);});
   }else{

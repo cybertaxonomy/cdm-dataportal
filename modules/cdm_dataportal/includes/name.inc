@@ -2735,9 +2735,9 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
                     if (is_numeric($a->keyStr) && is_numeric($b->keyStr)){
                         return $a->keyStr - $b->keyStr;
                     }else if (is_numeric($b->keyStr) && !is_numeric($a->keyStr)){
-                        return 1;
-                    }else if (is_numeric($a->keyStr) && !is_numeric($b->keyStr)){
                         return -1;
+                    }else if (is_numeric($a->keyStr) && !is_numeric($b->keyStr)){
+                        return 1;
                     }
                     return strlen($a->keyStr) - strlen($b->keyStr) ?: strcmp($a->keyStr, $b->keyStr);});
                 $rel_footnote_key_markup = render_footnote_keys($fnKeys, ',');
