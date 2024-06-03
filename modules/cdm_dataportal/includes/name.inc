@@ -2729,8 +2729,17 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
 
                 $fnKeys = array_merge($annotations_and_sources->getFootNoteKeys(), $fnKeys);
                 usort($fnKeys, function($a, $b) {
-                    return strlen($a->keyStr) - strlen($b->keyStr) ?: strcmp($a->keyStr, $b->keyStr);
-                });
+                    if ($a == $b) return 0;
+                    if ($a == null) return -1;
+                    if ($b == null) return 1;
+                    if (is_numeric($a->keyStr) && is_numeric($b->keyStr)){
+                        return $a->keyStr - $b->keyStr;
+                    }else if (is_numeric($b->keyStr) && !is_numeric($a->keyStr)){
+                        return 1;
+                    }else if (is_numeric($a->keyStr) && !is_numeric($b->keyStr)){
+                        return -1;
+                    }
+                    return strlen($a->keyStr) - strlen($b->keyStr) ?: strcmp($a->keyStr, $b->keyStr);});
                 $rel_footnote_key_markup = render_footnote_keys($fnKeys, ',');
                // $rel_footnote_key_markup .= render_footnote_key($fnKeys[1]);
                 $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $name_type, true);

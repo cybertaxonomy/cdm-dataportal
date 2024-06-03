@@ -206,7 +206,16 @@ function render_footnote_keys(array $footnote_keys, $separator) {
   $footnotes_markup = '';
   if (isset_not_empty($footnote_keys)){
       usort($footnote_keys, function($a, $b) {
-
+          if ($a == $b) return 0;
+          if ($a == null) return -1;
+          if ($b == null) return 1;
+          if (is_numeric($a->keyStr) && is_numeric($b->keyStr)){
+              return $a->keyStr - $b->keyStr;
+          }else if (is_numeric($b->keyStr) && !is_numeric($a->keyStr)){
+              return 1;
+          }else if (is_numeric($a->keyStr) && !is_numeric($b->keyStr)){
+              return -1;
+          }
           return strlen($a->keyStr) - strlen($b->keyStr) ?: strcmp($a->keyStr, $b->keyStr);});
   }else{
       return $footnotes_markup;
