@@ -8,20 +8,16 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import java.net.MalformedURLException;
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
-import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
-import eu.etaxonomy.dataportal.elements.TypeDesignationType;
+import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
-import eu.etaxonomy.dataportal.DrupalVars;
 
 /**
  * @author a.kohlbecker
