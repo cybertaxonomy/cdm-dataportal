@@ -1049,7 +1049,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
   // Descriptions (aggregated)
     //TODO!!!
-    /*
+
   $descriptionTypes = array();
   $descriptionTypes['descriptionTypes'] = ("AGGREGATED_STRUC_DESC");
   $aggregatedDescriptions = cdm_ws_fetch_all(CDM_WS_PORTAL_TAXON . '/' . $taxon_dto->uuid . '/descriptions', $descriptionTypes);
@@ -1066,14 +1066,14 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
       }
       $description_block = feature_block(t('Descriptions (aggregated)'), $feature_description);
       $description_block->content = [];
-      $description_block->content[] = compose_new_feature_block_wrap_elements([$description_item], $feature_description);
+      $description_block->content[] = compose_feature_block_wrap_elements([$description_item], $feature_description);
 
       $feature_block_list[$pseudo_feature_weights[PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS]] = $description_block;
       cdm_toc_list_add_item('Descriptions (aggregated)', 'aggregation_descriptions', null, false, $pseudo_feature_weights[PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS]);
 
 
   }
-    */
+
 
   // sort by weight
   ksort($feature_block_list);
