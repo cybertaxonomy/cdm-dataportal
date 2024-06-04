@@ -338,7 +338,7 @@ function cdm_new_taxonRelationships($taxonRelationshipsDTO, $focusedTaxon){
 
                         $sensu_reference_markup = $joined_refs[$joined_ref_key]['longCitation'];
                         $footnote_key = '';
-                        if ($sensu_reference_markup != $joined_refs[$joined_ref_key]['order_by_key']) {
+                        if ($sensu_reference_markup != $joined_refs[$joined_ref_key]['citation']) {
                             $footnote_key = FootnoteManager::addNewFootnote($footnote_list_key, $joined_refs[$joined_ref_key]['markup']);
                             $footnote_key = render_footnote_key($footnote_key);
                         }
