@@ -1374,7 +1374,7 @@ function compose_new_description_element_taxon_interaction($element, $feature_bl
     $out .= render_footnotes(RenderHints::getFootnoteListKey(), 'li');
     $out .= '</ul>';
     */
-    $render_array = compose_description_element($element, $feature_block_settings, $out, $element->feature->uuid);
+    $render_array = compose_description_element($element, $feature_block_settings, $out, $element->uuid);
 
 
     return $render_array;
@@ -1445,8 +1445,12 @@ function compose_new_description_element_individuals_association($element, $feat
 function compose_description_element_categorical_data($element, $feature_block_settings, $prepend_feature_label = FALSE) {
 
   $state_data_markup = render_state_data($element);
+  if (isset_not_empty($element->feature)){
+      $render_array = compose_description_element($element, $feature_block_settings, $state_data_markup, $element->feature->uuid, $prepend_feature_label);
+  }else{
+      $render_array = compose_description_element($element, $feature_block_settings, $state_data_markup, $element->uuid, $prepend_feature_label);
+  }
 
-  $render_array = compose_description_element($element, $feature_block_settings, $state_data_markup, $element->feature->uuid, $prepend_feature_label);
 
   return $render_array;
 }
