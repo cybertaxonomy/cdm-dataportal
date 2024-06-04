@@ -101,7 +101,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         // TODO the order of the MANs is not always defined please see #7766
         // with doubtful flag
-        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S2", p.getMisappliedName(5).getText());
+        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S 20132", p.getMisappliedName(5).getText());
 
         assertEquals("misapplied for", p.getMisappliedName(6).findElement(By.className("symbol")).getText());
         assertEquals("Ossaea maculata", p.getMisappliedName(6).findElement(By.className("name")).getText());
@@ -126,7 +126,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
 
         assertEquals("≜⊃\nTrichocentrum undulatum (Sw.) Ackerman & M. W. Chase sec. Kohlbecker 2016–2018", p.getTaxonRelationships(1).getText());
-        assertEquals("∅\nAchilllea santolina Lag. sec. Testor 2018+, rel. sec. A&S: 35", p.getTaxonRelationships(2).getText());
+        assertEquals("∅\nAchilllea santolina Lag. sec. Testor 2018+, rel. sec. A&S 2013: 35", p.getTaxonRelationships(2).getText());
 
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
@@ -150,7 +150,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         BaseElement footNote = footnotes.get(1);
-        assertEquals("2. A&S: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footNote.getText());
+        assertEquals("2. A&S 2013: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footNote.getText());
         List<LinkElement> links = footNote.getLinksInElement();
         assertEquals(2, links.size());
         assertEquals("https://doi.org/10.1111/j.1756-1051.2012.00012.x", links.get(0).getUrl());
