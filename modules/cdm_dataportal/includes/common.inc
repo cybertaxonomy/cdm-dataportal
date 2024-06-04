@@ -280,13 +280,13 @@ function compare_text_data($a, $b) {
 
 function compare_MAN_citation($a, $b) {
 
-    if (isset_not_empty($a['sensu_citation_sortable_date'])){
-        $a_complete_string = $a['sensu_citation_sortable_date'];
+    if (isset_not_empty($a['sortable_date'])){
+        $a_complete_string = $a['sortable_date'];
     }else{
         $a_complete_string = 'zzzz-zz-zz';
     }
-    if (isset_not_empty($b['sensu_citation_sortable_date'])){
-        $b_complete_string = $b['sensu_citation_sortable_date'];
+    if (isset_not_empty($b['sortable_date'])){
+        $b_complete_string = $b['sortable_date'];
     }else{
         $b_complete_string = 'zzzz-zz-zz';
     }
