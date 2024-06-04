@@ -347,8 +347,8 @@ define('CDM_DISTRIBUTION_FILTER', 'cdm_distribution_filter');
 define('CDM_DISTRIBUTION_FILTER_DEFAULT', serialize(
       array(
       'filter_rules' => array(
-        'statusOrderPreference' => 0,
-        'subAreaPreference' => 0,
+        'statusOrderPreference' => 1,
+        'subAreaPreference' => 1,
       ),
       'hiddenAreaMarkerType' => array()
      )
