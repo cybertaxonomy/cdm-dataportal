@@ -2487,31 +2487,45 @@ function cdm_settings_layout_taxon() {
           reference list of the idInVocabulary values of absence and presence terms:
 <pre>
 Presence Term
+e   endemic for the relevant area
 p	present
+n   native
+nd  native: doubtfully native
 pd	present: doubtfully present
-n	native
+in  introduced: naturalized
+ia  introduced: adventitious (casual)
+i   introduced
+ip  introduced: uncertain degree of naturalisation
+id  introduced: doubtfully introduced (perhaps cultivated only)
+ni  naturalized invasive
+niq naturalized invasive: presence questionable
+nn  naturalized non-invasive
+nnq naturalized non-invasive: presence questionable
+ic  introduced: cultivated
+c   cultivated
+?e  endemic: presence questionable
+pd  present: presence questionable
 nq	native: presence questionable
-nd	native: doubtfully native
-c	cultivated
-i	introduced
+inq naturalised: presence questionable
+iaq introduced: adventive (casual): presence questionable
 iq	introduced: presence questionable
-id	introduced: doubtfully introduced (perhaps cultivated only)
-ip	introduced: uncertain degree of naturalisation
-ia	introduced: adventitious (casual)
-in	introduced: naturalized
-ic	introduced: cultivated
-e	endemic for the relevant area
-na	naturalised
-iv	invasive
+cq  cultivated, presence questionable
+ne  present but not endemic for the relevant area
+ue  present but with unknown endemism for the relevant area
+??  undefined
 
 AbsenceTerm
 a	absent
+ne  native: formerly native
+-e  endemic: reported in error
 f	reported in error
 nf	native: reported in error
+-d  doubtfully native: reported in error
 if	introduced: reported in error
+ie  introduced: formerly introduced
+-n  naturalised: reported in error
+iaf casual: reported in error
 cf	cultivated: reported in error
-ne	native: formerly native
-ie	introduced: formerly introduced
 
 </pre>'),
   );
