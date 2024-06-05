@@ -1714,7 +1714,7 @@ function cdm_settings_layout() {
           (this is hard coded and cannot be configured here).',
   );
 
-    $form['taxon_name']['Identifier'] = array(
+    $form['taxon_name'][CDM_SHOW_NAME_IDENTIFIER] = array(
         '#type' => 'checkbox',
         '#title' => 'Show Name Identifier',
         '#default_value' => variable_get(CDM_SHOW_NAME_IDENTIFIER, 1),
