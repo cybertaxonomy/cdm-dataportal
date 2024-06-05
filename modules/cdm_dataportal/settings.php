@@ -2495,7 +2495,7 @@ function cdm_settings_layout_taxon() {
           in the term itself (e.g. by using the term editor in the TaxEditor). This setting here is only for overriding
           the values defined in the terms. This is only necessary if more than 1 dataportal accesses the data in the
           database and if there are at least 2 dataportals having different requirements for the coloring.</i><BR><BR>
-          A json map object with either a distribution status uuid or an distribution status idInVocabulary as key 
+          A json map object with either a distribution status uuid or a distribution status idInVocabulary as key 
           and a hex color as value. e.g: <code>{"n":"#ff0000","cef81d25-501c-48d8-bbea-542ec50de2c2":"#00ff00"}</code>.
           The idInVocabulary version must always refer to a term in the CDM default distribution status vocabulary.
           For other terms it does not work therefore for these the uuid must be taken as key.<Br>
