@@ -2491,7 +2491,7 @@ function cdm_settings_layout_taxon() {
       '#element_validate' => array('form_element_validate_json'),
       '#default_value' => variable_get(DISTRIBUTION_STATUS_COLORS, ''),
       '#description' => t('Defines the distribution status colors of the distribution map.<BR>
-          <strong>NOTE:</string><i>The preferred way to define the distribution status coloring is to set the value
+          <strong>NOTE:</strong><i>The preferred way to define the distribution status coloring is to set the value
           in the term itself (e.g. by using the term editor in the TaxEditor). This setting here is only for overriding
           the values defined in the terms. This is only necessary if more than 1 dataportal accesses the data in the
           database and if there are at least 2 dataportals having different requirements for the coloring.</i><BR><BR>
