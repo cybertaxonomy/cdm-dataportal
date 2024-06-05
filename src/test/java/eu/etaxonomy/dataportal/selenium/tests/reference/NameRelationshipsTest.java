@@ -173,7 +173,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
         assertEquals("Nepenthes gracilis Korth., Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840 [& (J. T. K.) Spock & Scotty in Bot. Jahrb. Sol. 211: 591. 21941,2], [some typification note]. wfo-0001250151", accName.getText());
 
         WebElement synonym1 = p.getHeterotypicalGroupSynonym(1, 1);
-        assertEquals("=\nNepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858", synonym1.getText());
+        assertEquals("=\nNepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858 wfo-0000381975", synonym1.getText());
         WebElement synonym2 = p.getHeterotypicalGroupSynonym(1, 2);
         assertEquals(UTF8.EN_DASH+"\nNepenthes tupmanniana Bonstedt in Parey Blumeng. 1: 663. 1931 [non Nepenthes teysmanniana Miq., Fl. Ned. Ind. 1(1): 1073. 1858]", synonym2.getText());
         assertEquals("is misspelling for", synonym2.findElement(By.className("symbol")).getAttribute("title"));
