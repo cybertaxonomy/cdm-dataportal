@@ -2187,7 +2187,7 @@ function compose_cdm_reference_page($uuid) {
   $out .= cdm_annotations(cdm_fetch_visible_annotations($reference));
 
   $registration_working_set = cdm_ws_get("registrationWorkingSetDTO", array($uuid));
-  if($registration_working_set && count($registration_working_set->registrationDTOs) > 0){
+  if($registration_working_set && isset_not_empty($registration_working_set->registrationDTOs) &&count($registration_working_set->registrationDTOs) > 0){
     $out .= "<h3>Nomenclatural acts:</h3><div class=\"cdm-item-list registration-item-list\">";
     foreach($registration_working_set->registrationDTOs as $registration_dto){
       if($registration_dto->status == "PUBLISHED"){
