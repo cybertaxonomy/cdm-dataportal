@@ -2491,8 +2491,12 @@ function cdm_settings_layout_taxon() {
       '#element_validate' => array('form_element_validate_json'),
       '#default_value' => variable_get(DISTRIBUTION_STATUS_COLORS, ''),
       '#description' => t('<strong>EXPERIMENTAL!</strong><br/>This may be changed in the next release without notification.
-          A json map object with StatusTerm.idInVocabulary as key and a hex color as value. e.g: <code>{"n":"#ff0000","p":"#00ff00"}</code>.
-          reference list of the idInVocabulary values of absence and presence terms:
+          A json map object with either a distribution status uuid or an distribution status idInVocabulary as key 
+          and a hex color as value. e.g: <code>{"n":"#ff0000","cef81d25-501c-48d8-bbea-542ec50de2c2":"#00ff00"}</code>.
+          The idInVocabulary version must always refer to a term in the CDM default distribution status vocabulary.
+          For other terms it does not work therefore the uuid must be taken as key.<Br>
+          <Br>
+          Reference list of the idInVocabulary values of the default distribution status vocabulary:
 <pre>
 Presence Term
 e   endemic for the relevant area
