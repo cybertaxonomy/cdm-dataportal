@@ -2490,7 +2490,11 @@ function cdm_settings_layout_taxon() {
       '#title' => t('Custom status colors'),
       '#element_validate' => array('form_element_validate_json'),
       '#default_value' => variable_get(DISTRIBUTION_STATUS_COLORS, ''),
-      '#description' => t('<strong>EXPERIMENTAL!</strong><br/>This may be changed in the next release without notification.
+      '#description' => t('Defines the distribution status colors of the distribution map.<BR>
+          <strong>NOTE:</string><i>The preferred way to define the distribution status coloring is to set the value
+          in the term itself (e.g. by using the term editor in the TaxEditor). This setting here is only for overriding
+          the values defined in the terms. This is only necessary if more than 1 dataportal accesses the data in the
+          database and if there are at least 2 dataportals having different requirements for the coloring.</i><BR><BR>
           A json map object with either a distribution status uuid or an distribution status idInVocabulary as key 
           and a hex color as value. e.g: <code>{"n":"#ff0000","cef81d25-501c-48d8-bbea-542ec50de2c2":"#00ff00"}</code>.
           The idInVocabulary version must always refer to a term in the CDM default distribution status vocabulary.
