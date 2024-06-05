@@ -11,6 +11,7 @@ const PSEUDO_FEATURE_BIBLIOGRAPHY = 'BIBLIOGRAPHY';
 const PSEUDO_FEATURE_NUMBER_OF_TAXA = 'NUMBER_OF_TAXA';
 
 const CDM_NAME_PAGE_AUTOREDIRECT = 'cdm_name_page_autoredirect';
+const CDM_SHOW_NAME_IDENTIFIER = 'cdm_show_name_identifier';
 
 const CDM_NAME_PAGE_SECTION_TAXA = 'cdm_name_page_section_taxa';
 const CDM_NAME_PAGE_SECTION_TAXA_DEFAULT = 1;
@@ -1712,6 +1713,13 @@ function cdm_settings_layout() {
           links if the paramters $nameLink or $refenceLink are given to the name render function
           (this is hard coded and cannot be configured here).',
   );
+
+    $form['taxon_name']['Identifier'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'Show Name Identifier',
+        '#default_value' => variable_get(CDM_SHOW_NAME_IDENTIFIER, 1),
+        '#description' => t('By checking this option you can enable or disable the display of name identifiers .'),
+    );
 
   // @WA: D7 form api does not support reset buttons,
   // so to mimic the D5 reset button we add one like this.

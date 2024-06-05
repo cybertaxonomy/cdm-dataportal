@@ -967,6 +967,23 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
                 $renderTemplate);
         }
     }
+    if($isNotTitle){
+        if (isset_not_empty($taxon_name_or_taxon_base_dto->identifiers) && isset_not_empty($taxon_name_or_taxon_base_dto->identifiers->items) && variable_get(CDM_SHOW_NAME_IDENTIFIER, 1) ) {
+            $renderTemplate['identifierPart'] = array();
+            $renderTemplate['identifierPart']['status'] = true;
+            $renderTemplate['identifierPart']['identifier'] = '';
+            $identifier = '';
+            foreach ($taxon_name_or_taxon_base_dto->identifiers->items as $item){
+                if (isset_not_empty($item->link)){
+                    $identifier = '<a href="' . $item->link . '" class="' . $item->type . '"> ' . $item->identifier . '</a>';
+                }else{
+                    $identifier = '<span class="'. $item->type .'"> ' . $item->identifier . '</span>';
+                }
+            }
+            $renderTemplate['identifierPart']['identifier'] = $identifier;
+        }
+
+    }
 
     if (isset($renderTemplate['secReferencePart'])){
         $annotations_and_sources = new AnnotationsAndSources();
