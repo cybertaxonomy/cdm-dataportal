@@ -2499,44 +2499,44 @@ function cdm_settings_layout_taxon() {
           Reference list of the idInVocabulary values of the default distribution status vocabulary:
 <pre>
 Presence Term
-e   endemic for the relevant area
+e	endemic for the relevant area
 p	present
-n   native
-nd  native: doubtfully native
+n	native
+nd	native: doubtfully native
 pd	present: doubtfully present
-in  introduced: naturalized
-ia  introduced: adventitious (casual)
-i   introduced
-ip  introduced: uncertain degree of naturalisation
-id  introduced: doubtfully introduced (perhaps cultivated only)
-ni  naturalized invasive
-niq naturalized invasive: presence questionable
-nn  naturalized non-invasive
-nnq naturalized non-invasive: presence questionable
-ic  introduced: cultivated
-c   cultivated
-?e  endemic: presence questionable
-pd  present: presence questionable
+in	introduced: naturalized
+ia	introduced: adventitious (casual)
+i	introduced
+ip	introduced: uncertain degree of naturalisation
+id	introduced: doubtfully introduced (perhaps cultivated only)
+ni	naturalized invasive
+niq	naturalized invasive: presence questionable
+nn	naturalized non-invasive
+nnq	naturalized non-invasive: presence questionable
+ic	introduced: cultivated
+c	cultivated
+?e	endemic: presence questionable
+pd	present: presence questionable
 nq	native: presence questionable
-inq naturalised: presence questionable
-iaq introduced: adventive (casual): presence questionable
+inq	naturalised: presence questionable
+iaq	introduced: adventive (casual): presence questionable
 iq	introduced: presence questionable
-cq  cultivated, presence questionable
-ne  present but not endemic for the relevant area
-ue  present but with unknown endemism for the relevant area
-??  undefined
+cq	cultivated, presence questionable
+ne	present but not endemic for the relevant area
+ue	present but with unknown endemism for the relevant area
+??	undefined
 
 AbsenceTerm
 a	absent
-ne  native: formerly native
--e  endemic: reported in error
+ne	native: formerly native
+-e	endemic: reported in error
 f	reported in error
 nf	native: reported in error
--d  doubtfully native: reported in error
+-d	doubtfully native: reported in error
 if	introduced: reported in error
-ie  introduced: formerly introduced
--n  naturalised: reported in error
-iaf casual: reported in error
+ie	introduced: formerly introduced
+-n	naturalised: reported in error
+iaf	casual: reported in error
 cf	cultivated: reported in error
 
 </pre>'),
