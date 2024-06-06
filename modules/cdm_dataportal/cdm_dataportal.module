@@ -1967,7 +1967,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         }
         $query_parameters['nameRelationsInverse'] = implode(',', $tmpArray);
     }
-    $query_parameters['withAccessionType'] = variable_get(CDM_SHOW_ACCESSION_TYPE, 0);
+    $query_parameters['withAccessionType'] = variable_get(CDM_SHOW_ACCESSION_TYPE, 1);
 
     $tabsToDisplay = variable_get('cdm_taxonpage_tabs_visibility', unserialize(TAXONPAGE_VISIBILITY_OPTIONS_DEFAULT));
     $profile_image = variable_get(CDM_TAXON_PROFILE_IMAGE);

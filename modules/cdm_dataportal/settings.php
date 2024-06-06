@@ -1725,7 +1725,7 @@ function cdm_settings_layout() {
     $form['taxon_name'][CDM_SHOW_ACCESSION_TYPE] = array(
         '#type' => 'checkbox',
         '#title' => 'Show Accession Type in Typus Information',
-        '#default_value' => variable_get(CDM_SHOW_ACCESSION_TYPE, 0),
+        '#default_value' => variable_get(CDM_SHOW_ACCESSION_TYPE, 1),
         '#description' => t('By checking this option you can enable or disable the display of name identifiers .'),
     );
 
