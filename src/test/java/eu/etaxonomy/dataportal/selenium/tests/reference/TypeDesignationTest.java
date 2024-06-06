@@ -50,7 +50,7 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void tesTypeDesignationWithMultiAuthorCitation() throws MalformedURLException {
+    public void tesTypeDesignationWithMultiAuthorCitation() throws Exception {
        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), typinium_Uuid);
        assertEquals("Typinium Mill.", p.getAcceptedNameText());
        WebElement typeDesignationsContainer;
