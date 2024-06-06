@@ -64,7 +64,7 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
          assertNotNull("Expecting at least one Typedesignation", typeDesignations);
        }
 
-       List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getHomotypicalGroupTypeDesignations());
+       List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getNewHomotypicalGroupTypeDesignations());
        assertEquals(1, footnotes.size()); //adapted to 3 because of the annotation
        assertEquals("1. Heidari, F., Zima, J., Riahi, H. & Hauer, T. 1986: Multiauthor", footnotes.get(0).getText());
 
