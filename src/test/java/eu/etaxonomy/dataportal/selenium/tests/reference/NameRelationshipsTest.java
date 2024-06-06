@@ -116,7 +116,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
         WebElement accName = p.getAcceptedName();
         assertEquals("Nodosilinea sensensia (Blanco) Heidari & Hauer ex Lem, Nonsens species of the developers Vol1. 2001, comb. nov.1,2 [non Nodosilinea blockensis 19843 "
-                + "nec Nodosilinea sensensia Bukht. 19874 nec Nodosilinea sensensia Bonstedt 19885 has orthographic variant6,7 Nodosilinea sensensi 20018]", accName.getText());
+                + "nec Nodosilinea sensensia Bukht. 19874 nec Nodosilinea sensensia Bonstedt 19885, has orthographic variant6,7 Nodosilinea sensensi 20018]", accName.getText());
 
         List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
         assertEquals(8, footnotes.size()); //source of relationship is shown as footnote as well
