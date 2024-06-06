@@ -812,7 +812,7 @@ function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
         $referenceUri = FALSE;
     }
 
-    $out_taxon_part = render_new_taxon_or_name($taxon_dto, true, $taxonUri, $referenceUri, TRUE, TRUE, $is_synonym, $skip_render_template_keys, $is_invalid);
+    $out_taxon_part = render_new_taxon_or_name($taxon_dto, true, $taxonUri, $referenceUri, TRUE, TRUE, FALSE, $skip_render_template_keys, $is_invalid);
     $name_relations = cdm_name_relationships_for_taxon_new($taxon_dto);
     //TODO the name uuid is not available!!!
     $name_relations_render_array = compose_new_name_relationships_inline($name_relations, $taxon_dto->uuid, $taxon_dto->nameType);
