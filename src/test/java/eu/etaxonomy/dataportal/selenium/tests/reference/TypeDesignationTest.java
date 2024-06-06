@@ -28,6 +28,8 @@ import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
+import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
+import eu.etaxonomy.dataportal.elements.TypeDesignationType;
 
 /**
  *
@@ -50,7 +52,8 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
     public void tesTypeDesignationWithMultiAuthorCitation() throws MalformedURLException {
        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), typinium_Uuid);
        assertEquals("Typinium Mill.", p.getAcceptedNameText());
-
+       WebElement typeDesignationsContainer;
+       List<TypeDesignationElement> typeDesignations;
        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
          typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
          assertEquals("Lectotype: designated by Heidari & al. 1986: 271", typeDesignationsContainer.getText());
