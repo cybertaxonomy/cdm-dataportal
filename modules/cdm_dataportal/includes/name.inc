@@ -2555,7 +2555,6 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
     // compose
     $show_name_cache_only = FALSE;
-    $is_first = TRUE;
     foreach ($name_relations as $name_rel) {
 
       $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
@@ -2565,9 +2564,6 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
       $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
       $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup . ' ';
-      if (!$is_first){
-          $relationship_markup = ', ';
-      }
       $relationship_markup = $symbol_markup . $relationship_markup;
       if ($relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
@@ -2575,7 +2571,6 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
           $item_prefix,
           $item_suffix);
       }
-      $is_first = FALSE;
     }
 
     // name relationships to be displayed as non nec
@@ -2605,7 +2600,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
     if (count($orthographic_variants) > 0) {
       $show_name_cache_only = TRUE;
-      $is_first = TRUE;
+
       foreach ($orthographic_variants as $name_rel) {
 
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
@@ -2614,11 +2609,9 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
-        if (!$is_first || count($non_nec_name_rels) >0 || count($name_relations)>0){
-              $relationship_markup = ', ';
-        }
+
         $relationship_markup = $symbol_markup . $relationship_markup;
-        $is_first = FALSE;
+
           if (isset($relationship_markup) && $relationship_markup) {
               $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
                   null,
