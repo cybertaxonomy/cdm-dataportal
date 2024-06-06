@@ -2555,6 +2555,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
     // compose
     $show_name_cache_only = FALSE;
+    $is_first = TRUE;
     foreach ($name_relations as $name_rel) {
 
       $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
@@ -2564,6 +2565,9 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
 
       $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
       $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup . ' ';
+      if (!$is_first){
+          $relationship_markup = ', ';
+      }
       $relationship_markup = $symbol_markup . $relationship_markup;
       if ($relationship_markup) {
         $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
@@ -2571,6 +2575,7 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
           $item_prefix,
           $item_suffix);
       }
+      $is_first = FALSE;
     }
 
     // name relationships to be displayed as non nec
@@ -2597,8 +2602,10 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
     }
 
     // orthographic variants
+
     if (count($orthographic_variants) > 0) {
       $show_name_cache_only = TRUE;
+      $is_first = TRUE;
       foreach ($orthographic_variants as $name_rel) {
 
         $is_inverse_relation = $current_name_uuid == $name_rel->toName->uuid;
@@ -2607,14 +2614,19 @@ function compose_name_relationships($name_relations, $name_rel_type_filter, $cur
         $label = cdm_relationship_type_term_abbreviated_label($name_rel->type, $is_inverse_relation);
         $symbol = cdm_relationship_type_term_symbol($name_rel->type, $is_inverse_relation);
         $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
+        if (!$is_first || count($non_nec_name_rels) >0 || count($name_relations)>0){
+              $relationship_markup = ', ';
+        }
         $relationship_markup = $symbol_markup . $relationship_markup;
+        $is_first = FALSE;
+          if (isset($relationship_markup) && $relationship_markup) {
+              $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
+                  null,
+                  $item_prefix,
+                  $item_suffix);
+          }
       }
-      if (isset($relationship_markup) && $relationship_markup) {
-        $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
-          null,
-          $item_prefix,
-          $item_suffix);
-      }
+
     }
   }
   return $render_array;
@@ -2689,6 +2701,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
 
         // compose
         $show_name_cache_only = FALSE;
+        $is_first = TRUE;
         foreach ($name_relations as $name_rel) {
 
             $is_inverse_relation = $name_rel->inverse;
@@ -2698,19 +2711,25 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
 
             $symbol = $name_rel->relType;
             $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup . ' ';
-            $relationship_markup = $symbol_markup . $relationship_markup;
+            $separator = '';
+            if (!$is_first){
+                $separator = ', ';
+            }
+            $relationship_markup = $separator . $symbol_markup . $relationship_markup;
             if ($relationship_markup) {
                 $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
                     null,
                     $item_prefix,
-                    $item_suffix);
+                    trim($item_suffix));
             }
+            $is_first = FALSE;
         }
 
         // name relationships to be displayed as non nec
         if (count($non_nec_name_rels) > 0) {
             $non_nec_markup = '';
             $show_name_cache_only = FALSE;
+            $count = count($non_nec_name_rels);
             foreach ($non_nec_name_rels as $name_rel) {
                 RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
                 $annotations_and_sources = handle_new_annotations_and_sources($name_rel);
@@ -2720,6 +2739,7 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
                 $label = $name_rel->relType;
 
                 $symbol = $non_nec_markup ? ' nec ' : 'non';
+
                 $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
                 $non_nec_markup .= $symbol_markup . $relationship_markup;
                 $non_nec_markup .= $annotations_and_sources->footNoteKeysMarkup();
@@ -2728,13 +2748,14 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
                 $render_array['list']['items'][] = markup_to_render_array($non_nec_markup,
                     null,
                     $item_prefix,
-                    $item_suffix);
+                    trim($item_suffix));
             }
         }
 
         // orthographic variants
         if (count($orthographic_variants) > 0) {
             $show_name_cache_only = TRUE;
+            $is_first = TRUE;
             foreach ($orthographic_variants as $name_rel) {
                 RenderHints::setAnnotationsAndSourceConfig(synonymy_annotations_and_source_config());
 
@@ -2759,21 +2780,27 @@ function compose_new_name_relationships($name_relations, $name_rel_type_filter, 
                     return strlen($a->keyStr) - strlen($b->keyStr) ?: strcmp($a->keyStr, $b->keyStr);});
                 $rel_footnote_key_markup = render_footnote_keys($fnKeys, ',');
                // $rel_footnote_key_markup .= render_footnote_key($fnKeys[1]);
+
                 $relationship_markup = name_relationship_new_markup( $name_rel, $current_taxon_uuid, $name_type, true);
                 $label = $name_rel->relType;
                 $symbol = $name_rel->relType;
                 $symbol_markup = '<span class="symbol" title="' . $label . '">' . $symbol . '</span>' . $rel_footnote_key_markup .  ' ';
                 $annotations_and_sources = handle_new_only_annotations($name_rel);
-                $relationship_markup = $symbol_markup . $relationship_markup;
+                $separator = '';
+                if (!$is_first || count($non_nec_name_rels) > 0 || count($name_relations)>0){
+                    $separator = ', ';
+                }
+                $relationship_markup = $separator . $symbol_markup . $relationship_markup;
 
                 $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
+                if (isset($relationship_markup) && $relationship_markup) {
+                    $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
+                        null,
+                        $item_prefix,
+                        trim($item_suffix));
+                }
             }
-            if (isset($relationship_markup) && $relationship_markup) {
-                $render_array['list']['items'][] = markup_to_render_array($relationship_markup,
-                    null,
-                    $item_prefix,
-                    $item_suffix);
-            }
+
         }
     }
     return $render_array;
