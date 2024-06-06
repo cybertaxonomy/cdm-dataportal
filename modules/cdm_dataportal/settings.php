@@ -12,6 +12,7 @@ const PSEUDO_FEATURE_NUMBER_OF_TAXA = 'NUMBER_OF_TAXA';
 
 const CDM_NAME_PAGE_AUTOREDIRECT = 'cdm_name_page_autoredirect';
 const CDM_SHOW_NAME_IDENTIFIER = 'cdm_show_name_identifier';
+const CDM_SHOW_ACCESSION_TYPE = 'cdm_show_accession_type';
 
 const CDM_NAME_PAGE_SECTION_TAXA = 'cdm_name_page_section_taxa';
 const CDM_NAME_PAGE_SECTION_TAXA_DEFAULT = 1;
@@ -1718,6 +1719,13 @@ function cdm_settings_layout() {
         '#type' => 'checkbox',
         '#title' => 'Show Name Identifier',
         '#default_value' => variable_get(CDM_SHOW_NAME_IDENTIFIER, 1),
+        '#description' => t('By checking this option you can enable or disable the display of name identifiers .'),
+    );
+
+    $form['taxon_name'][CDM_SHOW_ACCESSION_TYPE] = array(
+        '#type' => 'checkbox',
+        '#title' => 'Show Accession Type in Typus Information',
+        '#default_value' => variable_get(CDM_SHOW_ACCESSION_TYPE, 0),
         '#description' => t('By checking this option you can enable or disable the display of name identifiers .'),
     );
 
