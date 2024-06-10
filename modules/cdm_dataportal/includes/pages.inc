@@ -323,24 +323,37 @@ function relationship_filter_query_parameters()
 }
 
 
-function create_html_link($link, $openInExternalWindow=false){
-    $html = "";
+function create_html_link($link, $openInExternalWindow=false, $add_icon = true){
+    $html = '';
+    $tmp_uri = '';
+    $tmp_text = '';
     if(isset_not_empty($link->uri) ){
-        if (!is_string($link->uri) && isset_not_empty($link->uri->javaUri)){
-            $html .= '<a  href="' . $link->uri->javaUri . '"';
-        }else{
-            $html .= '<a  href="' . $link->uri . '"';
-        }
 
-        if($openInExternalWindow){
-            $html .= ' target="_blank"';
+        if (!is_string($link->uri) && isset_not_empty($link->uri->javaUri)){
+            $tmp_uri = $link->uri->javaUri;
+            //$html .= '<a  href="' . $link->uri->javaUri . '"';
+        }else{
+            $tmp_uri = $link->uri;
+            //$html .= '<a  href="' . $link->uri . '"';
         }
-        $html .= '>' . $link->linkText . '</a>';
+        $tmp_text = $tmp_uri;
+
     }elseif (isset_not_empty($link->link->javaUri)){
-        $html .= '<a  href="' . $link->link->javaUri . '"';
-        $html .= '>' . $link->text . '</a>';
+        $tmp_uri = $link->link->javaUri ;
+        $tmp_text =  $link->text ;
     }
-    else{
+    if (isset_not_empty($tmp_uri)){
+        if ($add_icon){
+            $html .=  l($tmp_text, $tmp_uri).l(font_awesome_icon_markup('fa-external-link-square-alt', array('class' => array('superscript'))), $tmp_uri, array('html' => TRUE));
+        }else{
+            $html = '<a  href="' . $tmp_uri . '"';
+            if($openInExternalWindow){
+                $html .= ' target="_blank"';
+            }
+
+            $html .= '>' . $tmp_text. '</a>';
+        }
+    }else{
         $html .= $link->linkText;
     }
     return $html;
