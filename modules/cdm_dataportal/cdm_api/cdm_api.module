@@ -2939,17 +2939,26 @@ function cdm_get_taxontrees_as_options($add_none_option = FALSE, $include_uuids 
   if ($add_none_option) {
     $taxonomic_tree_options['NONE'] = ' '; // one Space character at beginning to force on top;
   }
+  $tmp_uuids = array();
+  foreach ($include_uuids as $uuid){
+      if ($uuid){
+          $tmp_uuids[] = $uuid;
+      }
+  }
   if ($taxonTrees) {
     foreach ($taxonTrees as $tree) {
-      if(is_array($include_uuids) && count($include_uuids) > 0 && array_search($tree->uuid, $include_uuids) === FALSE){
+      if(is_array($include_uuids) && count($include_uuids) > 0 && !in_array($tree->uuid, $tmp_uuids)){
         continue;
       }
+
       if (!$default_classification_uuid || $default_classification_uuid != $tree->uuid) {
-        $taxonomic_tree_options[$tree->uuid] = $tree->titleCache;
+          $taxonomic_tree_options[$tree->uuid] = $tree->titleCache;
       } else {
-        $taxonomic_tree_options[$tree->uuid] = '  '; // two Space characters to force on top but below 'none' option , will be replaced below by titleCache
-        $default_classification_label = $tree->titleCache;
+          $taxonomic_tree_options[$tree->uuid] = '  '; // two Space characters to force on top but below 'none' option , will be replaced below by titleCache
+          $default_classification_label = $tree->titleCache;
       }
+
+
     }
   }
   // oder alphabetically the space
