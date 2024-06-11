@@ -50,7 +50,7 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void tesTypeDesignationWithMultiAuthorCitation() throws Exception {
+    public void testTypeDesignationWithMultiAuthorCitation() throws Exception {
        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), typinium_Uuid);
        assertEquals("Typinium Mill.", p.getAcceptedNameText());
        WebElement typeDesignationsContainer;
@@ -64,8 +64,8 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
          assertNotNull("Expecting at least one Typedesignation", typeDesignations);
        }
 
-       List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getNewHomotypicalGroupTypeDesignations());
-       assertEquals(1, footnotes.size()); //adapted to 3 because of the annotation
+       List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
+       assertEquals(1, footnotes.size());
        assertEquals("1. Heidari, F., Zima, J., Riahi, H. & Hauer, T. 1986: Multiauthor", footnotes.get(0).getText());
 
     }
