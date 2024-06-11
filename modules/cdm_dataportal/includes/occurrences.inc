@@ -90,7 +90,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
     }
     $derivation_tree_summary_dto = $derived_unit_dto->derivationTreeSummary;
     // - specimen scans
-    $specimenScans = create_html_links($derivation_tree_summary_dto->specimenScans, true);
+    $specimenScans = create_html_links($derivation_tree_summary_dto->specimenScans, true, false);
     // - molecular data
     $molecularData = "";
     if ($derivation_tree_summary_dto->molecularDataList) {
@@ -115,7 +115,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
                         }
                         //primer links
                         if (isset($contigFile->primerLinks)) {
-                            $molecularData .= create_html_links($contigFile->primerLinks, true);
+                            $molecularData .= create_html_links($contigFile->primerLinks, true, false);
                         }
                     }
                 }
@@ -126,7 +126,7 @@ function render_cdm_specimenDTO_page($derived_unit_dto, $with_full_details = fal
         }
     }
     // - detail images
-    $detailImages = create_html_links($derivation_tree_summary_dto->detailImages, true);
+    $detailImages = create_html_links($derivation_tree_summary_dto->detailImages, true, false);
 
     if ($types) {
         $detail_html .= $with_full_details ? "<br>" : "";
