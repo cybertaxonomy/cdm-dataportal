@@ -336,7 +336,12 @@ function create_html_link($link, $openInExternalWindow=false, $add_icon = true){
             $tmp_uri = $link->uri;
             //$html .= '<a  href="' . $link->uri . '"';
         }
-        $tmp_text = $tmp_uri;
+        if (isset_not_empty($link->linkText)){
+            $tmp_text = $link->linkText;
+        }else{
+            $tmp_text = $tmp_uri;
+        }
+
 
     }elseif (isset_not_empty($link->link->javaUri)){
         $tmp_uri = $link->link->javaUri ;
@@ -364,12 +369,12 @@ function create_html_link($link, $openInExternalWindow=false, $add_icon = true){
  * @param array $linkList list with Link objects having "uri" and "linkText" as members
  * @return string the assembled HTML string containing the links
  */
-function create_html_links($linkList, $openInExternalWindow=false, $separator=", ")
+function create_html_links($linkList, $openInExternalWindow=false, $add_icon = true, $separator=", ")
 {
     $html = "";
     if ($linkList) {
         foreach ($linkList as $link) {
-            $html .= create_html_link($link, $openInExternalWindow).$separator;
+            $html .= create_html_link($link, $openInExternalWindow, $add_icon).$separator;
         }
         $html = rtrim($html, $separator);
     }
