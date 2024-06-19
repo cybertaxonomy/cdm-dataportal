@@ -1223,7 +1223,7 @@ function cdm_taxonomictree_selector_form($form, &$form_state) {
     '#title' => t('Available classifications'),
     '#default_value' => get_current_classification_uuid(),
     '#options' => $options,
-    '#attributes' => array('class' => array('highlite-first-child')),
+    '#attributes' => array('class' => array('highlight-first-child')),
   );
 
   return $form;
@@ -1694,6 +1694,13 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all') {
   // Display the page for the taxon defined by $uuid.
   // set_last_taxon_page_tab(arg(3));
     if (variable_get('cdm_dto_mode', FALSE)){
+        $syn_as_tab = variable_get(CDM_SYNONYMY_AS_TAB);
+        $tabs_enabled = variable_get('cdm_dataportal_taxonpage_tabs');
+        if (!$tabs_enabled){
+            $chapter = 'all';
+        }else if (!$syn_as_tab && $chapter == 'synonymy'){
+            $chapter = 'all';
+        }
         $taxonpage = cdm_dataportal_new_taxon_view($uuid, $chapter);
     }else{
         $taxonpage = cdm_dataportal_taxon_view($uuid, $chapter);
@@ -2259,10 +2266,10 @@ function cdm_dataportal_named_area_page_view($uuid) {
  * @param $redirect_to_taxon
  *   Automatically redirect to the related taxon if there is only one
  *   accepted taxon for this name.
- * @param string $highlite_synonym_uuid
+ * @param string $highlight_synonym_uuid
  *   Optinal parameter wich takes another taxon uuid, if given the
  *   target taxon pages will show the syonymy tab where the taxon
- *   refenrenced by the $highlite_synonym_uuid will be highlighted
+ *   refenrenced by the $highlight_synonym_uuid will be highlighted
  *   in case it is found on this page.
  *
  * @return mixed
@@ -2306,10 +2313,10 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $s
  * @param $redirect_to_taxon
  *   Automatically redirect to the related taxon if there is only one
  *   accepted taxon for this name.
- * @param string $highlite_synonym_uuid
+ * @param string $highlight_synonym_uuid
  *   Optional parameter which takes another taxon uuid, if given the
  *   target taxon pages will show the synonymy tab where the taxon
- *   referenced by the $highlite_synonym_uuid will be highlighted
+ *   referenced by the $highlight_synonym_uuid will be highlighted
  *   in case it is found on this page.
  *
  * @return object|boolean
@@ -2320,7 +2327,7 @@ function cdm_dataportal_name_page_view($taxon_name_uuid, $taxon_to_hide_uuid, $s
  *
  * @throws \Exception
  */
-function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redirect_to_taxon, $highlite_synonym_uuid = NULL) {
+function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redirect_to_taxon, $highlight_synonym_uuid = NULL) {
   // Getting the full taxonname object from the server.
   $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($taxon_name_uuid));
   if (!$taxon_name) {
@@ -2354,17 +2361,17 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
     if ($singleTaxon->class != "Taxon") {
       // It is a Synonym -> look for the accepted.
       $accepted_taxon = cdm_ws_get(CDM_WS_PORTAL_TAXON_ACCEPTED, array($singleTaxon->uuid), 'classificationFilter=' . get_current_classification_uuid());
-      if (!empty($highlite_synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $accepted_taxon->uuid . '/synonymy', array('query' => array('highlite' => $highlite_synonym_uuid)));
+      if (!empty($highlight_synonym_uuid)) {
+        drupal_goto('cdm_dataportal/taxon/' . $accepted_taxon->uuid . '/synonymy', array('query' => array('highlight' => $highlight_synonym_uuid)));
       }
       else {
-        drupal_goto('cdm_dataportal/taxon/' . $accepted_taxon->uuid . '/synonymy', array('query' => array('highlite' => $singleTaxon->uuid)));
+        drupal_goto('cdm_dataportal/taxon/' . $accepted_taxon->uuid . '/synonymy', array('query' => array('highlight' => $singleTaxon->uuid)));
       }
     }
     else {
       // It is an accepted taxon.
-      if (!empty($highlite_synonym_uuid)) {
-        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', array('query' => array('highlite' => $highlite_synonym_uuid)));
+      if (!empty($highlight_synonym_uuid)) {
+        drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid . '/synonymy', array('query' => array('highlight' => $highlight_synonym_uuid)));
       }
       else {
         drupal_goto('cdm_dataportal/taxon/' . $singleTaxon->uuid);
@@ -2787,8 +2794,8 @@ function uri_to_synonym($synonymUuid, $acceptedUuid) {
   $acceptedPath = path_to_taxon($acceptedUuid, "synonymy");
   return url($acceptedPath, array(
       'query' => array(
-        // highlite the synony in the synonymy
-        'highlite' => $synonymUuid,
+        // highlight the synony in the synonymy
+        'highlight' => $synonymUuid,
         // the taxon page is refered from a synonym and the synonym can optionally be named in the page title
         // see theme_taxon_page_title()
         'acceptedFor' => $synonymUuid
@@ -2861,10 +2868,10 @@ function render_link_to_registration($registration_identifier) {
  *   The uuid as string of the CDM TaxonName to show a name page for
  * @param string $taxon_to_hide_uuid
  *   The uuid as string of a taxon which should not be displayed in the taxon list
- * @param string $highlited_synonym_uuid
+ * @param string $highlighted_synonym_uuid
  *   Optional parameter which takes another taxon uuid, if given the
  *   target taxon pages will show the synonymy tab where the taxon
- *   referenced by the $highlite_synonym_uuid will be highlighted
+ *   referenced by the $highlight_synonym_uuid will be highlighted
  *   in case it is found on this page.
  * @param $redirect_to_taxon
  *   If true, the name page will redirect to the related taxon if there is a single one
@@ -2873,12 +2880,12 @@ function render_link_to_registration($registration_identifier) {
  * @return string
  *  URI path element as string
  */
-function path_to_name($name_uuid, $taxon_to_hide_uuid = NULL, $highlited_synonym_uuid  = NULL, $redirect_to_taxon = false) {
+function path_to_name($name_uuid, $taxon_to_hide_uuid = NULL, $highlighted_synonym_uuid  = NULL, $redirect_to_taxon = false) {
   $res = FALSE;
   if ($name_uuid) {
     $res = 'cdm_dataportal/name/' . $name_uuid .
     '/' . (is_uuid($taxon_to_hide_uuid) ? $taxon_to_hide_uuid : "null") .
-    '/' . (is_uuid($highlited_synonym_uuid) ? $highlited_synonym_uuid : "null") .
+    '/' . (is_uuid($highlighted_synonym_uuid) ? $highlighted_synonym_uuid : "null") .
     '/' . ($redirect_to_taxon || variable_get(CDM_NAME_PAGE_AUTOREDIRECT, 0) ? "redirect_to_taxon" : "");
   }
 
