@@ -2031,6 +2031,7 @@ function compose_name_type_designations($type_entity_refs_by_status){
   foreach($type_entity_refs_by_status as $type_status => $name_type_entityRefs){
     foreach ($name_type_entityRefs as $name_type_entity_ref){
       $type_designation = cdm_ws_get(CDM_WS_TYPEDESIGNATION, array($name_type_entity_ref->uuid, 'preferredUri'));
+
       $footnote_keys = '';
 
       if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
@@ -2052,7 +2053,9 @@ function compose_name_type_designations($type_entity_refs_by_status){
 
       $render_array[] = markup_to_render_array('<div class="name_type_designation ' . html_class_attribute_ref($name_type_entity_ref)  .
         '"><span class="type-status">'. ucfirst($type_status) . "</span>: "
-        . cdm_tagged_text_to_markup($name_type_entity_ref->taggedText)
+       // . cdm_tagged_text_to_markup($name_type_entity_ref->taggedText)
+          . render_new_name_for_name_rels($name_type_entity_ref->taggedText, $name_type_entity_ref->typeUuid, null, null,
+              url(path_to_name( $name_type_entity_ref->typeUuid, null, null, false)))
         . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
         . $annotations_and_sources->footNoteKeysMarkup()
         . '</div>');
