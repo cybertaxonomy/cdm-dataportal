@@ -2030,13 +2030,14 @@ function compose_name_type_designations($type_entity_refs_by_status){
   $preferredStableUri = '';
   foreach($type_entity_refs_by_status as $type_status => $name_type_entityRefs){
     foreach ($name_type_entityRefs as $name_type_entity_ref){
-      $type_designation = cdm_ws_get(CDM_WS_TYPEDESIGNATION, array($name_type_entity_ref->uuid, 'preferredUri'));
+        //this method does not exist and never existed???
+     // $type_designation = cdm_ws_get(CDM_WS_TYPEDESIGNATION, array($name_type_entity_ref->uuid, 'preferredUri'));
 
       $footnote_keys = '';
-
-      if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
-        $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
-      }
+//and name type designations aren't specimen, so we can remove this part of code
+    //  if(isset($type_designation->typeSpecimen->preferredStableUri) && $type_designation->typeSpecimen->preferredStableUri){
+     //   $preferredStableUri = $type_designation->typeSpecimen->preferredStableUri;
+     // }
       // annotations and sources for the $derived_unit_facade_dto
       //RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
       RenderHints::setAnnotationsAndSourceConfig([
@@ -2056,7 +2057,7 @@ function compose_name_type_designations($type_entity_refs_by_status){
        // . cdm_tagged_text_to_markup($name_type_entity_ref->taggedText)
           . render_new_name_for_name_rels($name_type_entity_ref->taggedText, $name_type_entity_ref->typeUuid, null, null,
               url(path_to_name( $name_type_entity_ref->typeUuid, null, null, false)))
-        . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
+       // . ($preferredStableUri ? " ". l($preferredStableUri,  $preferredStableUri) : '')
         . $annotations_and_sources->footNoteKeysMarkup()
         . '</div>');
       }
