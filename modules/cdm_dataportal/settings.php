@@ -1138,7 +1138,7 @@ function cdm_settings_general() {
   $taxon_node_info = '';
   if($sub_tree_filter_uuid_value){
     $taxon_node_dto = cdm_ws_get(CDM_WS_TAXONNODE, array($sub_tree_filter_uuid_value));
-    if($taxon_node_dto){
+    if(isset_not_empty($taxon_node_dto) && isset_not_empty($taxon_node_dto->taggedTitle)){
       $taxon_node_info = " Current taxon node: <strong>" . cdm_tagged_text_to_markup($taxon_node_dto->taggedTitle) . " [" . $taxon_node_dto->treeIndex . "]</strong>";
     }
   }
