@@ -8,7 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,12 +15,12 @@ import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
+import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
 import eu.etaxonomy.dataportal.elements.TypeDesignationType;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
-import eu.etaxonomy.dataportal.DrupalVars;
 
 /**
  * tests to avoid regression of #2306 (holotype is only displayed as type) and related bugs
@@ -140,7 +139,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         WebElement typeDesignationsContainer;
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-            String expectedString = "\"Habitat in Europae frigidioris pratis asperis.\"; Lectotype: [s. loc.], Herb. Linnaeus, no. 959.1 designated by Iamonico 2012: ??1";
+            String expectedString = "Types: \"Habitat in Europae frigidioris pratis asperis.\"; Lectotype: [s. loc.], Herb. Linnaeus, no. 959.1 designated by Iamonico 2012: ??1";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
             List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
