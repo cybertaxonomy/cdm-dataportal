@@ -77,11 +77,6 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
             assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
         }
-
-
-
-
-
     }
 
     @Test
@@ -126,9 +121,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             i = 0;
             assertEquals("Syntype: [Cameroon], Maitland 226", typeDesignations.get(i++).getText());
             assertEquals("Syntype: [Cameroon], Mildbraed 10814", typeDesignations.get(i++).getText());
-
         }
-
     }
 
     @Test
@@ -139,7 +132,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         WebElement typeDesignationsContainer;
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-            String expectedString = "Types: \"Habitat in Europae frigidioris pratis asperis.\"; Lectotype: [s. loc.], Herb. Linnaeus, no. 959.1 designated by Iamonico 2012: ??1";
+            String expectedString = "Type: \"Habitat in Europae frigidioris pratis asperis.\"; Lectotype: [s. loc.], Herb. Linnaeus, no. 959.1 designated by Iamonico 2012: ??1";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
             List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
