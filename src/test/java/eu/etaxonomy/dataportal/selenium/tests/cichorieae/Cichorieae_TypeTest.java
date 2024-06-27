@@ -23,12 +23,10 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
- * tests to avoid regression of #2306 (holotype is only displayed as type) and related bugs
+ * Tests to avoid regression of #2306 (holotype is only displayed as type) and related bugs
  *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
 
@@ -57,10 +55,6 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
             assertNotNull("Expecting at least one Typedesignation", typeDesignations);
         }
-
-
-
-
     }
 
     @Test
@@ -109,7 +103,6 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals("Syntype: \"Uganda\", Scott Elliot 7328", typeDesignations.get(i++).getText());
         }
 
-
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations(2);
             expectedString = "Syntype: [Cameroon] \"Cameroons Mt., 6,000 ft.\", Dunlap 47; Syntype: [Cameroon], Maitland 226; Syntype: [Cameroon], Mildbraed 10814";
@@ -141,7 +134,6 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals(TypeDesignationType.specimenTypeDesignation, typeDesignations.get(1).getTypeDesignationType());
             assertEquals("Lectotype (designated by Iamonico, D. 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1", typeDesignations.get(1).getText());
         }
-
     }
 
     @Test
@@ -162,11 +154,8 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
             assertEquals("Lectotype (designated by Green, M.L.: 1783): Hypochaeris radicata L.", typeDesignations.get(0).getText());
         }
-        //List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
 
-
-
-         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
+        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations(2);
             expectedString = "Lectotype: Seriola laevigata L. designated by Steudel 1841: 5685";
             assertEquals(expectedString, typeDesignationsContainer.getText());
@@ -178,7 +167,5 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             expectedString = "Lectotype (designated by Steudel 1841: 5686): Seriola laevigata L.";
             assertEquals(expectedString, typeDesignations.get(0).getText());
         }
-
     }
-
 }

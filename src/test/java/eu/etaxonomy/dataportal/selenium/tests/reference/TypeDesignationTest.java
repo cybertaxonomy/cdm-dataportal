@@ -8,29 +8,21 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.dataportal.DataPortalSite;
-import eu.etaxonomy.dataportal.ElementUtils;
-import eu.etaxonomy.dataportal.StringConstants;
+import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.elements.BaseElement;
-import eu.etaxonomy.dataportal.elements.LinkElement;
+import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
+import eu.etaxonomy.dataportal.elements.TypeDesignationType;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
-import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
-import eu.etaxonomy.dataportal.elements.TypeDesignationType;
-import eu.etaxonomy.dataportal.DrupalVars;
 
 /**
  *
@@ -38,15 +30,12 @@ import eu.etaxonomy.dataportal.DrupalVars;
  */
 @DataPortalContexts( { DataPortalSite.reference })
 public class TypeDesignationTest extends CdmDataPortalTestBase{
-    static final UUID typinium_Uuid = UUID.fromString("037eee62-ac1f-45eb-b4f2-ed9b77e472f1");
 
-    private static final Logger logger = LogManager.getLogger();
-
+    private static final UUID typinium_Uuid = UUID.fromString("037eee62-ac1f-45eb-b4f2-ed9b77e472f1");
 
     @Before
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
-
     }
 
     @Test
@@ -67,10 +56,5 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
        List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
        assertEquals(1, footnotes.size());
        assertEquals("1. Heidari, F., Zima, J., Riahi, H. & Hauer, T. 1986: Multiauthor", footnotes.get(0).getText());
-
     }
-
-
-
-
 }
