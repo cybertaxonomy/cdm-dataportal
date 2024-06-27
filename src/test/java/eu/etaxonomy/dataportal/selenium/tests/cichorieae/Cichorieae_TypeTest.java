@@ -49,7 +49,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         List<TypeDesignationElement> typeDesignations;
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-            assertEquals("Lectotype: Cichorium intybus L. designated by Green 1929: 1781", typeDesignationsContainer.getText());
+            assertEquals("Lectotype (designated by Green 1929: 1781): Cichorium intybus L.", typeDesignationsContainer.getText());
         }else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
             assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
@@ -125,7 +125,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         WebElement typeDesignationsContainer;
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-            String expectedString = "Type: \"Habitat in Europae frigidioris pratis asperis.\"; Lectotype: [s. loc.], Herb. Linnaeus, no. 959.1 designated by Iamonico 2012: ??1";
+            String expectedString = "Type: \"Habitat in Europae frigidioris pratis asperis.\"; Lectotype (designated by Iamonico 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
             List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
@@ -146,7 +146,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         String expectedString = "";
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-            expectedString = "Lectotype: Hypochaeris radicata L. designated by Green 1929: 1783";
+            expectedString = "Lectotype (designated by Green 1929: 1783): Hypochaeris radicata L.";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
@@ -157,7 +157,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
 
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations(2);
-            expectedString = "Lectotype: Seriola laevigata L. designated by Steudel 1841: 5685";
+            expectedString = "Lectotype (designated by Steudel 1841: 5685): Seriola laevigata L.";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
             typeDesignations = p.getHeterotypicalGroupTypeDesignations(2);

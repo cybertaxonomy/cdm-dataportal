@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
-import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
@@ -33,13 +32,7 @@ public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Scorzonera"), p.getTitle());
         assertEquals("Scorzonera L., Sp. Pl.: 790. 1753", p.getAcceptedNameText());
         WebElement typeDesignations = p.getNewHomotypicalGroupTypeDesignations();
-        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
-            assertEquals("Lectotype: Scorzonera humilis L. designated by Green 1929: 1771", typeDesignations.getText());
-        }else{
-            assertEquals("Lectotype (designated by Green 1929: 1771): Scorzonera humilis L.", typeDesignations.getText());
-        }
-
-
+        assertEquals("Lectotype (designated by Green 1929: 1771): Scorzonera humilis L.", typeDesignations.getText());
 
         // check type designation for accepted taxon
         //List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();

@@ -46,7 +46,7 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
        List<TypeDesignationElement> typeDesignations;
        if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
          typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-         assertEquals("Lectotype: designated by Heidari & al. 1986: 271", typeDesignationsContainer.getText());
+         assertEquals("Lectotype (designated by Heidari & al. 1986: 271):", typeDesignationsContainer.getText());
        }else{
          typeDesignations = p.getHomotypicalGroupTypeDesignations();
          assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
