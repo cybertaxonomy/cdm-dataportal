@@ -287,7 +287,8 @@ function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags
                 }
                 if ($tt->type == 'typeDesignation' && isset_not_empty($tt->link)){
                     $out .= create_html_link($tt);
-                }elseif(isset($options['html']) &&  $options['html']){
+                }
+                elseif(isset($options['html']) &&  $options['html']){
                     $out .= $tt->text;
                 } else {
                     if (is_array($tt->text ))
@@ -296,14 +297,23 @@ function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags
                         $tt->text = "[\"".$temp."\"]";
                     }
                     $out .= t('@text', array('@text' => $tt->text));
+
                 }
                 $footnote_markup = '';
                 $annotations_and_sources = new AnnotationsAndSources();
                 if ($tt->type == 'reference' && isset_not_empty($tt->entityReference)){
-                    $footnote_markup .= '<span class="reference">' . $tt->entityReference->label . '</span>';
+                    $ref_link = '';
+                    if(isset_not_empty($tt->link) || isset_not_empty($tt->doi) ){
+                        $ref_link .= create_html_link($tt);
+                    }
+                    $footnote_markup .= '<span class="reference">' . $tt->entityReference->label . $ref_link .'</span>';
                 }
                 if ($tt->type == 'secReference' && isset_not_empty($tt->entityReference)){
-                    $footnote_markup .= '<span class="secReference">' . $tt->entityReference->label . '</span>';
+                    $ref_link = '';
+                    if(isset_not_empty($tt->link) || isset_not_empty($tt->doi) ){
+                        $ref_link .= create_html_link($tt);
+                    }
+                    $footnote_markup .= '<span class="secReference">' . $tt->entityReference->label . $ref_link .'</span>';
                 }
 
                 if ($footnote_markup) {
