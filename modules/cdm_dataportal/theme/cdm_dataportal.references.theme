@@ -66,9 +66,14 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
     }
     if(isset_not_empty($reference->link)){
         if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
-                      $out .= ".";
+                $out .= ".";
             }
-        $out .= cdm_doi($reference->link->javaUri, false);
+            if (isset_not_empty($reference->link->javaUri)){
+                $out .= cdm_doi($reference->link->javaUri, false);
+            }else{
+                $out .= cdm_doi($reference->link, true);
+            }
+
     }
 
     $out .= $icon_link . '</span>';
