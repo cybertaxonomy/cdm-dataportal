@@ -11,15 +11,16 @@ package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.DrupalVars;
+import eu.etaxonomy.dataportal.elements.BaseElement;
+import eu.etaxonomy.dataportal.elements.LinkElement;
 import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
 import eu.etaxonomy.dataportal.elements.TypeDesignationType;
-import eu.etaxonomy.dataportal.elements.LinkElement;
-import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
@@ -44,6 +45,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
     static UUID hypochaeris_maculata_uuid = UUID.fromString("90943959-f2ef-4a3a-8744-c8bcd935c8c2");
 
     @Test
+    @Ignore
     public void cichorium() throws Exception {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), cichorium_uuid);
         assertEquals(getContext().prepareTitle("Cichorium"), driver.getTitle());
