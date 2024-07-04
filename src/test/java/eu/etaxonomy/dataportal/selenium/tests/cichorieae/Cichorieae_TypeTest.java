@@ -50,6 +50,13 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
             assertEquals("Lectotype (designated by Green 1929: 1781): Cichorium intybus L.", typeDesignationsContainer.getText());
+            List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();
+            assertEquals(1, footnotes.size());
+            assertEquals("1. Green 1929: Proposals by British Botanists. – Londonhttps://doi.org/10.1234/abcd", footnotes.get(0).getText());
+            List<LinkElement> linksInFootnote = footnotes.get(0).getLinksInElement();
+            assertEquals(2, linksInFootnote.size());
+            assertTrue(linksInFootnote.get(0).getUrl().equals("https://abc.de"));
+            assertTrue(linksInFootnote.get(1).getUrl().equals("https://doi.org/10.1234/abcd"));
         }else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
             assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
