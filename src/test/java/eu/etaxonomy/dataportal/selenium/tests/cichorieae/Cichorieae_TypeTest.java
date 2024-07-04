@@ -18,9 +18,12 @@ import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.DrupalVars;
 import eu.etaxonomy.dataportal.elements.TypeDesignationElement;
 import eu.etaxonomy.dataportal.elements.TypeDesignationType;
+import eu.etaxonomy.dataportal.elements.LinkElement;
+import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
+
 
 /**
  * Tests to avoid regression of #2306 (holotype is only displayed as type) and related bugs
