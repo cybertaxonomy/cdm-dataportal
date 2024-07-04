@@ -1983,6 +1983,10 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     }else{
         $query_parameters['doMedia'] = 0;
     }
+    $language = $GLOBALS['language'];
+    if (isset_not_empty($language)){
+        $query_parameters['locale'] = $language -> language;
+    }
     //$query_parameters['uuid'] = $uuid;
     $json_post_object = json_encode($query_parameters, JSON_FORCE_OBJECT);
    // $taxon_dto = cdm_ws_get(CDM_WS_PORTAL_TAXON_DTO, $uuid, $json_post_object, 'POST');
