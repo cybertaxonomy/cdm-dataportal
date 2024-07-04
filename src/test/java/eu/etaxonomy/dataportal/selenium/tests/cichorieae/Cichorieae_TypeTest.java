@@ -61,6 +61,11 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals("https://abc.de/", linksInFootnote.get(2).getUrl());
             assertEquals("https://doi.org/10.1234/abcd", linksInFootnote.get(1).getUrl());
             assertEquals("https://doi.org/10.1234/abcd", linksInFootnote.get(0).getUrl());
+
+            typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations();
+            //"Type" instead of "Nametype"
+            assertEquals("Type: Acanthophyton spinosum (L.) Less.", typeDesignationsContainer.getText());
+
         }else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
             assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
@@ -136,6 +141,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         WebElement typeDesignationsContainer;
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
+            //no designation status, label is only type, designated by behind Lectotype
             String expectedString = "Type: \"Habitat in Europae frigidioris pratis asperis.\"; Lectotype (designated by Iamonico 2012: ??1): [s. loc.], Herb. Linnaeus, no. 959.1";
             assertEquals(expectedString, typeDesignationsContainer.getText());
         }else{
