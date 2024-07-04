@@ -58,9 +58,9 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals("1. Green 1929: Proposals by British Botanists. – London https://doi.org/10.1234/abcd", footnotes.get(0).getText());
             List<LinkElement> linksInFootnote = footnotes.get(0).getLinksInElement();
             assertEquals(3, linksInFootnote.size());
-            assertEquals("https://abc.de", linksInFootnote.get(2).getUrl());
-            assertEquals("https://doi.org/10.1234/abcd", linksInFootnote.get(1).getUrl());
-            assertEquals("https://doi.org/10.1234/abcd", linksInFootnote.get(0).getUrl());
+            assertEquals("https://abc.de/", linksInFootnote.get(2).getUrl());
+            assertEquals("https://doi.org/10.1234/abcd/", linksInFootnote.get(1).getUrl());
+            assertEquals("https://doi.org/10.1234/abcd/", linksInFootnote.get(0).getUrl());
         }else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
             assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
