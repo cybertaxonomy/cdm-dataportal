@@ -348,13 +348,29 @@ function create_html_link($link, $openInExternalWindow=false, $add_icon = true, 
         $tmp_text =  $link->text ;
     }elseif (isset_not_empty($link->link)){
         $tmp_uri = $link->link ;
-        $tmp_text =  '' ;
         $only_icon = true;
     }
     if (isset_not_empty($link->doi)){
         $tmp_doi = $link->doi ;
-        $tmp_doi_text =  $link->doi ;
-        $only_icon = false;
+        $tmp_doi_text =  ' ' . $link->doi ;
+        //$only_icon_doi = false;
+    }
+    if (isset_not_empty($tmp_doi)) {
+        if ($add_icon) {
+            //if ($only_icon_doi) {
+            //    $html .= l(font_awesome_icon_markup('fa-external-link-square-alt', array('class' => array('superscript'))), $tmp_doi, array('html' => TRUE));
+            //} else {
+                $html .= l($tmp_doi_text, $tmp_doi) . l(font_awesome_icon_markup('fa-external-link-square-alt', array('class' => array('superscript'))), $tmp_doi, array('html' => TRUE));
+            //}
+
+        } else {
+            $html = '<a  href="' . $tmp_doi . '"';
+            if ($openInExternalWindow) {
+                $html .= ' target="_blank"';
+            }
+
+            $html .= '>' . $tmp_doi_text . '</a>';
+        }
     }
     if (isset_not_empty($tmp_uri)){
         if ($add_icon){
@@ -375,23 +391,7 @@ function create_html_link($link, $openInExternalWindow=false, $add_icon = true, 
     }else{
         $html .= $link->linkText;
     }
-    if (isset_not_empty($tmp_doi)) {
-        if ($add_icon) {
-            if ($only_icon) {
-                $html .= l(font_awesome_icon_markup('fa-external-link-square-alt', array('class' => array('superscript'))), $tmp_doi, array('html' => TRUE));
-            } else {
-                $html .= l($tmp_doi_text, $tmp_doi) . l(font_awesome_icon_markup('fa-external-link-square-alt', array('class' => array('superscript'))), $tmp_doi, array('html' => TRUE));
-            }
 
-        } else {
-            $html = '<a  href="' . $tmp_doi . '"';
-            if ($openInExternalWindow) {
-                $html .= ' target="_blank"';
-            }
-
-            $html .= '>' . $tmp_doi_text . '</a>';
-        }
-    }
 
     return $html;
 }
