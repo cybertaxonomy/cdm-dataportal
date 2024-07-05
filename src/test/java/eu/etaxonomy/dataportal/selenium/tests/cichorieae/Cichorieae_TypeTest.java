@@ -62,7 +62,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
             assertEquals("https://doi.org/10.1234/abcd", linksInFootnote.get(1).getUrl());
             assertEquals("https://doi.org/10.1234/abcd", linksInFootnote.get(0).getUrl());
 
-            typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations(0);
+            typeDesignationsContainer = p.getNewHeterotypicalGroupTypeDesignations(1);
             //"Type" instead of "Nametype"
             assertEquals("Type: Acanthophyton spinosum (L.) Less.", typeDesignationsContainer.getText());
 
