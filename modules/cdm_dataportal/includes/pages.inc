@@ -355,6 +355,7 @@ function create_html_link($link, $openInExternalWindow=false, $add_icon = true, 
         $tmp_doi = $link->doi ;
         $tmp_doi_text =  ' ' . $link->doi ;
 
+
     }
     if (isset_not_empty($tmp_doi)) {
         if ($add_icon) {
