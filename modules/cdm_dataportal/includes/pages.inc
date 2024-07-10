@@ -348,12 +348,13 @@ function create_html_link($link, $openInExternalWindow=false, $add_icon = true, 
         $tmp_text =  $link->text ;
     }elseif (isset_not_empty($link->link)){
         $tmp_uri = $link->link ;
-        $only_icon = true;
+        $tmp_text =  $link->text ;
+
     }
     if (isset_not_empty($link->doi)){
         $tmp_doi = $link->doi ;
         $tmp_doi_text =  ' ' . $link->doi ;
-        //$only_icon_doi = false;
+
     }
     if (isset_not_empty($tmp_doi)) {
         if ($add_icon) {
