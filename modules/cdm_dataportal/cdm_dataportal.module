@@ -1690,7 +1690,9 @@ function cdm_dataportal_taxon_page_view($uuid, $chapter = 'all') {
 
   cdm_dd("START OF TAXON PAGE [" . $chapter . "] " . $uuid . ' for ' . $_GET['q']);
 
-
+  if (isset($_GET['highlite'])){
+      $_GET['highlight'] = $_GET['highlite'];
+  }
   // Display the page for the taxon defined by $uuid.
   // set_last_taxon_page_tab(arg(3));
     if (variable_get('cdm_dto_mode', FALSE)){
