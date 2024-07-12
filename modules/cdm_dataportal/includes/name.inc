@@ -2214,18 +2214,18 @@ function name_relationship_markup($current_name_uuid, $name_rel, $current_taxon_
 
   cdm_load_tagged_full_title($other_name);
 
-  $highlited_synonym_uuid = isset ($other_name->taxonBases[0]->uuid) ? $other_name->taxonBases[0]->uuid : '';
+  $highlighted_synonym_uuid = isset ($other_name->taxonBases[0]->uuid) ? $other_name->taxonBases[0]->uuid : '';
   if($show_name_cache_only){
     $relationship_markup = l(
       '<span class="' . html_class_attribute_ref($other_name) . '"">' . $other_name->nameCache . '</span>',
-      path_to_name($other_name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
+      path_to_name($other_name->uuid, $current_taxon_uuid, $highlighted_synonym_uuid, false),
       array('html' => true)
     );
     $annotations_and_sources = handle_annotations_and_sources($other_name);
     $relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
   } else {
     $relationship_markup = render_taxon_or_name($other_name,
-      url(path_to_name($other_name->uuid, $current_taxon_uuid, $highlited_synonym_uuid, false))
+      url(path_to_name($other_name->uuid, $current_taxon_uuid, $highlighted_synonym_uuid, false))
     );
   }
 
@@ -2255,20 +2255,20 @@ function name_relationship_new_markup($name_rel, $current_taxon_uuid, $name_type
 
     //cdm_load_tagged_full_title($other_name);
 
-    $highlited_synonym_uuid = isset ($name_rel->nameUuid) ? $name_rel->nameUuid : '';
+    $highlighted_synonym_uuid = isset ($name_rel->nameUuid) ? $name_rel->nameUuid : '';
    /* if($show_name_cache_only){
         $skip_tags = array();
         $skip_tags[] = 'authors';
         $relationship_markup = l(
             '<span class="' . html_class_attribute_ref($other_name) . '"">' . cdm_tagged_text_to_markup($other_name, ) . '</span>',
-            path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlited_synonym_uuid, false),
+            path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlighted_synonym_uuid, false),
             array('html' => true)
         );
         //$annotations_and_sources = handle_annotations_and_sources($other_name);
         //$relationship_markup .= $annotations_and_sources->footNoteKeysMarkup();
     } else {*/
         $relationship_markup = render_new_name_for_name_rels($other_name, $name_rel-> nameUuid, $name_rel->year, $name_type,
-            url(path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlited_synonym_uuid, false)), NULL,
+            url(path_to_name($name_rel->nameUuid, $current_taxon_uuid, $highlighted_synonym_uuid, false)), NULL,
                 true, false, [], false, $show_name_cache_only);
     //}
 

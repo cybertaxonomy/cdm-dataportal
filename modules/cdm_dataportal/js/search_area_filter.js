@@ -158,13 +158,13 @@
                 var matching_snippet = matching_label.text().match(rexgexp);
                 if(matching_snippet && matching_snippet.length > 0){
                     // NOTE this will only highlight the first match in the string
-                    matching_label.html(matching_label.text().replace(matching_snippet[0], '<span class="highlite">' + matching_snippet[0] + '</span>'));
+                    matching_label.html(matching_label.text().replace(matching_snippet[0], '<span class="highlight">' + matching_snippet[0] + '</span>'));
                 }
                 var matching_label_abbrev = $(this).find('.child-label-abbreviated');
                 matching_snippet = matching_label_abbrev.text().match(rexgexp);
                 if(matching_snippet && matching_snippet.length > 0){
                   // NOTE this will only highlight the first match in the string
-                  matching_label_abbrev.html(matching_label_abbrev.text().replace(matching_snippet[0], '<span class="highlite">' + matching_snippet[0] + '</span>'));
+                  matching_label_abbrev.html(matching_label_abbrev.text().replace(matching_snippet[0], '<span class="highlight">' + matching_snippet[0] + '</span>'));
                 }
             });
             matching_items.show();

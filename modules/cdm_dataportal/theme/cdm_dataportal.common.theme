@@ -91,7 +91,7 @@ function taxon_in_current_classification_new($taxon_dto) {
 
 /**
  * TODO if getting fragment from request is possible remove
- * $_REQUEST['highlite'] HACK
+ * $_REQUEST['highlight'] HACK
  * NOT WORKING since fragments are not available to the server
  *
  * function fragment(){
@@ -103,13 +103,13 @@ function taxon_in_current_classification_new($taxon_dto) {
  * }
  */
 function uuid_anchor($uuid, $innerHTML) {
-  $highlite = FALSE;
+  $highlight = FALSE;
   $params = drupal_get_query_parameters();
-  if (isset($params['highlite']) && $params['highlite'] == $uuid) {
-    $highlite = TRUE;
+  if (isset($params['highlight']) && $params['highlight'] == $uuid) {
+    $highlight = TRUE;
   }
 
-  return '<a name="' . $uuid . '" ></a><span class="' . ($highlite ? 'highlite' : '') . '">' . $innerHTML . '</span>';
+  return '<a name="' . $uuid . '" ></a><span class="' . ($highlight ? 'highlight' : '') . '">' . $innerHTML . '</span>';
 }
 
 /**
