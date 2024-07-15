@@ -47,7 +47,7 @@ public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
         assertEquals(getContext().prepareTitle("Crepis purpurea"), driver.getTitle());
         TaxonSynonymyPage synonymyPage = new TaxonSynonymyPage(driver, getContext());
         WebElement intybellia_rosea_cass_synonym = synonymyPage.getHeterotypicalGroupSynonym(1, 1);
-        assertNotNull("Synonym 'Intybellia rosea Cass.' should be highlighted", intybellia_rosea_cass_synonym.findElement(By.className("highlite")));
+        assertNotNull("Synonym 'Intybellia rosea Cass.' should be highlighted", intybellia_rosea_cass_synonym.findElement(By.className("highlight")));
 
     }
 
@@ -59,7 +59,7 @@ public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
 
         assertEquals("≡ Lapsana zacintha L., Sp. Pl.: 811. 1753", synonymyPage.getHomotypicalGroupSynonymName(1));
         WebElement lapsana_zacintha_synonym = synonymyPage.getHomotypicalGroupSynonym(1);
-        assertNotNull("Synonym 'Lapsana zacintha L.' should be highlighted", lapsana_zacintha_synonym.findElement(By.className("highlite")));
+        assertNotNull("Synonym 'Lapsana zacintha L.' should be highlighted", lapsana_zacintha_synonym.findElement(By.className("highlight")));
 
         assertEquals("≡ Rhagadiolus zacintha (L.) All., Fl. Pedem. 1: 227. 1785", synonymyPage.getHomotypicalGroupSynonymName(2));
         assertEquals("≡ Zacintha verrucosa Gaertn., Fruct. Sem. Pl. 2: 358. 1791, nom. nov.", synonymyPage.getHomotypicalGroupSynonymName(3));
