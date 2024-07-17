@@ -343,12 +343,15 @@ function create_html_link($link, $openInExternalWindow=false, $add_icon = true, 
         }
 
 
-    }elseif (!is_string($link->link) && isset_not_empty($link->link->javaUri)){
+    }elseif (isset_not_empty($link->link) && !is_string($link->link) && isset_not_empty($link->link->javaUri)){
         $tmp_uri = $link->link->javaUri ;
         $tmp_text =  $link->text ;
     }elseif (isset_not_empty($link->link)){
         $tmp_uri = $link->link ;
-        $tmp_text =  $link->text ;
+        if (isset_not_empty($link->text)){
+            $tmp_text =  $link->text ;
+        }
+
 
     }
     if (isset_not_empty($link->doi)){
@@ -391,7 +394,10 @@ function create_html_link($link, $openInExternalWindow=false, $add_icon = true, 
             $html .= '>' . $tmp_text. '</a>';
         }
     }else{
-        $html .= $link->linkText;
+        if (isset_not_empty($link->linkText)){
+            $html .= $link->linkText;
+        }
+
     }
 
 
