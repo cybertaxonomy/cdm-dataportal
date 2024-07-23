@@ -77,7 +77,7 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
         assertEquals(getContext().prepareTitle("Search results"), searchResultPage.getTitle());
 
-        TaxonListElement lapsanaCommunnis = searchResultPage.getResultItem(1);
+        TaxonListElement lapsanaCommunnis = searchResultPage.getResultItem(0);
 
         WebElement l_communisElement = lapsanaCommunnis.getElement();
         WebDriverWait wait = searchResultPage.getWait();
