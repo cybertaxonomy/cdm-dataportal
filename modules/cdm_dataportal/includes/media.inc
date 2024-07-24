@@ -358,12 +358,12 @@ function compose_cdm_media_gallery($configuration) {
       if(!$media){
         continue;
       }
-      if (isset_not_empty($media->representations) && is_array($media->representations)  ){
-          $complete_media = $media;
-      }else {
+    //  if (isset_not_empty($media->representations) && is_array($media->representations)  ){
+    //      $complete_media = $media;
+    //  }else {
           //TODO
           $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
-      }
+     // }
       if ((is_array($complete_media->representations) && isset($complete_media->representations[0]->parts[0]))||$complete_media->representations-> count > 0) {
 
         $gallery_media_item = new GalleryItemMedia($complete_media, $max_extend, $max_extend);
