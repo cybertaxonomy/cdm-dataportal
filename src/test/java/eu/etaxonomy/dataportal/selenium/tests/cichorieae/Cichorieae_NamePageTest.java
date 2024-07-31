@@ -21,14 +21,10 @@ import eu.etaxonomy.dataportal.pages.GenericPortalPage;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
-
 
     static UUID intybellia_rosea_cass_Uuid = UUID.fromString("b8f725f0-320a-49e5-aa9a-82cef1c47c17");
 
@@ -63,9 +59,5 @@ public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
 
         assertEquals("≡ Rhagadiolus zacintha (L.) All., Fl. Pedem. 1: 227. 1785", synonymyPage.getHomotypicalGroupSynonymName(2));
         assertEquals("≡ Zacintha verrucosa Gaertn., Fruct. Sem. Pl. 2: 358. 1791, nom. nov.", synonymyPage.getHomotypicalGroupSynonymName(3));
-
-
     }
-
-
 }

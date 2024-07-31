@@ -1044,7 +1044,7 @@ function cdm_settings_general() {
   if (isset($portNumberMatch[1]) && $portNumberMatch[1] != '80') {
     $form['cdm_webservice']['freetext_index']['message'] = array(
       '#markup' => "<div class=\"description\">"
-      . t("The CDM web service URL contains a portnumber other than standart HTTP port 80: '!port'
+      . t("The CDM web service URL contains a portnumber other than default HTTP port 80: '!port'
            Due to this the reindex and purge fuctions may not be working if there is a firewall in between you and the CDM Server.
            You may want to contact the maintainer of the according CDM Server in order to solve this problem.",
           array('!port' => $portNumberMatch[1][0])
