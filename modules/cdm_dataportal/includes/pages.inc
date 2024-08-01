@@ -1021,14 +1021,17 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
         if (isset_not_empty($media->items[0])) {
             $valid_item = null;
-            foreach($media->items as $item){
-                if (isset_not_empty($item->representations)){
-                    $valid_item = $item;
-                    break;
-                }
-            }
 
-            $representationPart = array_shift($valid_item->representations->items);
+            $pref_representations = cdm_preferred_media_representations($media->items[0]
+                , [
+                'application/pdf',
+                'image/png',
+                'image/jpeg',
+                'image/gif',
+                'text/html',
+            ], 300, 400);
+
+            $representationPart = array_shift($pref_representations);
 
             $uri_String = "";
             if (isset_not_empty($representationPart->uri)) {
@@ -1039,7 +1042,6 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
                 }
                 $attributes['alt'] = $uri_String;
             }
-
 
             if (!empty($taxon_profile_image_settings['media_uri_query'])) {
               $representationPart->uri = $uri_String

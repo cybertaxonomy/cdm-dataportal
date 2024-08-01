@@ -339,58 +339,101 @@ function get_last_taxon_page_tab() {
 function cdm_preferred_media_representations($media, array $mime_types, $width = NULL, $height = NULL, $mime_types_filter_excludes = FALSE, $strict_size_limit = FALSE) {
     
     $matching_representations_by_rank = [];
-    if (!isset($media->representations[0])) {
+    if ((is_array($media->representations) && !isset($media->representations[0])) || (!is_array($media->representations) && !isset_not_empty($media->representations->items))) {
       return $matching_representations_by_rank;
     }
 
-    foreach ($media->representations as &$representation) {
-      // If the mimetype is not known, try inferring it.
-      if (!$representation->mimeType) {
-        if (isset($representation->parts[0])) {
-          $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
-        }
-      }
-      $mime_type_match = array_search($representation->mimeType, $mime_types) !== false;
-      $match_per_mime_type_filter = $mime_types_filter_excludes ? !$mime_type_match : $mime_type_match;
-      if ($match_per_mime_type_filter) {
-        $expansion_delta_sum = 0;
-        $valid_parts_cnt = 0;
-        // Look for part with the best matching size.
-        foreach ($representation->parts as $part) {
-          if (empty($part->uri)) {
-            // skip part if URI is missing
-            continue;
-          }
-          if($strict_size_limit){
-            if (isset($part->width) && isset($part->height) && $part->width <= $width && $part->height <= $height) {
-              $valid_parts_cnt++;
+    if (is_array($media->representations)){
+        foreach ($media->representations as &$representation) {
+            // If the mimetype is not known, try inferring it.
+            if (!$representation->mimeType) {
+                if (isset($representation->parts[0])) {
+                    $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
+                }
             }
-          } else {
-            // calculate expansion delta
-            $valid_parts_cnt++;
-            $expansion_delta = PHP_INT_MAX; // biggest delta for unknown sizes
+            $mime_type_match = array_search($representation->mimeType, $mime_types) !== false;
+            $match_per_mime_type_filter = $mime_types_filter_excludes ? !$mime_type_match : $mime_type_match;
+            if ($match_per_mime_type_filter) {
+                $expansion_delta_sum = 0;
+                $valid_parts_cnt = 0;
+                // Look for part with the best matching size.
+                foreach ($representation->parts as $part) {
+                    if (empty($part->uri)) {
+                        // skip part if URI is missing
+                        continue;
+                    }
+                    if ($strict_size_limit) {
+                        if (isset($part->width) && isset($part->height) && $part->width <= $width && $part->height <= $height) {
+                            $valid_parts_cnt++;
+                        }
+                    } else {
+                        // calculate expansion delta
+                        $valid_parts_cnt++;
+                        $expansion_delta = PHP_INT_MAX; // biggest delta for unknown sizes
 
-            // determine the optimal size
-            if (isset($part->width) && isset($part->height)) {
-              $expansion = $part->width * $part->height;
-              if ($width != null && $height != null) {
-                $optimalExpansion = $height * $width;
-              } else {
-                $optimalExpansion = PHP_INT_MAX;
-              }
-              // determine the difference
-              $expansion_delta = $expansion > $optimalExpansion ? $expansion - $optimalExpansion : $optimalExpansion - $expansion;
+                        // determine the optimal size
+                        if (isset($part->width) && isset($part->height)) {
+                            $expansion = $part->width * $part->height;
+                            if ($width != null && $height != null) {
+                                $optimalExpansion = $height * $width;
+                            } else {
+                                $optimalExpansion = PHP_INT_MAX;
+                            }
+                            // determine the difference
+                            $expansion_delta = $expansion > $optimalExpansion ? $expansion - $optimalExpansion : $optimalExpansion - $expansion;
+                        }
+                        // sum up the expansionDeltas of all parts contained in the representation
+                        $expansion_delta_sum += $expansion_delta;
+                    }// end parts
+                }
+                if ($valid_parts_cnt > 0) {
+                    $expansion_delta_sum = $expansion_delta_sum / $valid_parts_cnt;
+                    $matching_representations_by_rank[$expansion_delta_sum] = $representation;
+                }
             }
-            // sum up the expansionDeltas of all parts contained in the representation
-            $expansion_delta_sum += $expansion_delta;
-          }// end parts
         }
-        if($valid_parts_cnt > 0){
-          $expansion_delta_sum = $expansion_delta_sum / $valid_parts_cnt;
-          $matching_representations_by_rank[$expansion_delta_sum] = $representation;
+    }else{
+        foreach ($media->representations->items as &$representation) {
+            // If the mimetype is not known, try inferring it.
+            if (!$representation->mimeType) {
+                if (isset($representation->parts[0])) {
+                    $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
+                }
+            }
+            $mime_type_match = array_search($representation->mimeType, $mime_types) !== false;
+            $match_per_mime_type_filter = $mime_types_filter_excludes ? !$mime_type_match : $mime_type_match;
+            $expansion_delta = PHP_INT_MAX;
+            if ($match_per_mime_type_filter) {
+                    if (empty($representation->uri)) {
+                        // skip part if URI is missing
+                        continue;
+                    }
+                    if ($strict_size_limit) {
+                        if (isset($representation->width) && isset($representation->height) && $representation->width <= $width && $representation->height <= $height) {
+                            $expansion_delta = 0;
+                        }
+                    } else {
+                        // calculate expansion delta
+                        $expansion_delta = PHP_INT_MAX; // biggest delta for unknown sizes
+
+                        // determine the optimal size
+                        if (isset($representation->width) && isset($representation->height)) {
+                            $expansion = $representation->width * $representation->height;
+                            if ($width != null && $height != null) {
+                                $optimalExpansion = $height * $width;
+                            } else {
+                                $optimalExpansion = PHP_INT_MAX;
+                            }
+                            // determine the difference
+                            $expansion_delta = $expansion > $optimalExpansion ? $expansion - $optimalExpansion : $optimalExpansion - $expansion;
+                        }
+                }
+                $matching_representations_by_rank[$expansion_delta] = $representation;
+            }
         }
-      }
     }
+
+
 
     // Sort the array so that the smallest key value is the first in the array
     ksort($matching_representations_by_rank);
