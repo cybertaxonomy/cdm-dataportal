@@ -52,7 +52,7 @@ class GalleryItemMedia {
         $this->first_representation = $media->representations[0];
       }
 
-      if (isset_not_empty($this->thumbnail_representation)) {
+      if (isset_not_empty($thumbnail_representations)) {
         $this->thumbnail_representation = array_shift($thumbnail_representations);
       }
       if (isset_not_empty($full_size_representations)) {
