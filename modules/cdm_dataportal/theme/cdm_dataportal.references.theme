@@ -68,7 +68,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
         if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
                 $out .= ".";
             }
-            if (isset_not_empty($reference->link->javaUri)){
+            if (isset($reference->link->javaUri)){
                 $out .= cdm_doi($reference->link->javaUri, false);
             }else{
                 $out .= cdm_doi($reference->link, true);
@@ -86,11 +86,16 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
         }
         $doi = cdm_doi($reference->doi, false);
       }
-      if(isset_not_empty($reference->link)){
+      if(isset($reference->link)){
           if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
-                        $citation .= ".";
-              }
-          $doi .= cdm_doi($reference->link->javaUri, false);
+            $citation .= ".";
+          }
+
+          if (isset($reference->link->javaUri)){
+            $doi .= cdm_doi($reference->link->javaUri, false);
+          }else{
+            $doi .= cdm_doi($reference->link, true);
+         }
       }
     $out = '<span class="reference">' . $citation .$icon_link . $doi . '</span>';
   }
