@@ -2801,10 +2801,7 @@ function uri_to_synonym($synonymUuid, $acceptedUuid) {
   return url($acceptedPath, array(
       'query' => array(
         // highlight the synony in the synonymy
-        'highlight' => $synonymUuid,
-        // the taxon page is refered from a synonym and the synonym can optionally be named in the page title
-        // see theme_taxon_page_title()
-        'acceptedFor' => $synonymUuid
+        'highlight' => $synonymUuid
       ),
       'fragment' => $synonymUuid
   ));
