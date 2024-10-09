@@ -64,7 +64,6 @@ const CDM_SPECIMEN_RELATION_OPTION_CDET = 'CDET';
  const CDM_DTO_PORTAL_PAGE = 'cdm_dto_mode';
  const CDM_DTO_LOADING = 'cdm_dto_loading';
 
-  define('CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR', 0);
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE', 'cdm_synonymy_accepted_taxon_sec_separate');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE', 'cdm_synonymy_accepted_taxon_sec_footnote');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL', 'cdm_synonymy_accepted_taxon_sec_separate_label');
@@ -2613,14 +2612,7 @@ cf	cultivated: reported in error
 
 
 
-  $form['taxon_synonymy']['cdm_dataportal_display_is_accepted_for'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display <em>is accepted for ...</em> on taxon pages when
-      coming from a synonym link.'),
-    '#default_value' => variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR),
-    '#description' => t('Check this if after doing a search and clicking on a
-      synonym you want to see the "accept of" text for the accepted synonym.'),
-  );
+
 
   $form['taxon_synonymy']['taxon_relations'] = array(
     '#type' => 'fieldset',
