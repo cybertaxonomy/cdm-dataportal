@@ -535,7 +535,7 @@ function cdm_sob_dto_character_data_table($sob_dto){
     if (!empty($sob_dto) ) {
         foreach ($sob_dto as $characterStatePair){
             if (isset_not_empty($characterStatePair->key) && isset_not_empty($characterStatePair->value)) {
-                $table_row_data[] = cdm_sob_dto_table_row($characterStatePair->key, $characterStatePair->value);
+                $table_row_data[] = cdm_sob_dto_table_row($characterStatePair->key, $characterStatePair->value, false);
             }
         }
         //$detail_html = "";
@@ -722,7 +722,7 @@ function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $wei
         "class" => [
           'details-table',
           'details-table-' . normalize_to_class_attribute($table_heading),
-          html_class_attribute_ref($sob_dto)
+          is_array($sob_dto)? '':html_class_attribute_ref($sob_dto)
         ],
       ],
     ];
@@ -734,7 +734,7 @@ function cdm_sob_dto_table($table_heading, array $table_row_data, $sob_dto, $wei
   return NULL;
 }
 
-function cdm_sob_dto_table_row($label, $value) {
+function cdm_sob_dto_table_row($label, $value, $no_striping = TRUE) {
   if ($value) {
     if($label) {
       return [
@@ -744,10 +744,11 @@ function cdm_sob_dto_table_row($label, $value) {
             'class' => [
               'label',
             ],
+              'style' => 'white-space: normal'
           ],
           $value,
         ],
-        'no_striping' => TRUE,
+        'no_striping' => $no_striping,
       ];
     } else {
       // value spanning two columns
@@ -758,7 +759,7 @@ function cdm_sob_dto_table_row($label, $value) {
             'colspan' => 2,
           ]
         ],
-        'no_striping' => TRUE,
+        'no_striping' => $no_striping,
       ];
     }
   }
