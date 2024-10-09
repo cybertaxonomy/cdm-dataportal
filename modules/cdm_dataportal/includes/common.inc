@@ -238,14 +238,17 @@ function compare_original_sources($a, $b){
           $a_string .= $a->originalInfo;
       }
   }
-  if (isset($b-> label) && is_array($b->label)){
-      $b_string = $b->label[0]->label;
-      if (isset_not_empty($b->nameInSource) && is_array($b->nameInSource)){
-          $b_string .= cdm_tagged_text_to_string($b->nameInSource);
-      }
-      if (isset($b->originalInfo) && strlen($b->originalInfo)>0){
-          $b_string .= $b->originalInfo;
-      }
+  if (isset($b-> label) && is_array($b->label) ){
+    if (isset_not_empty($b->label)){
+        $b_string = $b->label[0]->label;
+        if (isset_not_empty($b->nameInSource) && is_array($b->nameInSource)){
+            $b_string .= cdm_tagged_text_to_string($b->nameInSource);
+        }
+        if (isset($b->originalInfo) && strlen($b->originalInfo)>0){
+            $b_string .= $b->originalInfo;
+        }
+    }
+
   }else{
       $b_string = '';
       if(isset($b->citation->titleCache)) {
