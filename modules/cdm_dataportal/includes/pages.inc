@@ -527,9 +527,7 @@ function compose_cdm_taxon_page($taxon, $page_part = 'description'){
     }
   }
 
-  if (variable_get('cdm_dataportal_display_is_accepted_for', CDM_DATAPORTAL_DISPLAY_IS_ACCEPTED_FOR) && isset($_REQUEST['acceptedFor'])) {
-    $render_array['accepted_for'] = markup_to_render_array(cdm_accepted_for($_REQUEST['acceptedFor']), $weight++);
-  }
+
 
   // --- PAGE PART: DESCRIPTION --- //
   if (!taxon_page_tabs_hidden_check('description') && ($page_part == 'description' || $page_part == 'all')) {
