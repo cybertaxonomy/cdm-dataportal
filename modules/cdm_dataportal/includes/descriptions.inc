@@ -2052,7 +2052,7 @@ function compose_new_feature_block_items_generic($description_elements, $feature
                     break;
                 default:
                     $feature_block_has_content = true;
-                    $elements_out_array[] = markup_to_render_array('<li>No method for rendering unknown description class: ' . $description_element->class . '</li>');
+                    $elements_out_array[] = markup_to_render_array('<li>No method for rendering unknown description class: ' . $switch_var . '</li>');
             }
             if (isset_not_empty($elements_out_array)){
                 $elements_out_array_last_item = $elements_out_array[count($elements_out_array) - 1];
@@ -3134,9 +3134,10 @@ function get_root_nodes_for_dataset($description) {
  */
 function description_element_table_rows($root_nodes, $row_items, $level = 0) {
 
-  $indent_string = '&nbsp;&nbsp;&nbsp;';
+  $indent_string = '&nbsp;&nbsp;&nbsp;';//'&nbsp;&nbsp;&nbsp;';
   foreach ($root_nodes as $root_node) {
     if(isset($root_node->descriptionElements)) {
+
       foreach ($root_node->descriptionElements as $element) {
         $level_indent = str_pad('', $level * strlen($indent_string), $indent_string);
         switch ($element->class) {
@@ -3151,6 +3152,8 @@ function description_element_table_rows($root_nodes, $row_items, $level = 0) {
               ],
               'class' => ['level_' . $level, 'has_values', $element->feature->class]
             ];
+
+
             break;
           case 'CategoricalData':
             default:
@@ -3171,13 +3174,18 @@ function description_element_table_rows($root_nodes, $row_items, $level = 0) {
                 ],
                 'class' => ['level_' . $level, 'has_state', $element->feature->class]
               ];
+
             }
             break;
         }
       }
     }
-    // recurse child nodes
-    $row_items = description_element_table_rows($root_node->childNodes, $row_items, $level + 1);
+    // recurse child node
+      $level_next = $level;
+      if (!empty($root_node -> descriptionElements)){
+          $level_next = $level+1;
+      }
+    $row_items = description_element_table_rows($root_node->childNodes, $row_items, $level_next);
   }
   return $row_items;
 }
