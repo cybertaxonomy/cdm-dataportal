@@ -379,7 +379,7 @@ $derived-unit-details-table-gutter: $base-line-height / 2;
     tbody {
       background-color: $page-background-color;
       .label {
-        text-align: right;
+        text-align: left;
         white-space: nowrap;
         border-right: thin solid $menu-bar-background-color;
         width: 50%;
