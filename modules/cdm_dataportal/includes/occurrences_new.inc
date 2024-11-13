@@ -65,12 +65,14 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_de
       $render_array['dna-sample'] = compose_cdm_derived_unit_dto_sequences($sob_dto, $full_details);
     } else if($sob_dto->type == 'MediaSpecimen' && isset_not_empty($sob_dto->mediaSpecimen)) {
       $render_array['media-specimens'] = cdm_sob_dto_media_table($sob_dto->mediaSpecimen, $sob_dto, 'Media Specimens');
-    } else if ($sob_dto->characterData){
-        $render_array['character-data'] = cdm_sob_dto_character_data_table($sob_dto->characterData, $sob_dto, 'Character Data');
     }
   }
+
   if(isset_not_empty($sob_dto->determinations)){
     $render_array['determinations'] = compose_cdm_sob_dto_determinations($sob_dto, $full_details);
+  }
+  if (isset_not_empty($sob_dto->characterData)){
+    $render_array['character-data'] = cdm_sob_dto_character_data_table($sob_dto->characterData, $sob_dto, 'Character Data');
   }
   if(isset_not_empty($sob_dto->listOfMedia)){
     $render_array['media'] = cdm_sob_dto_media_table($sob_dto->listOfMedia, $sob_dto, 'Media');;
@@ -551,7 +553,7 @@ function cdm_sob_dto_character_data_table($sob_dto){
     }
 
 
-    return cdm_sob_dto_table('Character Data', $table_row_data, $sob_dto, 1);
+    return cdm_sob_dto_table('Character Data', $table_row_data, $sob_dto, 1, 2);
 }
 
 function compose_cdm_sob_dto_status($sob_dto) {
