@@ -75,4 +75,18 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         assertEquals("(15 Jul–)2 Aug–3 Sep(–16 Oct)", fruiting_period.getFeatureBlockElements().get(0).getText());
     }
 
+    @Test
+    public void testModifyingText() throws MalformedURLException {
+
+        TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
+
+        FeatureBlock fb = p.getFeatureBlockAt(3, "lifeform", "div", "span");
+        assertNotNull(fb);
+
+        assertEquals(1, fb.getFeatureBlockElements().size());
+
+        assertEquals("test epiphyt", fb.getFeatureBlockElements().get(0).getText());
+
+    }
+
 }
