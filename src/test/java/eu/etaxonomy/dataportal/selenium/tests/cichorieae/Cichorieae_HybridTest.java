@@ -64,6 +64,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
     public void testCrepis_artificialis() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_artificialis_Uuid);
         assertEquals(getContext().prepareTitle("Crepis x artificialis"), p.getTitle());
-        assertEquals("Crepis "+UTF8.HYBRID+" artificialis J. Collins & al. in Genetics 14: 310. 1929", p.getAcceptedNameText());
+        assertEquals("Incorrectly created hybrid with x should be kept as entered",
+                "Crepis x artificialis J. Collins & al. in Genetics 14: 310. 1929", p.getAcceptedNameText());
     }
 }
