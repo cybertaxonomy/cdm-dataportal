@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.ClassificationTreeBlock;
 import eu.etaxonomy.dataportal.elements.ClassificationTreeElement;
@@ -37,27 +38,27 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
     @Test
     public void testOrchiserapias() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), orchiserapias_Uuid);
-        String expectedName = "×Orchiserapias";
+        String expectedName = UTF8.HYBRID_SPACE + "Orchiserapias";
         assertEquals(getContext().prepareTitle(expectedName), driver.getTitle());
         assertEquals(expectedName, p.getAcceptedNameText());
-        assertEquals("≡ Orchis × Serapias", p.getHomotypicalGroupSynonymName(1));
+        assertEquals("≡ Orchis "+UTF8.HYBRID+" Serapias", p.getHomotypicalGroupSynonymName(1));
     }
 
     @Test
     public void testEpilobium_aschersonianum() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), epilobium_aschersonianum_Uuid);
-        assertEquals(getContext().prepareTitle("Epilobium ×aschersonianum"), driver.getTitle());
-        assertEquals("Epilobium ×aschersonianum Hausskn.", p.getAcceptedNameText());
-        assertEquals("≡ Epilobium lanceolatum × parviflorum", p.getHomotypicalGroupSynonymName(1));
+        assertEquals(getContext().prepareTitle("Epilobium " + UTF8.HYBRID_SPACE + "aschersonianum"), driver.getTitle());
+        assertEquals("Epilobium " + UTF8.HYBRID_SPACE + "aschersonianum Hausskn.", p.getAcceptedNameText());
+        assertEquals("≡ Epilobium lanceolatum "+UTF8.HYBRID+" parviflorum", p.getHomotypicalGroupSynonymName(1));
     }
 
     @Test
     public void testAegilops_biuncialis_x_geniculata() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), aegilops_biuncialis_x_geniculata_Uuid);
-        assertEquals(getContext().prepareTitle("Aegilops biuncialis × geniculata"), driver.getTitle());
+        assertEquals(getContext().prepareTitle("Aegilops biuncialis "+UTF8.HYBRID+" geniculata"), driver.getTitle());
         ClassificationTreeBlock classificationTree = p.getClassificationTree();
         ClassificationTreeElement focusedElement = classificationTree.getFocusedElement();
         assertTrue(classificationTree.isVisibleInViewPort(focusedElement));
-        assertEquals("Abbreviated form of name should be used", "A. biuncialis × geniculata", focusedElement.getTaxonName());
+        assertEquals("Abbreviated form of name should be used", "A. biuncialis "+UTF8.HYBRID+" geniculata", focusedElement.getTaxonName());
     }
 }
