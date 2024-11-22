@@ -8,8 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.MalformedURLException;
 import java.util.UUID;
 
@@ -21,14 +19,10 @@ import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
-
 
     static UUID crepis_malyi_Uuid = UUID.fromString("a4050699-ace9-45fb-a807-249531da5566");
 
@@ -40,7 +34,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
 
 
     @Test
-    public void crepis_malyi() throws MalformedURLException {
+    public void testCrepis_malyi() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_malyi_Uuid);
         String expectedName = "Crepis ×malyi";
         assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
@@ -48,7 +42,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void lactuca_favratii() throws MalformedURLException {
+    public void testLactuca_favratii() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), lactuca_favratii_Uuid);
         assertEquals(getContext().prepareTitle("Lactuca ×\"favratii\""), p.getTitle());
         assertEquals("Lactuca ×\"favratii\", nom. provis.", p.getAcceptedNameText());
@@ -56,7 +50,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void crepis_oenipontana() throws MalformedURLException {
+    public void testCrepis_oenipontana() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_oenipontana_Uuid);
         assertEquals(getContext().prepareTitle("Crepis ×oenipontana"), p.getTitle());
         assertEquals("Crepis ×oenipontana Murr in Österr. Bot. Z. 43: 178. 1893", p.getAcceptedNameText());
@@ -66,10 +60,9 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void crepis_artificialis() throws MalformedURLException {
+    public void testCrepis_artificialis() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_artificialis_Uuid);
         assertEquals(getContext().prepareTitle("Crepis x artificialis"), p.getTitle());
         assertEquals("Crepis x artificialis J. Collins & al. in Genetics 14: 310. 1929", p.getAcceptedNameText());
     }
-
 }

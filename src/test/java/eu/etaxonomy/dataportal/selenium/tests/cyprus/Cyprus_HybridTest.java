@@ -8,9 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.net.MalformedURLException;
 import java.util.UUID;
 
@@ -25,25 +22,20 @@ import eu.etaxonomy.dataportal.pages.TaxonProfilePage;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 
 /**
- *
  * @author a.kohlbecker
- *
  */
-
 @DataPortalContexts( { DataPortalSite.cyprus })
 public class Cyprus_HybridTest extends CdmDataPortalTestBase{
-
 
     static UUID orchiserapias_Uuid = UUID.fromString("0aee7eea-84e7-4b61-8cb6-d17313cc9b80");
 
     static UUID epilobium_aschersonianum_Uuid = UUID.fromString("e13ea422-5d45-477b-ade3-8dc84dbc9dbc");
 
-    //
     static UUID aegilops_biuncialis_x_geniculata_Uuid = UUID.fromString("88ff0fbb-c0df-46c1-9969-cf318ea97dbb");
 
 
     @Test
-    public void orchiserapias() throws MalformedURLException {
+    public void testOrchiserapias() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), orchiserapias_Uuid);
         String expectedName = "×Orchiserapias";
         assertEquals(getContext().prepareTitle(expectedName), driver.getTitle());
@@ -52,7 +44,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void epilobium_aschersonianum() throws MalformedURLException {
+    public void testEpilobium_aschersonianum() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), epilobium_aschersonianum_Uuid);
         assertEquals(getContext().prepareTitle("Epilobium ×aschersonianum"), driver.getTitle());
         assertEquals("Epilobium ×aschersonianum Hausskn.", p.getAcceptedNameText());
@@ -60,7 +52,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
     }
 
     @Test
-    public void aegilops_biuncialis_x_geniculata() throws MalformedURLException {
+    public void testAegilops_biuncialis_x_geniculata() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), aegilops_biuncialis_x_geniculata_Uuid);
         assertEquals(getContext().prepareTitle("Aegilops biuncialis × geniculata"), driver.getTitle());
         ClassificationTreeBlock classificationTree = p.getClassificationTree();
@@ -68,5 +60,4 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
         assertTrue(classificationTree.isVisibleInViewPort(focusedElement));
         assertEquals("Abbreviated form of name should be used", "A. biuncialis × geniculata", focusedElement.getTaxonName());
     }
-
 }
