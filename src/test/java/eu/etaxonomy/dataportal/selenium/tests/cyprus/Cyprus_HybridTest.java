@@ -28,11 +28,11 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 @DataPortalContexts( { DataPortalSite.cyprus })
 public class Cyprus_HybridTest extends CdmDataPortalTestBase{
 
-    static UUID orchiserapias_Uuid = UUID.fromString("0aee7eea-84e7-4b61-8cb6-d17313cc9b80");
+    private static final UUID orchiserapias_Uuid = UUID.fromString("0aee7eea-84e7-4b61-8cb6-d17313cc9b80");
 
-    static UUID epilobium_aschersonianum_Uuid = UUID.fromString("e13ea422-5d45-477b-ade3-8dc84dbc9dbc");
+    private static final UUID epilobium_aschersonianum_Uuid = UUID.fromString("e13ea422-5d45-477b-ade3-8dc84dbc9dbc");
 
-    static UUID aegilops_biuncialis_x_geniculata_Uuid = UUID.fromString("88ff0fbb-c0df-46c1-9969-cf318ea97dbb");
+    private static final UUID aegilops_biuncialis_x_geniculata_Uuid = UUID.fromString("88ff0fbb-c0df-46c1-9969-cf318ea97dbb");
 
     private static final String hybridWithSpace = UTF8.HYBRID_SPACE.toString();
 

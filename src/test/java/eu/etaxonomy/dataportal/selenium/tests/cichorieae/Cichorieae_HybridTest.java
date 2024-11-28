@@ -25,13 +25,13 @@ import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
 @DataPortalContexts( { DataPortalSite.cichorieae })
 public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
 
-    static UUID crepis_malyi_Uuid = UUID.fromString("a4050699-ace9-45fb-a807-249531da5566");
+    private static final UUID crepis_malyi_Uuid = UUID.fromString("a4050699-ace9-45fb-a807-249531da5566");
 
-    static UUID lactuca_favratii_Uuid = UUID.fromString("6027e1fa-9fe5-4ddc-a2de-f72bfa7378c0");
+    private static final UUID lactuca_favratii_Uuid = UUID.fromString("6027e1fa-9fe5-4ddc-a2de-f72bfa7378c0");
 
-    static UUID crepis_oenipontana_Uuid = UUID.fromString("31b8757f-6acb-4826-ba7f-b2d116dc713c");
+    private static final UUID crepis_oenipontana_Uuid = UUID.fromString("31b8757f-6acb-4826-ba7f-b2d116dc713c");
 
-    static UUID crepis_artificialis_Uuid = UUID.fromString("3eabdf89-ddeb-461c-b6f8-341bb8deb7bf");
+    private static final UUID crepis_artificialis_Uuid = UUID.fromString("3eabdf89-ddeb-461c-b6f8-341bb8deb7bf");
 
     private static final String hybridWithSpace = UTF8.HYBRID_SPACE.toString();
 
