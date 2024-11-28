@@ -34,7 +34,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
 
     private static final UUID aegilops_biuncialis_x_geniculata_Uuid = UUID.fromString("88ff0fbb-c0df-46c1-9969-cf318ea97dbb");
 
-    private static final String hybridWithSpace = UTF8.HYBRID_SPACE.toString();
+    private static final String hybridWithSpace = UTF8.HYBRID.toString();
 
     @Test
     public void testOrchiserapias() throws MalformedURLException {

@@ -33,7 +33,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
 
     private static final UUID crepis_artificialis_Uuid = UUID.fromString("3eabdf89-ddeb-461c-b6f8-341bb8deb7bf");
 
-    private static final String hybridWithSpace = UTF8.HYBRID_SPACE.toString();
+    private static final String hybridWithSpace = UTF8.HYBRID.toString();
 
 
     @Test
