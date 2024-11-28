@@ -33,31 +33,33 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
 
     static UUID crepis_artificialis_Uuid = UUID.fromString("3eabdf89-ddeb-461c-b6f8-341bb8deb7bf");
 
+    private static final String hybridWithSpace = UTF8.HYBRID_SPACE.toString();
+
 
     @Test
     public void testCrepis_malyi() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_malyi_Uuid);
-        String expectedName = "Crepis "+UTF8.HYBRID_SPACE+"malyi";
+        String expectedName = "Crepis "+hybridWithSpace+"malyi";
         assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
-        assertEquals("Crepis "+UTF8.HYBRID_SPACE+"malyi Stadlm. in Oesterr. Bot. Z. 58: 425. 1908", p.getAcceptedNameText());
+        assertEquals("Crepis "+hybridWithSpace+"malyi Stadlm. in Oesterr. Bot. Z. 58: 425. 1908", p.getAcceptedNameText());
     }
 
     @Test
     public void testLactuca_favratii() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), lactuca_favratii_Uuid);
-        assertEquals(getContext().prepareTitle("Lactuca "+UTF8.HYBRID_SPACE+"\"favratii\""), p.getTitle());
-        assertEquals("Lactuca "+UTF8.HYBRID_SPACE+"\"favratii\", nom. provis.", p.getAcceptedNameText());
-        assertEquals("≡ Cicerbita "+UTF8.HYBRID_SPACE+"favratii Wilczek in Bull. Soc. Vaud. Sci. Nat. 51: 333. 1917", p.getHomotypicalGroupSynonymName(1));
+        assertEquals(getContext().prepareTitle("Lactuca "+hybridWithSpace+"\"favratii\""), p.getTitle());
+        assertEquals("Lactuca "+hybridWithSpace+"\"favratii\", nom. provis.", p.getAcceptedNameText());
+        assertEquals("≡ Cicerbita "+hybridWithSpace+"favratii Wilczek in Bull. Soc. Vaud. Sci. Nat. 51: 333. 1917", p.getHomotypicalGroupSynonymName(1));
     }
 
     @Test
     public void testCrepis_oenipontana() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_oenipontana_Uuid);
-        assertEquals(getContext().prepareTitle("Crepis "+UTF8.HYBRID_SPACE+"oenipontana"), p.getTitle());
-        assertEquals("Crepis "+UTF8.HYBRID_SPACE+"oenipontana Murr in Österr. Bot. Z. 43: 178. 1893", p.getAcceptedNameText());
+        assertEquals(getContext().prepareTitle("Crepis "+hybridWithSpace+"oenipontana"), p.getTitle());
+        assertEquals("Crepis "+hybridWithSpace+"oenipontana Murr in Österr. Bot. Z. 43: 178. 1893", p.getAcceptedNameText());
         assertEquals("= Crepis alpestris f. pseudalpestris Murr in Allg. Bot. Z. Syst. 14: 9. 1908", p.getHeterotypicalGroupSynonymName(1, 1));
         assertEquals("≡ Crepis alpestris var. pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 14: 9. 1908", p.getHeterotypicalGroupSynonymName(1, 2));
-        assertEquals("≡ Crepis "+UTF8.HYBRID_SPACE+"pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 22: 66. 1916", p.getHeterotypicalGroupSynonymName(1, 3));
+        assertEquals("≡ Crepis "+hybridWithSpace+"pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 22: 66. 1916", p.getHeterotypicalGroupSynonymName(1, 3));
     }
 
     @Test

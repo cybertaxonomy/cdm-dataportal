@@ -34,11 +34,12 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
 
     static UUID aegilops_biuncialis_x_geniculata_Uuid = UUID.fromString("88ff0fbb-c0df-46c1-9969-cf318ea97dbb");
 
+    private static final String hybridWithSpace = UTF8.HYBRID_SPACE.toString();
 
     @Test
     public void testOrchiserapias() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), orchiserapias_Uuid);
-        String expectedName = UTF8.HYBRID_SPACE + "Orchiserapias";
+        String expectedName = hybridWithSpace + "Orchiserapias";
         assertEquals(getContext().prepareTitle(expectedName), driver.getTitle());
         assertEquals(expectedName, p.getAcceptedNameText());
         assertEquals("≡ Orchis "+UTF8.HYBRID+" Serapias", p.getHomotypicalGroupSynonymName(1));
@@ -47,8 +48,8 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
     @Test
     public void testEpilobium_aschersonianum() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), epilobium_aschersonianum_Uuid);
-        assertEquals(getContext().prepareTitle("Epilobium " + UTF8.HYBRID_SPACE + "aschersonianum"), driver.getTitle());
-        assertEquals("Epilobium " + UTF8.HYBRID_SPACE + "aschersonianum Hausskn.", p.getAcceptedNameText());
+        assertEquals(getContext().prepareTitle("Epilobium " + hybridWithSpace + "aschersonianum"), driver.getTitle());
+        assertEquals("Epilobium " + hybridWithSpace + "aschersonianum Hausskn.", p.getAcceptedNameText());
         assertEquals("≡ Epilobium lanceolatum "+UTF8.HYBRID+" parviflorum", p.getHomotypicalGroupSynonymName(1));
     }
 
