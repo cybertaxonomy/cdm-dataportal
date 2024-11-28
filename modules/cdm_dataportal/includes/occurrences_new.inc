@@ -553,7 +553,7 @@ function cdm_sob_dto_character_data_table($sob_dto){
     }
 
 
-    return cdm_sob_dto_table('Character Data', $table_row_data, $sob_dto, 1, 2);
+    return cdm_sob_dto_table('Character Data', $table_row_data, $sob_dto, 5, 2);
 }
 
 function compose_cdm_sob_dto_status($sob_dto) {
@@ -595,7 +595,7 @@ function compose_cdm_unit_dto_type_designations($unit_dto, $full_details = FALSE
       render_specimen_typedesignation_dto($unit_dto->specimenTypeDesignations, false, 'div', 'div'));
   }
 
-  return cdm_sob_dto_table(t('Type designations'), $table_row_data, $unit_dto, 5, 2);
+  return cdm_sob_dto_table(t('Type designations'), $table_row_data, $unit_dto, 4, 2);
 }
 
 /**
