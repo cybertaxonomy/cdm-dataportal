@@ -1016,16 +1016,17 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
 
         if (isset_not_empty($media->items[0])) {
-            $valid_item = null;
 
             $pref_representations = cdm_preferred_media_representations($media->items[0]
                 , [
                 'application/pdf',
                 'image/png',
                 'image/jpeg',
+                'image/jpg',
                 'image/gif',
                 'text/html',
-            ], 300, 400);
+            ], $taxon_profile_image_settings['maxextend'],
+                $taxon_profile_image_settings['maxextend']);
 
             $representationPart = array_shift($pref_representations);
 
