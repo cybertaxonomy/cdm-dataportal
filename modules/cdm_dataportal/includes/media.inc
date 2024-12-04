@@ -44,11 +44,11 @@ function cdm_rights_as_dl_groups($rights_list) {
 
       case UUID_RIGHTS_COPYRIGHT:
         $text = '';
-        if (isset($right->text) ){
+        if (isset($right->type->text) ){
           // sanitize potential '(c)' away
-          $text  = preg_replace('/^\(c\)/', '', $right->text);
-        } if (isset($right->agent) ){
-          $text  .= (strlen($text) > 0 ? ', ' : '') . $right->agent->titleCache;
+          $text  = preg_replace('/^\(c\)/', '', $right->type->text);
+        } if (isset($right->type->agent) ){
+          $text  .= (strlen($text) > 0 ? ', ' : '') . $right->type->agent->titleCache;
         }
 
         $copyrights[] = array('#markup' => '&copy; ' . $text);
@@ -181,7 +181,7 @@ function read_media_metadata($media)
 
   // Rights
   $metadata['rights'] = array();
-  if (!empty($media_metadata->Copyright)) {
+  if (!empty($media_metadata->Copyright) ) {
     $rightsObj = new stdClass();
     $rightsObj->type = new stdClass();
     $rightsObj->type->uuid = UUID_RIGHTS_COPYRIGHT;
@@ -543,7 +543,10 @@ function cdm_media_gallery_entry_image($thumbnailImage, $maxExtend, $addPassePar
     // $attributes['title'] = 'h:'.$h.', w:'.$w.',ratio:'.$ratio;
     if (is_array($attributes)) {
       foreach ($attributes as $name => $value) {
-        $attrStr .= $name . '="' . $value . '" ';
+        if (isset_not_empty($value)){
+          $attrStr .= $name . '="' . $value . '" ';
+        }
+
       }
     }
 
