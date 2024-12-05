@@ -58,7 +58,7 @@ ul.cdm_taxontree {
 }
 
 /* switch off highlighting of synonyms */
-.synonym span.highlite{
+.synonym span.highlight{
   background-color: #96ab2c;
 }
 
