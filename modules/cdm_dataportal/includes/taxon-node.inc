@@ -39,8 +39,8 @@ function compose_taxon_node_status(array $taxon_nodes){
 
       if(isset($taxon_node->status)){
         $state_label = strtolower($taxon_node->status->representation_L10n);
-        if(isset($taxon_node->statusNote_L10n)){
-          $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote_L10n . ')</span>';
+        if(isset($taxon_node->placementNote_L10n)){
+          $state_label .= ' <span class="status-note">(' . $taxon_node->placementNote_L10n . ')</span>';
         }
         $classification = cdm_ws_get(CDM_WS_CLASSIFICATION, array($taxon_node->classificationUUID));
         $status_markup_tokens[$state_label . '-' . $taxon_node->uuid]  = [
@@ -95,10 +95,10 @@ function compose_taxon_node_new_status(array $taxon_nodes){
                     $state_label = strtolower($taxon_node->status->representation_L10n);
                 }
 
-                if(isset($taxon_node->statusNote_L10n)){
-                    $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote_L10n . ')</span>';
-                }else if (isset_not_empty($taxon_node->statusNote)){
-                    $state_label .= ' <span class="status-note">(' . $taxon_node->statusNote . ')</span>';
+                if(isset($taxon_node->placementNote_L10n)){
+                    $state_label .= ' <span class="status-note">(' . $taxon_node->placementNote_L10n . ')</span>';
+                }else if (isset_not_empty($taxon_node->placementNote)){
+                    $state_label .= ' <span class="status-note">(' . $taxon_node->placementNote . ')</span>';
                 }
                 if (isset($taxon_node->classificationUUID)){
                     $classificationUuid = $taxon_node->classificationUUID;
