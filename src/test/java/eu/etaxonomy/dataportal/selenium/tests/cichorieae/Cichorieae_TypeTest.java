@@ -81,7 +81,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
         List<TypeDesignationElement> typeDesignations;
         if (getDrupalVar(DrupalVars.CDM_DTO_PORTAL_PAGE).toString().equals("1")){
             typeDesignationsContainer = p.getNewHomotypicalGroupTypeDesignations();
-            assertEquals("Holotype: Turkey, B4 Konya, Cihanbeyli, between Gölyazı-Tuzgölü, alt. 908 m, 38°32'33.12\"N, 33°21'11.28\"E, nice ecology, huge plant, 2 Feb 2022, A. Duran, B. Doğan & S. Makbul 123 (KNYA)", typeDesignationsContainer.getText());
+            assertEquals("Holotype: Türkiye, B4 Konya, Cihanbeyli, between Gölyazı-Tuzgölü, alt. 908 m, 38°32'33.12\"N, 33°21'11.28\"E, nice ecology, huge plant, 2 Feb 2022, A. Duran, B. Doğan & S. Makbul 123 (KNYA)", typeDesignationsContainer.getText());
         }else{
             typeDesignations = p.getHomotypicalGroupTypeDesignations();
             assertEquals("Expecting one Typedesignation", 1, typeDesignations.size());
