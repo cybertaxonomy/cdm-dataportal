@@ -78,17 +78,17 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
     public void testDerivationTree1() {
 
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(3);
-        DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
-        DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(1);
-        DerivedUnitTreeNode subNode3 = rootNode.getSubNodes().get(2);
+        DerivedUnitTreeNode subNode0 = rootNode.getSubNodes().get(0);
+        DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(1);
+        DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(2);
 
         assertEquals("B SP-99999", rootNode.getHeader().getText());
         assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
         rootNode.getTreeNodeSymbol().click();
         assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
+        assertEquals("[icon] B_SP-99999", subNode0.getHeader().getText());
         assertEquals("B B-923845", subNode1.getHeader().getText());
         assertEquals("B DNA-9098080", subNode2.getHeader().getText());
-        assertEquals("B_SP-99999", subNode3.getHeader().getText());
 
         // NOTE we are only testing subnode 1 here as all other details are tested in other methods
 
