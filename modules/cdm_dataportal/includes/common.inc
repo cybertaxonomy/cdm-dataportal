@@ -55,7 +55,7 @@ function html_class_attribute_ref($cdm_entity) {
     switch ($cdm_entity->class){
       case 'Taxon':
         if(isset($cdm_entity->secSource->uuid)){
-          $attributes .= " sec_uuid:"  . $cdm_entity->secSource->citation->uuid;
+          $attributes .= " sec_uuid:"  . $cdm_entity->secSource->uuid;
         }
         break;
     }
@@ -888,7 +888,7 @@ function compose_identifiers($identifiers){
   //     // urn:lsid:ipni.org:authors:20009164-1 UUID_IDENTIFIER_TYPE_LSID
   foreach($identifiers as $identifier){
     if($identifier->identifier){
-      $render_array[] = markup_to_render_array('<span class="label">' . $identifier->type->representation_L10n . ':</span> ' . $identifier->identifier, null, '<span class="'. html_class_attribute_ref($identifier) . '">', '</span>');
+      $render_array[] = markup_to_render_array('<span class="label">' . $identifier->type->representation_L10n . ':</span> ' . $identifier->identifier, null, '<span class="'. html_class_attribute_ref($identifier) . '">', '</span>', '<br>');
     }
   }
 
