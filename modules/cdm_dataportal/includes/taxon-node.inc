@@ -87,34 +87,29 @@ function compose_taxon_node_new_status(array $taxon_nodes){
 
             RenderHints::setAnnotationsAndSourceConfig(annotation_and_source_config_taxon_node());
             $annotations_and_sources = handle_new_annotations_and_sources($taxon_node);
-
-            if(isset($taxon_node->status)){
-                if (is_string($taxon_node->status)){
-                    $state_label = strtolower($taxon_node->status);
-                }else{
-                    $state_label = strtolower($taxon_node->status->representation_L10n);
-                }
-
-                if(isset($taxon_node->placementNote_L10n)){
-                    $state_label .= ' <span class="status-note">(' . $taxon_node->placementNote_L10n . ')</span>';
-                }else if (isset_not_empty($taxon_node->placementNote)){
-                    $state_label .= ' <span class="status-note">(' . $taxon_node->placementNote . ')</span>';
-                }
-                if (isset($taxon_node->classificationUUID)){
-                    $classificationUuid = $taxon_node->classificationUUID;
-                    $classification = cdm_ws_get(CDM_WS_CLASSIFICATION, array($classificationUuid));
-                    $classificationLabel = $classification->titleCache;
-                }else{
-                    $classificationUuid = $taxon_node->classificationUuid;
-                    $classificationLabel = $taxon_node->classificationLabel;
-                }
-
-
-                $status_markup_tokens[$state_label . '-' . $taxon_node->uuid]  = [
-                    'status' => '<span class="cdm:TaxonNodeDto uuid:'. $taxon_node->uuid.'">' . $state_label . $annotations_and_sources->footNoteKeysMarkup()  .  '%s</span>', // %s will be replaced by the $classification_markup or by '',
-                    'classification' => ' <span class="cdm:Classification uuid:'. $classificationUuid.'">[' . $classificationLabel . ']</span>'
-                ];
+            $state_label = '';
+            if(isset($taxon_node->status)) {
+              if (is_string($taxon_node->status)) {
+                $state_label = strtolower($taxon_node->status);
+              }
             }
+
+            if (isset_not_empty($taxon_node->placementNote)){
+                $state_label .= ' <span class="status-note">(' . $taxon_node->placementNote . ')</span>';
+            }
+
+            $classificationUuid = '';
+            $classificationLabel = '';
+            if (isset_not_empty($taxon_node->classificationUuid)){
+              $classificationUuid = $taxon_node->classificationUuid;
+              $classificationLabel = $taxon_node->classificationLabel;
+            }
+
+            $status_markup_tokens[$state_label . '-' . $taxon_node->uuid]  = [
+                'status' => '<span class="cdm:TaxonNodeDto uuid:'. $taxon_node->uuid.'">' . $state_label . $annotations_and_sources->footNoteKeysMarkup()  .  '%s</span>', // %s will be replaced by the $classification_markup or by '',
+                'classification' => ' <span class="cdm:Classification uuid:'. $classificationUuid.'">[' . $classificationLabel . ']</span>'
+            ];
+
 
         }
         if(count($status_markup_tokens) > 0){
