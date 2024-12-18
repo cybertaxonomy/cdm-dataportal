@@ -59,13 +59,13 @@ function compose_agent($agent, $enclosing_tag) {
     $pos = 4;
     $orcid_id = substr($agent->orcid->digitsOnly, 0, $pos) ."-".substr($agent->orcid->digitsOnly, 4, $pos) ."-".substr($agent->orcid->digitsOnly, 8, $pos)."-".substr($agent->orcid->digitsOnly, 12, $pos) ;
         //($agent->orcid->digitsOnly, 0, '.', '-');
-    $identifiers_render_array[] = markup_to_render_array(l('https://orcid.org/' . $orcid_id, 'https://orcid.org/' . $orcid_id) . ' ', '<br>');
+    $identifiers_render_array[] = markup_to_render_array(l('https://orcid.org/' . $orcid_id, 'https://orcid.org/' . $orcid_id) . ' ', FALSE, NULL, '<br>');
   }
   if(isset($agent->wikiDataItemId)){
     $pos = 5;
     $wikidata_id = $agent->wikiDataItemId->identifierWithQ;
     //($agent->orcid->digitsOnly, 0, '.', '-');
-    $identifiers_render_array[] = markup_to_render_array(l('https://www.wikidata.org/wiki/' . $wikidata_id, 'https://www.wikidata.org/wiki/' . $wikidata_id) . ' ', null, '<br>');
+    $identifiers_render_array[] = markup_to_render_array(l('https://www.wikidata.org/wiki/' . $wikidata_id, 'https://www.wikidata.org/wiki/' . $wikidata_id) . ' ', FALSE, null, '<br>');
   }
   if(isset($agent->identifiers)){
     $identifiers_render_array = array_merge($identifiers_render_array, compose_identifiers($agent->identifiers));
