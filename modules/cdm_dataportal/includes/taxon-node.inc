@@ -40,7 +40,7 @@ function compose_taxon_node_status(array $taxon_nodes){
       if(isset($taxon_node->status)){
         $state_label = strtolower($taxon_node->status->representation_L10n);
         if(isset($taxon_node->placementNote_L10n)){
-          $state_label .= ' <span class="status-note">(' . $taxon_node->placementNote_L10n . ')</span>';
+          $state_label .= ' <span class="placement-note">(' . $taxon_node->placementNote_L10n . ')</span>';
         }
         $classification = cdm_ws_get(CDM_WS_CLASSIFICATION, array($taxon_node->classificationUUID));
         $status_markup_tokens[$state_label . '-' . $taxon_node->uuid]  = [
@@ -95,7 +95,7 @@ function compose_taxon_node_new_status(array $taxon_nodes){
             }
 
             if (isset_not_empty($taxon_node->placementNote)){
-                $state_label .= ' <span class="status-note">(' . $taxon_node->placementNote . ')</span>';
+                $state_label .= ' <span class="placement-note">(' . $taxon_node->placementNote . ')</span>';
             }
 
             $classificationUuid = '';
