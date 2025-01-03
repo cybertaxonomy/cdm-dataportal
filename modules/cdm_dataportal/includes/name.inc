@@ -443,7 +443,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
       } else {
         // this is the case for taxon names
-        $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text) . '.'. $registration_markup;
+        if (isset_not_empty($registration_markup)){
+          $registration_markup = '.'. $registration_markup;
+        }
+        $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text) . $registration_markup;
       }
 
       array_setr('reference', $referenceArray, $renderTemplate);
