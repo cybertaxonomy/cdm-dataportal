@@ -443,7 +443,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
       } else {
         // this is the case for taxon names
-        $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text);
+        $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text) . '.'. $registration_markup;
       }
 
       array_setr('reference', $referenceArray, $renderTemplate);
@@ -1393,7 +1393,7 @@ function compose_registration_dto_full($registration_dto, $with_citation = true)
   if(isset($registration_dto->nameRef) && $registration_dto->nameRef){
     $name = cdm_ws_get(CDM_WS_PORTAL_NAME, $registration_dto->nameRef->uuid);
     cdm_load_tagged_full_title($name);
-    $render_array['nomenclatural_act']['published_name'] = markup_to_render_array('<div class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid))) . '</div>', 0);
+    $render_array['nomenclatural_act']['published_name'] = markup_to_render_array('<div class="published-name">' . render_taxon_or_name($name, url(path_to_name($name->uuid)), NULL, true, false) . '</div>', 0);
     $name_relations = cdm_ws_fetch_all(str_replace("$0", $registration_dto->nameRef->uuid, CDM_WS_PORTAL_NAME_NAME_RELATIONS));
     // need to create the name relationships later, so that the foot notes are in correct order, see section // name relations
   } else {
