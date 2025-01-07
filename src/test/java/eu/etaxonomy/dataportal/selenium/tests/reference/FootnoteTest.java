@@ -87,7 +87,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
 
         NamePage p = new NamePage(driver, getContext(), nodosilinea_radiophila_name_UUID);
 
-        assertEquals("Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg." + titleSuffix + ", Registration: http://testbank.org/100004, 2024-03-20" , driver.getTitle());
+        assertEquals("Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg., Registration: http://testbank.org/100004, 2024-03-20" + titleSuffix  , driver.getTitle());
         BaseElement pageContent = p.getDataPortalContent();
         assertNotNull(pageContent);
 
@@ -154,7 +154,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
 
         NamePage p = new NamePage(driver, getContext(), ramsaria_name_UUID);
 
-        assertEquals("Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1 Nov 2018" + titleSuffix +", Registration: http://testbank.org/100005, 2019-02-06", driver.getTitle());
+        assertEquals("Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1 Nov 2018, Registration: http://testbank.org/100005, 2019-02-06" + titleSuffix, driver.getTitle());
         BaseElement pageContent = p.getDataPortalContent();
         assertNotNull(pageContent);
 
