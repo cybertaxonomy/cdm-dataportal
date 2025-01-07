@@ -414,7 +414,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     if ($showRegistrations) {
         $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
         $registration_markup = render_registrations($registrations);
-        if (isset($renderTemplate['registrationPart']['registration'])){
+        if (isset($renderTemplate['registrationPart']['registration']) && isset_not_empty($registration_markup)){
           $registration_array['#separator'] = ',';
           $registration_array['#html'] = $registration_markup;
           array_setr('registration', $registration_array, $renderTemplate);
