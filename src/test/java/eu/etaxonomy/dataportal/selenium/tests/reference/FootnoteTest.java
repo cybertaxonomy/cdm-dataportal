@@ -154,7 +154,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
 
         NamePage p = new NamePage(driver, getContext(), ramsaria_name_UUID);
 
-        assertEquals("Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1 Nov 2018" + titleSuffix +". Registration: http://testbank.org/100005, 2019-02-06", driver.getTitle());
+        assertEquals("Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1 Nov 2018" + titleSuffix +", Registration: http://testbank.org/100005, 2019-02-06", driver.getTitle());
         BaseElement pageContent = p.getDataPortalContent();
         assertNotNull(pageContent);
 
