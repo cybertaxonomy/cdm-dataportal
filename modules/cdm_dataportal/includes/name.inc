@@ -414,6 +414,12 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
     if ($showRegistrations) {
         $registrations = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, "registrations"));
         $registration_markup = render_registrations($registrations);
+        if (isset($renderTemplate['registrationPart']['registration'])){
+          $registration_array['#separator'] = ',';
+          $registration_array['#html'] = $registration_markup;
+          array_setr('registration', $registration_array, $renderTemplate);
+        }
+
     }
     // default separator
     $separator = '';
@@ -440,13 +446,10 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
           $separator = ' ';
         }
         $referenceArray['#separator'] = $separator;
-        $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' . $registration_markup;
+        $referenceArray['#html'] = '<span class="reference">' . $citation . '</span>' ;
       } else {
         // this is the case for taxon names
-        if (isset_not_empty($registration_markup)){
-          $registration_markup = '.'. $registration_markup;
-        }
-        $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text) . $registration_markup;
+        $referenceArray['#html'] = cdm_tagged_text_to_markup($nomref_tagged_text) ;
       }
 
       array_setr('reference', $referenceArray, $renderTemplate);
@@ -494,7 +497,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
         }
         array_setr(
           'status',
-          '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator'), 'span', $tt_to_markup_options) . '</span>',
+          '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator'), 'span', $tt_to_markup_options) . '</span>' ,
           $renderTemplate);
     }
   }
