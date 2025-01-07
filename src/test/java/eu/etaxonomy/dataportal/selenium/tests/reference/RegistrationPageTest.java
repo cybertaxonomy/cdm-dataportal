@@ -95,7 +95,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 regItem.getSpecimenTypeDesignations().get(0).getText());
         BaseElement typifiedNameElement = new BaseElement(regItem.getTypifiedNameElement());
         assertEquals(
-                "for Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 20122",
+                "for Planothidium victori Novis, Braidwood & Kilroy in Phytotaxa 64. 2012, Registration: http://testbank.org/100001, 2019-02-062",
                 typifiedNameElement.getText());
         assertEquals("2", typifiedNameElement.getFootNoteKeys().get(0).getText());
         assertEquals("2. Please check reference detail", p.getDataPortalContent().getFootNoteForKey(typifiedNameElement.getFootNoteKeys().get(0)).getText());
@@ -215,7 +215,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertNotNull(regItem);
 
         assertEquals(
-                "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24 Jul–Aug 1838",
+                "for Glenodinium apiculatum Ehrenb., Infusionsthierchen: 258, pl. XXII. 24 Jul–Aug 1838, Registration: http://testbank.org/100007, 2019-02-12",
                 regItem.getTypifiedNameElement().getText());
         assertEquals(
                 "published in: Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 2017: Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany). – Systematics and Biodiversity",

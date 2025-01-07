@@ -68,9 +68,9 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
         List<BaseElement> nameRelationshipElements = regItem.getNameRelationsipsElements();
         assertEquals(5,  nameRelationshipElements.size());
-        assertEquals("is new combination for Nepenthes alata Blanco, Fl. Filip., ed. 1: 805. 1837", nameRelationshipElements.get(0).getText());
-        assertEquals("is new name for Nepenthes blancoi Blume in Mus. Bot. Lugd.-Bat. 2: 10. 1852", nameRelationshipElements.get(1).getText());
-        assertEquals("is validating3 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg.4", nameRelationshipElements.get(2).getText());
+        assertEquals("is new combination for Nepenthes alata Blanco, Fl. Filip., ed. 1: 805. 1837, Registration: http://testbank.org/100010, 2020-03-19", nameRelationshipElements.get(0).getText());
+        assertEquals("is new name for Nepenthes blancoi Blume in Mus. Bot. Lugd.-Bat. 2: 10. 1852, Registration: http://testbank.org/100011, 2020-03-19", nameRelationshipElements.get(1).getText());
+        assertEquals("is validating3 Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg., Registration: http://testbank.org/100004, 2024-03-204", nameRelationshipElements.get(2).getText());
         assertEquals("non Nodosilinea blockensis, New Species in the solar system. 19845 nec Nodosilinea sensensia Bukht., Plantas vasculares de Oz. 19 Jun 19876 nec Nodosilinea sensensia Bonstedt, Species solaris. 20 May 19887", nameRelationshipElements.get(3).getText());
         BaseElement orthVarElement = nameRelationshipElements.get(4);
        // assertEquals("orth. var.8 Nodosilinea sensensi9", orthVarElement.getText()); //has orthographic variant6,7 Nodosilinea sensensi 20018
