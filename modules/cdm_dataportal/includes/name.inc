@@ -948,7 +948,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
             $is_reference_year = true;
         }
     }
-
+  $annotations_and_sources = new AnnotationsAndSources();
     // Fill with status.
     if(isset($renderTemplate['statusPart']['status'])){
         if (isset($nom_status_tagged_text[0])) {
@@ -967,9 +967,19 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
                 }
             }
 
+            //TEST
+
+            if(isset($nom_status_fkey)){
+              // the nomenclatural status footnote key refers to the source citation
+              $annotations_and_sources->addFootNoteKey($nom_status_fkey);
+              //$nom_status_markup .= $annotations_and_sources->footNoteKeysMarkup();
+            }
+
+          //TEST
+
             array_setr(
                 'status',
-                '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator'), 'span', $tt_to_markup_options) . '</span>',
+                '<span class="nomenclatural_status">' . cdm_tagged_text_to_markup($nom_status_tagged_text, array('postSeparator'), 'span', $tt_to_markup_options) . $annotations_and_sources->footNoteKeysMarkup() . '</span>',
                 $renderTemplate);
         }
     }
@@ -1042,19 +1052,6 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
                 . '</span>', $renderTemplate);
 
         }
-
-
-
-            /*$annotations_and_sources = handle_annotations_and_sources($taxon_base->secSource);
-            //$source_citations = $annotations_and_sources->getSourceReferences();
-           // $foot_note_keys = $annotations_and_sources->footNoteKeysMarkup();
-            array_setr('secReference',
-                $post_separator_markup
-                . ' <span class="sec_reference">'
-                . join('', cdm_tagged_text_values($secref_tagged_text))
-                . cdm_tagged_text_to_markup($secref_name_inSource_tagged_text)
-                //. $foot_note_keys
-                . '</span>', $renderTemplate);*/
 
     }
 
@@ -1172,13 +1169,10 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
     }
     $out .= '</span>';
 
-    $annotations_and_sources = new AnnotationsAndSources();
+    //$annotations_and_sources = new AnnotationsAndSources();
     //*TODO
 
-    if($nom_status_fkey){
-        // the nomenclatural status footnote key refers to the source citation
-        $annotations_and_sources->addFootNoteKey($nom_status_fkey);
-    }
+
     //if ($show_taxon_name_annotations) {
     //   $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto->name,
     //        null, null, $annotations_and_sources);
