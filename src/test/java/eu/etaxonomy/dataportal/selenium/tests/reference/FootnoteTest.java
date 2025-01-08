@@ -86,8 +86,8 @@ public class FootnoteTest extends CdmDataPortalTestBase {
     public void namePageFieldUnitAnnotation() throws MalformedURLException{
 
         NamePage p = new NamePage(driver, getContext(), nodosilinea_radiophila_name_UUID);
-
-        assertEquals("Nodosilinea radiophila Heidari & Hauer in Fottea 18(2): 142. fig. 5C, D. 1 Nov 2018, nom. illeg." + titleSuffix  , driver.getTitle());
+// we decided to show only Name + author, the other information is available in page content
+        assertEquals("Nodosilinea radiophila Heidari & Hauer" + titleSuffix  , driver.getTitle());
         BaseElement pageContent = p.getDataPortalContent();
         assertNotNull(pageContent);
 
@@ -153,8 +153,8 @@ public class FootnoteTest extends CdmDataPortalTestBase {
     public void namePageTypeNameAnnotation() throws MalformedURLException{
 
         NamePage p = new NamePage(driver, getContext(), ramsaria_name_UUID);
-
-        assertEquals("Ramsaria Heidari & Hauer in Fottea 18(2): 146. 1 Nov 2018" + titleSuffix, driver.getTitle());
+// we decided to show only Name + author, the other information is available in page content
+        assertEquals("Ramsaria Heidari & Hauer" + titleSuffix, driver.getTitle());
         BaseElement pageContent = p.getDataPortalContent();
         assertNotNull(pageContent);
 
