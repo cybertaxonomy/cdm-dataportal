@@ -948,9 +948,10 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
             $is_reference_year = true;
         }
     }
-  $annotations_and_sources = new AnnotationsAndSources();
+
     // Fill with status.
     if(isset($renderTemplate['statusPart']['status'])){
+
         if (isset($nom_status_tagged_text[0])) {
             $tt_to_markup_options = array('html' => false);
             foreach ($nom_status_tagged_text as &$tt){
@@ -968,6 +969,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
             }
 
             //TEST
+          $annotations_and_sources = new AnnotationsAndSources();
 
             if(isset($nom_status_fkey)){
               // the nomenclatural status footnote key refers to the source citation
@@ -1169,7 +1171,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
     }
     $out .= '</span>';
 
-    //$annotations_and_sources = new AnnotationsAndSources();
+    $annotations_and_sources = new AnnotationsAndSources();
     //*TODO
 
 
