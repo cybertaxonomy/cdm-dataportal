@@ -194,7 +194,7 @@ class GalleryItemMedia {
       // use fallback strategy
       if ($this->full_size_representation) {
         return $this->full_size_representation;
-      } else if(!$this->web_app_representation->uuid || $this->first_representation->uuid !== $this->web_app_representation->uuid){
+      } else if(!$this->web_app_representation || !$this->web_app_representation->uuid || $this->first_representation->uuid !== $this->web_app_representation->uuid){
         return $this->first_representation;
       }
     }

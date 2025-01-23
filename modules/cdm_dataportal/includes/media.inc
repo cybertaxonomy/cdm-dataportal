@@ -449,10 +449,20 @@ function compose_cdm_media_gallery($configuration) {
           ));
         }
       } else {
-        $media_part_markup = '';
-        $captionParts[] = '';
-      }
-      $out .= '<td class="media">' . $media_part_markup . '</td>';
+        if (isset_not_empty($media->sources)) {
+
+          $media_part_markup = "";
+          foreach ($media->sources as $source) {
+            $media_part_markup .= "<div class=\"citation media_citation" . html_class_attribute_ref(new TypedEntityReference("Reference", $source->citation->uuid)) . "\">"
+              . "<span class=\"label\">published in: </span>"
+              . $source->citation->label
+              . l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), path_to_reference($source->citation->uuid), ['html' => TRUE])
+              . "</div>";
+          }
+          $captionParts[] = '';
+        }
+        }
+        $out .= '<td class="media">' . $media_part_markup . '</td>';
     }
     $out .= '</tr>'; // End of media parts.
     if ($showCaption) {

@@ -112,13 +112,17 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
   }
   */
 
-  if (isset($reference->uri)){
+  if (isset_not_empty($reference->uri)){
     if($reference->type == 'WebPage'){
       // the cdm cache strategy adds the uri to the titleCache which is unwanted in this case,
       // so is is removed from there
       $out = str_replace('- ' . $reference->uri, '',  $out);
     }
-    $out .= cdm_external_uri($reference->uri);
+    if (!is_string($reference->uri) && isset_not_empty($reference->uri->javaUri)){
+        $out .= cdm_external_uri($reference->uri->javaUri);
+    }else {
+        $out .= cdm_external_uri($reference->uri);
+    }
   }
 
   return $out;
