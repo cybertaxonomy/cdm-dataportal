@@ -1422,7 +1422,12 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
     $accepted_name = '';
     if (variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0)) {
       $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
-      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $taxon_dto->secTitleCache . '</div>';
+      $sec_string = $taxon_dto->secTitleCache;
+      $ends_with_point = substr($sec_string,-strlen("."))===".";
+      if (!$ends_with_point){
+        $sec_string= $sec_string . ".";
+      }
+      $accepted_name .= '<div class="secReference"><span class="label">' . t($label) . ':</span> ' . $sec_string . '</div>';
     }
 
     //TODO:
