@@ -77,6 +77,23 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_de
   if(isset_not_empty($sob_dto->listOfMedia)){
     $render_array['media'] = cdm_sob_dto_media_table($sob_dto->listOfMedia, $sob_dto, 'Media');;
   }
+  RenderHints::setAnnotationsAndSourceConfig([
+    'sources_as_content' => TRUE,
+    'annotations_as_content' => TRUE,
+    'link_to_name_used_in_source' => TRUE,
+    'link_to_reference' => FALSE,
+    'add_footnote_keys' => FALSE,
+    'bibliography_aware' => FALSE
+  ]);
+
+  $annotations_and_sources = handle_annotations_and_sources($sob_dto);
+  if ($annotations_and_sources->hasSourceReferences()) {
+    $render_array['sources'] = compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources);
+  }
+
+  if(count($annotations_and_sources->getAnnotations()) > 0){
+    $render_array['annotations'] = compose_cdm_sob_dto_annotations($sob_dto, $annotations_and_sources);
+  }
 
   if($full_details){
     // Annotations and Sources
@@ -595,7 +612,7 @@ function compose_cdm_unit_dto_type_designations($unit_dto, $full_details = FALSE
       render_specimen_typedesignation_dto($unit_dto->specimenTypeDesignations, false, 'div', 'div'));
   }
 
-  return cdm_sob_dto_table(t('Type designations'), $table_row_data, $unit_dto, 4, 2);
+  return cdm_sob_dto_table(t('Type designations'), $table_row_data, $unit_dto, 4);
 }
 
 /**
@@ -612,17 +629,23 @@ function cdm_sob_dto_media_table(array $listOfMedia, $sob_dto, $heading) {
     'title',
     '#uri' => t('open media'),
   );
+  $max_cols = null;
+  if (isset_not_empty($gallery_settings['cdm_dataportal_media_cols'])){
+    $max_cols = $gallery_settings['cdm_dataportal_media_cols'] < count($listOfMedia) ? $gallery_settings['cdm_dataportal_media_cols']: count($listOfMedia);
+  }
+
   $gallery_markup = compose_cdm_media_gallery(array(
     'mediaList' => $listOfMedia,
     'galleryName' => $sob_dto->uuid,
     'maxExtend' => $gallery_settings['cdm_dataportal_media_maxextend'],
-    'cols' => $gallery_settings['cdm_dataportal_media_cols'],
-    'maxRows' => isset($gallery_settings['cdm_dataportal_media_maxRows']) ? isset($gallery_settings['cdm_dataportal_media_maxRows']) : null,
+    'cols' => $max_cols,
+    'maxRows' => isset_not_empty($gallery_settings['cdm_dataportal_media_Rows'])? $gallery_settings['cdm_dataportal_media_maxRows']: null,
     'captionElements' => $captionElements,
     'mediaLinkType' => 'LIGHTBOX',
     'alternativeMediaUri' => NULL,
     'galleryLinkUri' => NULL,
     'showCaption' => true
+
   ));
   $table_row_data[] = cdm_sob_dto_table_row(NULL, $gallery_markup);
   $grid_col_span = count($listOfMedia) > 1 ? 2 : NULL;

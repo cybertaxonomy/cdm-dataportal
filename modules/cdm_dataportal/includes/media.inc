@@ -364,7 +364,7 @@ function compose_cdm_media_gallery($configuration) {
           //TODO
           $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
       }
-      if ((is_array($complete_media->representations) && isset($complete_media->representations[0]->parts[0]))||$complete_media->representations-> count > 0) {
+      if ((is_array($complete_media->representations) && isset($complete_media->representations[0]->parts[0]))){//||$complete_media->representations->count > 0) {
 
         $gallery_media_item = new GalleryItemMedia($complete_media, $max_extend, $max_extend);
 
@@ -454,7 +454,7 @@ function compose_cdm_media_gallery($configuration) {
           $media_part_markup = "";
           foreach ($media->sources as $source) {
             $media_part_markup .= "<div class=\"citation media_citation" . html_class_attribute_ref(new TypedEntityReference("Reference", $source->citation->uuid)) . "\">"
-              . "<span class=\"label\">published in: </span>"
+              . "<span class=\"citation_label\">published in: </span>"
               . $source->citation->label
               . l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), path_to_reference($source->citation->uuid), ['html' => TRUE])
               . "</div>";
