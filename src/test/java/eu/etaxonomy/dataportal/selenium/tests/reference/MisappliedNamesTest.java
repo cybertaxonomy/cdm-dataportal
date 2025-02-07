@@ -88,9 +88,9 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
             logger.debug("misapplied name 1 name text " + element.getText());
         }
 
-        assertEquals("p.p. MAN for", p.getMisappliedName(1).findElement(By.className("symbol")).getText());
+        assertEquals("p.p. misapplied for", p.getMisappliedName(1).findElement(By.className("symbol")).getText());
         assertEquals("Ossaea glomerata", p.getMisappliedName(1).findElement(By.className("name")).getText());
-        assertEquals("partial MAN for", p.getMisappliedName(2).findElement(By.className("symbol")).getText());
+        assertEquals("part. misapplied for", p.getMisappliedName(2).findElement(By.className("symbol")).getText());
         assertEquals("Ossaea glomerata", p.getMisappliedName(2).findElement(By.className("name")).getText());
         // no sensu but with Combination Authors:
         assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
