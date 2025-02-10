@@ -3427,9 +3427,10 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
         $out .= '</ul>';
     }
   if ($syn_secs != null && count($syn_secs) > 0) {
-    $out .= '<ul class="synSecSources"> Syn. sec.: ';
+    $syn_sec_text = '<ul class="synSecSources"> Syn. sec.: ';
+   // $out .= '<ul class="synSecSources"> Syn. sec.: ';
     foreach ($syn_secs as $syn_sec){
-      if (isset($syn_sec->label) ) {
+      if (isset_not_empty($syn_sec->label) && isset_not_empty($syn_sec->label[0]->label) ) {
         //$out .= '<ul class="synSecSource">';
         //$footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($secref_tagged_text[1]->entityReference) . '</span>';
         $secRef_markup = '<span class="sec_reference">' . cdm_reference_markup($syn_sec->label[0]) . '</span>';
@@ -3446,13 +3447,17 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
             $secRef_markup = $annotations_and_sources->footNoteKeysMarkup();
           }
         }
-        $out .=  $secRef_markup;
+        $syn_sec_text .=  $secRef_markup;
       }
 
       //$out .=  $secRef_markup;
       //$out .= '</ul>';
     }
 
+    //TODO: this should not happen, but as long as the syn secs are empty sometimes we use this workaround
+    if ($syn_sec_text != '<ul class="synSecSources"> Syn. sec.: '){
+      $out .= $syn_sec_text;
+    }
     //$out .=  cdm_tagged_text_to_markup($type_designations);
     //$out .= '</ul>';
   }
