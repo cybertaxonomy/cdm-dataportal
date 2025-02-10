@@ -138,11 +138,16 @@ function endsWith( $haystack, $needle ) {
 
 
 function cdm_dto_reference_markup($reference_dto, $do_text_link = FALSE, $do_icon_link = FALSE) {
-
-  $citation = trim($reference_dto->label[0]->label);
+  if (isset_not_empty($reference_dto->label) && is_array($reference_dto->label)){
+    $citation = trim($reference_dto->label[0]->label);
+  }else if (isset_not_empty($reference_dto->label)){
+     $citation = trim($reference_dto->label);
+  }
   $icon_link = "";
   if((isset($do_icon_link) && $do_icon_link === TRUE)) {
-    $icon_link = cdm_internal_link(path_to_reference($reference_dto->linkedUuid));
+    if (isset_not_empty($reference_dto->linkedUuid)){
+        $icon_link = cdm_internal_link(path_to_reference($reference_dto->linkedUuid));
+    }
   }
   if (isset($do_text_link) && $do_text_link === TRUE) {
     $out = '<span class="reference">';
@@ -311,6 +316,44 @@ function render_original_source($source, $do_link_to_reference = TRUE, $do_link_
   if(isset($source->label)){
       $out .= cdm_dto_reference_markup($source, false, $do_link_to_reference);
     }
+
+  if($out){
+
+    $name_in_source_render_array = compose_name_in_source($source, $do_link_to_name_used_in_source);
+    if(!empty($name_in_source_render_array)) {
+      $out .=  ' <span class="nameUsedInSource">(' . t('as') . ' ' . $name_in_source_render_array['#markup'] . ')</span>';
+    }
+
+    $id_with_namespace = '';
+    if( isset($source->idNamespace) && $source->idNamespace ) {
+      $id_with_namespace = $source->idNamespace . ' ';
+    }
+    if( isset($source->idInSource) && $source->idInSource ) {
+      $id_with_namespace .= $source->idInSource;
+    } else {
+      $id_with_namespace = NULL;
+    }
+
+    if($id_with_namespace){
+      $out .=  ' <span class="idInSource">[' . $id_with_namespace . ']</span>';
+    }
+  }
+
+  return $out;
+}
+
+function render_original_source_dto($source, $do_link_to_reference = TRUE, $do_link_to_name_used_in_source = FALSE, $current_taxon = null) {
+  $out = '';
+
+  if (isset($source->citation)) {
+    $out .= cdm_reference_markup($source->citation, $source->citationDetail, false, $do_link_to_reference);
+  }
+  if(isset($source->cdmSource)){
+    $out .= render_cdm_entity_link($source->cdmSource);
+  }
+  if(isset($source->label)){
+      //$out .= cdm_dto_reference_markup($source, false, $do_link_to_reference);
+  }
 
   if($out){
 

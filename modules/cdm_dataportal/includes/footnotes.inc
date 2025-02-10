@@ -95,15 +95,28 @@ function cdm_entity_footnotes(
 
         foreach ($sources as $source) {
             if (_is_original_source_type($source)) {
-                $fn_key = FootnoteManager::addNewFootnote(
+                if (is_cdm_entity($source)){
+                  $fn_key = FootnoteManager::addNewFootnote(
                     $sources_footnote_list_key,
                     render_original_source(
-                        $source,
-                        $do_link_to_reference,
-                        $do_link_to_name_used_in_source
+                      $source,
+                      $do_link_to_reference,
+                      $do_link_to_name_used_in_source
                     ),
                     $original_source_footnote_tag
-                );
+                  );
+                }else{
+                  $fn_key = FootnoteManager::addNewFootnote(
+                    $sources_footnote_list_key,
+                    render_original_source_dto(
+                      $source,
+                      $do_link_to_reference,
+                      $do_link_to_name_used_in_source
+                    ),
+                    $original_source_footnote_tag
+                  );
+                }
+
                 // Ensure uniqueness of the footnote keys.
                 if (isset_not_empty($footnote_keys) && array_search($fn_key, $footnote_keys) === false) {
                     $footnote_keys[] = $fn_key;
@@ -514,6 +527,17 @@ function annotations_and_sources_config_typedesignations() {
   return $annotations_and_sources_config;
 }
 
+function annotations_and_sources_config_media() {
+  static $annotations_and_sources_config = [
+    'sources_as_content' => FALSE,
+    'link_to_name_used_in_source' => FALSE,
+    'link_to_reference' => TRUE,
+    'add_footnote_keys' => TRUE,
+    'bibliography_aware' => FALSE
+  ];
+  return $annotations_and_sources_config;
+}
+
 /**
  * Provides the default configuration for occurrences which
  * are passed to the handle_annotations_and_sources()
@@ -615,11 +639,20 @@ function handle_annotations_and_sources($entity, $inline_text_prefix = null, $fo
   if ($config['sources_as_content']) {
     foreach ($sources as $source) {
       if (_is_original_source_type($source)) {
-        $reference_citation = render_original_source(
-          $source,
-          $config['link_to_reference'],
-          $config['link_to_name_used_in_source']
-        );
+        if (is_cdm_entity($source)){
+          $reference_citation = render_original_source(
+            $source,
+            $config['link_to_reference'],
+            $config['link_to_name_used_in_source']
+          );
+        }else{
+          $reference_citation = render_original_source_dto(
+            $source,
+            $config['link_to_reference'],
+            $config['link_to_name_used_in_source']
+          );
+        }
+
 
         if ($reference_citation) {
           if (empty($inline_text_prefix)) {
