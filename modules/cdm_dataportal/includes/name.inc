@@ -1183,6 +1183,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
     if ($show_taxon_annotations) {
         $annotations_and_sources = handle_new_annotations_and_sources($taxon_name_or_taxon_base_dto,
             null, null, $annotations_and_sources);
+
         $out .= $annotations_and_sources->footNoteKeysMarkup();
     }
     return $out;
@@ -1786,21 +1787,25 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
             $specimen_markup = str_replace($derived_unit_dto->mostSignificantIdentifier, l($derived_unit_dto->mostSignificantIdentifier, path_to_specimen($specimen_type_designation->typeSpecimen->uuid)), $specimen_markup);
           }
           $media_sources_markup = '';
+          $annotations_and_sources = null;
           if (isset_not_empty($derived_unit_dto->listOfMedia)) {
             foreach ($derived_unit_dto->listOfMedia as $media_dto) {
               // adding the source citations
               if (isset_not_empty($media_dto->sources)) {
                 foreach ($media_dto->sources as $source_dto) {
-                  $media_sources_markup .= source_dto_markup($source_dto);
+                  $source_dto->type = OriginalSourceType::PrimaryMediaSource;
+                  RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
+                  $annotations_and_sources = handle_annotations_and_sources($media_dto);
                 }
               }
             }
           }
           if ($media_sources_markup) {
-            $specimen_markup .= ' in ' . $media_sources_markup;
+            $specimen_markup .=  $media_sources_markup ;
           }
           RenderHints::setAnnotationsAndSourceConfig(annotations_and_sources_config_typedesignations());
-          $annotations_and_sources = handle_annotations_and_sources($derived_unit_dto);
+          //$entity, $inline_text_prefix = null, $footnote_list_key_suggestion = null, AnnotationsAndSources $annotationsAndSources = null) {
+          $annotations_and_sources = handle_annotations_and_sources($derived_unit_dto, null, null, $annotations_and_sources);
           $out .= ': <span class="' . html_class_attribute_ref($specimen_type_designation->typeSpecimen) . '">'
             . $specimen_markup
             . '</span>'; // . ': ' . theme('cdm_specimen', array('specimenTypeDesignation' => $derivedUnitFacadeInstance));
@@ -1861,16 +1866,20 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
  *
  * @return string
  */
-function source_dto_markup($source_dto, $as_nom_ref = false) {
+function source_dto_markup($source_dto, $as_nom_ref = false, $as_footnote_markup = false) {
   $source_dto_markup = '';
   if ($as_nom_ref){
       if (isset_not_empty($source_dto->citation->abbrevTitleCache)) {
           $source_dto_markup .= $source_dto->citation->abbrevTitleCache;
       }
-  }else{
-      if (isset_not_empty($source_dto->citation->abbrevTitleCache)) {
-          $source_dto_markup .= $source_dto->citation->abbrevTitleCache;
+  }else if ($as_footnote_markup){
+      if (isset_not_empty($source_dto->citation->titleCache)) {
+          $source_dto_markup .= $source_dto->citation->titleCache;
       }
+  }else{
+    if (isset_not_empty($source_dto->citation->label)) {
+      $source_dto_markup .= $source_dto->citation->label;
+    }
   }
 
   if (isset_not_empty($source_dto->citationDetail)) {
@@ -3384,7 +3393,7 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
     $synonymList = $synonymGroup -> synonyms;
     //$homotypical_group = $variables['homotypicalGroup'];
     RenderHints::pushToRenderStack('heterotypicSynonymyGroup');
-
+  $annotations_and_sources = new AnnotationsAndSources();
     $out = '';
 
     $out = '<div class="heterotypic-synonymy-group"><ul class="heterotypicSynonymyGroup">';
@@ -3394,6 +3403,7 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
 
     // $type_designations= new_type_designations_for_synonymy_group($synonymGroup);
     $type_designations = $synonymGroup->taggedTypes;
+    $syn_secs = $synonymGroup->synSecSources->items;
     $is_first_entry = TRUE;
     foreach ($synonymList->items as $synonym) {
         if ($is_first_entry) {
@@ -3412,6 +3422,37 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
         //$out .=  cdm_tagged_text_to_markup($type_designations);
         $out .= '</ul>';
     }
+  if (isset($syn_secs) && count($syn_secs) > 0) {
+    $out .= '<ul class="synSecSources"> Syn. sec.: ';
+    foreach ($syn_secs as $syn_sec){
+      if (isset($syn_sec->label) ) {
+        //$out .= '<ul class="synSecSource">';
+        //$footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($secref_tagged_text[1]->entityReference) . '</span>';
+        $secRef_markup = '<span class="sec_reference">' . cdm_reference_markup($syn_sec->label[0]) . '</span>';
+        //$annotations_and_sources->addFootNoteKey($secRef_markup);
+        //TODO: handle microReference
+        //if (isset($secref_tagged_text[1]->entityReference) ){//&& isset($taxon_base->secSource->citationMicroReference)) {
+        //    $footnote_markup .= (isset_not_empty($taxon_base->secSource->citationMicroReference) ? ': <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>' : '');
+        //}
+        if (false) {
+          $foot_note_key_secRef = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $secRef_markup);
+          if(isset($foot_note_key_secRef)){
+            // the nomenclatural status footnote key refers to the source citation
+            //$annotations_and_sources->addFootNoteKey($foot_note_key_secRef);
+            $secRef_markup = $annotations_and_sources->footNoteKeysMarkup();
+          }
+        }
+        $out .=  $secRef_markup;
+      }
+
+      //$out .=  $secRef_markup;
+      //$out .= '</ul>';
+    }
+
+    //$out .=  cdm_tagged_text_to_markup($type_designations);
+    //$out .= '</ul>';
+  }
+
     $out .= '</ul>';
 
     // ------- footnotes ------- //

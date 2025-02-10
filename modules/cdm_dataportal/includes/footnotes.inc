@@ -95,7 +95,7 @@ function cdm_entity_footnotes(
 
         foreach ($sources as $source) {
             if (_is_original_source_type($source)) {
-                if (is_cdm_entity($source)){
+                if (is_cdm_entity($source) || isset_not_empty($source->label)) {
                   $fn_key = FootnoteManager::addNewFootnote(
                     $sources_footnote_list_key,
                     render_original_source(
@@ -639,7 +639,7 @@ function handle_annotations_and_sources($entity, $inline_text_prefix = null, $fo
   if ($config['sources_as_content']) {
     foreach ($sources as $source) {
       if (_is_original_source_type($source)) {
-        if (is_cdm_entity($source)){
+        if (is_cdm_entity($source) || isset_not_empty($source->label)){
           $reference_citation = render_original_source(
             $source,
             $config['link_to_reference'],
