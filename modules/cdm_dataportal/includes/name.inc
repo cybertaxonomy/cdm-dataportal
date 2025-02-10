@@ -3403,7 +3403,11 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
 
     // $type_designations= new_type_designations_for_synonymy_group($synonymGroup);
     $type_designations = $synonymGroup->taggedTypes;
-    $syn_secs = $synonymGroup->synSecSources->items;
+    $syn_secs = null;
+    if (isset_not_empty($synonymGroup->synSecSources) && isset_not_empty($synonymGroup->synSecSources->items)){
+      $syn_secs = $synonymGroup->synSecSources->items;
+    }
+
     $is_first_entry = TRUE;
     foreach ($synonymList->items as $synonym) {
         if ($is_first_entry) {
@@ -3422,7 +3426,7 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
         //$out .=  cdm_tagged_text_to_markup($type_designations);
         $out .= '</ul>';
     }
-  if (isset($syn_secs) && count($syn_secs) > 0) {
+  if ($syn_secs != null && count($syn_secs) > 0) {
     $out .= '<ul class="synSecSources"> Syn. sec.: ';
     foreach ($syn_secs as $syn_sec){
       if (isset($syn_sec->label) ) {
