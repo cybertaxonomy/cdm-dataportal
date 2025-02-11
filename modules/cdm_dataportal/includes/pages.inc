@@ -2020,7 +2020,7 @@ function compose_cdm_specimen_page($sob_dto)
         $title_string = $sob_dto->collectorsString;
     }
     if (isset($sob_dto->specimenShortTitle)){
-        if (isset($title_string)){
+        if (isset_not_empty($title_string)){
             $title_string .= " (" . $sob_dto->specimenShortTitle . ")";
         }else{
             $title_string = $sob_dto->specimenShortTitle;

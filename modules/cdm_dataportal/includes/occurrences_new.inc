@@ -86,13 +86,15 @@ function compose_cdm_specimen_or_observation_dto_details_grid($sob_dto, $full_de
     'bibliography_aware' => FALSE
   ]);
 
-  $annotations_and_sources = handle_annotations_and_sources($sob_dto);
+  $annotations_and_sources = handle_annotations_and_sources($sob_dto, null, null, NULL, false);
+  //$annotations_and_sources = handle_annotations_and_sources($sob_dto);
   if ($annotations_and_sources->hasSourceReferences()) {
     $render_array['sources'] = compose_cdm_sob_dto_sources($sob_dto, $annotations_and_sources);
   }
 
   if(count($annotations_and_sources->getAnnotations()) > 0){
     $render_array['annotations'] = compose_cdm_sob_dto_annotations($sob_dto, $annotations_and_sources);
+
   }
 
   if($full_details){

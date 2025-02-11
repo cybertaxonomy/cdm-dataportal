@@ -622,7 +622,7 @@ function handle_annotations_and_sources_config($feature_block_settings){
  *        the name in source strings are de-duplicated
  *        !!!NOTE!!!!: this field will most probably be removed soon (TODO)
  */
-function handle_annotations_and_sources($entity, $inline_text_prefix = null, $footnote_list_key_suggestion = null, AnnotationsAndSources $annotationsAndSources = null) {
+function handle_annotations_and_sources($entity, $inline_text_prefix = null, $footnote_list_key_suggestion = null, AnnotationsAndSources $annotationsAndSources = null, $is_create_annotation_footnotes = true) {
 
   if($annotationsAndSources == null){
     $annotationsAndSources = new AnnotationsAndSources();
@@ -676,8 +676,11 @@ function handle_annotations_and_sources($entity, $inline_text_prefix = null, $fo
     } // END of loop over sources
 
     // annotations footnotes separate from sources
-    $footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
-    $annotationsAndSources->addAllFootNoteKeys($footnote_keys);
+    if ($is_create_annotation_footnotes){
+      $footnote_keys = cdm_entity_annotations_as_footnote_keys($entity, $footnote_list_key_suggestion);
+      $annotationsAndSources->addAllFootNoteKeys($footnote_keys);
+    }
+
 
   } // END of references inline
 
