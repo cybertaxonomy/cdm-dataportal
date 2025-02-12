@@ -317,10 +317,14 @@ function compose_cdm_media_gallery($configuration) {
   // once.
   $tempMediaList = array();
   $tempMediaUuids = array();
+  $has_uri = false;
   foreach ($mediaList as $media) {
     if (!in_array($media->uuid, $tempMediaUuids)) {
       $tempMediaList[] = $media;
       $tempMediaUuids[] = $media->uuid;
+      if (isset_not_empty($media->uri)){
+        $has_uri = true;
+      }
     }
   }
   $mediaList = $tempMediaList;
@@ -340,140 +344,150 @@ function compose_cdm_media_gallery($configuration) {
     $doLink = TRUE;
     _add_js_lightbox($galleryID);
   }
-
+  $out = '';
   // Render the media gallery grid.
-  $out = '<table id="' . $galleryID . '" class="media_gallery">';
-  $out .= '<colgroup>';
-  for ($c = 0; $c < $cols; $c++) {
-    $out .= '<col style="width:' . (100 / $cols) . '%;">';
-  }
-  $out .= '</colgroup>';
-
-  for ($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++) {
-    $captionParts = array();
-    $mediaIndex = 0;
-    $out .= '<tr class="media-row">';
+  if ($has_uri) {
+    $out = '<table id="' . $galleryID . '" class="media_gallery">';
+    $out .= '<colgroup>';
     for ($c = 0; $c < $cols; $c++) {
-      $media = array_shift($mediaList);
-      if(!$media){
-        continue;
-      }
-      if (isset_not_empty($media->representations) && is_array($media->representations)  ){
+      $out .= '<col style="width:' . (100 / $cols) . '%;">';
+    }
+    $out .= '</colgroup>';
+
+    for ($r = 0; ($r < $maxRows || !$maxRows) && count($mediaList) > 0; $r++) {
+      $captionParts = [];
+      $mediaIndex = 0;
+      $out .= '<tr class="media-row">';
+      for ($c = 0; $c < $cols; $c++) {
+        $media = array_shift($mediaList);
+        if (!$media) {
+          continue;
+        }
+        if (isset_not_empty($media->representations) && is_array($media->representations)) {
           $complete_media = $media;
-      }else {
+        }
+        else {
           //TODO
           $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
-      }
-      if ((is_array($complete_media->representations) && isset($complete_media->representations[0]->parts[0]))){//||$complete_media->representations->count > 0) {
+        }
+        if ($has_uri && (is_array($complete_media->representations) && isset($complete_media->representations[0]->parts[0]))) {//||$complete_media->representations->count > 0) {
 
-        $gallery_media_item = new GalleryItemMedia($complete_media, $max_extend, $max_extend);
+          $gallery_media_item = new GalleryItemMedia($complete_media, $max_extend, $max_extend);
 
-//        if($gallery_media_item->hasWebAppItem()) {
-//            $media_part_markup = cdm_media_gallerie_entry_webapp($gallery_media_item, $max_extend, TRUE);
-//        } else {
-        $thumbnail_item = $gallery_media_item->getThumbnailImageMediaItem();
-            $media_part_markup = cdm_media_gallery_entry_image($thumbnail_item, $max_extend, TRUE);
-//        }
+          //        if($gallery_media_item->hasWebAppItem()) {
+          //            $media_part_markup = cdm_media_gallerie_entry_webapp($gallery_media_item, $max_extend, TRUE);
+          //        } else {
+          $thumbnail_item = $gallery_media_item->getThumbnailImageMediaItem();
+          $media_part_markup = cdm_media_gallery_entry_image($thumbnail_item, $max_extend, TRUE);
+          //        }
 
-        // --- Compose Media Link.
-        $media_link_uri = FALSE;
-        if ($alternative_media_uri) {
+          // --- Compose Media Link.
+          $media_link_uri = FALSE;
+          if ($alternative_media_uri) {
             if (isset($alternative_media_uri[$mediaIndex])) {
-                $media_link_uri = $alternative_media_uri[$mediaIndex];
+              $media_link_uri = $alternative_media_uri[$mediaIndex];
             }
             if (is_string($alternative_media_uri)) {
-                $media_link_uri = $alternative_media_uri;
+              $media_link_uri = $alternative_media_uri;
             }
-        } else {
+          }
+          else {
             $media_link_uri = $gallery_media_item->getOpenItemUrl();
-        }
-        $mediaIndex++;
+          }
+          $mediaIndex++;
 
-        // media captions will be loaded via AHAH
-        _add_js_ahah();
-        $content_url = cdm_compose_ws_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
-        //if $captionElements == null, set $caption_part_markup = '' otherwise the loading image is shown but nothing is loaded.
-        if ($captionElements) {
-          $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
-          $ahah_media_caption = '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
+          // media captions will be loaded via AHAH
+          _add_js_ahah();
+          $content_url = cdm_compose_ws_url(CDM_WS_PORTAL_MEDIA, $media->uuid);
+          //if $captionElements == null, set $caption_part_markup = '' otherwise the loading image is shown but nothing is loaded.
+          if ($captionElements) {
+            $cdm_proxy_url_caption = url('cdm_api/proxy/' . urlencode($content_url) . "/cdm_media_caption/" . serialize($captionElements));
+            $ahah_media_caption = '<div class="ahah-content" data-cdm-ahah-url="' . $cdm_proxy_url_caption . '">'
               . '<span class="loading" style="display: none;">' . loading_image_html() . '</span></div>';
 
-        // preparing the part link (= click on image itself) which can be handled in two ways
-        //
-        //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
-        //  2. open the media in a new window with target 'specimen'
-        if ($mediaLinkType == 'LIGHTBOX' && $gallery_media_item->hasFullSizeImage()) {
-          $mediaPartLinkAttributes['class'] = array('lightbox');
-        } else {
-          $mediaPartLinkAttributes['target'] = "specimen";
-          $openMediaLinkAttributes['target'] = "specimen";
-        }
-        $mediaPartLinkAttributes['alt'] = htmlentities($ahah_media_caption);
+            // preparing the part link (= click on image itself) which can be handled in two ways
+            //
+            //  1. open image in lightbox, the captions in the lightbox will be loaded via AHAH
+            //  2. open the media in a new window with target 'specimen'
+            if ($mediaLinkType == 'LIGHTBOX' && $gallery_media_item->hasFullSizeImage()) {
+              $mediaPartLinkAttributes['class'] = ['lightbox'];
+            }
+            else {
+              $mediaPartLinkAttributes['target'] = "specimen";
+              $openMediaLinkAttributes['target'] = "specimen";
+            }
+            $mediaPartLinkAttributes['alt'] = htmlentities($ahah_media_caption);
 
-        // --- preparing the media caption
+            // --- preparing the media caption
 
-        /* old comment: "no caption elements to show up here except the $caption_link_uri, if at all"
-         *
-         * a.kohlbecker 2013-03-14 :
-         *   It is unclear why no caption elements should be shown, Was it a technical reason?
-         *   see commit r16723 740177eb-a1d8-4ec3-a630-accd905eb3da
-         *   If not problems arise with this remove it after some weeks
-         */
-        $caption_part_markup = $ahah_media_caption;
-      }else{
-          // no caption_elements --> empty caption
-          $caption_part_markup = '';
-      }
-        if ($do_link_to_media) {
-          if ($gallery_media_item->hasFullSizeImage()) {
-            // it is an image, so open it in the media page
-            $caption_part_markup .= '<div class="media-caption-link">' . l("Open in viewer " . custom_icon_font_markup('icon-interal-link-alt-solid'), path_to_media($media->uuid), array(
-                'attributes' => array(), 'html' => TRUE,
-                    )) . '</div>';
+            /* old comment: "no caption elements to show up here except the $caption_link_uri, if at all"
+             *
+             * a.kohlbecker 2013-03-14 :
+             *   It is unclear why no caption elements should be shown, Was it a technical reason?
+             *   see commit r16723 740177eb-a1d8-4ec3-a630-accd905eb3da
+             *   If not problems arise with this remove it after some weeks
+             */
+            $caption_part_markup = $ahah_media_caption;
           }
-          if ($gallery_media_item->hasWebAppItem()) {
-            // otherwise open it directly and let the the browser handle the media type
-            $openMediaLinkAttributes['absolute'] = TRUE;
-            $caption_part_markup .= '<div class="media-caption-link">' . l("Open external page " . font_awesome_icon_markup('fa-external-link-alt', array('class' => array('superscript'))), $gallery_media_item->getWebAppUrl(), array(
-                'attributes' => $openMediaLinkAttributes, 'html' => TRUE,
-              )) . '</div>';
+          else {
+            // no caption_elements --> empty caption
+            $caption_part_markup = '';
           }
-        }
-
-      $captionParts[] = $caption_part_markup;
-
-      // --- Surround imagePart with link, this .
-        if ($doLink) {
-          $media_part_markup = l($media_part_markup, $gallery_media_item->getOverlayImageUrl(), array(
-              'attributes' => $mediaPartLinkAttributes, 'html' => TRUE,
-          ));
-        }
-      } else {
-        if (isset_not_empty($media->sources)) {
-
-          $media_part_markup = "";
-          foreach ($media->sources as $source) {
-            $media_part_markup .= "<div class=\"citation media_citation" . html_class_attribute_ref(new TypedEntityReference("Reference", $source->citation->uuid)) . "\">"
-              . "<span class=\"citation_label\">published in: </span>"
-              . $source->citation->label
-              . l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), path_to_reference($source->citation->uuid), ['html' => TRUE])
-              . "</div>";
+          if ($do_link_to_media) {
+            if ($gallery_media_item->hasFullSizeImage()) {
+              // it is an image, so open it in the media page
+              $caption_part_markup .= '<div class="media-caption-link">' . l("Open in viewer " . custom_icon_font_markup('icon-interal-link-alt-solid'), path_to_media($media->uuid), [
+                  'attributes' => [],
+                  'html' => TRUE,
+                ]) . '</div>';
+            }
+            if ($gallery_media_item->hasWebAppItem()) {
+              // otherwise open it directly and let the the browser handle the media type
+              $openMediaLinkAttributes['absolute'] = TRUE;
+              $caption_part_markup .= '<div class="media-caption-link">' . l("Open external page " . font_awesome_icon_markup('fa-external-link-alt', ['class' => ['superscript']]), $gallery_media_item->getWebAppUrl(), [
+                  'attributes' => $openMediaLinkAttributes,
+                  'html' => TRUE,
+                ]) . '</div>';
+            }
           }
-          $captionParts[] = '';
-        }
+
+          $captionParts[] = $caption_part_markup;
+
+          // --- Surround imagePart with link, this .
+          if ($doLink) {
+            $media_part_markup = l($media_part_markup, $gallery_media_item->getOverlayImageUrl(), [
+              'attributes' => $mediaPartLinkAttributes,
+              'html' => TRUE,
+            ]);
+          }
         }
         $out .= '<td class="media">' . $media_part_markup . '</td>';
-    }
-    $out .= '</tr>'; // End of media parts.
-    if ($showCaption) {
-      if ( (is_array($captionElements) && count($captionElements) > 0) || $do_link_to_media) {
-        $out .= '<tr class="caption-row">';
-        // Add caption row.
-        foreach ($captionParts as $caption_part_markup) {
-          $out .= '<td class="caption">' . $caption_part_markup . '</td>';
-        }
-        $out .= '</tr>';
       }
+      $out .= '</tr>'; // End of media parts.
+      if ($showCaption) {
+        if ((is_array($captionElements) && count($captionElements) > 0) || $do_link_to_media) {
+          $out .= '<tr class="caption-row">';
+          // Add caption row.
+          foreach ($captionParts as $caption_part_markup) {
+            $out .= '<td class="caption">' . $caption_part_markup . '</td>';
+          }
+          $out .= '</tr>';
+        }
+      }
+    }
+  }  else {
+    if (isset_not_empty($media->sources)) {
+
+      $media_part_markup = "";
+      foreach ($media->sources as $source) {
+        $media_part_markup .= "<div class=\"citation media_citation" . html_class_attribute_ref(new TypedEntityReference("Reference", $source->citation->uuid)) . "\">"
+          . "<span class=\"citation_label\">published in: </span>"
+          . $source->citation->label
+          . l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), path_to_reference($source->citation->uuid), ['html' => TRUE])
+          . "</div>";
+      }
+      $out .= '<td class="media">' . $media_part_markup . '</td>';
+      $captionParts[] = '';
     }
   }
 
