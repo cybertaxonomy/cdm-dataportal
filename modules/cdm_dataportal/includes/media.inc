@@ -322,7 +322,8 @@ function compose_cdm_media_gallery($configuration) {
     if (!in_array($media->uuid, $tempMediaUuids)) {
       $tempMediaList[] = $media;
       $tempMediaUuids[] = $media->uuid;
-      if (isset_not_empty($media->uri) || (isset_not_empty($media->class) && $media->class == "Media")){
+      if (isset_not_empty($media->uri) || (isset_not_empty($media->class) && $media->class == "Media")|| (isset_not_empty($media->representations)
+          && isset_not_empty($media->representations->items) && isset_not_empty($media->representations->items[0]->uri))){
         $has_uri = true;
       }
     }
