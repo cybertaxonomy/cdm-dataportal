@@ -3430,33 +3430,8 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
   if ($syn_secs != null && count($syn_secs) > 0) {
     $syn_sec_text = '<ul class="synSecSources"> Syn. sec.: ';
    // $out .= '<ul class="synSecSources"> Syn. sec.: ';
-    foreach ($syn_secs as $syn_sec){
-      if (isset_not_empty($syn_sec->text) ) {
-        $annotations_and_sources = new AnnotationsAndSources();
-        //$out .= '<ul class="synSecSource">';
-        $footnote_markup = '';
-        //$secRef_markup = cdm_tagged_text_to_markup($secref_name_inSource_tagged_text);
-        $secRef_markup = '<span class="sec_reference">' . $syn_sec->text . '</span>';
+    $syn_sec_text .= cdm_tagged_text_with_ref_footnote_to_markup($syn_secs);
 
-        $footnote_markup .= '<span class="sec_reference">' . $syn_sec->entityReference->label. '</span>';
-        $foot_note_key_secRef = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
-
-        $secRef_markup = '<span class="sec_reference">' . $syn_sec->text . '</span>';
-
-        $annotations_and_sources->addFootNoteKey($foot_note_key_secRef);
-        if(isset($foot_note_key_secRef)){
-          // the nomenclatural status footnote key refers to the source citation
-          $secRef_markup .= $annotations_and_sources->footNoteKeysMarkup();
-        }
-        if ($is_first){
-          $syn_sec_text .=  $secRef_markup;
-        }else{
-          $syn_sec_text .=  ", " . $secRef_markup;
-        }
-      }
-      $is_first = false;
-
-    }
 
     //TODO: this should not happen, but as long as the syn secs are empty sometimes we use this workaround
     if ($syn_sec_text != '<ul class="synSecSources"> Syn. sec.: '){
