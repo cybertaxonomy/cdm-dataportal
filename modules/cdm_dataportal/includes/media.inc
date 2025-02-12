@@ -322,7 +322,7 @@ function compose_cdm_media_gallery($configuration) {
     if (!in_array($media->uuid, $tempMediaUuids)) {
       $tempMediaList[] = $media;
       $tempMediaUuids[] = $media->uuid;
-      if (isset_not_empty($media->uri) || $media->class == "Media"){
+      if (isset_not_empty($media->uri) || (isset_not_empty($media->class) && $media->class == "Media")){
         $has_uri = true;
       }
     }
@@ -486,7 +486,7 @@ function compose_cdm_media_gallery($configuration) {
           . l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), path_to_reference($source->citation->uuid), ['html' => TRUE])
           . "</div>";
       }
-      $out .= '<td class="media">' . $media_part_markup . '</td>';
+      $out .=  $media_part_markup ;
       $captionParts[] = '';
     }
   }
