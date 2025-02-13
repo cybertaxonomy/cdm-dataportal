@@ -1031,7 +1031,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
             $representationPart = array_shift($pref_representations);
 
             $uri_String = "";
-            if (isset_not_empty($representationPart->uri)) {
+            if (isset_not_empty($representationPart) && isset_not_empty($representationPart->uri)) {
                 if (is_string($representationPart->uri)) {
                     $uri_String = $representationPart->uri;
                 } else {
@@ -1040,7 +1040,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
                 $attributes['alt'] = $uri_String;
             }
 
-            if (!empty($taxon_profile_image_settings['media_uri_query'])) {
+            if (isset_not_empty($representationPart) && !empty($taxon_profile_image_settings['media_uri_query'])) {
               $representationPart->uri = $uri_String
                 . (strpos($uri_String, '?') !== FALSE ? '&' : '?')
                 . $taxon_profile_image_settings['media_uri_query'];
