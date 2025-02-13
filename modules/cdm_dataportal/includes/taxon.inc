@@ -1064,10 +1064,11 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
 
     // .. Well, for sure not as performant as before, but better than nothing.
     $misapplied_uuids = array();
+    $default_classification_uuid = get_current_classification_uuid();
     foreach ($taxon_list as $taxon) {
-        if ($taxon->entity->class == 'Taxon' && !_cdm_dataportal_acceptedByCurrentView($taxon)) {
+        if (!isset_not_empty($taxon->acceptedTaxonUuid) && !array_search($default_classification_uuid, $taxon->classificationUuids) ) {
             // Assuming that it is a misapplied name, will be further examined below.
-            $misapplied_uuids[$taxon->entity->uuid] = $taxon->entity->uuid;
+            $misapplied_uuids[$taxon->taxonBaseUuid] = $taxon->taxonBaseUuid;
         }
     }
 
@@ -1096,16 +1097,16 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
     $itemCnt = -1;
     foreach ($taxon_list as $taxon) {
         $itemCnt++;
-       if ($taxon->entity->class == "Synonym") {
+       if (isset_not_empty($taxon->acceptedTaxonUuid)) {
         $synonym = $taxon;
-        $taxonUri = uri_to_synonym($synonym->entity->uuid, $synonym->acceptedTaxonUuid);
+        $taxonUri = uri_to_synonym($synonym->taxonBaseUuid, $synonym->acceptedTaxonUuid);
         $taxon_type = TAXON_TYPE_SYNONYM;
         $out .=createOutput($taxon_type, $taxon, $taxonUri, "");
        }else {
-         if (isset($table_of_accepted[$taxon->entity->uuid])) {
+         if (isset($table_of_accepted[$taxon->taxonBaseUuid])) {
            // Its a misapplied name.
            $taxon_type = TAXON_TYPE_MISAPPLIEDNAME;
-           $relations = $table_of_accepted[$taxon->entity->uuid];
+           $relations = $table_of_accepted[$taxon->taxonBaseUuid];
 
            if (!is_array($relations)) {
                $relations = array($relations);
@@ -1114,7 +1115,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
            $index = 0;
            foreach ($relations as $relation) {
              if (is_object($relation)) {
-                 $taxonUri = uri_to_synonym($taxon->entity->uuid, $relation->taxonUuid);
+                 $taxonUri = uri_to_synonym($taxon->taxonBaseUuid, $relation->taxonUuid);
                  $referenceUri = '';
                  //if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
                  //    $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
@@ -1128,11 +1129,11 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
              }
            }
          }else{
-           if (isset_not_empty($taxon->entity) && isset_not_empty($taxon->entity->uuid)){
-              $taxonUri = url(path_to_taxon($taxon->entity->uuid));
+           if (isset_not_empty($taxon->taxonBaseUuid) ){
+              $taxonUri = url(path_to_taxon($taxon->taxonBaseUuid));
               $taxon_type = "Taxon";                                                                                                                             
               $referenceUri = '';                                                                                                                                
-              if (isset_not_empty($taxon->entity->name->nomenclaturalSource) && isset_not_empty($taxon->entity->name->nomenclaturalSource->citation)) {          
+              if (isset_not_empty($taxon->entity) && isset_not_empty($taxon->entity->name->nomenclaturalSource) && isset_not_empty($taxon->entity->name->nomenclaturalSource->citation)) {
                  $referenceUri = url(path_to_reference($taxon->entity->name->nomenclaturalSource->citation->uuid));                                              
               }                                                                                                                                                  
               $out .= createOutput($taxon_type, $taxon, $taxonUri, $referenceUri);                                                                               
@@ -1144,7 +1145,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
         //$out .= '<div class="item Taxon">' . render_taxon_or_name($taxon, $taxonUri, $referenceUri, false);
        // $out = createOutput($taxon_type, $taxon, $taxonUri, $referenceUri, $out);
         if ($show_classification) {
-            $out .= render_classifications_for_taxon($taxon-> entity);
+            $out .= render_classifications_for_taxon($taxon);
         }
         if ($showMedia_taxa) {
             $out .= theme('cdm_taxon_list_thumbnails', array('taxon' => $taxon));
@@ -1196,8 +1197,15 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
 function createOutput($taxon_type, $taxon, $taxonUri, $referenceUri): string
 {
     $out = "";
-    $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
-    $skip_render_template_parts = $taxon_type == TAXON_TYPE_MISAPPLIEDNAME ? ['referencePart', 'secReferencePart'] : [];
+    if ($taxon_type == TAXON_TYPE_SYNONYM){
+      $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
+    }else if ($taxon_type == TAXON_TYPE_MISAPPLIEDNAME){
+      $skip_render_template_parts = $taxon_type == TAXON_TYPE_MISAPPLIEDNAME ? ['referencePart', 'secReferencePart'] : [];
+    }else {
+      $skip_render_template_parts = [];
+    }
+
+
     $out .= "<div class=\"item " . $taxon_type . "\">" . render_new_taxon_or_name($taxon, true, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
     return $out;
 }
