@@ -1068,7 +1068,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
     foreach ($taxon_list as $taxon) {
         if (!isset_not_empty($taxon->acceptedTaxonUuid) && !array_search($default_classification_uuid, $taxon->classificationUuids) ) {
             // Assuming that it is a misapplied name, will be further examined below.
-            $misapplied_uuids[$taxon->taxonBaseUuid] = $taxon->taxonBaseUuid;
+            $misapplied_uuids[$taxon->entityUuid] = $taxon->entityUuid;
         }
     }
 
@@ -1099,14 +1099,14 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
         $itemCnt++;
        if (isset_not_empty($taxon->acceptedTaxonUuid)) {
         $synonym = $taxon;
-        $taxonUri = uri_to_synonym($synonym->taxonBaseUuid, $synonym->acceptedTaxonUuid);
+        $taxonUri = uri_to_synonym($synonym->entityUuid, $synonym->acceptedTaxonUuid);
         $taxon_type = TAXON_TYPE_SYNONYM;
         $out .=createOutput($taxon_type, $taxon, $taxonUri, "");
        }else {
-         if (isset($table_of_accepted[$taxon->taxonBaseUuid])) {
+         if (isset($table_of_accepted[$taxon->entityUuid])) {
            // Its a misapplied name.
            $taxon_type = TAXON_TYPE_MISAPPLIEDNAME;
-           $relations = $table_of_accepted[$taxon->taxonBaseUuid];
+           $relations = $table_of_accepted[$taxon->entityUuid];
 
            if (!is_array($relations)) {
                $relations = array($relations);
@@ -1115,7 +1115,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
            $index = 0;
            foreach ($relations as $relation) {
              if (is_object($relation)) {
-                 $taxonUri = uri_to_synonym($taxon->taxonBaseUuid, $relation->taxonUuid);
+                 $taxonUri = uri_to_synonym($taxon->entityUuid, $relation->taxonUuid);
                  $referenceUri = '';
                  //if (isset($acceptedTaxon->name->nomenclaturalSource->citation)) {
                  //    $referenceUri = url(path_to_reference($acceptedTaxon->name->nomenclaturalSource->citation->uuid));
@@ -1129,8 +1129,8 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
              }
            }
          }else{
-           if (isset_not_empty($taxon->taxonBaseUuid) ){
-              $taxonUri = url(path_to_taxon($taxon->taxonBaseUuid));
+           if (isset_not_empty($taxon->entityUuid) ){
+              $taxonUri = url(path_to_taxon($taxon->entityUuid));
               $taxon_type = "Taxon";                                                                                                                             
               $referenceUri = '';                                                                                                                                
               if (isset_not_empty($taxon->entity) && isset_not_empty($taxon->entity->name->nomenclaturalSource) && isset_not_empty($taxon->entity->name->nomenclaturalSource->citation)) {
