@@ -210,7 +210,7 @@ function cdm_api_cron() {
  */
 function get_classifications_for_taxon($taxon) {
 
-  return cdm_ws_get(CDM_WS_TAXON_CLASSIFICATIONS, $taxon->uuid);
+  return cdm_ws_get(CDM_WS_TAXON_CLASSIFICATIONS, $taxon->taxonBaseUuid);
 }
 
 /**

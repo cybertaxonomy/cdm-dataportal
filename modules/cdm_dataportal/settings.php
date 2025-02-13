@@ -65,6 +65,7 @@ const CDM_SPECIMEN_RELATION_OPTION_CDET = 'CDET';
  const CDM_DTO_LOADING = 'cdm_dto_loading';
 
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE', 'cdm_synonymy_accepted_taxon_sec_separate');
+  define('CDM_SYNONYMY_SYN_SEC_PER_HOMOTYPIC_GROUP', 'cdm_synonymy_syn_sec_per_homotypic_group');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE', 'cdm_synonymy_accepted_taxon_sec_footnote');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL', 'cdm_synonymy_accepted_taxon_sec_separate_label');
   define('CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT', 'Source');
@@ -2573,7 +2574,13 @@ cf	cultivated: reported in error
       of the accepted taxon most likely with the full nomenclatural reference, 
       depending on the ' . l('Name render templates', 'admin/config/cdm_dataportal/settings/layout') . '.'),
   );
+  $form['taxon_synonymy'][CDM_SYNONYMY_SYN_SEC_PER_HOMOTYPIC_GROUP] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Secundum referenence of synonyms per homotypic group.'),
+    '#default_value' => variable_get(CDM_SYNONYMY_SYN_SEC_PER_HOMOTYPIC_GROUP, 0),
+    '#description' => t('You may want to show the secundum reference(s) not for every synonym but at the end of an homotypic group like typedesignations '),
 
+  );
 
 
     $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE] = array(
@@ -2585,6 +2592,7 @@ cf	cultivated: reported in error
       . ' (Only applicable when the "Show accepted taxon on top of the synonymy" option above is enabled.)'),
     '#disabled' =>  !variable_get(CDM_DATAPORTAL_NOMREF_IN_TITLE, CDM_DATAPORTAL_NOMREF_IN_TITLE_DEFAULT)
   );
+
     $form['taxon_synonymy'][CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL] = array(
         '#type' => 'textfield',
         '#description' => 'Label for the secundum referenence.',

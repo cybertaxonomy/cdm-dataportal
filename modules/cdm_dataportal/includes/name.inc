@@ -3426,8 +3426,9 @@ function cdm_new_heterotypicSynonymyGroup($variables) {
         //$out .=  cdm_tagged_text_to_markup($type_designations);
         $out .= '</ul>';
     }
-    $is_first = true;
-  if ($syn_secs != null && count($syn_secs) > 0) {
+
+
+  if ($syn_secs != null && count($syn_secs) > 0 && variable_get(CDM_SYNONYMY_SYN_SEC_PER_HOMOTYPIC_GROUP, 0) != 0) {
     $syn_sec_text = '<ul class="synSecSources"> Syn. sec.: ';
    // $out .= '<ul class="synSecSources"> Syn. sec.: ';
     $syn_sec_text .= cdm_tagged_text_with_ref_footnote_to_markup($syn_secs);
