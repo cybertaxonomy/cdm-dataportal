@@ -713,67 +713,93 @@ function render_taxon_list_entries($taxon_find_dto, $skip_render_template_parts,
  *  The markup for a taxon name.
  */
 function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = true, $name_link = NULL, $reference_link = NULL,
-                              $show_taxon_name_annotations = true,  $show_taxon_annotations = true, $showRegistrations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false)
-{
+                              $show_taxon_name_annotations = true,  $show_taxon_annotations = true, $showRegistrations = true, $is_type_designation = false, $skip_render_template_parts = [], $is_invalid = false) {
 
-    $is_doubtful = false;
-    $taxon_base = null;
-    $nom_status_fkey = null; // FootNoteKey
-    //if($taxon_name_or_taxon_base_dto->class == 'Taxon' || $taxon_name_or_taxon_base_dto->class == 'Synonym'){
-    $taxon_base = $taxon_name_or_taxon_base_dto;
+  $is_doubtful = FALSE;
+  $taxon_base = NULL;
+  $nom_status_fkey = NULL; // FootNoteKey
+  //if($taxon_name_or_taxon_base_dto->class == 'Taxon' || $taxon_name_or_taxon_base_dto->class == 'Synonym'){
+  $taxon_base = $taxon_name_or_taxon_base_dto;
+  if (is_array($taxon_name_or_taxon_base_dto)){
+    $tagged_title = $taxon_name_or_taxon_base_dto;
+  }else{
     if (isset($taxon_name_or_taxon_base_dto->taggedName)) {
-        $tagged_name = $taxon_name_or_taxon_base_dto->taggedName;
-    } else if ($taxon_name_or_taxon_base_dto->entity->name->taggedName) {
-        $tagged_name = $taxon_name_or_taxon_base_dto->entity->name->taggedName;
-    } else {
-        $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', array($taxon_name_or_taxon_base_dto->uuid));
+      $tagged_name = $taxon_name_or_taxon_base_dto->taggedName;
     }
-    if (isset($taxon_name_or_taxon_base_dto->doubtful)) {
-        $is_doubtful = $taxon_name_or_taxon_base_dto->doubtful;
+    else {
+      if (isset_not_empty($taxon_name_or_taxon_base_dto->taxonTaggedText)) {
+        $tagged_name = $taxon_name_or_taxon_base_dto->taxonTaggedText;
+      }
+      else {
+        if (isset_not_empty($taxon_name_or_taxon_base_dto->entity) && $taxon_name_or_taxon_base_dto->entity->name->taggedName) {
+          $tagged_name = $taxon_name_or_taxon_base_dto->entity->name->taggedName;
+        }
+        else if (isset_not_empty($taxon_name_or_taxon_base_dto->uuid)){
+          $taxon_name = cdm_ws_get(CDM_WS_TAXON . '/$0/name', [$taxon_name_or_taxon_base_dto->uuid]);
+        }
+      }
     }
+  }
 
-    // use the TaxonBase.tagged_title so we have the secRef
-    if (isset($taxon_name_or_taxon_base_dto->taggedLabel)) {
-        $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
-    } else if ($taxon_name_or_taxon_base_dto->entity->taggedTitle) {
-        $tagged_title = $taxon_name_or_taxon_base_dto->entity->taggedTitle;
-    } else {
-        $tagged_title = $taxon_name_or_taxon_base_dto;
+  if (isset($taxon_name_or_taxon_base_dto->doubtful)) {
+    $is_doubtful = $taxon_name_or_taxon_base_dto->doubtful;
+  }
+
+  // use the TaxonBase.tagged_title so we have the secRef
+  if (isset($taxon_name_or_taxon_base_dto->taggedLabel)) {
+    $tagged_title = $taxon_name_or_taxon_base_dto->taggedLabel;
+  }
+  else {
+    if (!isset_not_empty($tagged_title) && isset_not_empty($taxon_name_or_taxon_base_dto->entity) && $taxon_name_or_taxon_base_dto->entity->taggedTitle) {
+      $tagged_title = $taxon_name_or_taxon_base_dto->entity->taggedTitle;
     }
+  }
 
 
-    $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
-    if (isset_not_empty($taxon_base->entity) && isset_not_empty($taxon_base->entity->name)) {
-        $partDefinition = get_partDefinition($taxon_base->entity->name->nameType);
-    } else {
-        $partDefinition = get_partDefinition($taxon_name_or_taxon_base_dto->nameType);
+  $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
+  if (isset($taxon_base->entity) && isset_not_empty($taxon_base->entity->name)) {
+    $partDefinition = get_partDefinition($taxon_base->entity->name->nameType);
+  }
+  else {
+    if (isset($taxon_name_or_taxon_base_dto->nameType)) {
+      $partDefinition = get_partDefinition($taxon_name_or_taxon_base_dto->nameType);
     }
+  }
 
 
-    // Apply definitions to template.
+  // Apply definitions to template.
+  if (isset_not_empty($partDefinition)) {
     foreach ($renderTemplate as $part => $uri) {
 
-        if (isset($partDefinition[$part])) {
-            $renderTemplate[$part] = $partDefinition[$part];
-        }
-        if (is_array($uri) && isset($uri['#uri'])) {
-            $renderTemplate[$part]['#uri'] = $uri['#uri'];
-        }
+      if (isset($partDefinition[$part])) {
+        $renderTemplate[$part] = $partDefinition[$part];
+      }
+      if (is_array($uri) && isset($uri['#uri'])) {
+        $renderTemplate[$part]['#uri'] = $uri['#uri'];
+      }
     }
-    if (isset_not_empty($skip_render_template_parts)) {
+  }
+
+
+
+if (isset_not_empty($skip_render_template_parts)) {
         foreach ($skip_render_template_parts as $part) {
             unset($renderTemplate[$part]);
         }
     }
+    if (isset_not_empty($tagged_title)){
+      $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_title);
+    }else{
+      $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_name);
+    }
 
-    $secref_tagged_text = tagged_text_extract_reference_and_detail($tagged_title);
     $secref_name_inSource_tagged_text = tagged_text_extract_secReference_name_in_source($tagged_title);
     // taxon names will have the nomenclatural reference in the tagged full title:
     $nomref_tagged_text = tagged_text_extract_reference($tagged_name);
     $nom_status_tagged_text = tagged_text_extract_nomstatus($tagged_name);
     $appended_phrase_tagged_text = array(); // this is filled later
 
-    if ($isNotTitle){
+    if ($isNotTitle && isset($tagged_name)){
         $tagged_title = $tagged_name;
     }
     normalize_tagged_text($tagged_title);
@@ -859,9 +885,11 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
 
         $name = '<span class="' . "TaxonName" . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($taggedName) . $name_encasement . '</span>';
     }
-    else {
+    else if (isset($taxon_name_or_taxon_base_dto->label)){
         // use titleCache instead
         $name = '<span class="TaxonName_titleCache">' . $doubtful_marker_markup . $name_encasement . $taxon_name_or_taxon_base_dto->label  . $name_encasement . '</span>';
+    }else{
+      $name = '<span class="' . "TaxonName" . '">' . $doubtful_marker_markup . $name_encasement . cdm_tagged_text_to_markup($tagged_title) . $name_encasement . '</span>';
     }
 
 
@@ -993,7 +1021,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
         }
     }
     if($isNotTitle){
-        if (isset_not_empty($taxon_name_or_taxon_base_dto->identifiers) && isset_not_empty($taxon_name_or_taxon_base_dto->identifiers->items) && variable_get(CDM_SHOW_NAME_IDENTIFIER, 1) ) {
+        if (isset($taxon_name_or_taxon_base_dto->identifiers) && isset($taxon_name_or_taxon_base_dto->identifiers->items) && variable_get(CDM_SHOW_NAME_IDENTIFIER, 1) ) {
             $renderTemplate['identifierPart'] = array();
             $renderTemplate['identifierPart']['status'] = true;
             $renderTemplate['identifierPart']['identifier'] = '';
@@ -1138,6 +1166,7 @@ function render_new_taxon_or_name($taxon_name_or_taxon_base_dto, $isNotTitle = t
         // developer option to show the render path with each taxon name
         $out .= '<span class="render-path">' . RenderHints::getRenderPath() . '</span>';
     }
+    $class_attribute =
     $out .= '<span class="' . html_class_attribute_ref($taxon_name_or_taxon_base_dto)
      //   . '" data-cdm-ref="/name/' . $taxon_name_or_taxon_base_dto->uuid . '" data-cdm-render-path="' . RenderHints::getRenderPath() .'">';
      . '" data-cdm-ref="/name/' . $taxon_name_or_taxon_base_dto->uuid . '">';
@@ -3322,6 +3351,10 @@ function type_designation_dto_status_label_markup($type_designation)
 function cdm_new_homotypicSynonymyGroup($variables) {
     $synonymGroup= $variables['synonyms'];
     $synonymList = $synonymGroup -> synonyms -> items;
+    $syn_secs = null;
+    if (isset_not_empty($synonymGroup->taggedSynSecs) ){
+      $syn_secs = $synonymGroup->taggedSynSecs;
+    }
     $accepted_taxon_name_uuid = $variables['accepted_taxon_name_uuid'];
     //$prependedSynonyms = $variables['prependedSynonyms'];
 
@@ -3371,6 +3404,20 @@ function cdm_new_homotypicSynonymyGroup($variables) {
             }*/
             $out .= '</ul>';
         }
+      if ($syn_secs != null && count($syn_secs) > 0 && variable_get(CDM_SYNONYMY_SYN_SEC_PER_HOMOTYPIC_GROUP, 0) != 0) {
+        $syn_sec_text = '<ul class="synSecSources"> Syn. sec.: ';
+        // $out .= '<ul class="synSecSources"> Syn. sec.: ';
+        $syn_sec_text .= cdm_tagged_text_with_ref_footnote_to_markup($syn_secs);
+
+
+        //TODO: this should not happen, but as long as the syn secs are empty sometimes we use this workaround
+        if ($syn_sec_text != '<ul class="synSecSources"> Syn. sec.: '){
+          $out .= $syn_sec_text;
+        }
+
+        //$out .=  cdm_tagged_text_to_markup($type_designations);
+        //$out .= '</ul>';
+      }
 
     }
 
