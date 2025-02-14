@@ -31,17 +31,25 @@ function theme_cdm_taxon_list_thumbnails($variables) {
   } else {
     $captionElements = array();
   }
-  if ($taxon->uuid){
+  if (isset($taxon->uuid)){
     $gallery_name = $taxon->uuid;
   }else{
-    $gallery_name = $taxon->entity->uuid;
+    if (isset($taxon->entityUuid)){
+        $gallery_name = $taxon->entityUuid;
+    }else{
+        $gallery_name = $taxon->entity->uuid;
+    }
   }
   if (isset($taxon->entity)){
     $mediaList = _load_media_for_taxon($taxon->entity);
     $galleryLinkUri = path_to_taxon($taxon->entity->uuid, 'images');
   }else{
     $mediaList = _load_media_for_taxon($taxon);
-    $galleryLinkUri = path_to_taxon($taxon->uuid, 'images');
+    if (isset($taxon->entityUuid)){
+        $galleryLinkUri = path_to_taxon($taxon->entityUuid, 'images');
+    }else{
+        $galleryLinkUri = path_to_taxon($taxon->uuid, 'images');
+    }
   }
 
   $out .= compose_cdm_media_gallery(array(

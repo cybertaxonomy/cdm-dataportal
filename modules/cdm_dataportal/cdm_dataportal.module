@@ -1394,7 +1394,8 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
   if(!isset($media)) {
     $media = array();
   }
-  if (!isset($media[$taxon->uuid]) && $taxon->class != "Synonym") {
+  $taxon_uuid = isset($taxon->uuid)? $taxon->uuid:$taxon->entityUuid;
+  if (!isset($media[$taxon_uuid]) && $taxon->class != "Synonym") {
 
 
     $mediaQueryParameters = taxon_media_query_parameters();
@@ -1409,15 +1410,15 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
     // services
     unset($mediaQueryParameters['includeTaxonomicChildren']);
 
-    $media[$taxon->uuid] = cdm_ws_get($ws_endpoint,
+    $media[$taxon_uuid] = cdm_ws_get($ws_endpoint,
         array(
-            $taxon->uuid,
+            $taxon_uuid,
         ),
         queryString($mediaQueryParameters)
        );
   }
-    if (array_key_exists($taxon->uuid, $media)){
-        return $media[$taxon->uuid];
+    if (array_key_exists($taxon_uuid, $media)){
+        return $media[$taxon_uuid];
     }
   return null;
 }

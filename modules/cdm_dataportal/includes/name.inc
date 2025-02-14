@@ -672,6 +672,13 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
   return $out;
 }
 
+function render_taxon_list_entries($taxon_find_dto, $skip_render_template_parts, $taxonUri){
+
+  $name = '<span class="' . "TaxonName" . '">' .  cdm_tagged_text_to_markup($taxon_find_dto->taxonTaggedText, $skip_render_template_parts)  . '</span>';
+  $name  =  '<a href="' . $taxonUri . '" class="' . "NameAuthorPart" . '">' . $name . '</a>';
+  return $name;
+}
+
 /**
  * Renders the markup for a CDM taxon dto instance.
  *

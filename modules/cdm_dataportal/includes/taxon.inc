@@ -1198,15 +1198,15 @@ function createOutput($taxon_type, $taxon, $taxonUri, $referenceUri): string
 {
     $out = "";
     if ($taxon_type == TAXON_TYPE_SYNONYM){
-      $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReferencePart'] : [];
+      $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReference'] : [];
     }else if ($taxon_type == TAXON_TYPE_MISAPPLIEDNAME){
-      $skip_render_template_parts = $taxon_type == TAXON_TYPE_MISAPPLIEDNAME ? ['referencePart', 'secReferencePart'] : [];
+      $skip_render_template_parts = $taxon_type == TAXON_TYPE_MISAPPLIEDNAME ? ['referencePart', 'secReference'] : [];
     }else {
       $skip_render_template_parts = [];
     }
 
-
-    $out .= "<div class=\"item " . $taxon_type . "\">" . render_new_taxon_or_name($taxon, true, $taxonUri, $referenceUri, false, false, false, $skip_render_template_parts);
+  $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_list_entries($taxon, $skip_render_template_parts, $taxonUri);
+  //  $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_list_entries($taxon, $skip_render_template_parts, $taxonUri);
     return $out;
 }
 
