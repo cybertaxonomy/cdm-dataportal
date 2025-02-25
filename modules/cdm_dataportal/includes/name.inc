@@ -1775,9 +1775,28 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
           $citation_footnote_str = cdm_reference_markup($specimen_type_designation->designationSource->citation, NULL, FALSE, TRUE);
           $author_team = cdm_ws_get(CDM_WS_REFERENCE_AUTHORTEAM, $specimen_type_designation->designationSource->citation->uuid);
 
-          if (!empty($author_team->titleCache)) {
+          if (!empty($author_team)) {
             $year = @timePeriodToString($specimen_type_designation->designationSource->citation->datePublished, TRUE, 'YYYY');
-            $authorteam_str = $author_team->titleCache . ($year ? ' ' : '') . $year;
+
+            if (isset_not_empty($author_team->teamMembers)){
+              if (isset_not_empty($author_team->teamMembers[0]->familyName)){
+                  $authorteam_str = $author_team->teamMembers[0]->familyName;
+              }else{
+                  $authorteam_str = $author_team->teamMembers[0]->titleCache;
+              }
+              if (count($author_team->teamMembers) > 1){
+                $authorteam_str .= " et al.";
+              }
+
+            }else{
+              if (isset_not_empty($author_team->familyName)){
+                $authorteam_str = $author_team->familyName;
+              }else{
+                $authorteam_str = $author_team->titleCache;
+              }
+
+            }
+            $authorteam_str = $authorteam_str . ($year ? ' ' : '') . $year;
             if ($authorteam_str == $specimen_type_designation->designationSource->citation->titleCache) {
               $citation_footnote_str = '';
             }

@@ -655,7 +655,7 @@ function timePeriodToString($period, $stripZeros = TRUE, $format = "YYYY-MM-DD")
   }else {
       if ($period->freeText) {
           $dateString = $period->freeText;
-      }elseif(isset_not_empty($period->timePeriod)){
+      }elseif(isset_not_empty($period->timePeriod) && $format == "YYYY-MM-DD"){
           $dateString = $period->timePeriod;
       }else {
           if ($period->start) {
