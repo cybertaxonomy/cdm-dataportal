@@ -1785,7 +1785,7 @@ function render_type_designations($type_designations, $enclosing_tag = 'ul', $el
                   $authorteam_str = $author_team->teamMembers[0]->titleCache;
               }
               if (count($author_team->teamMembers) > 1){
-                $authorteam_str .= " et al.";
+                $authorteam_str .= " & al.";
               }
 
             }else{

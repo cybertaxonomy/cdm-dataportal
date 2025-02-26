@@ -69,7 +69,7 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
         assertEquals("2017E68", dl1.joinedDescriptionElementText("Most significant identifier:"));
         assertEquals("2017E68", dl1.joinedDescriptionElementText("Accession number:"));
         assertEquals("destroyed", dl1.joinedDescriptionElementText("Status:"));
-        assertEquals("Epitype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20172)",
+        assertEquals("Epitype (designated by Kretschmann & al. 20172)",
                 dl1.joinedDescriptionElementText("Specimen type designations:"));
         // 2
         assertEquals("gathering in-situ from:", contentElements.get(1).getText());
