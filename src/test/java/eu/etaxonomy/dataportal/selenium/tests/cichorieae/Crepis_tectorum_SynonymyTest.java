@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
+import eu.etaxonomy.dataportal.elements.BaseElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
