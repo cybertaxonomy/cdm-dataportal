@@ -13,7 +13,10 @@ import static org.junit.Assert.assertEquals;
 import java.net.MalformedURLException;
 import java.util.UUID;
 
+import java.util.List;
+
 import org.junit.Test;
+import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -55,16 +58,7 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         WebElement synSecContainer = p.getNewHeterotypicalGroupSynSecs(1);
         assertEquals(null, synSecContainer);
         assertEquals("= Crepis lanceolata Kit. [non Crepis lanceolata Sch. Bip. 1854]", p.getHeterotypicalGroupSynonymName(9, 1));
-        /*
-        Crepis lachenalii Gochnat, Tent. Pl. Cich.: 19. 1808 [is earlier homonym of Crepis lachenalii C. C. Gmel. 1811]
-        ≡Crepis tectorum var. gracilis Wallr., Sched. Crit.: 430. 1822
 
-            Type: [France] "Habitat haud procul a Bruscae ripis, prope Argentoratum, in lapidosis aridis"
-
-            Syn. sec.: 2025: Edit Test Reference2
-
-            2. 2025: Edit Test Reference
-            */
 
         //second heterotypic group with different syn sec
         assertEquals("= Crepis lachenalii Gochnat, Tent. Pl. Cich.: 19. 1808 [is earlier homonym of Crepis lachenalii C. C. Gmel. 1811]", p.getHeterotypicalGroupSynonymName(2, 1));
