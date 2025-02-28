@@ -8,18 +8,15 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.MalformedURLException;
-import java.util.UUID;
-
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
-import eu.etaxonomy.dataportal.elements.BaseElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
+import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
@@ -69,7 +66,7 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
 
         List<BaseElement> footNotes = p.getHeterotypicalGroupFootNotes(2);
         assertEquals("expecting one footnote", 1, footNotes.size());
-        assertEquals("2. 2025: Edit Test Reference", footnotes.get(0).getText());
+        assertEquals("2. 2025: Edit Test Reference", footNotes.get(0).getText());
 
 
 
