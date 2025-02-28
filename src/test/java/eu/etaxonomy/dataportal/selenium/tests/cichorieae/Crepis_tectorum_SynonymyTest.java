@@ -51,7 +51,9 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals("≡ Crepis stricta Schultz, Prodr. Fl. Starg. Suppl.: 41. 1819 [non Crepis stricta Scop. 1772]", p.getHeterotypicalGroupSynonymName(1, 2));
         assertEquals("≡ Crepis tectorum var. stricta E. Mey. ex Bisch., Beitr. Fl. Deutschl.: 274. 1851, nom. illeg.", p.getHeterotypicalGroupSynonymName(1, 3));
         assertEquals("≡ Crepis tectorum var. minima Schur, Enum. Pl. Transsilv.: 376. 1866, nom. illeg.", p.getHeterotypicalGroupSynonymName(1, 4));
-
+        //this heterotypic group syn secs don't differ to the sec of the accepted taxon
+        WebElement synSecContainer = p.getNewHeterotypicalGroupSynSecs(1);
+        assertEquals(null, synSecContainer);
         assertEquals("= Crepis lanceolata Kit. [non Crepis lanceolata Sch. Bip. 1854]", p.getHeterotypicalGroupSynonymName(9, 1));
         /*
         Crepis lachenalii Gochnat, Tent. Pl. Cich.: 19. 1808 [is earlier homonym of Crepis lachenalii C. C. Gmel. 1811]
@@ -67,7 +69,7 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         //second heterotypic group with different syn sec
         assertEquals("= Crepis lachenalii Gochnat, Tent. Pl. Cich.: 19. 1808 [is earlier homonym of Crepis lachenalii C. C. Gmel. 1811]", p.getHeterotypicalGroupSynonymName(2, 1));
         assertEquals("≡ Crepis tectorum var. gracilis Wallr., Sched. Crit.: 430. 1822", p.getHeterotypicalGroupSynonymName(2, 2));
-        WebElement synSecContainer = p.getNewHeterotypicalGroupSynSecs(2);
+        synSecContainer = p.getNewHeterotypicalGroupSynSecs(2);
         assertEquals("Syn. sec.: 2025: Edit Test Reference2", synSecContainer.getText());
 
         List<BaseElement> footNotes = p.getHeterotypicalGroupFootNotes(2);
