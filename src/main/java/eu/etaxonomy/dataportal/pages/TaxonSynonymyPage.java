@@ -211,6 +211,14 @@ public class TaxonSynonymyPage extends TaxonPage {
         return typeDesignationElement;
     }
 
+    public WebElement getNewHeterotypicalGroupSynSecs(Integer heterotypicalGroupIndex) {
+            WebElement synSecElement = synonymy.findElement(By
+                    .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
+                            + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'synSecSources')]"));
+
+            return synSecElement;
+        }
+
 
     /**
      * @param heterotypicalGroupIndex

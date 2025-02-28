@@ -53,6 +53,29 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals("≡ Crepis tectorum var. minima Schur, Enum. Pl. Transsilv.: 376. 1866, nom. illeg.", p.getHeterotypicalGroupSynonymName(1, 4));
 
         assertEquals("= Crepis lanceolata Kit. [non Crepis lanceolata Sch. Bip. 1854]", p.getHeterotypicalGroupSynonymName(9, 1));
+        /*
+        Crepis lachenalii Gochnat, Tent. Pl. Cich.: 19. 1808 [is earlier homonym of Crepis lachenalii C. C. Gmel. 1811]
+        ≡Crepis tectorum var. gracilis Wallr., Sched. Crit.: 430. 1822
+
+            Type: [France] "Habitat haud procul a Bruscae ripis, prope Argentoratum, in lapidosis aridis"
+
+            Syn. sec.: 2025: Edit Test Reference2
+
+            2. 2025: Edit Test Reference
+            */
+
+        //second heterotypic group with different syn sec
+        assertEquals("= Crepis lachenalii Gochnat, Tent. Pl. Cich.: 19. 1808 [is earlier homonym of Crepis lachenalii C. C. Gmel. 1811]", p.getHeterotypicalGroupSynonymName(2, 1));
+        assertEquals("≡ Crepis tectorum var. gracilis Wallr., Sched. Crit.: 430. 1822", p.getHeterotypicalGroupSynonymName(2, 2));
+        WebElement synSecContainer = p.getNewHeterotypicalGroupSynSecs(2);
+        assertEquals("Syn. sec.: 2025: Edit Test Reference2", synSecContainer.getText());
+
+        List<BaseElement> footNotes = p.getHeterotypicalGroupFootNotes(2);
+        assertEquals("expecting one footnote", 1, footNotes.size());
+        assertEquals("2. 2025: Edit Test Reference", footnotes.get(0).getText());
+
+
+
     }
 
 
