@@ -214,7 +214,7 @@ public class TaxonSynonymyPage extends TaxonPage {
     public WebElement getNewHeterotypicalGroupSynSecs(Integer heterotypicalGroupIndex) {
         WebElement synSecElement = null;
         try{
-            WebElement synSecElement = synonymy.findElement(By
+            synSecElement = synonymy.findElement(By
                                .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
                                         + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'synSecSources')]"));
 
