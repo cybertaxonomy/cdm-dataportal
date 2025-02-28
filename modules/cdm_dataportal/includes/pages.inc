@@ -2123,7 +2123,8 @@ function compose_cdm_reference_page($uuid) {
     "isbn",// Class Book.
     "issn",// Class Journal.
     "doi",
-    "uri"
+    "uri",
+    "editorial notes"
   );
 
   $table_rows = array();
@@ -2227,6 +2228,20 @@ function compose_cdm_reference_page($uuid) {
           );
         }
       }
+    }elseif ($fieldname=='editorial notes' ){
+      $annotations = cdm_fetch_visible_annotations($reference);
+      $dd_elements = array();
+      $value = $annotations;
+
+      foreach ($value as $annotation) {
+        // TODO respect annotation type filter settings
+        $dd_elements[] = $annotation->text;
+      }
+      $value = join("<br>", $dd_elements);
+      $table_rows[] = array(
+        t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
+        $value,
+      );
     }
   }
 
@@ -2247,7 +2262,7 @@ function compose_cdm_reference_page($uuid) {
   }
 
   // Annotations below the table
-  $out .= cdm_annotations(cdm_fetch_visible_annotations($reference));
+//  $out .= cdm_annotations(cdm_fetch_visible_annotations($reference));
 
   $registration_working_set = cdm_ws_get("registrationWorkingSetDTO", array($uuid));
   if($registration_working_set && isset_not_empty($registration_working_set->registrationDTOs) &&count($registration_working_set->registrationDTOs) > 0){
