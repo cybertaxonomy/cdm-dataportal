@@ -2124,7 +2124,7 @@ function compose_cdm_reference_page($uuid) {
     "issn",// Class Journal.
     "doi",
     "uri",
-    "editorial notes"
+    "Notes"
   );
 
   $table_rows = array();
@@ -2228,7 +2228,7 @@ function compose_cdm_reference_page($uuid) {
           );
         }
       }
-    }elseif ($fieldname=='editorial notes' ){
+    }elseif ($fieldname=='Notes' ){
       $annotations = cdm_fetch_visible_annotations($reference);
       $dd_elements = array();
       $value = $annotations;
@@ -2238,10 +2238,13 @@ function compose_cdm_reference_page($uuid) {
         $dd_elements[] = $annotation->text;
       }
       $value = join("<br>", $dd_elements);
-      $table_rows[] = array(
-        t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
-        $value,
-      );
+      if (isset_not_empty($dd_elements)){
+        $table_rows[] = array(
+          t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
+          $value,
+        );
+      }
+
     }
   }
 
