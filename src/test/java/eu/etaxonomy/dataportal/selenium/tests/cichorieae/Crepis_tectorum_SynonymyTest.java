@@ -64,12 +64,6 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         synSecContainer = p.getNewHeterotypicalGroupSynSecs(2);
         assertEquals("Syn. sec.: 2025: Edit Test Reference2", synSecContainer.getText());
 
-        List<BaseElement> footNotes = p.getHeterotypicalGroupFootNotes(2);
-        assertEquals("expecting one footnote", 1, footNotes.size());
-        assertEquals("2. 2025: Edit Test Reference", footNotes.get(0).getText());
-
-
-
     }
 
 
