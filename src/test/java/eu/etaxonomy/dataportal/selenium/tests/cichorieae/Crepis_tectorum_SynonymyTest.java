@@ -47,7 +47,7 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         WebElement synSecContainer = p.getNewHomotypicalGroupSynSecs();
         assertEquals("Syn. sec.: 2025: Edit Test Reference1", synSecContainer.getText());
         // 1st HeterotypicalGroup
-        assertEquals("= Crepis tectorum var. segetalis Roth, Tent. Fl. Germ. 2: 254. 17931", p.getHeterotypicalGroupSynonymName(1, 1));
+        assertEquals("= Crepis tectorum var. segetalis Roth, Tent. Fl. Germ. 2: 254. 17932", p.getHeterotypicalGroupSynonymName(1, 1));
         assertEquals("≡ Crepis stricta Schultz, Prodr. Fl. Starg. Suppl.: 41. 1819 [non Crepis stricta Scop. 1772]", p.getHeterotypicalGroupSynonymName(1, 2));
         assertEquals("≡ Crepis tectorum var. stricta E. Mey. ex Bisch., Beitr. Fl. Deutschl.: 274. 1851, nom. illeg.", p.getHeterotypicalGroupSynonymName(1, 3));
         assertEquals("≡ Crepis tectorum var. minima Schur, Enum. Pl. Transsilv.: 376. 1866, nom. illeg.", p.getHeterotypicalGroupSynonymName(1, 4));
