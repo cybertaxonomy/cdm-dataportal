@@ -255,9 +255,9 @@ public class TaxonSynonymyPage extends TaxonPage {
         List<WebElement> fnListElements = synonymy.findElements(
                 By.xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex + "]/ul/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
         );
-        WebElement typeDesignationElement = synonymy.findElement(By
-                .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
-                        + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'footnote')]"));
+//        WebElement typeDesignationElement = synonymy.findElement(By
+//                .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
+//                        + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'footnote')]"));
 
         return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
     }
