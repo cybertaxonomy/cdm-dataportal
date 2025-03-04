@@ -9,14 +9,12 @@
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
 import java.net.MalformedURLException;
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
-import eu.etaxonomy.dataportal.elements.BaseElement;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
@@ -46,7 +44,8 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals("≡ Crepis varia Moench, Methodus: 534. 1794, nom. illeg.", p.getHomotypicalGroupSynonymName(4));
         assertEquals("≡ Crepis muralis Salisb., Prodr. Stirp. Chap. Allerton: 182. 1796, nom. illeg.", p.getHomotypicalGroupSynonymName(5));
         assertEquals("≡ Crepis tectoria Dulac, Fl. Hautes-Pyrénées: 491. 1867, nom. illeg.", p.getHomotypicalGroupSynonymName(6));
-
+        synSecContainer = p.getNewHomotypicalGroupSynSecs();
+        assertEquals("Syn. sec.: 2025: Edit Test Reference2", synSecContainer.getText());
         // 1st HeterotypicalGroup
         assertEquals("= Crepis tectorum var. segetalis Roth, Tent. Fl. Germ. 2: 254. 17931", p.getHeterotypicalGroupSynonymName(1, 1));
         assertEquals("≡ Crepis stricta Schultz, Prodr. Fl. Starg. Suppl.: 41. 1819 [non Crepis stricta Scop. 1772]", p.getHeterotypicalGroupSynonymName(1, 2));
@@ -63,6 +62,7 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals("≡ Crepis tectorum var. gracilis Wallr., Sched. Crit.: 430. 1822", p.getHeterotypicalGroupSynonymName(2, 2));
         synSecContainer = p.getNewHeterotypicalGroupSynSecs(2);
         assertEquals("Syn. sec.: 2025: Edit Test Reference2", synSecContainer.getText());
+        p.getHeterotypicalGroupFootNotes(2);
 
     }
 

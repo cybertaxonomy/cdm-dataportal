@@ -135,6 +135,12 @@ public class TaxonSynonymyPage extends TaxonPage {
             }*/
             return typeDesignationElement;
         }
+    public WebElement getNewHomotypicalGroupSynSecs() {
+                WebElement synSecElement = synonymy.findElement(By
+                        .xpath("./div[contains(@class,'homotypic-synonymy-group')]/ul[contains(@class,'homotypicSynonyms')]/ul[contains(@class,'synSecSources')]"));
+
+                return synSecElement;
+            }
 
     public List<LinkElement> getHomotypicalGroupFootNoteKeys() {
         List<WebElement> fnkListElements = synonymy.findElements(
@@ -249,6 +255,10 @@ public class TaxonSynonymyPage extends TaxonPage {
         List<WebElement> fnListElements = synonymy.findElements(
                 By.xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex + "]/ul/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
         );
+        WebElement typeDesignationElement = synonymy.findElement(By
+                .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
+                        + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'footnote')]"));
+
         return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
     }
 
