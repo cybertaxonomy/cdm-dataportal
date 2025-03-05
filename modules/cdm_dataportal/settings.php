@@ -2093,16 +2093,7 @@ function cdm_settings_layout_taxon() {
       <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's
       features such as description, distribution, common names"),
   );
-  $marker_types = cdm_terms_by_type_as_option('MarkerType', CDM_ORDER_BY_TITLE_CACHE_ASC, NULL, TRUE);
 
-  $marker_type = variable_get(CDM_PROFILE_MARKER_TYPE, NULL);
-  $form['taxon_profile']['feature_blocks'][CDM_PROFILE_MARKER_TYPE] = array(
-    '#type' => 'select',
-    '#title' => t('Marker type to filter factual data'),
-    '#description' => t("Only factual data without selected marker will be displayed."),
-    '#options' => $marker_types,
-    '#default_value' => $marker_type
-  );
 
   $featureTrees = cdm_get_featureTrees_as_options(TRUE, TRUE);
   $profile_feature_tree = get_profile_feature_tree();
@@ -2123,7 +2114,16 @@ function cdm_settings_layout_taxon() {
     only is shown if any data for it is present. The block weight is shown after the feature label in brackets'
     ),
   );
+  $marker_types = cdm_terms_by_type_as_option('MarkerType', CDM_ORDER_BY_TITLE_CACHE_ASC, NULL, TRUE);
 
+  $marker_type = variable_get(CDM_PROFILE_MARKER_TYPE, NULL);
+  $form['taxon_profile']['feature_blocks'][CDM_PROFILE_MARKER_TYPE] = array(
+    '#type' => 'select',
+    '#title' => t('Marker type to filter factual data'),
+    '#description' => t("Only factual data without selected marker will be displayed."),
+    '#options' => $marker_types,
+    '#default_value' => $marker_type
+  );
   $pseudo_feature_weights = get_array_variable_merged(CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS, CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS_DEFAULT);
   $form['taxon_profile']['feature_blocks'][CDM_PSEUDO_FEATURE_BLOCK_WEIGHTS] = array(
     '#title'  => 'Pseudo feature block weight',
