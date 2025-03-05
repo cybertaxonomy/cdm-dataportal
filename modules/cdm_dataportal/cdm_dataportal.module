@@ -1396,8 +1396,6 @@ function cdm_dataportal_view_media($mediaUuid, $mediarepresentation_uuid = FALSE
   }
   $taxon_uuid = isset($taxon->uuid)? $taxon->uuid:$taxon->entityUuid;
   if (!isset($media[$taxon_uuid]) && $taxon->class != "Synonym") {
-
-
     $mediaQueryParameters = taxon_media_query_parameters();
 
     $ws_endpoint = NULL;
@@ -1858,6 +1856,9 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
 
     //get feature tree uuid
     $feature_tree_uuid = variable_get(CDM_PROFILE_FEATURETREE_UUID);
+    //get marker to filter factual data
+    $marker_type = variable_get(CDM_PROFILE_MARKER_TYPE);
+    $query_parameters['excludedFactDatasetMarkerTypes'] = $marker_type;
     //
     if (isset($feature_tree_uuid) && $feature_tree_uuid !== UUID_DEFAULT_FEATURETREE) {
         $query_parameters['featureTree'] = $feature_tree_uuid;
@@ -2344,6 +2345,7 @@ function cdm_dataportal_name_view($taxon_name_uuid, $taxon_to_hide_uuid, $redire
   cdm_load_tagged_full_title($taxon_name);
   // Searching for all the taxa connected with the taxon name on the tree
   // in use.
+  //why call a ws to get the name a second time?
   $name = cdm_ws_get(CDM_WS_NAME, array($taxon_name_uuid));
   $restrictions = array(new Restriction("name.titleCache","EXACT", array($name->titleCache), 'AND'));
   $init_strategy = array(

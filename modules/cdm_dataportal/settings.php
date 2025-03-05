@@ -344,6 +344,7 @@ define('CDM_AGGREGATE_BY_TAXON_RELATIONSHIPS_DEFAULT', serialize(
 define('CDM_PROFILE_FEATURETREE_UUID', 'cdm_dataportal_featuretree_uuid');
 define('CDM_OCCURRENCE_FEATURETREE_UUID', 'cdm_occurrence_featuretree_uuid');
 define('CDM_DATAPORTAL_STRUCTURED_DESCRIPTION_FEATURETREE_UUID', 'cdm_dataportal_structdesc_featuretree_uuid');
+define('CDM_PROFILE_MARKER_TYPE', 'cdm_dataportal_marker_type');
 
 define('CDM_DISTRIBUTION_FILTER', 'cdm_distribution_filter');
 define('CDM_DISTRIBUTION_FILTER_DEFAULT', serialize(
@@ -2092,12 +2093,24 @@ function cdm_settings_layout_taxon() {
       <em>Feature Tree</em>. The <em>feature tree</em> are the taxon's
       features such as description, distribution, common names"),
   );
+  $marker_types = cdm_terms_by_type_as_option('MarkerType', CDM_ORDER_BY_TITLE_CACHE_ASC, NULL, TRUE);
+
+  $marker_type = variable_get(CDM_PROFILE_MARKER_TYPE, NULL);
+  $form['taxon_profile']['feature_blocks'][CDM_PROFILE_MARKER_TYPE] = array(
+    '#type' => 'select',
+    '#title' => t('Marker type to filter factual data'),
+    '#description' => t("Only factual data with selected marker will be displayed."),
+    '#options' => $marker_types,
+    '#default_value' => $marker_type
+  );
+
   $featureTrees = cdm_get_featureTrees_as_options(TRUE, TRUE);
   $profile_feature_tree = get_profile_feature_tree();
   $profile_feature_tree_uuid = $profile_feature_tree->uuid;
   if(!isset($featureTrees['options'][$profile_feature_tree_uuid])) {
     $profile_feature_tree_uuid = UUID_DEFAULT_FEATURETREE;
   }
+
   $form['taxon_profile']['feature_blocks'][CDM_PROFILE_FEATURETREE_UUID] = array(
     '#type' => 'radios',
     '#title' => t('Taxon profile feature tree') . ':',
