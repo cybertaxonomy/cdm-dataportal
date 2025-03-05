@@ -1858,7 +1858,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
     $feature_tree_uuid = variable_get(CDM_PROFILE_FEATURETREE_UUID);
     //get marker to filter factual data
     $marker_type = variable_get(CDM_PROFILE_MARKER_TYPE);
-    if ($marker_type != 0 ){
+    if (isset_not_empty($marker_type) && $marker_type != '0' ){
       $query_parameters['excludedFactDatasetMarkerTypes'] = $marker_type;
     }
 
