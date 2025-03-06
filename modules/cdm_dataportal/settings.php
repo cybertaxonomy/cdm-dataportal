@@ -2120,7 +2120,7 @@ function cdm_settings_layout_taxon() {
   $form['taxon_profile']['feature_blocks'][CDM_PROFILE_MARKER_TYPE] = array(
     '#type' => 'select',
     '#title' => t('Marker type to filter factual data'),
-    '#description' => t("Only factual data without selected marker will be displayed."),
+    '#description' => t("Only factual data set without selected marker will be displayed."),
     '#options' => $marker_types,
     '#default_value' => $marker_type
   );
