@@ -2025,7 +2025,7 @@ function cdm_dataportal_new_taxon_view($uuid, $chapter = 'all')
         FootnoteManager::unblockFootnotesFor('not_in_current_classification');
         RenderHints::clearFootnoteListKey();
 
-        if (count($classifications) == 0) {
+        if ($classifications == null || count($classifications) == 0) {
             drupal_set_message(t('This concept of the taxon !taxonname is not contained as an accepted taxon in the currently chosen classification.',
                 array(
                     '!taxonname' => $taxon_name_markup,

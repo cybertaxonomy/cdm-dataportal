@@ -209,8 +209,13 @@ function cdm_api_cron() {
  *   aray of CDM instances of Type Classification
  */
 function get_classifications_for_taxon($taxon) {
-
-  return cdm_ws_get(CDM_WS_TAXON_CLASSIFICATIONS, $taxon->taxonBaseUuid);
+  $uuid = null;
+  if (isset_not_empty($taxon->taxonBaseUuid)){
+    $uuid = $taxon->taxonBaseUuid;
+  }else{
+    $uuid = $taxon->uuid;
+  }
+  return cdm_ws_get(CDM_WS_TAXON_CLASSIFICATIONS, $uuid);
 }
 
 /**
