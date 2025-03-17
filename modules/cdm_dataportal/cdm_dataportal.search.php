@@ -1078,8 +1078,10 @@ function term_tree_as_options($term_dto_tree, &$options = array(), $prefix = '')
   uasort($term_dto_tree, 'compare_terms_by_order_index');
   foreach ($term_dto_tree as $uuid => $dto) {
     $label = $prefix . '<span class="child-label">'
-      .  $dto->representation_L10n
-      . '</span><span class="child-label-abbreviated"> (' . $dto->representation_L10n_abbreviatedLabel . ')</span>';
+      .  $dto->representation_L10n .'</span>';
+    if (isset_not_empty($dto->representation_L10n_abbreviatedLabel)){
+         $label = $label  .'<span class="child-label-abbreviated"> (' . $dto->representation_L10n_abbreviatedLabel . ')</span>';
+    }
     $options[$uuid] = $label;
     if (isset($dto->children) && is_array($dto->children)) {
       term_tree_as_options(
