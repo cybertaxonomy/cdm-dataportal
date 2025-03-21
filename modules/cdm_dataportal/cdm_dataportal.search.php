@@ -925,6 +925,7 @@ function cdm_dataportal_search_blast_execute() {
     $request_params = cdm_dataportal_blast_search_request($_REQUEST['ws']);
    // $url = drupal_http_build_query($_REQUEST['ws'], $request_params);
     $request_params['timeout'] = 200;
+    $request_params['query'] = str_replace("-", "N", $request_params['query']);
     $taxon_pager = drupal_http_request($_REQUEST['ws'].'?sequence='.$request_params['query'], $request_params);
 
     return $taxon_pager;
