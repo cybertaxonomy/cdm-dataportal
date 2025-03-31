@@ -1197,16 +1197,29 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
 function createOutput($taxon_type, $taxon, $taxonUri, $referenceUri): string
 {
     $out = "";
+    $render_template = get_nameRenderTemplate('list_of_taxa');
+
     if ($taxon_type == TAXON_TYPE_SYNONYM){
-      $skip_render_template_parts = $taxon_type == TAXON_TYPE_SYNONYM ? ['secReference'] : [];
+      $skip_render_template_parts = ['secReference'];
     }else if ($taxon_type == TAXON_TYPE_MISAPPLIEDNAME){
-      $skip_render_template_parts = $taxon_type == TAXON_TYPE_MISAPPLIEDNAME ? ['referencePart', 'secReference'] : [];
+      $skip_render_template_parts =  ['referencePart', 'secReference'] ;
     }else {
       $skip_render_template_parts = [];
+      if (!isset_not_empty($render_template['secReference'])){
+        if (!isset_not_empty($render_template['referencePart'])){
+          $skip_render_template_parts = ['secReference', 'referencePart'];
+        }else{
+          $skip_render_template_parts = ['secReference'];
+        }
+
+      }else if (!isset_not_empty($render_template['referencePart'])){
+        $skip_render_template_parts = ['referencePart'];
+      }
     }
 
   $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_list_entries($taxon, $skip_render_template_parts, $taxonUri);
   //  $out .= "<div class=\"item " . $taxon_type . "\">" . render_taxon_list_entries($taxon, $skip_render_template_parts, $taxonUri);
+
     return $out;
 }
 
