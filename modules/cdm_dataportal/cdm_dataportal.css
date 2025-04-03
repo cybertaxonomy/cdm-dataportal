@@ -442,11 +442,13 @@ a.filter_remove:visited {
 
 a.synonym:LINK, a.synonym:VISITED,
 .Synonym a:LINK, .Synonym a:VISITED,
-a.MisappliedName:LINK, a.MisappliedName:VISITED,
-.MisappliedName a:LINK, .MisappliedName a:VISITED{
+a.MisappliedName:LINK, a.MisappliedName:VISITED{
   color: #7c7c7f;
 }
 
+div.MisappliedName:LINK, div.MisappliedName:VISITED{
+    color: #7c7c7f;
+}
 
 
 /* Synonyms with more than one accepted taxa. */
