@@ -442,7 +442,8 @@ a.filter_remove:visited {
 
 a.synonym:LINK, a.synonym:VISITED,
 .Synonym a:LINK, .Synonym a:VISITED,
-a.MisappliedName:LINK, a.MisappliedName:VISITED{
+a.misapplied_name:LINK, a.misapplied_name:VISITED,
+.misapplied_name a:LINK, .misapplied_name a:VISITED{
   color: #7c7c7f;
 }
 
