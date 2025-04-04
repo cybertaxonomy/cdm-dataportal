@@ -32,7 +32,7 @@
  */
 
 define('TAXON_TYPE_SYNONYM', 'Synonym');
-define('TAXON_TYPE_MISAPPLIEDNAME', 'misapplied-name');
+define('TAXON_TYPE_MISAPPLIEDNAME', 'misapplied_name');
 
 /**
  * Returns HTML for misapplied names and invalid designations.
