@@ -96,17 +96,21 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
     }
 
     @Test
-        public void testSearchMisappliedNames() throws Exception {
+    public void testSearchMisappliedNames() throws Exception {
 
-            TaxonSearchResultPage searchResultPage = homePage.submitQuery("Hieracium gombense*");
+        TaxonSearchResultPage searchResultPage = homePage.submitQuery("Hieracium gombense*");
 
-            assertEquals(getContext().prepareTitle("Search results"), searchResultPage.getTitle());
+        assertEquals(getContext().prepareTitle("Search results"), searchResultPage.getTitle());
 
-            TaxonListElement hieracium_gombense = searchResultPage.getResultItem(2);
+        TaxonListElement hieracium_gombense = searchResultPage.getResultItem(2);
 
-            //WebElement h_gombenseElement = hieracium_gombense.getElement();
-            WebDriverWait wait = searchResultPage.getWait();
-            assertEquals("Hieracium gombense", hieracium_gombense.getFullTaxonName());
-            assertEquals("Hieracium gombense as misapplied for Hieracium gombense subsp. purkynei (Čelak.) Zahn", hieracium_gombense.getText());
-        }
+        //WebElement h_gombenseElement = hieracium_gombense.getElement();
+        WebDriverWait wait = searchResultPage.getWait();
+        assertEquals("Hieracium gombense", hieracium_gombense.getFullTaxonName());
+        assertEquals("Hieracium gombense as misapplied for Hieracium gombense subsp. purkynei (Čelak.) Zahn", hieracium_gombense.getText());
+        WebElement nameElement = hieracium_gombense.getElement().findElement(By.className("TaxonName"));
+        WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
+        Assert.assertEquals("Hieracium gombense", namePart1.getText());
+        //Assert.assertEquals("rgb(124, 124, 124)", namePart1.getCssValue("color"));
+    }
 }
