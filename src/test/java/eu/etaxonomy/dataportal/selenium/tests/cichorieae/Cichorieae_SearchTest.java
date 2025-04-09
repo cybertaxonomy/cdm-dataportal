@@ -111,6 +111,6 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
         WebElement nameElement = hieracium_gombense.getElement().findElement(By.className("TaxonName"));
         WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
         Assert.assertEquals("Hieracium gombense", namePart1.getText());
-        //Assert.assertEquals("rgb(124, 124, 124)", namePart1.getCssValue("color"));
+        Assert.assertEquals("rgba(124, 124, 124, 1)", namePart1.getCssValue("color"));
     }
 }
