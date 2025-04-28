@@ -560,7 +560,7 @@ function cdm_dataportal_update_7701()
  *
  */
 
-function cdm_dataportal_update_552()
+function cdm_dataportal_update_7800()
 {
 
 $return = db_merge('ext_links')
