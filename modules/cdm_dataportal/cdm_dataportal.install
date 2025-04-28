@@ -554,6 +554,31 @@ function cdm_dataportal_update_7701()
   return join(', ', $tasks_performed);
 }
 
+/**
+ * update for RELEASE 5.52:
+ *  - update external link of WFO
+ *
+ */
+
+function cdm_dataportal_update_552()
+{
+
+$return = db_merge('ext_links')
+    ->key(array('id' => 'wfo'))
+    ->fields(array(
+      'id' => 'wfo',
+      'title' => 'World Flora Online',
+      'link' => 'http://www.worldfloraonline.org/search?query=[cdm:taxon_name]',
+      'category' => 'Classification/Nomenclature',
+      'status' => 1,
+      'weight' => -3,
+    ))
+    ->execute();
+
+
+}
+
+
 /* ======================================================================== */
 
 /**
