@@ -796,8 +796,10 @@ function cdm_dataportal_blast_search_request($search_endpoint)
     if (isset($_REQUEST['search']) && is_array($_REQUEST['search'])) {
         array_deep_copy($_REQUEST['search'], $form_params['data']);
     }
+    $search_string = trim($_REQUEST['query']);
+    $search_string = str_replace("-", "N", $search_string);
     $form_params['data'] = formatWSParams($_REQUEST['search']);
-    $form_params['query']= trim($_REQUEST['query']).$form_params['data'];
+    $form_params['query']= $search_string.$form_params['data'];
     // Store in session.
     $_SESSION['cdm']['search'] = $form_params;
     return $form_params;
@@ -925,7 +927,7 @@ function cdm_dataportal_search_blast_execute() {
     $request_params = cdm_dataportal_blast_search_request($_REQUEST['ws']);
    // $url = drupal_http_build_query($_REQUEST['ws'], $request_params);
     $request_params['timeout'] = 200;
-    $request_params['query'] = str_replace("-", "N", $request_params['query']);
+
     $taxon_pager = drupal_http_request($_REQUEST['ws'].'?sequence='.$request_params['query'], $request_params);
 
     return $taxon_pager;
