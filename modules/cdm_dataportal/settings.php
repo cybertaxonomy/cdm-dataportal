@@ -3053,7 +3053,7 @@ function cdm_settings_layout_media() {
     ];
     $form['media_settings'][CDM_META_DATA_SHOW_NAME_CACHE] = array (
       '#type' => 'select',
-      '#title' => t('Show Name Cache') . ':',
+      '#title' => t('Display of taxon name') . ':',
       '#default_value' => variable_get(CDM_META_DATA_SHOW_NAME_CACHE, CDM_META_DATA_SHOW_NAME_CACHE_DEFAULT),
       '#options' => array(
         'true' => t('Show Scientific Name'),
