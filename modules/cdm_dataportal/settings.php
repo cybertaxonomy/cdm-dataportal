@@ -22,6 +22,8 @@ const CDM_MEDIA_GALLERY_VIEWER_DEFAULT = 'universalviewer';
 const CDM_MEDIA_GALLERY_VIEWER_SIMPLE = 'default';
 const CDM_META_DATA_SOURCE = 'media_meta_data_source';
 const CDM_META_DATA_SOURCE_DEFAULT = 'mediaServer';
+const CDM_META_DATA_SHOW_NAME_CACHE = 'media_meta_data_show_name_cache';
+const CDM_META_DATA_SHOW_NAME_CACHE_DEFAULT = 'false';
 
 const CDM_ADDITIONAL_MEDIA_COPYRIGHT = 'cdm_additional_media_copyright';
 
@@ -3049,6 +3051,17 @@ function cdm_settings_layout_media() {
       '#default_value' => variable_get(CDM_ADDITIONAL_MEDIA_COPYRIGHT, NULL),
       '#description' => 'This statement will be shown below the <b>Universal imgage viewer only</b>'
     ];
+    $form['media_settings'][CDM_META_DATA_SHOW_NAME_CACHE] = array (
+      '#type' => 'select',
+      '#title' => t('Show Name Cache') . ':',
+      '#default_value' => variable_get(CDM_META_DATA_SHOW_NAME_CACHE, CDM_META_DATA_SHOW_NAME_CACHE_DEFAULT),
+      '#options' => array(
+        'true' => t('Show Scientific Name'),
+        'false' => t('Show Taxon')
+      ),
+      '#description' => 'The <b>Universalviewer</b> can show the scientific name or the taxon titlecache (containing the secundum reference)'
+    );
+
 
       $form['media_settings'][CDM_META_DATA_SOURCE] = array (
          '#type' => 'select',
