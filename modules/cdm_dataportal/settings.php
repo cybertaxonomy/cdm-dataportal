@@ -1848,8 +1848,7 @@ function cdm_settings_layout_taxon() {
         '#title' => 'Use Dto page',
         '#collapsible' => FALSE,
         '#collapsed' => FALSE,
-        '#default_value' => variable_get(CDM_DTO_PORTAL_PAGE, FALSE),
-        '#default_value' => variable_get(CDM_DTO_PORTAL_PAGE, FALSE),
+        '#default_value' => variable_get(CDM_DTO_PORTAL_PAGE, TRUE),
         '#description' => 'When this is activated the data are loaded as data portal optimized DTOs which results in less webservice calls and smaller objects.
         This should improve the performance but at the moment it is only usable for some portals and is in experimental state. 
         Please contact the EDIT team for more information.'
@@ -1859,7 +1858,6 @@ function cdm_settings_layout_taxon() {
         '#title' => 'Use Dto Loading',
         '#collapsible' => FALSE,
         '#collapsed' => FALSE,
-        '#default_value' => variable_get(CDM_DTO_LOADING, FALSE),
         '#default_value' => variable_get(CDM_DTO_LOADING, FALSE),
         '#description' => 'This setting can only be activated in combination with DTO loading, if this is activated the data are loaded as data portal optimized DTOs and 
         the loading of the elements is also done with dto loading. 
