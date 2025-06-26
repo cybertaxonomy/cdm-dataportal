@@ -87,7 +87,7 @@
   define('UUID_KEY', 'a677f827-22b9-4205-bb37-11cb48dd9106');
   define('UUID_MATERIALS_EXAMINED', '7c0c7571-a864-47c1-891d-01f59000dae1');
   define('UUID_MATERIALS_METHODS', '1e87d9c3-0844-4a03-9686-773e2ccb3ab6');
-  define('UUID_ETYMOLOGY', 'dd653d48-355c-4aec-a4e7-724f6eb29f8d');
+  define('UUID_ETYMOLOGY', '3b46f5f2-5619-4f1a-884f-d7a805471942');
   define('UUID_DIAGNOSIS', 'd43d8501-ceab-4caa-9e51-e87138528fac');
   define('UUID_PROTOLOG', '7f1fd111-fc52-49f0-9e75-d0097f576b2d');
   define('UUID_COMMON_NAME', 'fc810911-51f0-4a46-ab97-6562fe263ae5');
