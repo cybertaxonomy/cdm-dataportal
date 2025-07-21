@@ -23,7 +23,7 @@ const CDM_MEDIA_GALLERY_VIEWER_SIMPLE = 'default';
 const CDM_META_DATA_SOURCE = 'media_meta_data_source';
 const CDM_META_DATA_SOURCE_DEFAULT = 'mediaServer';
 const CDM_META_DATA_SHOW_NAME_CACHE = 'media_meta_data_show_name_cache';
-const CDM_META_DATA_SHOW_NAME_CACHE_DEFAULT = 'false';
+const CDM_META_DATA_SHOW_NAME_CACHE_DEFAULT = 'true';
 
 const CDM_ADDITIONAL_MEDIA_COPYRIGHT = 'cdm_additional_media_copyright';
 
