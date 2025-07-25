@@ -210,10 +210,20 @@ function cdm_api_cron() {
  */
 function get_classifications_for_taxon($taxon) {
   $uuid = null;
-  if (isset_not_empty($taxon->taxonBaseUuid)){
+  $classification_uuids = null;
+  if (isset_not_empty($taxon->classificationUuids)){
+    $classification_uuids = $taxon->classificationUuids;
+  }elseif (isset_not_empty($taxon->taxonBaseUuid)){
     $uuid = $taxon->taxonBaseUuid;
   }else{
     $uuid = $taxon->uuid;
+  }
+  if ($classification_uuids != null){
+    $classifications = array();
+    foreach ($classification_uuids as $classification_uuid) {
+      $classifications[] = cdm_ws_get(CDM_WS_CLASSIFICATION, $classification_uuid);
+    }
+    return $classifications;
   }
   return cdm_ws_get(CDM_WS_TAXON_CLASSIFICATIONS, $uuid);
 }
