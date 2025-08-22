@@ -2074,7 +2074,7 @@ function cdm_settings_layout_taxon() {
     '#title' => t('Hide profile picture for higher ranks') . ':',
     '#default_value' => variable_get('image_hide_rank', '0'),
     '#options' => $options,
-    '#description' => t('The taxon profile picture will not be shown for taxa with rank higher that the selected.'),
+    '#description' => t('The taxon profile picture will not be shown for taxa with rank higher than the selected.'),
   );
 
   // -- MEDIA THUMBNAILS -- //

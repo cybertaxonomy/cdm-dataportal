@@ -665,7 +665,7 @@ msgid "Hide profile picture for higher ranks"
 msgstr ""
 
 #: settings.php:2146
-msgid "The taxon profile picture will not be shown for taxa with rank higher that the selected."
+msgid "The taxon profile picture will not be shown for taxa with rank higher than the selected."
 msgstr ""
 
 #: settings.php:2158
