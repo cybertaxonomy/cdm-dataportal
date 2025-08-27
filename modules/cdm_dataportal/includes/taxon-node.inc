@@ -105,6 +105,7 @@ function compose_taxon_node_new_status(array $taxon_nodes){
               $classificationLabel = $taxon_node->classificationLabel;
             }
             if (isset_not_empty($state_label)){
+              $state_label = str_replace("%", "%%", $state_label);
               $status_markup_tokens[$state_label . '-' . $taxon_node->uuid]  = [
                 'status' => '<span class="cdm:TaxonNodeDto uuid:'. $taxon_node->uuid.'">' . $state_label . $annotations_and_sources->footNoteKeysMarkup()  .  '%s</span>', // %s will be replaced by the $classification_markup or by '',
                 'classification' => ' <span class="cdm:Classification uuid:'. $classificationUuid.'">[' . $classificationLabel . ']</span>'
