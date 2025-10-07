@@ -1612,7 +1612,7 @@ function render_registration_date_and_institute($registration_dto, $enclosing_ta
     $date_string = format_datetime($registration_dto->registrationDate);
     if (isset($registration_dto->institutionTitleCache) && $registration_dto->institutionTitleCache) {
       $registration_date_institute_markup =
-        t("Registration on @date in @institution", array(
+        t("Registration on @date at @institution", array(
           '@date' => $date_string,
           '@institution' => $registration_dto->institutionTitleCache,
         ));
@@ -3424,7 +3424,7 @@ function cdm_new_homotypicSynonymyGroup($variables) {
             $out .= '</ul>';
         }
       if ($syn_secs != null && count($syn_secs) > 0 && variable_get(CDM_SYNONYMY_SYN_SEC_PER_HOMOTYPIC_GROUP, 0) != 0) {
-        $syn_sec_text = '<ul class="synSecSources"> Syn. sec.: ';
+        $syn_sec_text = '<ul class="synSecSources"> syn. sec.: ';
         // $out .= '<ul class="synSecSources"> Syn. sec.: ';
         $syn_sec_text .= cdm_tagged_text_with_ref_footnote_to_markup($syn_secs);
 
