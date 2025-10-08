@@ -45,7 +45,7 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
         assertEquals("≡ Crepis muralis Salisb., Prodr. Stirp. Chap. Allerton: 182. 1796, nom. illeg.", p.getHomotypicalGroupSynonymName(5));
         assertEquals("≡ Crepis tectoria Dulac, Fl. Hautes-Pyrénées: 491. 1867, nom. illeg.", p.getHomotypicalGroupSynonymName(6));
         WebElement synSecContainer = p.getNewHomotypicalGroupSynSecs();
-        assertEquals("Syn. sec.: 2025: Edit Test Reference1", synSecContainer.getText());
+        assertEquals("syn. sec.: 2025: Edit Test Reference1", synSecContainer.getText());
         // 1st HeterotypicalGroup
         assertEquals("= Crepis tectorum var. segetalis Roth, Tent. Fl. Germ. 2: 254. 17932", p.getHeterotypicalGroupSynonymName(1, 1));
         assertEquals("≡ Crepis stricta Schultz, Prodr. Fl. Starg. Suppl.: 41. 1819 [non Crepis stricta Scop. 1772]", p.getHeterotypicalGroupSynonymName(1, 2));
