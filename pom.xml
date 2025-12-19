@@ -34,7 +34,7 @@
         -->
         <selenium.htmlunit.version>2.52.0</selenium.htmlunit.version>
         <jackson.version>[2.15.2,)</jackson.version>
-        <log4j.version>2.19.0</log4j.version>
+        <log4j.version>2.25.3</log4j.version>
     </properties>
     <scm>
       <connection>scm:git:https://dev.e-taxonomy.eu/git/cdm-dataportal.git</connection>
