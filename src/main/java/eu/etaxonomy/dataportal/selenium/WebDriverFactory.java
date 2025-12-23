@@ -24,7 +24,7 @@ import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
- * @author andreas
+ * @author andreasK
  */
 public class WebDriverFactory {
 
