@@ -10,7 +10,10 @@ package eu.etaxonomy.dataportal.elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -20,12 +23,19 @@ import org.openqa.selenium.WebElement;
  */
 public class TaxonNodeStatusElement extends BaseElement {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private List<TaxonNodeStatusData> taxonNodeStatusData = new ArrayList<>();
 
     public TaxonNodeStatusElement(WebElement element) {
         super(element);
 
-        List<WebElement> taxonNodeElements = element.findElements(By.className("cdm\\:TaxonNodeDto"));
+        logger.debug(element.getText());
+
+        List<WebElement> allElements = element.findElements(By.cssSelector("*"));
+        List<WebElement> taxonNodeElements = allElements.stream().filter(e->e.getAttribute("class").startsWith("cdm:TaxonNodeDto")).collect(Collectors.toList());
+        logger.debug("There are "+ taxonNodeElements.size() + " taxonNode elements");
+//        List<WebElement> taxonNodeElements = element.findElements(By.className("cdm\\:TaxonNodeDto"));
         for(WebElement el : taxonNodeElements) {
             TaxonNodeStatusData data = new TaxonNodeStatusData();
             data.setTaxonNodeRef(EntityReference.from(el));

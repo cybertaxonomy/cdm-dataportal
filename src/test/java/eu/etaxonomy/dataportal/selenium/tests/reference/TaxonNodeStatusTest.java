@@ -66,9 +66,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStates();
         assertEquals(1, statusElements.size());
         TaxonNodeStatusElement statusElement = statusElements.get(0);
-        assertEquals(0, statusElement.getTaxonNodeStatusData().size());
-        //FIXME revert, should be 2
-//      assertEquals(2, statusElement.getTaxonNodeStatusData().size());
+        assertEquals(2, statusElement.getTaxonNodeStatusData().size());
 
         TaxonNodeStatusData tnsData_0 = statusElement.getTaxonNodeStatusData().get(1);  //the taxon node status order has changed, therefore we start with 1 here and later handle 0
         assertEquals("TaxonNodeDto", tnsData_0.getTaxonNodeRef().getCdmType());
