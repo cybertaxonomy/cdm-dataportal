@@ -300,6 +300,11 @@
             <version>${selenium.htmlunit.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.6.2</version>
+        </dependency>
+        <dependency>
             <groupId>eu.etaxonomy</groupId>
             <artifactId>cdmlib-model</artifactId>
             <version>${project.version}</version>
