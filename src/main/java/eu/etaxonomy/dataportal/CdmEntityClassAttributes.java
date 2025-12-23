@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author a.kohlbecker
  * @since Oct 10, 2017
- *
  */
 public class CdmEntityClassAttributes {
 
