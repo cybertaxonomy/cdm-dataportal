@@ -8,8 +8,6 @@
  */
 package eu.etaxonomy.dataportal.selenium;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -114,7 +112,7 @@ public class WebDriverFactory {
 //
 //                firefoxProfile.addExtension(CdmDataPortalTestBase.class, "/org/mozilla/addons/firepath-" + FIREXPATH_VERSION + "-fx.xpi");
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error(e);
                 System.exit(-1);
             }
@@ -124,7 +122,7 @@ public class WebDriverFactory {
         // firefoxProfile.setEnableNativeEvents(true);
         // see http://groups.google.com/group/webdriver/browse_thread/thread/ab68c413f17ae1ba/b5cbdcebe859aa56?lnk=gst&q=setEnableNativeEvents+firefox#msg_339ac1870da6d975
 
-        driver = new FirefoxDriver(firefoxProfile);
+        driver = new FirefoxDriver();
 
         return driver;
     }

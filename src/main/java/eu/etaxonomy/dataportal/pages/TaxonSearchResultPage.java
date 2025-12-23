@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.dataportal.pages;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,7 +91,7 @@ public class TaxonSearchResultPage extends GenericPortalPage {
         logger.debug("taxonlink to click: " + taxonlink.toString() + " [" + taxonlink.getElement().toString() + "]");
         logger.debug("  waiting for visibility of css selector: .page-cdm-dataportal-taxon-" + taxonUuid.toString() + " ...");
         return clickLink(taxonlink, new VisibilityOfElementLocated(By.cssSelector(".page-cdm-dataportal-taxon-" + taxonUuid.toString())),
-                    pageClass, 2l, TimeUnit.MINUTES);
+                    pageClass, Duration.ofMinutes(21));
 
     }
 }

@@ -16,7 +16,7 @@
         <!-- 
 			for the latest version see http://docs.seleniumhq.org/download/#client-drivers 
 		-->
-        <selenium.version>2.53.0</selenium.version>
+        <selenium.version>4.39.0</selenium.version>
         <!-- 
             from WebDriver 2.53.0 HTMLUnit is no longer distributed with Selenium WebDriver
             https://github.com/SeleniumHQ/htmlunit-driver
@@ -35,6 +35,7 @@
         <selenium.htmlunit.version>2.52.0</selenium.htmlunit.version>
         <jackson.version>[2.15.2,)</jackson.version>
         <log4j.version>2.25.3</log4j.version>
+        <spring.version>4.3.30.RELEASE</spring.version> 
     </properties>
     <scm>
       <connection>scm:git:https://dev.e-taxonomy.eu/git/cdm-dataportal.git</connection>
@@ -302,6 +303,28 @@
             <groupId>eu.etaxonomy</groupId>
             <artifactId>cdmlib-model</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>eu.etaxonomy</groupId>
+            <artifactId>cdmlib-commons</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
     </dependencies>
 </project>

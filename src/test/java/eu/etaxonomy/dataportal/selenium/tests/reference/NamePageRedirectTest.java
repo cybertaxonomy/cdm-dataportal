@@ -9,14 +9,15 @@
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
 import java.net.MalformedURLException;
+import java.time.Duration;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.thoughtworks.selenium.webdriven.commands.WaitForPageToLoad;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -72,18 +73,23 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
     @Test
     public void testRedirectToTaxon() throws MalformedURLException {
 
-        WaitForPageToLoad wait = new WaitForPageToLoad();
-        String timeout = "5";
-        GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + name_achilllea_santolina_uuid.toString() + "/null/null/redirect_to_taxon");
-        wait.apply(driver, new String[] {timeout});
-        wait.apply(driver, new String[] {timeout});
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+//        WaitForPageToLoad wait = new WaitForPageToLoad();
+//        String timeout = "5";
+        GenericPortalPage p = new GenericPortalPage(driver, getContext(),
+                "name/" + name_achilllea_santolina_uuid.toString() + "/null/null/redirect_to_taxon");
+//        wait.apply(driver, new String[] {timeout});
+//        wait.apply(driver, new String[] {timeout});
+        wait.until(ExpectedConditions.jsReturnsValue("return document.readyState === 'complete';"));
         logger.debug("DrupalPagePath: " + p.getDrupalPagePath());
         assertTrue(
                 "The target page should be a taxon page, the name page must have been redirected to the according taxon page.",
                 p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + taxon_achilllea_santolina_uuid.toString()));
 
-        p = new GenericPortalPage(driver, getContext(), "name/" + name_achilllea_santolina_uuid.toString() + "///redirect_to_taxon");
-        wait.apply(driver, new String[] {timeout});
+        p = new GenericPortalPage(driver, getContext(),
+                "name/" + name_achilllea_santolina_uuid.toString() + "///redirect_to_taxon");
+        wait.until(ExpectedConditions.jsReturnsValue("return document.readyState === 'complete';"));
+
         logger.debug("DrupalPagePath: " + p.getDrupalPagePath());
         assertTrue(
                 "The target page should be a taxon page, the name page must have been redirected to the according taxon page.",

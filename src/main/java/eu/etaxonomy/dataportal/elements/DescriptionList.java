@@ -16,9 +16,8 @@ import java.util.stream.Collectors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-
-import com.thoughtworks.selenium.SeleniumException;
 
 import eu.etaxonomy.dataportal.ElementUtils;
 
@@ -36,7 +35,7 @@ public class DescriptionList extends BaseElement {
     public DescriptionList(WebElement element) {
         super(element);
         if(!element.getTagName().equals("dl")) {
-            throw new SeleniumException("Expecting DescriptionList (<dl>) as paramter element, but was " + ElementUtils.webElementTagToMarkup(element));
+            throw new WebDriverException("Expecting DescriptionList (<dl>) as paramter element, but was " + ElementUtils.webElementTagToMarkup(element));
         }
         List<DescriptionElement> descriptionElements = null;
         for(WebElement we : element.findElements(By.xpath("./child::*"))){

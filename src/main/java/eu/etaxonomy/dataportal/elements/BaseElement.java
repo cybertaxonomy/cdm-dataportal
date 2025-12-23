@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.dataportal.elements;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -154,7 +155,7 @@ public class BaseElement {
                 linkTargets.add(getElement().getAttribute("target"));
             } else {
                 try {
-                    WebDriverWait wait = new WebDriverWait(driver, 5);
+                    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
                     List<WebElement> anchorTags = wait.until(new ExpectedCondition<List<WebElement>>(){
                         @Override
