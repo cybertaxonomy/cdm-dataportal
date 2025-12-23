@@ -20,8 +20,7 @@ import org.openqa.selenium.WebElement;
  */
 public class TaxonNodeStatusElement extends BaseElement {
 
-    List<TaxonNodeStatusData> taxonNodeStatus = new ArrayList<>();
-
+    private List<TaxonNodeStatusData> taxonNodeStatusData = new ArrayList<>();
 
     public TaxonNodeStatusElement(WebElement element) {
         super(element);
@@ -42,12 +41,12 @@ public class TaxonNodeStatusElement extends BaseElement {
                 // IGNORE (classification information is not mandatory) //
             }
             data.setStatusText(statusText);
-            taxonNodeStatus.add(data);
+            taxonNodeStatusData.add(data);
         }
     }
 
-    public List<TaxonNodeStatusData> getTaxonNodeStatus() {
-        return taxonNodeStatus;
+    public List<TaxonNodeStatusData> getTaxonNodeStatusData() {
+        return taxonNodeStatusData;
     }
 
     public class TaxonNodeStatusData{
@@ -76,7 +75,7 @@ public class TaxonNodeStatusElement extends BaseElement {
             this.statusText = statusText;
         }
         /**
-         * @return the classficationtext
+         * @return the classfication text
          */
         public String getClassficationText() {
             return classficationtext;
@@ -104,5 +103,4 @@ public class TaxonNodeStatusElement extends BaseElement {
         String classficationtext = null;
         EntityReference classificationRef = null;
     }
-
 }
