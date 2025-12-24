@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.BaseElement;
@@ -117,6 +118,9 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
         assertTrue("expecting one footnote 0 to be the footnote for key 0",footNote_1.getText().startsWith(footNoteKey_1.getText()));
 
         WebElement footNoteKey_1_element = footNoteKey_1.getElement();
+        Actions actions = new Actions(driver);
+        actions.moveToElement(footNoteKey_1_element).click().perform();
+
         page.hover(footNoteKey_1_element);
         assertEquals("rgba(255, 255, 0, 1)", footNoteKey_1_element.getCssValue("background-color"));
         assertEquals("rgba(255, 255, 0, 1)", footNote_1.getElement().getCssValue("background-color"));
