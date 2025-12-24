@@ -130,11 +130,11 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
     @Test
     public void test_casus_exsors() throws MalformedURLException {
 
-        TaxonPage p = new TaxonPage(driver, getContext(), casus_exosrs_uuid);
+        TaxonPage page = new TaxonPage(driver, getContext(), casus_exosrs_uuid);
 
-        assertTrue("Expecting sigular", p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
+        assertTrue("Expecting sigular", page.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
 
-        List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStates();
+        List<TaxonNodeStatusElement> statusElements = page.getTaxonNodeStates();
         assertEquals(1, statusElements.size());
         TaxonNodeStatusElement statusElement = statusElements.get(0);
         assertEquals(1, statusElement.getTaxonNodeStatusData().size());
