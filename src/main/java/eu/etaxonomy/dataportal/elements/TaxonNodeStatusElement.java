@@ -31,9 +31,7 @@ public class TaxonNodeStatusElement extends BaseElement {
         super(element);
 
         logger.debug(element.getText());
-
-        List<WebElement> allElements = element.findElements(By.cssSelector("*"));
-        List<WebElement> taxonNodeElements = allElements.stream().filter(e->e.getAttribute("class").startsWith("cdm:TaxonNodeDto")).collect(Collectors.toList());
+        List<WebElement> taxonNodeElements = findByCdmClassName(element, "TaxonNodeDto");
         logger.debug("There are "+ taxonNodeElements.size() + " taxonNode elements");
 //        List<WebElement> taxonNodeElements = element.findElements(By.className("cdm\\:TaxonNodeDto"));
         for(WebElement el : taxonNodeElements) {
@@ -42,7 +40,8 @@ public class TaxonNodeStatusElement extends BaseElement {
             String statusText = el.getText();
             String classificationText = "";
             try {
-                WebElement classficationEl = el.findElement(By.className("cdm\\:Classification"));
+                WebElement classficationEl = findByCdmClassName(el, "Classification").get(0);
+//                WebElement classficationEl = el.findElement(By.className("cdm\\:Classification"));
                 classificationText = classficationEl.getText();
                 statusText = statusText.replace(classificationText, "");
                 data.setClassficationText(classificationText);
@@ -53,6 +52,14 @@ public class TaxonNodeStatusElement extends BaseElement {
             data.setStatusText(statusText);
             taxonNodeStatusData.add(data);
         }
+    }
+
+    private List<WebElement> findByCdmClassName(WebElement element, String cdmClassName) {
+        List<WebElement> allElements = element.findElements(By.cssSelector("*"));
+        List<WebElement> taxonNodeElements = allElements.stream()
+                .filter(e->e.getAttribute("class").startsWith("cdm:"+cdmClassName))
+                .collect(Collectors.toList());
+        return taxonNodeElements;
     }
 
     public List<TaxonNodeStatusData> getTaxonNodeStatusData() {
