@@ -37,14 +37,14 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 
     private static final Logger logger = LogManager.getLogger();
 
-    static UUID taxonUuid = UUID.fromString("6d04598b-3852-4038-91c9-13c7581b21a6");
+    private static final UUID taxonUuid = UUID.fromString("6d04598b-3852-4038-91c9-13c7581b21a6");
 
-    TaxonProfilePage p = null;
+    private TaxonProfilePage page = null;
 
     @Before
     public void setUp() throws MalformedURLException {
 
-        p = new TaxonProfilePage(driver, getContext(), taxonUuid);
+        page = new TaxonProfilePage(driver, getContext(), taxonUuid);
 
     }
 
@@ -57,39 +57,39 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
     @Test
     public void testPage() {
 
-        assertEquals(getContext().prepareTitle("Allium guttatum subsp. guttatum"), p.getTitle());
-        assertNull("Authorship information should be hidden", p.getAuthorInformationText());
+        assertEquals(getContext().prepareTitle("Allium guttatum subsp. guttatum"), page.getTitle());
+        assertNull("Authorship information should be hidden", page.getAuthorInformationText());
 
-        List<LinkElement> primaryTabs = p.getPrimaryTabs();
+        List<LinkElement> primaryTabs = page.getPrimaryTabs();
         assertEquals("Expecting 3 tabs", 3, primaryTabs.size());
         assertEquals("General\n(active tab)", primaryTabs.get(0).getText());
         assertEquals("Synonymy", primaryTabs.get(1).getText());
         assertEquals("Images", primaryTabs.get(2).getText());
 
-        ImgElement profileImage = p.getProfileImage();
+        ImgElement profileImage = page.getProfileImage();
         assertNotNull("Expecting profile images to be switched on", profileImage);
 //		assertEquals("http://media.bgbm.org/erez/erez?src=EditWP6/zypern/photos/Allium_guttatum_guttatum_A1.jpg", profileImage.getUrl().toString());
 //		assertEquals(400, profileImage.getDimension().getHeight(), 0.5);
 //		assertEquals(250, profileImage.getDimension().getWidth(), 0.5);
 
-        assertEquals("Content", p.getTableOfContentHeader());
-        List<LinkElement> links = p.getTableOfContentLinks();
+        assertEquals("Content", page.getTableOfContentHeader());
+        List<LinkElement> links = page.getTableOfContentLinks();
         assertNotNull("Expecting a list of TOC links in the profile page.", links);
-        p.testTableOfContentEntry(0, "Status", "status");
-        p.testTableOfContentEntry(1, "Endemism", "endemism");
-        p.testTableOfContentEntry(2, "Red Data Book category", "red_data_book_category");
-        p.testTableOfContentEntry(3, "Systematics", "systematics");
-        p.testTableOfContentEntry(4, "Distribution", "distribution");
+        page.testTableOfContentEntry(0, "Status", "status");
+        page.testTableOfContentEntry(1, "Endemism", "endemism");
+        page.testTableOfContentEntry(2, "Red Data Book category", "red_data_book_category");
+        page.testTableOfContentEntry(3, "Systematics", "systematics");
+        page.testTableOfContentEntry(4, "Distribution", "distribution");
 
         FeatureBlock featureBlock;
 
-        featureBlock = p.getFeatureBlockAt(0, "status", "div", "div");
+        featureBlock = page.getFeatureBlockAt(0, "status", "div", "div");
         assertEquals("Status\nIndigenous (IN)", featureBlock.getText());
 
-        featureBlock = p.getFeatureBlockAt(2, "endemism", "div", "div");
+        featureBlock = page.getFeatureBlockAt(2, "endemism", "div", "div");
         assertEquals("Endemism\nnot endemic", featureBlock.getText());
 
-        featureBlock = p.getFeatureBlockAt(2, "red-data-book-category", "div", "div");
+        featureBlock = page.getFeatureBlockAt(2, "red-data-book-category", "div", "div");
         assertEquals("Red Data Book category\nData deficient (DD)", featureBlock.getText());
 
         //FIXME
@@ -98,7 +98,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 
 //
 
-        featureBlock = p.getFeatureBlockAt(4, "distribution", "div", "span");
+        featureBlock = page.getFeatureBlockAt(4, "distribution", "div", "span");
 
         assertEquals("Distribution\nDivision 2A,B\nA. Hand, R. 2009: Supplementary notes to the flora of Cyprus VI. – Willdenowia 39: 301-325, B. Meikle, R.D. 1985: Flora of Cyprus 2. – Kew: The Bentham-Moxon Trust", featureBlock.getText());
         assertEquals("Distribution", featureBlock.getHeaderText());
@@ -116,8 +116,9 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
         assertNotNull(footNote_1);
         assertTrue("expecting one footnote 0 to be the footnote for key 0",footNote_1.getText().startsWith(footNoteKey_1.getText()));
 
-        p.hover(footNoteKey_1.getElement());
-        assertEquals("rgba(255, 255, 0, 1)", footNoteKey_1.getElement().getCssValue("background-color"));
+        WebElement footNoteKey_1_element = footNoteKey_1.getElement();
+        page.hover(footNoteKey_1_element);
+        assertEquals("rgba(255, 255, 0, 1)", footNoteKey_1_element.getCssValue("background-color"));
         assertEquals("rgba(255, 255, 0, 1)", footNote_1.getElement().getCssValue("background-color"));
 
         assertEquals("A. Hand, R. 2009: Supplementary notes to the flora of Cyprus VI. – Willdenowia 39: 301-325", footNote_1.getText());
