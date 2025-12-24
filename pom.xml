@@ -34,7 +34,7 @@
         -->
         <jackson.version>[2.15.2,)</jackson.version>
         <log4j.version>2.25.3</log4j.version>
-        <spring.version>4.3.30.RELEASE</spring.version>
+        <spring.version>6.1.20</spring.version>
         <spring-security.version>4.2.20.RELEASE</spring-security.version> 
         <aspectj.version>1.9.7</aspectj.version>
         <hibernate.version>5.4.33.Final</hibernate.version>
