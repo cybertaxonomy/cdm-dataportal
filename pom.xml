@@ -305,12 +305,12 @@
             <groupId>eu.etaxonomy</groupId>
             <artifactId>cdmlib-model</artifactId>
             <version>${project.version}</version>
-            <exclusions>
+            <!--exclusions>
                 <exclusion>
                     <groupId>*</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
-            </exclusions>
+            </!exclusions>  -->
         </dependency>
         <dependency>
             <groupId>eu.etaxonomy</groupId>
