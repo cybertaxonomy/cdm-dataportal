@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -33,22 +32,20 @@ public class TaxonNodeStatusElement extends BaseElement {
         logger.debug(element.getText());
         List<WebElement> taxonNodeElements = findByCdmClassName(element, "TaxonNodeDto");
         logger.debug("There are "+ taxonNodeElements.size() + " taxonNode elements");
-//        List<WebElement> taxonNodeElements = element.findElements(By.className("cdm\\:TaxonNodeDto"));
         for(WebElement el : taxonNodeElements) {
             TaxonNodeStatusData data = new TaxonNodeStatusData();
             data.setTaxonNodeRef(EntityReference.from(el));
             String statusText = el.getText();
             String classificationText = "";
-            try {
-                WebElement classficationEl = findByCdmClassName(el, "Classification").get(0);
-//                WebElement classficationEl = el.findElement(By.className("cdm\\:Classification"));
+            List<WebElement> classficationElements = findByCdmClassName(el, "Classification");
+            if (!classficationElements.isEmpty()) {
+                WebElement classficationEl = classficationElements.get(0);
                 classificationText = classficationEl.getText();
                 statusText = statusText.replace(classificationText, "");
                 data.setClassficationText(classificationText);
                 data.setClassificationRef(EntityReference.from(classficationEl));
-            } catch (NoSuchElementException e) {
-                // IGNORE (classification information is not mandatory) //
             }
+
             data.setStatusText(statusText);
             taxonNodeStatusData.add(data);
         }
