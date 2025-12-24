@@ -36,6 +36,7 @@
         <log4j.version>2.25.3</log4j.version>
         <spring.version>4.3.30.RELEASE</spring.version> 
         <aspectj.version>1.9.7</aspectj.version>
+        <hibernate.version>5.4.33.Final</hibernate.version>
     </properties>
     <scm>
       <connection>scm:git:https://dev.e-taxonomy.eu/git/cdm-dataportal.git</connection>
@@ -330,6 +331,11 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
     </dependencies>
 </project>
