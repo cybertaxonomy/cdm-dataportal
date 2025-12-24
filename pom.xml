@@ -32,7 +32,6 @@
             <entry key="browser">firefox</entry>
             
         -->
-        <selenium.htmlunit.version>2.52.0</selenium.htmlunit.version>
         <jackson.version>[2.15.2,)</jackson.version>
         <log4j.version>2.25.3</log4j.version>
         <spring.version>4.3.30.RELEASE</spring.version> 
@@ -293,11 +292,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-ie-driver</artifactId>
             <version>${selenium.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-htmlunit-driver</artifactId>
-            <version>${selenium.htmlunit.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
