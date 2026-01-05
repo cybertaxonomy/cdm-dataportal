@@ -133,6 +133,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertTrue(row.getAttribute("class").contains("detail_row"));
         assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
 
+        row = rows.get(rowId-1);
         // Scroll element into view
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", row);
 
