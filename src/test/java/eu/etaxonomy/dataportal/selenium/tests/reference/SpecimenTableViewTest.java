@@ -147,7 +147,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         Actions actions = new Actions(driver);
         actions.moveToElement(row).perform();
 
-        rows.get(rowId - 1).click();
+        row.click();
         assertEquals("The click should make it visible", "table-row", rows.get(rowId).getCssValue("display"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
         String detailsText = cells.get(1).getText();
