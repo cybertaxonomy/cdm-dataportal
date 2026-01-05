@@ -17,13 +17,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 
 import eu.etaxonomy.cdm.common.LogUtils;
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -134,20 +131,10 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
 
         row = rows.get(rowId-1);
-        // Scroll element into view
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", row);
 
-        // Small wait to ensure scroll completes
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            Assert.fail();
-        }
+        WebElement cell = row.findElement(By.tagName("td"));
+        cell.click();
 
-        Actions actions = new Actions(driver);
-        actions.moveToElement(row).perform();
-
-        row.click();
         assertEquals("The click should make it visible", "table-row", rows.get(rowId).getCssValue("display"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
         String detailsText = cells.get(1).getText();
