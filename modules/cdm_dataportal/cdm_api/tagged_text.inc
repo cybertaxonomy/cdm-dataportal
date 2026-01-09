@@ -313,7 +313,7 @@ function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags
                     if(isset_not_empty($tt->link) || isset_not_empty($tt->doi) ){
                         $ref_link .= create_html_link($tt);
                     }
-                    $footnote_markup .= '<span class="secReference">' . $tt->entityReference->label . $ref_link .'</span>';
+                    $footnote_markup .= '<span class="reference">' . $tt->entityReference->label . $ref_link .'</span>';
                 }
 
                 if ($footnote_markup) {
