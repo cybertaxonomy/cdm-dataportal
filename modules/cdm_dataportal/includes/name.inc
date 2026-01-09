@@ -489,6 +489,7 @@ function render_taxon_or_name($taxon_name_or_taxon_base, $name_link = NULL, $ref
          if($tt->type == 'nomStatus'&& isset($tt->entityReference)) {
            $nom_status = cdm_ws_get(CDM_WS_NOMENCLATURALSTATUS, array($tt->entityReference->uuid));
            $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
+
            if (isset_not_empty($nom_status->source) ){
                $nom_status_additional_source_fkey = handle_name_relationship_as_footnote($nom_status, false);
            }
@@ -997,7 +998,8 @@ if (isset_not_empty($skip_render_template_parts)) {
             }
             if (isset_not_empty($taxon_base->nomenclaturalStatus) && isset_not_empty($taxon_base->nomenclaturalStatus->items)){
                 foreach($taxon_base->nomenclaturalStatus->items as $nom_status){
-                    $nom_status_fkey = handle_nomenclatural_status_as_footnote($nom_status);
+                    $nom_status_code_fkey = handle_nomenclatural_status_as_footnote($nom_status);
+                    $nom_status_fkey = handle_name_relationship_as_footnote($nom_status, false);
                 }
             }
 
@@ -1007,8 +1009,13 @@ if (isset_not_empty($skip_render_template_parts)) {
             if(isset($nom_status_fkey)){
               // the nomenclatural status footnote key refers to the source citation
               $annotations_and_sources->addFootNoteKey($nom_status_fkey);
-              //$nom_status_markup .= $annotations_and_sources->footNoteKeysMarkup();
+
             }
+          if(isset($nom_status_code_fkey)){
+            // the nomenclatural status code footnote key refers to the code citation
+            $annotations_and_sources->addFootNoteKey($nom_status_code_fkey);
+
+          }
 
           //TEST
 
