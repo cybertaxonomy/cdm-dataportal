@@ -380,8 +380,6 @@ function handle_name_relationship_as_footnote($name_rel, $code_edition_source = 
             $footnote_markup .= '<span class="reference">' . $name_rel->codeEditionSource->citation->titleCache . '</span>';
         }else if (isset($name_rel->codeEditionSource) && isset_not_empty($name_rel->codeEditionSource->label) && isset($name_rel->codeEditionSource->label[0]->label)){
             $footnote_markup .= '<span class="reference">' . $name_rel->codeEditionSource->label[0]->label . '</span>';
-        }else if (isset($name_rel->source->citation)){
-            $footnote_markup .= '<span class="reference">' . $name_rel->source->citation->titleCache . '</span>';
         }
 
         if ($footnote_markup) {
