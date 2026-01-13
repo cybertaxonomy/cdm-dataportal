@@ -49,7 +49,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
   if((isset($do_icon_link) && $do_icon_link === TRUE)) {
     $icon_link = cdm_internal_link(path_to_reference($reference->uuid));
   }
-  if (isset($do_text_link) && $do_text_link === TRUE) {
+  if (isset($do_text_link) && $do_text_link === TRUE && isset_not_empty($reference->link) ) {
     $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
       'attributes' => array(
@@ -308,7 +308,11 @@ function render_original_source($source, $do_link_to_reference = TRUE, $do_link_
   $out = '';
 
   if (isset($source->citation)) {
-    $out .= cdm_reference_markup($source->citation, $source->citationMicroReference, false, $do_link_to_reference);
+    $citation_micro_reference = "";
+    if (isset($source->citation->citationMicroReference)){
+        $citation_micro_reference = $source->citation->citationMicroReference;
+    }
+    $out .= cdm_reference_markup($source->citation, $citation_micro_reference, false, $do_link_to_reference);
   }
   if(isset($source->cdmSource)){
     $out .= render_cdm_entity_link($source->cdmSource);

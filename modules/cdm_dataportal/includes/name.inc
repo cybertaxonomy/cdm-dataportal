@@ -1058,8 +1058,7 @@ if (isset_not_empty($skip_render_template_parts)) {
             }
             $foot_note_key_secRef = "";
             if (isset($secref_tagged_text[1]->entityReference) && variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_FOOTNOTE) == CDM_SEC_WITH_FOOTNOTE && $isNotTitle) {
-                //$footnote_markup .= '<span class="sec_reference">' . cdm_reference_markup($secref_tagged_text[1]->entityReference) . '</span>';
-                $footnote_markup .=  cdm_reference_markup($secref_tagged_text[1]) ;
+              $footnote_markup .=  cdm_reference_markup($secref_tagged_text[1]) ;
 //TODO: handle microReference
                 //if (isset($secref_tagged_text[1]->entityReference) ){//&& isset($taxon_base->secSource->citationMicroReference)) {
                 //    $footnote_markup .= (isset_not_empty($taxon_base->secSource->citationMicroReference) ? ': <span class="reference_detail">' . $taxon_base->secSource->citationMicroReference . '</span>' : '');
