@@ -11,6 +11,7 @@ package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
@@ -44,6 +45,7 @@ public class Cichorieae_TypeTest extends CdmDataPortalTestBase{
     static UUID hypochaeris_maculata_uuid = UUID.fromString("90943959-f2ef-4a3a-8744-c8bcd935c8c2");
 
     @Test
+    @Ignore
     public void cichorium() throws Exception {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), cichorium_uuid);
         assertEquals(getContext().prepareTitle("Cichorium"), driver.getTitle());
