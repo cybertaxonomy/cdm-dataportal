@@ -2164,7 +2164,7 @@ function compose_cdm_reference_page($uuid) {
       elseif ($fieldname == "uri" && isset($reference->uri) && $reference->uri) {
         $table_rows[] = array(
           t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
-          cdm_external_uri($reference->uri, false)
+          cdm_doi($reference->uri, false)
         );
       }
       elseif (is_object($reference->$fieldname)) {
