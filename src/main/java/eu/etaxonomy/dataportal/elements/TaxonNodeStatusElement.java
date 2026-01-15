@@ -51,6 +51,12 @@ public class TaxonNodeStatusElement extends BaseElement {
         }
     }
 
+    /**
+     * This method is currently needed because the according <span class=...> elements include
+     * not only "cdm:TaxonNodeDto" but also "uuid:....". Once this is fixed we can replace
+     * by old "element.findElements(By.className("cdm\\:TaxonNodeDto")" again.
+     * See also #10897
+     */
     private List<WebElement> findByCdmClassName(WebElement element, String cdmClassName) {
         List<WebElement> allElements = element.findElements(By.cssSelector("*"));
         List<WebElement> taxonNodeElements = allElements.stream()
