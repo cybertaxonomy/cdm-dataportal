@@ -32,8 +32,9 @@ fi
 git checkout release/$VERSION
 git pull --rebase origin release/$VERSION
 
-compass clean $WORKSPACE/themes/zen_dataportal/
-compass compile $WORKSPACE/themes/zen_dataportal/
+COMPASS=$HOME/.rbenv/shims/compass
+$COMPASS clean $WORKSPACE/themes/zen_dataportal/
+$COMPASS compile $WORKSPACE/themes/zen_dataportal/
 
 git add -A $WORKSPACE/themes/zen_dataportal/css/
 git commit -m "release-preparation: production level css"
