@@ -185,11 +185,12 @@
     <artifactId>gitflow-maven-plugin</artifactId>
     <version>1.21.0</version>
     <configuration>
+        <allowSnapshots>true</allowSnapshots>
+        <verbose>true</verbose>
         <!-- Optional: configure as needed -->
         <gitFlowConfig>
             <productionBranch>master</productionBranch>
             <developmentBranch>develop</developmentBranch>
-            <releaseBranchPrefix>release/</releaseBranchPrefix>
         </gitFlowConfig>
     </configuration>
    </plugin>
