@@ -10,9 +10,11 @@ package eu.etaxonomy.dataportal.elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -20,34 +22,51 @@ import org.openqa.selenium.WebElement;
  */
 public class TaxonNodeStatusElement extends BaseElement {
 
-    List<TaxonNodeStatusData> taxonNodeStatus = new ArrayList<>();
+    private static final Logger logger = LogManager.getLogger();
 
+    private List<TaxonNodeStatusData> taxonNodeStatusData = new ArrayList<>();
 
     public TaxonNodeStatusElement(WebElement element) {
         super(element);
 
-        List<WebElement> taxonNodeElements = element.findElements(By.className("cdm\\:TaxonNodeDto"));
+        logger.debug(element.getText());
+        List<WebElement> taxonNodeElements = findByCdmClassName(element, "TaxonNodeDto");
+        logger.debug("There are "+ taxonNodeElements.size() + " taxonNode elements");
         for(WebElement el : taxonNodeElements) {
             TaxonNodeStatusData data = new TaxonNodeStatusData();
             data.setTaxonNodeRef(EntityReference.from(el));
             String statusText = el.getText();
             String classificationText = "";
-            try {
-                WebElement classficationEl = el.findElement(By.className("cdm\\:Classification"));
+            List<WebElement> classficationElements = findByCdmClassName(el, "Classification");
+            if (!classficationElements.isEmpty()) {
+                WebElement classficationEl = classficationElements.get(0);
                 classificationText = classficationEl.getText();
                 statusText = statusText.replace(classificationText, "");
                 data.setClassficationText(classificationText);
                 data.setClassificationRef(EntityReference.from(classficationEl));
-            } catch (NoSuchElementException e) {
-                // IGNORE (classification information is not mandatory) //
             }
+
             data.setStatusText(statusText);
-            taxonNodeStatus.add(data);
+            taxonNodeStatusData.add(data);
         }
     }
 
-    public List<TaxonNodeStatusData> getTaxonNodeStatus() {
-        return taxonNodeStatus;
+    /**
+     * This method is currently needed because the according <span class=...> elements include
+     * not only "cdm:TaxonNodeDto" but also "uuid:....". Once this is fixed we can replace
+     * by old "element.findElements(By.className("cdm\\:TaxonNodeDto")" again.
+     * See also #10897
+     */
+    private List<WebElement> findByCdmClassName(WebElement element, String cdmClassName) {
+        List<WebElement> allElements = element.findElements(By.cssSelector("*"));
+        List<WebElement> taxonNodeElements = allElements.stream()
+                .filter(e->e.getAttribute("class").startsWith("cdm:"+cdmClassName))
+                .collect(Collectors.toList());
+        return taxonNodeElements;
+    }
+
+    public List<TaxonNodeStatusData> getTaxonNodeStatusData() {
+        return taxonNodeStatusData;
     }
 
     public class TaxonNodeStatusData{
@@ -76,7 +95,7 @@ public class TaxonNodeStatusElement extends BaseElement {
             this.statusText = statusText;
         }
         /**
-         * @return the classficationtext
+         * @return the classfication text
          */
         public String getClassficationText() {
             return classficationtext;
@@ -104,5 +123,4 @@ public class TaxonNodeStatusElement extends BaseElement {
         String classficationtext = null;
         EntityReference classificationRef = null;
     }
-
 }

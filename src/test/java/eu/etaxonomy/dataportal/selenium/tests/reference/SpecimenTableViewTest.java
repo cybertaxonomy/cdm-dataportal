@@ -126,9 +126,15 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
 
         // details row
         ++rowId;
-        assertTrue(rows.get(rowId).getAttribute("class").contains("detail_row"));
+        WebElement row = rows.get(rowId);
+        assertTrue(row.getAttribute("class").contains("detail_row"));
         assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
-        rows.get(rowId - 1).click();
+
+        row = rows.get(rowId-1);
+
+        WebElement cell = row.findElement(By.tagName("td"));
+        cell.click();
+
         assertEquals("The click should make it visible", "table-row", rows.get(rowId).getCssValue("display"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
         String detailsText = cells.get(1).getText();
@@ -175,7 +181,11 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         ++rowId;
         assertTrue(rows.get(rowId).getAttribute("class").contains("detail_row"));
         assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
-        rows.get(rowId - 1).click();
+        // the row itself is not clickable, therefore search for the data element
+        cell = rows.get(rowId - 1).findElement(By.tagName("td"));
+        cell.click();
+
+//        rows.get(rowId - 1).click();
         assertEquals("The click should make it visible", "table-row", rows.get(rowId).getCssValue("display"));
         cells = rows.get(rowId).findElements(By.tagName("td"));
         detailsText = cells.get(1).getText();

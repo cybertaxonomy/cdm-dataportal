@@ -9,14 +9,14 @@
         see also  maven-jar-plugin & maven-deploy-plugin where artifact are skipped
     -->
     <packaging>jar</packaging>
-    <version>5.54.0</version>
+    <version>5.55.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- 
 			for the latest version see http://docs.seleniumhq.org/download/#client-drivers 
 		-->
-        <selenium.version>2.53.0</selenium.version>
+        <selenium.version>4.11.0</selenium.version>
         <!-- 
             from WebDriver 2.53.0 HTMLUnit is no longer distributed with Selenium WebDriver
             https://github.com/SeleniumHQ/htmlunit-driver
@@ -32,9 +32,12 @@
             <entry key="browser">firefox</entry>
             
         -->
-        <selenium.htmlunit.version>2.52.0</selenium.htmlunit.version>
         <jackson.version>[2.15.2,)</jackson.version>
-        <log4j.version>2.19.0</log4j.version>
+        <log4j.version>2.25.3</log4j.version>
+        <spring.version>4.3.30.RELEASE</spring.version>
+        <spring-security.version>4.2.20.RELEASE</spring-security.version> 
+        <aspectj.version>1.9.7</aspectj.version>
+        <hibernate.version>5.4.33.Final</hibernate.version>
     </properties>
     <scm>
       <connection>scm:git:https://dev.e-taxonomy.eu/git/cdm-dataportal.git</connection>
@@ -285,14 +288,59 @@
             <version>${selenium.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-htmlunit-driver</artifactId>
-            <version>${selenium.htmlunit.version}</version>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.6.2</version>
         </dependency>
         <dependency>
             <groupId>eu.etaxonomy</groupId>
             <artifactId>cdmlib-model</artifactId>
             <version>${project.version}</version>
+            <!--exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </!exclusions>  -->
         </dependency>
+        <dependency>
+            <groupId>eu.etaxonomy</groupId>
+            <artifactId>cdmlib-commons</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+        <!-- the following are only needed if we exclude cdmlib-model dependencies (see above),
+             maybe not needed anymore when TaxonNodeStatus.getLabel() does not work on Language
+             but on Locale. Maybe also true for above aspectjweaver
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>   -->
     </dependencies>
 </project>

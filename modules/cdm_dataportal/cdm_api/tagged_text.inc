@@ -301,19 +301,9 @@ function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags
                 }
                 $footnote_markup = '';
                 $annotations_and_sources = new AnnotationsAndSources();
-                if ($tt->type == 'reference' && isset_not_empty($tt->entityReference)){
-                    $ref_link = '';
-                    if(isset_not_empty($tt->link) || isset_not_empty($tt->doi) ){
-                        $ref_link .= create_html_link($tt, false, true, true);
-                    }
-                    $footnote_markup .= '<span class="reference">' . $tt->entityReference->label . $ref_link .'</span>';
-                }
-                if ($tt->type == 'secReference' && isset_not_empty($tt->entityReference)){
-                    $ref_link = '';
-                    if(isset_not_empty($tt->link) || isset_not_empty($tt->doi) ){
-                        $ref_link .= create_html_link($tt);
-                    }
-                    $footnote_markup .= '<span class="secReference">' . $tt->entityReference->label . $ref_link .'</span>';
+
+                if (($tt->type == 'secReference' || $tt->type == 'reference' ) && isset_not_empty($tt->entityReference)){
+                    $footnote_markup .= cdm_reference_markup($tt) ;
                 }
 
                 if ($footnote_markup) {

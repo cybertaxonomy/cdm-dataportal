@@ -2,7 +2,7 @@
 #
 # USAGE:
 #     bash -ex /usr/lib/selenium/headlessSelenium.sh [WORKSPACE_ROOT]
-# whereas WORKSPACE_ROOT points to workspace root in the jenkins workspace
+# where WORKSPACE_ROOT points to workspace root in the jenkins workspace
 # which contains the whole project
 #
 if [ -z "$WORKSPACE_ROOT" ]; then

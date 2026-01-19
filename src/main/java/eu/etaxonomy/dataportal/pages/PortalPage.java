@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -42,7 +43,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.google.common.base.Function;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
@@ -133,7 +133,7 @@ public abstract class PortalPage {
             try {
                 WebElement bodyElement = driver.findElement(By.tagName("body"));
                 isZenTheme = bodyElement.getAttribute("class").contains("zen_dataportal");
-            } catch (ElementNotFoundException e) {
+            } catch (NoSuchElementException e) {
                 // IGNORE
             }
         }
@@ -493,7 +493,7 @@ public abstract class PortalPage {
      * @param waitUnit may be null, is ignored if <code>duration</code> is null defaults to {@link TimeUnit#SECONDS}
 
      */
-    public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> pageType, Long duration, TimeUnit waitUnit) {
+    public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> pageType, Duration duration) {
 
         if( pageType!= null && pageType.getClass().equals(PortalPage.class) ) {
             throw new RuntimeException("Parameter pageType must be a subclass of PortalPage");
@@ -514,10 +514,7 @@ public abstract class PortalPage {
 
         try {
             if(duration != null){
-                if(waitUnit == null){
-                    waitUnit = TimeUnit.SECONDS;
-                }
-                wait.withTimeout(duration, waitUnit).until(isTrue);
+                wait.withTimeout(duration).until(isTrue);
             } else {
                 wait.until(isTrue);
             }
@@ -551,7 +548,7 @@ public abstract class PortalPage {
 
      */
     public <T extends PortalPage> T clickLink(BaseElement element, Function<? super WebDriver, Boolean> isTrue, Class<T> type) {
-        return clickLink(element, isTrue, type, null, null);
+        return clickLink(element, isTrue, type, null);
     }
 
 

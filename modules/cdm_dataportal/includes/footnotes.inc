@@ -389,9 +389,13 @@ function handle_name_relationship_as_footnote($name_rel, $code_edition_source = 
         if (isset($name_rel->source->citation)) {
             $footnote_markup .= '<span class="reference">' . $name_rel->source->citation->titleCache . '</span>';
         }
+      if (isset($name_rel->source->label) && isset($name_rel->source->label[0]->label)) {
+        $footnote_markup .= '<span class="reference">' . $name_rel->source->label[0]->label . '</span>';
+      }
         if (isset($name_rel->source->citationMicroReference) && $name_rel->source->citationMicroReference) {
             $footnote_markup .= (isset($name_rel->source->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->source->citationMicroReference . '</span>';
         }
+
         if ($footnote_markup) {
             $fnkey = FootnoteManager::addNewFootnote(RenderHints::getFootnoteListKey(), $footnote_markup);
         }
@@ -445,6 +449,7 @@ function handle_nomenclatural_status_as_footnote($nom_status)
 
   return handle_name_relationship_as_footnote($nom_status, true);
 }
+
 
 /**
  * Creates footnote markup for nomenclatural reference of the name and

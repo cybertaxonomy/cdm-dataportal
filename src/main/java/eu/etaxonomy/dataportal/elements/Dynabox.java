@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -22,7 +24,7 @@ public class Dynabox extends BaseElement {
 
     private WebDriver driver;
 
-    private long timeOutInSeconds = 10;
+    private Duration timeOutInSeconds = Duration.ofSeconds(10);
 
     private By ajaxContentSelector;
 
@@ -58,12 +60,12 @@ public class Dynabox extends BaseElement {
     }
 
 
-    public long getTimeOutInSeconds() {
+    public Duration getTimeOutInSeconds() {
         return timeOutInSeconds;
     }
 
 
-    public void setTimeOutInSeconds(long timeOutInSeconds) {
+    public void setTimeOutInSeconds(Duration timeOutInSeconds) {
         this.timeOutInSeconds = timeOutInSeconds;
     }
 

@@ -49,7 +49,7 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
   if((isset($do_icon_link) && $do_icon_link === TRUE)) {
     $icon_link = cdm_internal_link(path_to_reference($reference->uuid));
   }
-  if (isset($do_text_link) && $do_text_link === TRUE) {
+  if (isset($do_text_link) && $do_text_link === TRUE && isset_not_empty($reference->link) ) {
     $out = '<span class="reference">';
     $out .= l($citation, path_to_reference($reference->uuid), array(
       'attributes' => array(
@@ -81,15 +81,11 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
   else {
     $doi = "";
     if(isset($reference->doi) && $reference->doi != null){
-        if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
-                      $citation .= ".";
-        }
+
         $doi = cdm_doi($reference->doi, false);
       }
       if(isset($reference->link)){
-          if (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";")){
-            $citation .= ".";
-          }
+
 
           if (isset($reference->link->javaUri)){
             $doi .= cdm_doi($reference->link->javaUri, false);
@@ -97,6 +93,9 @@ function cdm_reference_markup($reference, $citation_detail = NULL, $do_text_link
             $doi .= cdm_doi($reference->link, true);
          }
       }
+    if (isset_not_empty($doi) && (!endsWith($citation, ".") || !endsWith($citation, ",") || !endsWith($citation, ";"))){
+                $citation .= ".";
+    }
     $out = '<span class="reference">' . $citation .$icon_link . $doi . '</span>';
   }
 
@@ -308,7 +307,11 @@ function render_original_source($source, $do_link_to_reference = TRUE, $do_link_
   $out = '';
 
   if (isset($source->citation)) {
-    $out .= cdm_reference_markup($source->citation, $source->citationMicroReference, false, $do_link_to_reference);
+    $citation_micro_reference = "";
+    if (isset($source->citation->citationMicroReference)){
+        $citation_micro_reference = $source->citation->citationMicroReference;
+    }
+    $out .= cdm_reference_markup($source->citation, $citation_micro_reference, false, $do_link_to_reference);
   }
   if(isset($source->cdmSource)){
     $out .= render_cdm_entity_link($source->cdmSource);
