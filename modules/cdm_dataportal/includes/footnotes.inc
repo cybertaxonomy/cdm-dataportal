@@ -369,7 +369,7 @@ function handle_name_relationship_as_footnote($name_rel, $code_edition_source = 
     $footnote_markup = '';
     $fnkey = null;
     if ($code_edition_source) {
-
+      //$footnote_markup = cdm_reference_markup($name_rel);
         if (isset($name_rel->ruleConsidered) && $name_rel->ruleConsidered) {
             $footnote_markup = '<span class="rule_considered">' . $name_rel->ruleConsidered . '</span>';
         }
