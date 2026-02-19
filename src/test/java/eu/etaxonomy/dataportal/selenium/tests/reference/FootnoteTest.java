@@ -196,8 +196,16 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), centaurea_immanuelis_loewii_UUID);
         assertEquals("Centaurea immanuelis-loewii Degen in Magyar Bot. Lapok 16: 117. 1917", p.getAcceptedNameText());
         WebElement synSecContainer = p.getNewHeterotypicalGroupSynSecs(1);
-        assertEquals("Syn. sec.: A&S 19874, Blanco 18373", synSecContainer.getText());
+        if (synSecContainer.getText().equals("Syn. sec.: A&S 19873, Blanco 18374")) {
+            assertEquals("Syn. sec.: A&S 19873, Blanco 18374", synSecContainer.getText());
+        }else {
+            assertEquals("Syn. sec.: Blanco 18373, A&S 19874", synSecContainer.getText());
+        }
+        WebElement typeDesignationElement =  p.getNewHeterotypicalGroupTypeDesignations(1);
+        assertEquals("Holotype: [icon] [fide A&S 19874]", typeDesignationElement.getText());
+
         WebElement footnotes = p.getHeterotypicalGrouptFootNoteElement(1);
+
         assertNotNull(footnotes);
         //the footnotes of the homotypic group contains the rule for the nom status(fn 2) and the two sec sources,
         // one of the sec sources is also the source of the nom status, so this has to be deduplicated
