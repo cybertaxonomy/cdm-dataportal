@@ -390,7 +390,17 @@ function handle_name_relationship_as_footnote($name_rel, $code_edition_source = 
             $footnote_markup .= '<span class="reference">' . $name_rel->source->citation->titleCache . '</span>';
         }
       if (isset($name_rel->source->label) && isset($name_rel->source->label[0]->label)) {
-        $footnote_markup .= '<span class="reference">' . $name_rel->source->label[0]->label . '</span>';
+        $footnote_markup .= '<span class="reference">' . $name_rel->source->label[0]->label ;
+        if (isset($name_rel->source->doi)) {
+          if (!str_endsWith($footnote_markup, ".")){
+            $footnote_markup = trim($footnote_markup);
+            $footnote_markup .= ".";
+          }
+          $footnote_markup .= cdm_doi($name_rel->source->doi, false);
+         // $footnote_markup .= "<a href=\"". $name_rel->source->doi . "\">".  $name_rel->source->doi . "</a><a href=\"". $name_rel->source->doi ."\"><i  class=\"superscript fa fa-external-link-square-alt\"></i></a>";
+        }
+
+        $footnote_markup .= '</span>';
       }
         if (isset($name_rel->source->citationMicroReference) && $name_rel->source->citationMicroReference) {
             $footnote_markup .= (isset($name_rel->source->citation) ? ':' : '') . ' <span class="reference_detail">' . $name_rel->source->citationMicroReference . '</span>';
