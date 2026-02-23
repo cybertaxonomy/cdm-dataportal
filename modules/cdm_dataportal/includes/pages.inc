@@ -729,12 +729,15 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
             $page_part = 'description';
         }
     }
-
-    $media = $taxon_dto-> media;
-
-    if (!isset_not_empty($media) || $media -> count == 0 || ($tabsToDisplay["Images"] == '0')) {
-        taxon_page_tabs_hidden_add('images');
+    //TODO: as a workaround get media directly
+    //$media = $taxon_dto-> media;
+    $media = _load_media_for_taxon($taxon_dto);
+    if (!isset_not_empty($media) || count($media) == 0 || ($tabsToDisplay["Images"] == '0')) {
+      taxon_page_tabs_hidden_add('images');
     }
+    //if (!isset_not_empty($media) || $media -> count == 0 || ($tabsToDisplay["Images"] == '0')) {
+    //    taxon_page_tabs_hidden_add('images');
+    //}
 
     // --- GET specimensOrObservations --- //
     $specimensOrObservations = null;
