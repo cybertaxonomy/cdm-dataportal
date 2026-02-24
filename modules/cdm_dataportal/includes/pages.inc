@@ -1014,14 +1014,15 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
     $representationPart = new stdClass();
     $attributes = array();
-    if (isset_not_empty($media) && isset_not_empty($media -> count) && $media -> count > 0) {
+   // if (isset_not_empty($media) && isset_not_empty($media -> count) && $media -> count > 0) {
+    if (isset($media) && count($media) > 0){
       //if(count($preferred_representations) > 0){
         //get first image with representations
 
 
-        if (isset_not_empty($media->items[0])) {
+        //if (isset_not_empty($media->items[0])) {
 
-            $pref_representations = cdm_preferred_media_representations($media->items[0]
+            $pref_representations = cdm_preferred_media_representations($media[0]//$media->items[0]
                 , [
                 'application/pdf',
                 'image/png',
@@ -1032,14 +1033,15 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
             ], $taxon_profile_image_settings['maxextend'],
                 $taxon_profile_image_settings['maxextend']);
 
+           //TODO: $representationPart = array_shift($pref_representations);
             $representationPart = array_shift($pref_representations);
-
             $uri_String = "";
-            if (isset_not_empty($representationPart) && isset_not_empty($representationPart->uri)) {
-                if (is_string($representationPart->uri)) {
-                    $uri_String = $representationPart->uri;
+            if (isset_not_empty($representationPart) && isset_not_empty($representationPart->parts) && isset_not_empty($representationPart->parts[0])) {
+                //if (is_string($representationPart->uri)) {
+                if (is_string($representationPart->parts[0]->uri)){
+                  $uri_String = $representationPart->parts[0]->uri;
                 } else {
-                    $uri_String = $representationPart->uri->javaUri;
+                    $uri_String = $representationPart->parts[0]->uri->javaUri;
                 }
                 $attributes['alt'] = $uri_String;
             }
@@ -1049,7 +1051,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
                 . (strpos($uri_String, '?') !== FALSE ? '&' : '?')
                 . $taxon_profile_image_settings['media_uri_query'];
             }
-        }
+       // }
     }
     else {
       if ($taxon_profile_image_settings['custom_placeholder_enabled']) {
@@ -1077,9 +1079,11 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
       }
     }
 
-    if (isset($representationPart->uri)) {
+    //if (isset($representationPart->uri)) {
+    if (isset($representationPart->parts[0]->uri)){
       $profile_image = cdm_media_gallery_entry_image(
-        ImageMediaItem::fromMediaRepresentationPart($representationPart),
+        //TODO: ImageMediaItem::fromMediaRepresentationPart($representationPart),
+        ImageMediaItem::fromMediaRepresentationPart($representationPart->parts[0]),
         $taxon_profile_image_settings['maxextend'],
         FALSE,
         $attributes
