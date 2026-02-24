@@ -246,6 +246,11 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
 
     // -------------------------------------------------------
 
+    if (!isset_not_empty($_REQUEST['q'])){
+      $path = $_GET['q'];
+    }else{
+      $path = $_REQUEST['q'];
+    }
     if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE)){
 
         /*COMPRESSED SPECIMEN DERIVATE TABLE
@@ -266,15 +271,11 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
             $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_dtos);
         }
 
-        if (!isset_not_empty($_REQUEST['q'])){
-            $path = $_GET['q'];
-        }else{
-            $path = $_REQUEST['q'];
-        }
+
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
                 'pager' => $root_unit_dtos,
-                'path' => $_REQUEST['q'],
+                'path' => $path,
                 'parameters' => $_REQUEST
             )),
             10 // weight
@@ -293,7 +294,7 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
                 'pager' => $pager,
-                'path' => $_REQUEST['q'],
+                'path' => $path,
                 'parameters' => $_REQUEST,
             )),
             10 // weight
@@ -1013,7 +1014,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
     $representationPart = new stdClass();
     $attributes = array();
-    if (isset_not_empty($media) && $media -> count > 0) {
+    if (isset_not_empty($media) && isset_not_empty($media -> count) && $media -> count > 0) {
       //if(count($preferred_representations) > 0){
         //get first image with representations
 
