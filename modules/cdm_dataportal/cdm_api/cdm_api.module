@@ -2045,7 +2045,6 @@ function cdm_load_tagged_full_title($taxon_name){
     $tagged_full_title = cdm_ws_get(CDM_WS_NAME, array($taxon_name->uuid, 'taggedFullTitle'));
     if(is_array($tagged_full_title)){
       $taxon_name->taggedFullTitle = $tagged_full_title;
-
     }
   }
 }

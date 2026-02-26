@@ -51,42 +51,42 @@ function html_class_attribute_ref($cdm_entity) {
   $attributes = '';
   if (is_cdm_entity($cdm_entity)) {
     // Entities
-    $attributes =  "cdm:" . $cdm_entity->class . " uuid:" . $cdm_entity->uuid;
-    switch ($cdm_entity->class){
-      case 'Taxon':
-        if(isset($cdm_entity->secSource->uuid)){
-          $attributes .= " sec_uuid:"  . $cdm_entity->secSource->uuid;
-        }
-        break;
-    }
+    $attributes =  "cdm:" . $cdm_entity->class ;//. " uuid:" . $cdm_entity->uuid;
+    //switch ($cdm_entity->class){
+    //  case 'Taxon':
+    //    if(isset($cdm_entity->secSource->uuid)){
+    //      $attributes .= " sec_uuid:"  . $cdm_entity->secSource->uuid;
+    //    }
+    //    break;
+    //}
   }elseif (isset_not_empty($cdm_entity->class)) {
       // DTOs
       if (isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)) {
-          $attributes = "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:" . $cdm_entity->type;// . " uuid:" . $cdm_entity->uuid;
       }
       // additional data of specific DTOs
-      switch ($cdm_entity->class) {
-          case 'TaxonNodeDto':
-              $attributes .= "taxon_uuid:" . $cdm_entity->taxonUuid . " sec_uuid:" . $cdm_entity->secUuid;;
-              break;
-      }
+      //switch ($cdm_entity->class) {
+      //    case 'TaxonNodeDto':
+      //        $attributes .= "taxon_uuid:" . $cdm_entity->taxonUuid . " sec_uuid:" . $cdm_entity->secUuid;;
+      //        break;
+      //}
   } else {
 
       // DTOs
 
       if (isset_not_empty($cdm_entity) && !is_array($cdm_entity) && isset($cdm_entity->nameType) && isset_not_empty($cdm_entity->uuid)) {
-          $attributes = "cdm:" . $cdm_entity->nameType . " uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:" . $cdm_entity->nameType;// . " uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity) && !is_array($cdm_entity) && isset($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)){
             //entityReference
-          $attributes = "cdm:" . $cdm_entity->type ." uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:" . $cdm_entity->type;// ." uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->label )){
-          $attributes = "cdm:" . $cdm_entity->label . " uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:" . $cdm_entity->label;// . " uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->facts )){
           //maybe change to the specific feature?
-          $attributes = "cdm:Feature"  . " uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:Feature";//  . " uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->typedLabel) && isset_not_empty($cdm_entity->typedLabel[0]) && isset_not_empty($cdm_entity->typedLabel[0]->cdmClass)){
           //maybe change to the specific feature?
-          $attributes = "cdm:".$cdm_entity->typedLabel[0]->cdmClass  . " uuid:" . $cdm_entity->typedLabel[0]->uuid;
+          $attributes = "cdm:".$cdm_entity->typedLabel[0]->cdmClass;//  . " uuid:" . $cdm_entity->typedLabel[0]->uuid;
       }
 
 
