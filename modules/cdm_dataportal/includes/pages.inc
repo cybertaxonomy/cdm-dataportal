@@ -139,10 +139,15 @@ function compose_cdm_taxon_page_specimens($taxon) {
       $specimen_table = compose_specimens_table_bottom_up($specimensOrObservations);
 
       $render_array['specimen_list'] = $specimen_table;
+      if (!isset_not_empty($_REQUEST['q'])){
+        $path = $_GET['q'];
+      }else{
+        $path = $_REQUEST['q'];
+      }
       $render_array['pager'] = markup_to_render_array(
         theme('cdm_pager', array(
           'pager' => $pager,
-          'path' => $_REQUEST['q'],
+          'path' => $path,
           'parameters' => $_REQUEST,
         )),
         10 // weight
