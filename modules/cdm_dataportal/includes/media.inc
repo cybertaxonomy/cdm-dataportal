@@ -481,7 +481,7 @@ function compose_cdm_media_gallery($configuration) {
 
       $media_part_markup = "";
       foreach ($media->sources as $source) {
-        $media_part_markup .= "<div class=\"citation media_citation" . html_class_attribute_ref(new TypedEntityReference("Reference", $source->citation->uuid)) . "\">"
+        $media_part_markup .= "<div class=\"citation media_citation" . html_class_attribute_ref(new TypedEntityReference("Reference", $source->citation->uuid)) . '" id="' .  $source->citation->uuid . "\">"
           . "<span class=\"citation_label\">published in: </span>"
           . $source->citation->label
           . l(custom_icon_font_markup('icon-interal-link-alt-solid', ['class' => ['superscript']]), path_to_reference($source->citation->uuid), ['html' => TRUE])

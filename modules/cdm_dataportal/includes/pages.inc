@@ -1128,7 +1128,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
       $feature_description = make_pseudo_feature('Descriptions (aggregated)', PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS);
       $description_item = '';
       foreach ($aggregatedDescriptions as $description) {
-        $description_item = '<div class="' . html_class_attribute_ref($description) . '">';
+        $description_item = '<div class="' . html_class_attribute_ref($description). '" id="' . $description->uuid . '">';
         $description_item .= render_description_string(get_root_nodes_for_dataset($description));
         $description_item .= ' ' . icon_link(path_to_description($description->uuid));
         $description_item .= '<div class="content-caption">'. statistical_values_explanation() . '</div>';
@@ -1315,7 +1315,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
         $feature_description = make_pseudo_feature('Descriptions (aggregated)', PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS);
         $description_item = '';
         foreach ($aggregatedDescriptions as $description) {
-            $description_item = '<div class="' . html_class_attribute_ref($description) . '">';
+            $description_item = '<div class="' . html_class_attribute_ref($description) . '" id="'.$description -> uuid . '">';
             $description_item .= render_description_string(get_root_nodes_for_dataset($description));
             $description_item .= ' ' . icon_link(path_to_description($description->uuid));
             $description_item .= '<div class="content-caption">'. statistical_values_explanation() . '</div>';
@@ -1390,6 +1390,7 @@ function make_bibliography_feature_block() {
 function render_cdm_specimen_link($specimen) {
   $path = path_to_specimen($specimen->uuid);
   $attributes['class'][] = html_class_attribute_ref($specimen);
+  $attributes['id'][] = $specimen->uuid;
   return $specimen->titleCache.icon_link($path);
 }
 
@@ -1653,11 +1654,13 @@ function compose_cdm_taxon_page_experts($taxon){
       'data' => array(
         array(
           'data' => $agent_label_markup,
-          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->agent))
+          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->agent)),
+          'id' => $taxon_node_agent_relation->agent->uuid
         ),
         array(
           'data' => $taxon_node_agent_relation->type->representation_L10n,
-          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->type))
+          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->type)),
+          'id' => $taxon_node_agent_relation->type->uuid
         )
       )
     );
@@ -1728,7 +1731,8 @@ function compose_cdm_taxon_page_new_experts($taxon){
             'data' => array(
                 array(
                     'data' => $agent_label_markup,
-                    'class' => array(html_class_attribute_ref($taxon_node_agent_relation))
+                    'class' => array(html_class_attribute_ref($taxon_node_agent_relation)),
+                    'id' => $taxon_node_agent_relation->uuid
                 ),
                 array(
                     'data' => $taxon_node_agent_relation->type,
@@ -1977,7 +1981,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
         ($is_first_item ? '' : ' ')
         . $rank_separator
         . l(
-          '<span class="' . html_class_attribute_ref($node) . '">' . $node_name . '</span>',
+          '<span class="' . html_class_attribute_ref($node) . '" id="' . $node->uuid .'">' . $node_name . '</span>',
           $path,
           array(
             'attributes' => array(
@@ -2072,7 +2076,8 @@ function compose_cdm_named_area_page($named_area_uuid)
    // '#title' => $title,
     '#theme' => 'description_list',
     '#groups' => $groups,
-    '#attributes' => array('class' => html_class_attribute_ref($named_area)),
+    '#attributes' => array('class' => html_class_attribute_ref($named_area),
+                            'id' => $named_area->uuid),
   );
 
   $render_array[] = $name_area_details_elements;
@@ -2265,7 +2270,8 @@ function compose_cdm_reference_page($uuid) {
     'header' => array(),
     'rows' => $table_rows,
     'attributes' => array(
-      'class' => html_class_attribute_ref($reference)
+      'class' => html_class_attribute_ref($reference),
+      'id' => $reference->uuid
     ),
     'caption' => NULL,
     'colgroups' => NULL,
@@ -2343,7 +2349,7 @@ function render_specimen_page_title($sob_dto)
   }
   RenderHints::popFromRenderStack();
 
-  return '<span class="' . html_class_attribute_ref($sob_dto) . '">' . $out . '</span>';
+  return '<span class="' . html_class_attribute_ref($sob_dto) . '" id="' . $sob_dto->uuid .'">' . $out . '</span>';
 }
 
 /**

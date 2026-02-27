@@ -110,7 +110,7 @@ function html_class_attribute_ref($cdm_entity) {
  */
 function compose_cdm_marker($marker) {
   $label = $marker->markerType->representation_L10n . ': ' . (($marker->flag !== TRUE ? t('yes') : t('no')));
-  return markup_to_render_array('<span class="' . html_class_attribute_ref($marker) . '">' . $label . '</span>');
+  return markup_to_render_array('<span class="' . html_class_attribute_ref($marker) . '" id="' . $marker -> uuid .'">' . $label . '</span>');
 }
 /**
  * Compose an render array from a CDM Occurrence Status object.
@@ -126,7 +126,7 @@ function compose_cdm_marker($marker) {
  */
 function compose_cdm_status($status) {
   $label = $status->type->representation_L10n ;
-  return markup_to_render_array('<span class="' . html_class_attribute_ref($status) . '">' . $label . '</span>');
+  return markup_to_render_array('<span class="' . html_class_attribute_ref($status) . '" id="'. $status->uuid.  '">' . $label . '</span>');
 }
 
 
@@ -420,7 +420,7 @@ function statistical_values($stat_vals_arr, $unit = '') {
         if (isset($statistical_val->_value)) {
           $val_markup = '<span class="'
             . html_class_attribute_ref($statistical_val) . ' '
-            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ' . $key . '" title="' . $key . '">'
+            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ' . $key . '" title="' . $key . '" id="'. $statistical_val ->uuid. '">'
             . $statistical_val->_value . '</span>';
 
         }
@@ -714,7 +714,7 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
             '#title' => $membership->institute->titleCache,
             '#theme' => 'description_list',
             '#groups' => $membership_groups,
-            '#attributes' => array('class' => html_class_attribute_ref($membership)),
+            '#attributes' => array('class' => html_class_attribute_ref($membership), 'id' => $membership->uuid),
             '#wrapper_attributes' => array('class' => 'sublist-container')
           );
         } else {
@@ -746,7 +746,7 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
     '#title' => $team_or_person->titleCache,
     '#theme' => 'description_list',
     '#groups' => $groups,
-    '#attributes' => array('class' => html_class_attribute_ref($team_or_person)),
+    '#attributes' => array('class' => html_class_attribute_ref($team_or_person), 'id'=>$team_or_person->uuid),
   );
   return array($team_or_person_details);
 }
@@ -888,7 +888,7 @@ function compose_identifiers($identifiers){
   //     // urn:lsid:ipni.org:authors:20009164-1 UUID_IDENTIFIER_TYPE_LSID
   foreach($identifiers as $identifier){
     if($identifier->identifier){
-      $render_array[] = markup_to_render_array('<span class="label">' . $identifier->type->representation_L10n . ':</span> ' . $identifier->identifier, null, '<span class="'. html_class_attribute_ref($identifier) . '">', '</span><br>');
+      $render_array[] = markup_to_render_array('<span class="label">' . $identifier->type->representation_L10n . ':</span> ' . $identifier->identifier, null, '<span class="'. html_class_attribute_ref($identifier) . '" id="'. $identifier->uuid . '">', '</span><br>');
     }
   }
 
@@ -936,7 +936,7 @@ function render_cdm_entity_link($cdm_entity) {
     case 'TaxonDescription':
     case 'NameDescription':
     case 'SpecimenDescription':
-      $link =  '<span class="' . html_class_attribute_ref($cdm_entity) . '">' . $cdm_entity->titleCache . '</span> ' . icon_link(path_to_description($cdm_entity->uuid));
+      $link =  '<span class="' . html_class_attribute_ref($cdm_entity) . '" id="'. $cdm_entity->uuid . '">' . $cdm_entity->titleCache . '</span> ' . icon_link(path_to_description($cdm_entity->uuid));
       break;
     default:
       $link = '<span class="error">UNSUPPORTED CDM ENTITY TYPE</span>';
