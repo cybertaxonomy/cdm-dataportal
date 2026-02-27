@@ -39,7 +39,7 @@ public class EntityReference {
     String cdmType;
     UUID uuid;
 
-    private static final Pattern pattern = Pattern.compile(".*(?:cdm\\:)([a-zA-Z]+).*(?:uuid\\:)([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
+    private static final Pattern pattern = Pattern.compile(".*(?:cdm\\:)([a-zA-Z]+).*");
 
 
     private EntityReference(String cdmType, UUID uuid) {
@@ -52,7 +52,7 @@ public class EntityReference {
         assert !StringUtils.isEmpty(classAttributes);
         Matcher m = pattern.matcher(classAttributes);
         assert m.matches();
-        return new EntityReference(m.group(1), UUID.fromString(m.group(2)));
+        return new EntityReference(m.group(1), null);
     }
 
 }
