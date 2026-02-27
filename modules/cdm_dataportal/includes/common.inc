@@ -420,7 +420,7 @@ function statistical_values($stat_vals_arr, $unit = '') {
         if (isset($statistical_val->_value)) {
           $val_markup = '<span class="'
             . html_class_attribute_ref($statistical_val) . ' '
-            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ' . $key . '" title="' . $key . '" id="'. $statistical_val ->uuid. '">'
+            . (isset($statistical_val->type) ? $statistical_val->type->termType : '') . ' ' . $key . '" title="' . $key . '">'
             . $statistical_val->_value . '</span>';
 
         }
