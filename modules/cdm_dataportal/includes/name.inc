@@ -142,11 +142,15 @@ function get_nameRenderTemplate($render_path, $nameLink = NULL, $referenceLink =
     unset($template['namePart']['#uri']);
   }
 
-  if ($referenceLink && isset($template['referencePart']['#uri'])) {
-    $template['referencePart']['#uri'] = $referenceLink;
-  }
-  else {
-    unset($template['referencePart']['#uri']);
+  if (isset($template['referencePart']) && is_array($template['referencePart'])) {
+
+    if ($referenceLink && isset($template['referencePart']['#uri'])) {
+      $template['referencePart']['#uri'] = $referenceLink;
+    }
+    else {
+      // Jetzt ist unset() sicher, da wir wissen, dass es ein Array ist
+      unset($template['referencePart']['#uri']);
+    }
   }
 
   return $template;

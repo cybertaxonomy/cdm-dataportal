@@ -2399,7 +2399,11 @@ function cdm_ws_get($uri, $pathParameters = array(), $query_string = NULL, $meth
       else {
         $status = 'invalid';
       }
-      cdm_ws_debug_add($uri, $method, $data, $duration_fetch, $duration_parse, strlen($response_body), $status);
+      $strlen_var = 0;
+      if ($response_body != null){
+        $strlen_var = strlen($response_body);
+      }
+      cdm_ws_debug_add($uri, $method, $data, $duration_fetch, $duration_parse, $strlen_var, $status);
     }
     if ($set_cacheL2 && !$cacheL2_entry) {
       // Store the object in cache L2.
@@ -2587,16 +2591,20 @@ function cdm_debug_block_visible() {
  * @see http://drupal.org/node/1354
  */
 function cdm_load_obj($response_body) {
-  $obj = json_decode($response_body);
+  if ($response_body != null){
+    $obj = json_decode($response_body);
 
-  if (!(is_object($obj) || is_array($obj))) {
-    ob_start();
-    $obj_dump = ob_get_contents();
-    ob_clean();
-    return FALSE;
+    if (!(is_object($obj) || is_array($obj))) {
+      ob_start();
+      $obj_dump = ob_get_contents();
+      ob_clean();
+      return FALSE;
+    }
+
+    return $obj;
   }
+  return FALSE;
 
-  return $obj;
 }
 
 /**
