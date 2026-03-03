@@ -36,7 +36,7 @@ public class TaxonNodeStatusElement extends BaseElement {
         logger.debug("There are "+ taxonNodeElements.size() + " taxonNode elements");
         for(WebElement el : taxonNodeElements) {
             TaxonNodeStatusData data = new TaxonNodeStatusData();
-            data.setTaxonNodeRef(EntityReference.from(el));
+            data.setTaxonNodeRef(EntityType.from(el));
             String statusText = el.getText();
             String classificationText = "";
             try {
@@ -44,7 +44,7 @@ public class TaxonNodeStatusElement extends BaseElement {
                 classificationText = classficationEl.getText();
                 statusText = statusText.replace(classificationText, "");
                 data.setClassficationText(classificationText);
-                data.setClassificationRef(EntityReference.from(classficationEl));
+                data.setClassificationRef(EntityType.from(classficationEl));
             } catch (NoSuchElementException e) {
                 // IGNORE (classification information is not mandatory) //
             }
@@ -61,13 +61,13 @@ public class TaxonNodeStatusElement extends BaseElement {
         /**
          * @return the taxonNodeRef
          */
-        public EntityReference getTaxonNodeRef() {
+        public EntityType getTaxonNodeRef() {
             return taxonNodeRef;
         }
         /**
          * @param taxonNodeRef the taxonNodeRef to set
          */
-        public void setTaxonNodeRef(EntityReference taxonNodeRef) {
+        public void setTaxonNodeRef(EntityType taxonNodeRef) {
             this.taxonNodeRef = taxonNodeRef;
         }
         /**
@@ -97,18 +97,18 @@ public class TaxonNodeStatusElement extends BaseElement {
         /**
          * @return the classificationRef
          */
-        public EntityReference getClassificationRef() {
+        public EntityType getClassificationRef() {
             return classificationRef;
         }
         /**
          * @param classificationRef the classificationRef to set
          */
-        public void setClassificationRef(EntityReference classificationRef) {
+        public void setClassificationRef(EntityType classificationRef) {
             this.classificationRef = classificationRef;
         }
-        EntityReference taxonNodeRef;
+        EntityType taxonNodeRef;
         String statusText;
         String classficationtext = null;
-        EntityReference classificationRef = null;
+        EntityType classificationRef = null;
     }
 }
