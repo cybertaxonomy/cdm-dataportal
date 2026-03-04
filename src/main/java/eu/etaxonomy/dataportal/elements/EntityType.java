@@ -21,23 +21,9 @@ import org.openqa.selenium.WebElement;
  */
 public class EntityType {
 
-    /**
-     * @return the cdmType
-     */
-    public String getCdmType() {
-        return cdmType;
-    }
-
-
-    String cdmType;
-
+    private String cdmType;
 
     private static final Pattern pattern = Pattern.compile(".*(?:cdm\\:)([a-zA-Z]+).*");
-
-
-    private EntityType(String cdmType) {
-        this.cdmType = cdmType;
-    }
 
     public static EntityType from(WebElement webElement) {
         String classAttributes = webElement.getAttribute("class");
@@ -47,4 +33,11 @@ public class EntityType {
         return new EntityType(m.group(1));
     }
 
+    private EntityType(String cdmType) {
+        this.cdmType = cdmType;
+    }
+
+    public String getCdmType() {
+        return cdmType;
+    }
 }
