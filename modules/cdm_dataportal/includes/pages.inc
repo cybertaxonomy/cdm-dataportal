@@ -139,10 +139,15 @@ function compose_cdm_taxon_page_specimens($taxon) {
       $specimen_table = compose_specimens_table_bottom_up($specimensOrObservations);
 
       $render_array['specimen_list'] = $specimen_table;
+      if (!isset_not_empty($_REQUEST['q'])){
+        $path = $_GET['q'];
+      }else{
+        $path = $_REQUEST['q'];
+      }
       $render_array['pager'] = markup_to_render_array(
         theme('cdm_pager', array(
           'pager' => $pager,
-          'path' => $_REQUEST['q'],
+          'path' => $path,
           'parameters' => $_REQUEST,
         )),
         10 // weight
@@ -246,6 +251,11 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
 
     // -------------------------------------------------------
 
+    if (!isset_not_empty($_REQUEST['q'])){
+      $path = $_GET['q'];
+    }else{
+      $path = $_REQUEST['q'];
+    }
     if(($current_view_mode == CDM_SPECIMEN_LIST_VIEW_MODE_OPTION_DERIVATE_TABLE)){
 
         /*COMPRESSED SPECIMEN DERIVATE TABLE
@@ -266,15 +276,11 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
             $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_dtos);
         }
 
-        if (!isset_not_empty($_REQUEST['q'])){
-            $path = $_GET['q'];
-        }else{
-            $path = $_REQUEST['q'];
-        }
+
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
                 'pager' => $root_unit_dtos,
-                'path' => $_REQUEST['q'],
+                'path' => $path,
                 'parameters' => $_REQUEST
             )),
             10 // weight
@@ -293,7 +299,7 @@ function compose_cdm_taxon_page_new_specimens($taxon_dto) {
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
                 'pager' => $pager,
-                'path' => $_REQUEST['q'],
+                'path' => $path,
                 'parameters' => $_REQUEST,
             )),
             10 // weight
@@ -729,12 +735,15 @@ function compose_cdm_taxon_new_page($taxon_dto, $page_part = 'description') {
             $page_part = 'description';
         }
     }
-
-    $media = $taxon_dto-> media;
-
-    if (!isset_not_empty($media) || $media -> count == 0 || ($tabsToDisplay["Images"] == '0')) {
-        taxon_page_tabs_hidden_add('images');
+    //TODO: as a workaround get media directly
+    //$media = $taxon_dto-> media;
+    $media = _load_media_for_taxon($taxon_dto);
+    if (!isset_not_empty($media) || count($media) == 0 || ($tabsToDisplay["Images"] == '0')) {
+      taxon_page_tabs_hidden_add('images');
     }
+    //if (!isset_not_empty($media) || $media -> count == 0 || ($tabsToDisplay["Images"] == '0')) {
+    //    taxon_page_tabs_hidden_add('images');
+    //}
 
     // --- GET specimensOrObservations --- //
     $specimensOrObservations = null;
@@ -1010,14 +1019,15 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
     $representationPart = new stdClass();
     $attributes = array();
-    if (isset_not_empty($media) && $media -> count > 0) {
+   // if (isset_not_empty($media) && isset_not_empty($media -> count) && $media -> count > 0) {
+    if (isset($media) && count($media) > 0){
       //if(count($preferred_representations) > 0){
         //get first image with representations
 
 
-        if (isset_not_empty($media->items[0])) {
+        //if (isset_not_empty($media->items[0])) {
 
-            $pref_representations = cdm_preferred_media_representations($media->items[0]
+            $pref_representations = cdm_preferred_media_representations($media[0]//$media->items[0]
                 , [
                 'application/pdf',
                 'image/png',
@@ -1028,14 +1038,15 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
             ], $taxon_profile_image_settings['maxextend'],
                 $taxon_profile_image_settings['maxextend']);
 
+           //TODO: $representationPart = array_shift($pref_representations);
             $representationPart = array_shift($pref_representations);
-
             $uri_String = "";
-            if (isset_not_empty($representationPart) && isset_not_empty($representationPart->uri)) {
-                if (is_string($representationPart->uri)) {
-                    $uri_String = $representationPart->uri;
+            if (isset_not_empty($representationPart) && isset_not_empty($representationPart->parts) && isset_not_empty($representationPart->parts[0])) {
+                //if (is_string($representationPart->uri)) {
+                if (is_string($representationPart->parts[0]->uri)){
+                  $uri_String = $representationPart->parts[0]->uri;
                 } else {
-                    $uri_String = $representationPart->uri->javaUri;
+                    $uri_String = $representationPart->parts[0]->uri->javaUri;
                 }
                 $attributes['alt'] = $uri_String;
             }
@@ -1045,7 +1056,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
                 . (strpos($uri_String, '?') !== FALSE ? '&' : '?')
                 . $taxon_profile_image_settings['media_uri_query'];
             }
-        }
+       // }
     }
     else {
       if ($taxon_profile_image_settings['custom_placeholder_enabled']) {
@@ -1073,9 +1084,11 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
       }
     }
 
-    if (isset($representationPart->uri)) {
+    //if (isset($representationPart->uri)) {
+    if (isset($representationPart->parts[0]->uri)){
       $profile_image = cdm_media_gallery_entry_image(
-        ImageMediaItem::fromMediaRepresentationPart($representationPart),
+        //TODO: ImageMediaItem::fromMediaRepresentationPart($representationPart),
+        ImageMediaItem::fromMediaRepresentationPart($representationPart->parts[0]),
         $taxon_profile_image_settings['maxextend'],
         FALSE,
         $attributes
@@ -1115,7 +1128,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
       $feature_description = make_pseudo_feature('Descriptions (aggregated)', PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS);
       $description_item = '';
       foreach ($aggregatedDescriptions as $description) {
-        $description_item = '<div class="' . html_class_attribute_ref($description) . '">';
+        $description_item = '<div class="' . html_class_attribute_ref($description). '" id="' . $description->uuid . '">';
         $description_item .= render_description_string(get_root_nodes_for_dataset($description));
         $description_item .= ' ' . icon_link(path_to_description($description->uuid));
         $description_item .= '<div class="content-caption">'. statistical_values_explanation() . '</div>';
@@ -1302,7 +1315,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
         $feature_description = make_pseudo_feature('Descriptions (aggregated)', PSEUDO_FEATURE_AGGREGATION_DESCRIPTIONS);
         $description_item = '';
         foreach ($aggregatedDescriptions as $description) {
-            $description_item = '<div class="' . html_class_attribute_ref($description) . '">';
+            $description_item = '<div class="' . html_class_attribute_ref($description) . '" id="'.$description -> uuid . '">';
             $description_item .= render_description_string(get_root_nodes_for_dataset($description));
             $description_item .= ' ' . icon_link(path_to_description($description->uuid));
             $description_item .= '<div class="content-caption">'. statistical_values_explanation() . '</div>';
@@ -1377,6 +1390,7 @@ function make_bibliography_feature_block() {
 function render_cdm_specimen_link($specimen) {
   $path = path_to_specimen($specimen->uuid);
   $attributes['class'][] = html_class_attribute_ref($specimen);
+  $attributes['id'][] = $specimen->uuid;
   return $specimen->titleCache.icon_link($path);
 }
 
@@ -1640,11 +1654,13 @@ function compose_cdm_taxon_page_experts($taxon){
       'data' => array(
         array(
           'data' => $agent_label_markup,
-          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->agent))
+          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->agent)),
+          'id' => $taxon_node_agent_relation->agent->uuid
         ),
         array(
           'data' => $taxon_node_agent_relation->type->representation_L10n,
-          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->type))
+          'class' => array(html_class_attribute_ref($taxon_node_agent_relation->type)),
+          'id' => $taxon_node_agent_relation->type->uuid
         )
       )
     );
@@ -1715,7 +1731,8 @@ function compose_cdm_taxon_page_new_experts($taxon){
             'data' => array(
                 array(
                     'data' => $agent_label_markup,
-                    'class' => array(html_class_attribute_ref($taxon_node_agent_relation))
+                    'class' => array(html_class_attribute_ref($taxon_node_agent_relation)),
+                    'id' => $taxon_node_agent_relation->uuid
                 ),
                 array(
                     'data' => $taxon_node_agent_relation->type,
@@ -1964,7 +1981,7 @@ function compose_classification_breadcrumbs($taxon_uuid) {
         ($is_first_item ? '' : ' ')
         . $rank_separator
         . l(
-          '<span class="' . html_class_attribute_ref($node) . '">' . $node_name . '</span>',
+          '<span class="' . html_class_attribute_ref($node) . '" id="' . $node->uuid .'">' . $node_name . '</span>',
           $path,
           array(
             'attributes' => array(
@@ -2059,7 +2076,8 @@ function compose_cdm_named_area_page($named_area_uuid)
    // '#title' => $title,
     '#theme' => 'description_list',
     '#groups' => $groups,
-    '#attributes' => array('class' => html_class_attribute_ref($named_area)),
+    '#attributes' => array('class' => html_class_attribute_ref($named_area),
+                            'id' => $named_area->uuid),
   );
 
   $render_array[] = $name_area_details_elements;
@@ -2252,7 +2270,8 @@ function compose_cdm_reference_page($uuid) {
     'header' => array(),
     'rows' => $table_rows,
     'attributes' => array(
-      'class' => html_class_attribute_ref($reference)
+      'class' => html_class_attribute_ref($reference),
+      'id' => $reference->uuid
     ),
     'caption' => NULL,
     'colgroups' => NULL,
@@ -2330,7 +2349,7 @@ function render_specimen_page_title($sob_dto)
   }
   RenderHints::popFromRenderStack();
 
-  return '<span class="' . html_class_attribute_ref($sob_dto) . '">' . $out . '</span>';
+  return '<span class="' . html_class_attribute_ref($sob_dto) . '" id="' . $sob_dto->uuid .'">' . $out . '</span>';
 }
 
 /**

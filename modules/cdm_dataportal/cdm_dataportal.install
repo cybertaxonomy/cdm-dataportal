@@ -578,6 +578,76 @@ $return = db_merge('ext_links')
 
 }
 
+/**
+ * update for RELEASE 5.57:
+ *  - update external links
+ *
+ */
+
+function cdm_dataportal_update_7802()
+{
+$tasks_performed = array();
+$return = db_merge('ext_links')
+    ->key(array('id' => 'ipni'))
+    ->fields(array(
+      'id' => 'ipni',
+      'title' => 'IPNI',
+      'link' => 'https://www.ipni.org/search?q=[cdm:taxon_name]',
+      'category' => 'Classification/Nomenclature',
+      'status' => 1,
+      'weight' => -3,
+    ))
+    ->execute();
+$tasks_performed[] = "update ipni link";
+$return = db_merge('ext_links')
+    ->key(array('id' => 'scholar'))
+    ->fields(array(
+      'id' => 'scholar',
+      'title' => 'Google scholar',
+      'link' => 'https://scholar.google.com/scholar?q=[cdm:taxon_name]',
+      'category' => 'Literature',
+      'status' => 1,
+      'weight' => 1,
+    ))
+    ->execute();
+$tasks_performed[] = "update google scholar link";
+
+$return = db_merge('ext_links')
+    ->key(array('id' => 'ggbn'))
+    ->fields(array(
+      'id' => 'ggbn',
+      'title' => 'GGBN',
+      'link' => 'https://www.ggbn.org/ggbn_portal/search/index?fullScientificName=[cdm:taxon_name]',
+      'category' => 'Molecular Resources',
+      'status' => 1,
+      'weight' => -3,
+    ))
+    ->execute();
+$tasks_performed[] = "update ggbn link";
+
+$nid = db_insert('ext_links')
+  ->fields(array(
+    'id' => 'powo',
+    'title' => 'Plants of the World Online',
+    'link' => 'https://powo.science.kew.org/results?q=[cdm:taxon_name]',
+    'category' => 'Classification/Nomenclature',
+    'status' => 1,
+    'weight' => -3,
+  ))
+  ->execute();
+$tasks_performed[] = "add powo link";
+$return = db_delete('ext_links')
+  ->condition('id', 'biocase')
+  ->execute();
+
+$return = db_delete('ext_links')
+  ->condition('id', 'wfo-specimens')
+  ->execute();
+$tasks_performed[] = "remove biocase and wfo-specimens link";
+return join(', ', $tasks_performed);
+}
+
+
 
 /* ======================================================================== */
 

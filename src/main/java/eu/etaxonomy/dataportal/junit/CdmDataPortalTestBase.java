@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 import eu.etaxonomy.dataportal.DataPortalContext;
 import eu.etaxonomy.dataportal.DrupalVars;
@@ -76,7 +77,13 @@ public abstract class CdmDataPortalTestBase extends Assert{
             } catch (InterruptedException e) {
                 logger.debug("Sleep before close the driver was interrupted.");
             }
-		    driver.quit();
+		    try {
+		        driver.quit();
+            } catch (WebDriverException  we) {
+                logger.debug("WebDriver quit timed out." + we.getMessage());
+            }
+		    driver = null;
+
 		}
 	}
 

@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,39 +19,25 @@ import org.openqa.selenium.WebElement;
  * @author a.kohlbecker
  * @since May 26, 2020
  */
-public class EntityReference {
+public class EntityType {
 
-    /**
-     * @return the cdmType
-     */
-    public String getCdmType() {
-        return cdmType;
-    }
+    private String cdmType;
 
-    /**
-     * @return the uuid
-     */
-    public UUID getUuid() {
-        return uuid;
-    }
+    private static final Pattern pattern = Pattern.compile(".*(?:cdm\\:)([a-zA-Z]+).*");
 
-    String cdmType;
-    UUID uuid;
-
-    private static final Pattern pattern = Pattern.compile(".*(?:cdm\\:)([a-zA-Z]+).*(?:uuid\\:)([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
-
-
-    private EntityReference(String cdmType, UUID uuid) {
-        this.cdmType = cdmType;
-        this.uuid = uuid;
-    }
-
-    public static EntityReference from(WebElement webElement) {
+    public static EntityType from(WebElement webElement) {
         String classAttributes = webElement.getAttribute("class");
         assert !StringUtils.isEmpty(classAttributes);
         Matcher m = pattern.matcher(classAttributes);
         assert m.matches();
-        return new EntityReference(m.group(1), UUID.fromString(m.group(2)));
+        return new EntityType(m.group(1));
     }
 
+    private EntityType(String cdmType) {
+        this.cdmType = cdmType;
+    }
+
+    public String getCdmType() {
+        return cdmType;
+    }
 }

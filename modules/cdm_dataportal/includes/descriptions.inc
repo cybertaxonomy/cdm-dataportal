@@ -241,9 +241,10 @@ function feature_block($feature_name, $feature) {
   //$block->module = 'cdm_dataportal';
   $block->region = NULL;
   $class_attribute = html_class_attribute_ref($feature);
+  $id_attribute = $feature->uuid;
   $block_delta = isset_not_empty($feature->class) && $feature->class !== 'PseudoFeature' ? $feature_name : $feature->label;
   $block->delta = generalizeString($block_delta);
-  $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '">'
+  $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '" id="'. $id_attribute. '">'
     . theme('cdm_feature_name', array('feature_name' => $feature_name))
     . '</span>';
   $block->module = "cdm_dataportal-feature";
@@ -275,9 +276,10 @@ function new_feature_block($feature_name, $feature_node) {
     //$block->module = 'cdm_dataportal';
     $block->region = NULL;
     $class_attribute = html_class_attribute_ref($feature_node);
+    $id_attribute = $feature_node->uuid;
     $block_delta = isset($feature_node->class) && $feature_node->class !== 'PseudoFeature' ? $feature_name : $feature_node->label;
     $block->delta = generalizeString($block_delta);
-    $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '">'
+    $block->subject = '<a name="' . $block->delta . '"></a><span class="' . $class_attribute . '" id="' . $id_attribute. '">'
         . theme('cdm_feature_name', array('feature_name' => $feature_name))
         . '</span>';
     $block->module = "cdm_dataportal-feature";
@@ -425,7 +427,8 @@ function compose_description_element($element, $feature_block_settings, $element
                     'DescriptionElement',
                     'DescriptionElement-' . $element->class,
                     html_class_attribute_ref($element)
-                )
+                ),
+                'id' => $element->uuid
             ),
 
             '#value' => '',
@@ -443,7 +446,8 @@ function compose_description_element($element, $feature_block_settings, $element
                         'DescriptionElement',
                         'DescriptionElement-' . $element->typedLabel[0]->cdmClass,
                         html_class_attribute_ref($element)
-                    )
+                    ),
+                    'id' => $element->uuid
                 ),
 
                 '#value' => '',
@@ -460,7 +464,8 @@ function compose_description_element($element, $feature_block_settings, $element
                         'DescriptionElement',
                         'DescriptionElement-' . $element->clazz,
                         html_class_attribute_ref($element)
-                    )
+                    ),
+                    'id' => $element->uuid
                 ),
 
                 '#value' => '',
@@ -1523,7 +1528,7 @@ function render_state_data($element) {
 
     }
     krsort($state_data_items);
-    $out = '<span class="' . html_class_attribute_ref($element) . '">' . join(', ', $state_data_items) .  '</span>';
+    $out = '<span class="' . html_class_attribute_ref($element) . '" id="' . $element->uuid . '">' . join(', ', $state_data_items) .  '</span>';
   }
 
   return $out;
@@ -1594,7 +1599,7 @@ function render_quantitative_statistics($element) {
   $sample_size_markup = null;
 
   if (isset($element->statisticalValues)) {
-    $out = '<span class=\"' . html_class_attribute_ref($element) . '\">';
+    $out = '<span class=\"' . html_class_attribute_ref($element) . '" id="' . $element->uuid .'\">';
     $other_values_markup = [];
     foreach ($element->statisticalValues as $statistical_val) {
 
@@ -2888,14 +2893,14 @@ function render_description_string($root_nodes, &$item_cnt = 0) {
               $state_data = render_state_data($element);
               if (!empty($state_data)) {
                 if(is_suppress_state_present_display($element, $root_node)){
-                  $description_strings[] = '<span class="'. html_class_attribute_ref($element) .'"><span class="label">' . $feature_label . '</span>: '  . '</span>';
+                  $description_strings[] = '<span class="'. html_class_attribute_ref($element) . '" id="' . $element->uuid . '"><span class="label">' . $feature_label . '</span>: '  . '</span>';
                 } else {
-                  $description_strings[] = '<span class="'. html_class_attribute_ref($element) .'"><span class="label">' . $feature_label . '</span>: ' . $state_data . '</span>;' ;
+                  $description_strings[] = '<span class="'. html_class_attribute_ref($element) . '" id="' . $element->uuid .'"><span class="label">' . $feature_label . '</span>: ' . $state_data . '</span>;' ;
                 }
               }
               break;
             case 'QuantitativeData':
-              $description_strings[] = '<span class="'. html_class_attribute_ref($element) .'"><span class="label">' . $feature_label . '</span>: ' . render_quantitative_statistics($element) . '</span>;';
+              $description_strings[] = '<span class="'. html_class_attribute_ref($element) . '" id="' . $element->uuid .'"><span class="label">' . $feature_label . '</span>: ' . render_quantitative_statistics($element) . '</span>;';
               break;
           }
         }
@@ -2985,6 +2990,7 @@ function  compose_description_table($description_uuid, $descriptive_dataset_uuid
     foreach ($description->descriptiveDataSets as $dataSet) {
       $path = path_to_description($description->uuid, $dataSet->uuid);
       $attributes['class'][] = html_class_attribute_ref($description);
+      $attributes['id'][] = $description->uuid;
       $items[] = [
         'data' => $dataSet->titleCache . icon_link($path),
       ];

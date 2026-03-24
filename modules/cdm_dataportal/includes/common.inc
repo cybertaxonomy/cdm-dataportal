@@ -51,42 +51,42 @@ function html_class_attribute_ref($cdm_entity) {
   $attributes = '';
   if (is_cdm_entity($cdm_entity)) {
     // Entities
-    $attributes =  "cdm:" . $cdm_entity->class . " uuid:" . $cdm_entity->uuid;
-    switch ($cdm_entity->class){
-      case 'Taxon':
-        if(isset($cdm_entity->secSource->uuid)){
-          $attributes .= " sec_uuid:"  . $cdm_entity->secSource->uuid;
-        }
-        break;
-    }
+    $attributes =  "cdm:" . $cdm_entity->class ;//. " uuid:" . $cdm_entity->uuid;
+    //switch ($cdm_entity->class){
+    //  case 'Taxon':
+    //    if(isset($cdm_entity->secSource->uuid)){
+    //      $attributes .= " sec_uuid:"  . $cdm_entity->secSource->uuid;
+    //    }
+    //    break;
+    //}
   }elseif (isset_not_empty($cdm_entity->class)) {
       // DTOs
       if (isset_not_empty($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)) {
-          $attributes = "cdm:" . $cdm_entity->type . " uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:" . $cdm_entity->type;// . " uuid:" . $cdm_entity->uuid;
       }
       // additional data of specific DTOs
-      switch ($cdm_entity->class) {
-          case 'TaxonNodeDto':
-              $attributes .= "taxon_uuid:" . $cdm_entity->taxonUuid . " sec_uuid:" . $cdm_entity->secUuid;;
-              break;
-      }
+      //switch ($cdm_entity->class) {
+      //    case 'TaxonNodeDto':
+      //        $attributes .= "taxon_uuid:" . $cdm_entity->taxonUuid . " sec_uuid:" . $cdm_entity->secUuid;;
+      //        break;
+      //}
   } else {
 
       // DTOs
 
       if (isset_not_empty($cdm_entity) && !is_array($cdm_entity) && isset($cdm_entity->nameType) && isset_not_empty($cdm_entity->uuid)) {
-          $attributes = "cdm:" . $cdm_entity->nameType . " uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:" . $cdm_entity->nameType;// . " uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity) && !is_array($cdm_entity) && isset($cdm_entity->type) && isset_not_empty($cdm_entity->uuid)){
             //entityReference
-          $attributes = "cdm:" . $cdm_entity->type ." uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:" . $cdm_entity->type;// ." uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->label )){
-          $attributes = "cdm:" . $cdm_entity->label . " uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:" . $cdm_entity->label;// . " uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->facts )){
           //maybe change to the specific feature?
-          $attributes = "cdm:Feature"  . " uuid:" . $cdm_entity->uuid;
+          $attributes = "cdm:Feature";//  . " uuid:" . $cdm_entity->uuid;
       }elseif(isset_not_empty($cdm_entity ) && !is_array($cdm_entity) && isset($cdm_entity->typedLabel) && isset_not_empty($cdm_entity->typedLabel[0]) && isset_not_empty($cdm_entity->typedLabel[0]->cdmClass)){
           //maybe change to the specific feature?
-          $attributes = "cdm:".$cdm_entity->typedLabel[0]->cdmClass  . " uuid:" . $cdm_entity->typedLabel[0]->uuid;
+          $attributes = "cdm:".$cdm_entity->typedLabel[0]->cdmClass;//  . " uuid:" . $cdm_entity->typedLabel[0]->uuid;
       }
 
 
@@ -110,7 +110,7 @@ function html_class_attribute_ref($cdm_entity) {
  */
 function compose_cdm_marker($marker) {
   $label = $marker->markerType->representation_L10n . ': ' . (($marker->flag !== TRUE ? t('yes') : t('no')));
-  return markup_to_render_array('<span class="' . html_class_attribute_ref($marker) . '">' . $label . '</span>');
+  return markup_to_render_array('<span class="' . html_class_attribute_ref($marker) . '" id="' . $marker -> uuid .'">' . $label . '</span>');
 }
 /**
  * Compose an render array from a CDM Occurrence Status object.
@@ -126,7 +126,7 @@ function compose_cdm_marker($marker) {
  */
 function compose_cdm_status($status) {
   $label = $status->type->representation_L10n ;
-  return markup_to_render_array('<span class="' . html_class_attribute_ref($status) . '">' . $label . '</span>');
+  return markup_to_render_array('<span class="' . html_class_attribute_ref($status) . '" id="'. $status->uuid.  '">' . $label . '</span>');
 }
 
 
@@ -714,7 +714,7 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
             '#title' => $membership->institute->titleCache,
             '#theme' => 'description_list',
             '#groups' => $membership_groups,
-            '#attributes' => array('class' => html_class_attribute_ref($membership)),
+            '#attributes' => array('class' => html_class_attribute_ref($membership), 'id' => $membership->uuid),
             '#wrapper_attributes' => array('class' => 'sublist-container')
           );
         } else {
@@ -746,7 +746,7 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
     '#title' => $team_or_person->titleCache,
     '#theme' => 'description_list',
     '#groups' => $groups,
-    '#attributes' => array('class' => html_class_attribute_ref($team_or_person)),
+    '#attributes' => array('class' => html_class_attribute_ref($team_or_person), 'id'=>$team_or_person->uuid),
   );
   return array($team_or_person_details);
 }
@@ -888,7 +888,7 @@ function compose_identifiers($identifiers){
   //     // urn:lsid:ipni.org:authors:20009164-1 UUID_IDENTIFIER_TYPE_LSID
   foreach($identifiers as $identifier){
     if($identifier->identifier){
-      $render_array[] = markup_to_render_array('<span class="label">' . $identifier->type->representation_L10n . ':</span> ' . $identifier->identifier, null, '<span class="'. html_class_attribute_ref($identifier) . '">', '</span><br>');
+      $render_array[] = markup_to_render_array('<span class="label">' . $identifier->type->representation_L10n . ':</span> ' . $identifier->identifier, null, '<span class="'. html_class_attribute_ref($identifier) . '" id="'. $identifier->uuid . '">', '</span><br>');
     }
   }
 
@@ -936,7 +936,7 @@ function render_cdm_entity_link($cdm_entity) {
     case 'TaxonDescription':
     case 'NameDescription':
     case 'SpecimenDescription':
-      $link =  '<span class="' . html_class_attribute_ref($cdm_entity) . '">' . $cdm_entity->titleCache . '</span> ' . icon_link(path_to_description($cdm_entity->uuid));
+      $link =  '<span class="' . html_class_attribute_ref($cdm_entity) . '" id="'. $cdm_entity->uuid . '">' . $cdm_entity->titleCache . '</span> ' . icon_link(path_to_description($cdm_entity->uuid));
       break;
     default:
       $link = '<span class="error">UNSUPPORTED CDM ENTITY TYPE</span>';

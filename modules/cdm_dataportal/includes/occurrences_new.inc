@@ -217,6 +217,7 @@ function compose_cdm_derivation_event($derivation_event_dto, $full_details = FAL
         'derivation-event',
         html_class_attribute_ref($derivation_event_dto)
       ],
+      'id' => [$derivation_event_dto->uuid],
       'style' => [
         'grid-column-start: span 2'
       ]

@@ -75,7 +75,7 @@ function compose_agent($agent, $enclosing_tag) {
   }
 
 
-  $render_array = markup_to_render_array($names_and_lifespan_markup . $name_details_markup  . $extensions_markup . $identifiers_markup, null, '<' . $enclosing_tag . ' class="' . html_class_attribute_ref($agent) . '">', '</' . $enclosing_tag . '>');
+  $render_array = markup_to_render_array($names_and_lifespan_markup . $name_details_markup  . $extensions_markup . $identifiers_markup, null, '<' . $enclosing_tag . ' class="' . html_class_attribute_ref($agent) . '" id="' . $agent->uuid .'">', '</' . $enclosing_tag . '>');
 
   return $render_array;
 }

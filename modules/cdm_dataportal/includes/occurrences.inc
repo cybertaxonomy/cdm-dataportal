@@ -712,7 +712,8 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
            // '#title' => $title,
             '#theme' => 'description_list',
             '#groups' => $groups,
-            '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation)),
+            '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation),
+                                    'id' => $specimen_or_observation->uuid),
         );
 
         $derivatives[] = $occurrence_elements;
@@ -1435,7 +1436,8 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
            // '#title' => $title,
             '#theme' => 'description_list',
             '#groups' => $groups,
-            '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation_dto)),
+            '#attributes' => array('class' => html_class_attribute_ref($specimen_or_observation_dto),
+                                    'id' => $specimen_or_observation_dto->uuid),
         );
         $output = drupal_render($occurrence_elements);
         if (isset($gallery_html)){
@@ -1833,7 +1835,7 @@ function render_collection($collection, $is_dto = false, $do_link = false /* to 
     if($do_link){
       $markup .= ' ' . cdm_internal_link(path_to_collection($collection->uuid));
     }
-    $markup = '<span class="' . html_class_attribute_ref($collection) . '">' . $markup . '</span>';
+    $markup = '<span class="' . html_class_attribute_ref($collection) . '" id="' . $collection->uuid .  '">' . $markup . '</span>';
   }
   return $markup;
 }

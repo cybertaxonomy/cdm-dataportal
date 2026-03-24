@@ -86,10 +86,6 @@ public class TaxonSynonymyPage extends TaxonPage {
      */
     @Deprecated
     public List<BaseElement> getAcceptedNameFootNotes() {
-//        List<WebElement> fnListElements = synonymy.findElements(
-//                By.xpath("./div[contains(@class,'accepted-name')]/following-sibling::ul[contains(@class, 'footnotes')]/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
-//        );
-//        return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
         return getHomotypicalGroupFootNotes();
     }
 
@@ -129,10 +125,6 @@ public class TaxonSynonymyPage extends TaxonPage {
     public WebElement getNewHomotypicalGroupTypeDesignations() {
             WebElement typeDesignationElement = synonymy.findElement(By
                     .xpath("./div[contains(@class,'homotypic-synonymy-group')]/ul[contains(@class,'homotypicSynonyms')]/ul[contains(@class,'typeDesignations')]"));
-            /*List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
-            for (WebElement el : typeDesignationElements) {
-                typeDesignations.add(new TypeDesignationElement(el));
-            }*/
             return typeDesignationElement;
         }
     public WebElement getNewHomotypicalGroupSynSecs() {
@@ -156,8 +148,6 @@ public class TaxonSynonymyPage extends TaxonPage {
         return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
 
     }
-
-
 
     /**
      * @param heterotypicalGroupIndex
@@ -210,10 +200,7 @@ public class TaxonSynonymyPage extends TaxonPage {
         WebElement typeDesignationElement = synonymy.findElement(By
                 .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
                         + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'typeDesignations')]"));
-        /*List<TypeDesignationElement> typeDesignations = new ArrayList<TypeDesignationElement>();
-        for (WebElement el : typeDesignationElements) {
-            typeDesignations.add(new TypeDesignationElement(el));
-        }*/
+
         return typeDesignationElement;
     }
 
@@ -252,15 +239,24 @@ public class TaxonSynonymyPage extends TaxonPage {
      * 				the 1-based index of the heterotypical group
      */
     public List<BaseElement> getHeterotypicalGroupFootNotes(Integer heterotypicalGroupIndex) {
+
         List<WebElement> fnListElements = synonymy.findElements(
                 By.xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex + "]/ul/li[contains(@class, 'footnotes')]/span[contains(@class, 'footnote')]")
         );
-//        WebElement typeDesignationElement = synonymy.findElement(By
-//                .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
-//                        + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'footnote')]"));
 
         return ElementUtils.baseElementsFromFootNoteListElements(fnListElements);
     }
+    public WebElement getHeterotypicalGrouptFootNoteElement(Integer heterotypicalGroupIndex) {
+        try{
+            WebElement footnotesElement = synonymy.findElement(By
+                               .xpath("./div[contains(@class,'heterotypic-synonymy-group')][" + heterotypicalGroupIndex
+                                        + "]/ul[contains(@class,'heterotypicSynonymyGroup')]/ul[contains(@class,'footnotes')]"));
+            return footnotesElement;
+
+        } catch (Exception e) { /* IGNORE */}
+        return null;
+    }
+
 
     public WebElement getTaxonRelationships() {
         WebElement taxonRelationships = synonymy.findElement(

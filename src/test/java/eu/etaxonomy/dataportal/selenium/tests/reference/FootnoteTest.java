@@ -8,13 +8,16 @@
 */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.BaseElement;
@@ -24,6 +27,8 @@ import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
 import eu.etaxonomy.dataportal.junit.DataPortalContextSuite.DataPortalContexts;
 import eu.etaxonomy.dataportal.pages.NamePage;
 import eu.etaxonomy.dataportal.pages.RegistrationPage;
+import eu.etaxonomy.dataportal.pages.TaxonSynonymyPage;
+import eu.etaxonomy.drush.DrushExecutionFailure;
 
 /**
  * @author a.kohlbecker
@@ -39,6 +44,8 @@ public class FootnoteTest extends CdmDataPortalTestBase {
     private static final UUID nodosilinea_radiophila_name_UUID = UUID.fromString("e97cc25b-ec11-4bb8-88d7-ab40a023f3fb");
 
     private static final UUID ramsaria_name_UUID = UUID.fromString("3a6d4bf2-5c89-4525-9e87-0bacac96990b");
+
+    private static final UUID centaurea_immanuelis_loewii_UUID = UUID.fromString("9a837d37-8cbb-4bd1-9593-ae6f275f10bd");
 
     private static final String titleSuffix = " | Integration test reference";
 
@@ -173,6 +180,36 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         List<LinkElement> linksInFootnote3 = footnote1.getLinksInElement();
         assertEquals(1, linksInFootnote3.size());
         assertTrue(linksInFootnote3.get(0).getUrl().endsWith("cdm_dataportal/reference/5e5d9d08-8c28-4b22-b30a-6214c8641163"));
+    }
+
+    @Test
+    public void testSynonymyFootnotes() throws MalformedURLException{
+        try {
+            setDrupalVar("cdm_synonymy_syn_sec_per_homotypic_group", "1");
+        } catch (IOException e) {
+           Assert.fail();
+        } catch (InterruptedException e) {
+            Assert.fail();
+        } catch (DrushExecutionFailure e) {
+            Assert.fail();
+        }
+        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), centaurea_immanuelis_loewii_UUID);
+        assertEquals("Centaurea immanuelis-loewii Degen in Magyar Bot. Lapok 16: 117. 1917", p.getAcceptedNameText());
+        WebElement synSecContainer = p.getNewHeterotypicalGroupSynSecs(1);
+        if (synSecContainer.getText().equals("Syn. sec.: A&S 19873, Blanco 18374")) {
+            assertEquals("Syn. sec.: A&S 19873, Blanco 18374", synSecContainer.getText());
+        }else {
+            assertEquals("Syn. sec.: Blanco 18373, A&S 19874", synSecContainer.getText());
+        }
+        WebElement typeDesignationElement =  p.getNewHeterotypicalGroupTypeDesignations(1);
+        assertEquals("Holotype: [icon] [fide A&S 19874]", typeDesignationElement.getText());
+
+        WebElement footnotes = p.getHeterotypicalGrouptFootNoteElement(1);
+
+        assertNotNull(footnotes);
+        //the footnotes of the homotypic group contains the rule for the nom status(fn 2) and the two sec sources,
+        // one of the sec sources is also the source of the nom status, so this has to be deduplicated
+        assertEquals("2. orthogr. error, 3. Blanco, F. M. 1837: Fl. Filip., ed. 1, 4. A&S 1987: Plantas vasculares de Oz. https://doi.org/10.1111/j.1756-1051.2012.00012.x", footnotes.getText());
     }
 
 }

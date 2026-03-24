@@ -184,6 +184,7 @@ function cdm_tagged_text_to_markup(array $taggedtxt, $skiptags = array(), $tag =
         $attributes['class'][] = $tt->type;
         if(isset($tt->entityReference)){
           $attributes['class'][] = html_class_attribute_ref($tt->entityReference);
+          $attributes['id'][] = $tt->entityReference->uuid;
         }
 
         // prefix and suffix
@@ -262,6 +263,7 @@ function cdm_tagged_text_with_ref_footnote_to_markup(array $taggedtxt, $skiptags
                 $attributes['class'][] = $tt->type;
                 if(isset($tt->entityReference)){
                     $attributes['class'][] = html_class_attribute_ref($tt->entityReference);
+                    $attributes['id'][] = $tt->entityReference->uuid;
                 }
 
                 // prefix and suffix

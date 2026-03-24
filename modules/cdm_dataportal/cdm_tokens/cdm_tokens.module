@@ -113,13 +113,13 @@ function _cdm_tokens_taxon_or_name(){
       $current_token_values['taxon_name:infrageneric_epithet'] = $taxon_name->rank->isInfraGeneric & isset_not_empty($taxon_name->infraGenericEpithet) ? $taxon_name->infraGenericEpithet : null;
       $current_token_values['taxon_name:epithet'] = ( $taxon_name->rank->isSpecies || $taxon_name->rank->isInfraSpecific ) & isset_not_empty($taxon_name->specificEpithet) ? $taxon_name->specificEpithet : null;
       $current_token_values['taxon_name:infraspecific_epithet'] = $taxon_name->rank->isInfraSpecific & isset_not_empty($taxon_name->infraSpecificEpithet) ? $taxon_name->infraSpecificEpithet : null;
-      if(@isset_not_empty($taxon_name->rank->representation_L10n)) {
+      if(isset_not_empty($taxon_name->rank->representation_L10n)) {
         $current_token_values['taxon_name:rank'] = $taxon_name->rank->representation_L10n;
       }
-      if(@isset_not_empty($taxon_name->nomenclaturalSource->citation->titleCache)) {
+      if(isset_not_empty($taxon_name->nomenclaturalSource) && isset_not_empty($taxon_name->nomenclaturalSource->citation) &&isset_not_empty($taxon_name->nomenclaturalSource->citation->titleCache)) {
         $current_token_values['taxon_name:reference'] = $taxon_name->nomenclaturalSource->citation->titleCache;
       }
-      if(@isset_not_empty($taxon_name->nomenclaturalSource->citation->authorship->titleCache)) {
+      if(isset_not_empty($taxon_name->nomenclaturalSource) && isset_not_empty($taxon_name->nomenclaturalSource->citation) && isset_not_empty($taxon_name->nomenclaturalSource->citation->authorship) &&isset_not_empty($taxon_name->nomenclaturalSource->citation->authorship->titleCache)) {
         $current_token_values['taxon_name:authorship'] = $taxon_name->nomenclaturalSource->citation->authorship->titleCache;
       }
     }

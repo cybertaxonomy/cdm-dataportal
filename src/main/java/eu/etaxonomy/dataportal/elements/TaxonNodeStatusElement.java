@@ -10,11 +10,11 @@ package eu.etaxonomy.dataportal.elements;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 /**
@@ -30,39 +30,27 @@ public class TaxonNodeStatusElement extends BaseElement {
         super(element);
 
         logger.debug(element.getText());
-        List<WebElement> taxonNodeElements = findByCdmClassName(element, "TaxonNodeDto");
+//        logger.debug("There are "+ element.findElements(By.className("")) + " taxonNode elements");
+        List<WebElement> taxonNodeElements = element.findElements(By.className("cdm:TaxonNodeDto"));
+
         logger.debug("There are "+ taxonNodeElements.size() + " taxonNode elements");
         for(WebElement el : taxonNodeElements) {
             TaxonNodeStatusData data = new TaxonNodeStatusData();
-            data.setTaxonNodeRef(EntityReference.from(el));
+            data.setTaxonNodeRef(EntityType.from(el));
             String statusText = el.getText();
             String classificationText = "";
-            List<WebElement> classficationElements = findByCdmClassName(el, "Classification");
-            if (!classficationElements.isEmpty()) {
-                WebElement classficationEl = classficationElements.get(0);
+            try {
+                WebElement classficationEl = el.findElement(By.className("cdm:Classification"));
                 classificationText = classficationEl.getText();
                 statusText = statusText.replace(classificationText, "");
                 data.setClassficationText(classificationText);
-                data.setClassificationRef(EntityReference.from(classficationEl));
+                data.setClassificationRef(EntityType.from(classficationEl));
+            } catch (NoSuchElementException e) {
+                // IGNORE (classification information is not mandatory) //
             }
-
             data.setStatusText(statusText);
             taxonNodeStatusData.add(data);
         }
-    }
-
-    /**
-     * This method is currently needed because the according <span class=...> elements include
-     * not only "cdm:TaxonNodeDto" but also "uuid:....". Once this is fixed we can replace
-     * by old "element.findElements(By.className("cdm\\:TaxonNodeDto")" again.
-     * See also #10897
-     */
-    private List<WebElement> findByCdmClassName(WebElement element, String cdmClassName) {
-        List<WebElement> allElements = element.findElements(By.cssSelector("*"));
-        List<WebElement> taxonNodeElements = allElements.stream()
-                .filter(e->e.getAttribute("class").startsWith("cdm:"+cdmClassName))
-                .collect(Collectors.toList());
-        return taxonNodeElements;
     }
 
     public List<TaxonNodeStatusData> getTaxonNodeStatusData() {
@@ -73,13 +61,13 @@ public class TaxonNodeStatusElement extends BaseElement {
         /**
          * @return the taxonNodeRef
          */
-        public EntityReference getTaxonNodeRef() {
+        public EntityType getTaxonNodeRef() {
             return taxonNodeRef;
         }
         /**
          * @param taxonNodeRef the taxonNodeRef to set
          */
-        public void setTaxonNodeRef(EntityReference taxonNodeRef) {
+        public void setTaxonNodeRef(EntityType taxonNodeRef) {
             this.taxonNodeRef = taxonNodeRef;
         }
         /**
@@ -109,18 +97,18 @@ public class TaxonNodeStatusElement extends BaseElement {
         /**
          * @return the classificationRef
          */
-        public EntityReference getClassificationRef() {
+        public EntityType getClassificationRef() {
             return classificationRef;
         }
         /**
          * @param classificationRef the classificationRef to set
          */
-        public void setClassificationRef(EntityReference classificationRef) {
+        public void setClassificationRef(EntityType classificationRef) {
             this.classificationRef = classificationRef;
         }
-        EntityReference taxonNodeRef;
+        EntityType taxonNodeRef;
         String statusText;
         String classficationtext = null;
-        EntityReference classificationRef = null;
+        EntityType classificationRef = null;
     }
 }
