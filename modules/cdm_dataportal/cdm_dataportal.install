@@ -604,7 +604,7 @@ $return = db_merge('ext_links')
     ->fields(array(
       'id' => 'scholar',
       'title' => 'Google scholar',
-      'link' => ': https://scholar.google.com/scholar?q=[cdm:taxon_name]',
+      'link' => 'https://scholar.google.com/scholar?q=[cdm:taxon_name]',
       'category' => 'Literature',
       'status' => 1,
       'weight' => 1,
