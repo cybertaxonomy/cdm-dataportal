@@ -532,7 +532,7 @@ function ext_links_template_defaults() {
   );
   $ext_links_default["herbcat"] = array(
     'id' => "herbcat",
-    'link' => 'http://apps.kew.org/herbcat/getSearchPageResults.do?typeSpecimen=false&imageSpecimen=false&currentName=false&typeOfCollection=all_collection&&genus=[cdm:taxon_name:genus_or_uninomial]&&species=[cdm:taxon_name:epithet]&infraspecificName=[cdm:taxon_name:infraspecific_epithet]',
+    'link' => 'https://species.data.kew.org/search?q=[cdm:taxon_name]',
     'title' => 'Kew Herbarium Catalogue',
     'weight' => 0,
     'status' => 1,
