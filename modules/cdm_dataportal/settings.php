@@ -2673,6 +2673,7 @@ cf	cultivated: reported in error
       '_cdm_relationship_type_term_label_callback',
       false,
       array('uuid' => '/' .UUID_NAMERELATIONSHIPTYPE_LATER_HOMONYM . '|'
+        . UUID_NAMERELATIONSHIPTYPE_LATER_ISONYM . '|'
         . UUID_NAMERELATIONSHIPTYPE_TREATED_AS_LATER_HOMONYM . '|'
         . UUID_NAMERELATIONSHIPTYPE_CONSERVED_AGAINST . '|'
         . UUID_NAMERELATIONSHIPTYPE_BLOCKING_NAME_FOR . '|'
