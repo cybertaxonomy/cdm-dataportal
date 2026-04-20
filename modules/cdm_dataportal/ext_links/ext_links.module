@@ -558,7 +558,7 @@ function ext_links_template_defaults() {
   // --- Molecular Resources ---
   $ext_links_default["ggbn"] = array(
     'id' => "ggbn",
-    'link' => 'http://www.ggbn.org/ggbn_portal/search/result?fullScientificName=[cdm:taxon_name]',
+    'link' => 'http://www.ggbn.org/ggbn_portal/search/overview?q=[cdm:taxon_name]',
     'title' => 'GGBN',
     'weight' => 0,
     'status' => 1,

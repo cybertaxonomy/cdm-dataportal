@@ -668,6 +668,19 @@ $return = db_merge('ext_links')
     ))
     ->execute();
 $tasks_performed[] = "update kew herbarium link";
+
+$return = db_merge('ext_links')
+    ->key(array('id' => 'ggbn'))
+    ->fields(array(
+      'id' => 'ggbn',
+      'title' => 'GGBN',
+      'link' => 'https://www.ggbn.org/ggbn_portal/search/overview?q=[cdm:taxon_name]',
+      'category' => 'Molecular Resources',
+      'status' => 1,
+      'weight' => -3,
+    ))
+    ->execute();
+$tasks_performed[] = "update ggbn link";
 }
 
 /* ======================================================================== */
