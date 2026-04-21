@@ -119,11 +119,14 @@ function compose_cdm_taxon_page_specimens($taxon) {
          //$render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_uuids);
          $render_array['derivate_hierarchy_table'] = compose_compressed_specimen_derivate_table($root_unit_dtos);
         }
-
+        $path = "";
+        if (isset_not_empty($_REQUEST['q'])){
+          $path = $_REQUEST['q'];
+        }
         $render_array['pager'] = markup_to_render_array(
             theme('cdm_pager', array(
                 'pager' => $root_unit_dtos,
-                'path' => $_REQUEST['q'],
+                'path' => $path,
                 'parameters' => $_REQUEST
             )),
             10 // weight
@@ -2240,8 +2243,13 @@ function compose_cdm_reference_page($uuid) {
       }
       else {
         if (isset($reference->$fieldname) && $reference->$fieldname != '') {
+          if ($fieldname == "abbrevTitle") {
+            $new_fieldname = t("Abbreviated title");
+          }else{
+            $new_fieldname = t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname))));
+          }
           $table_rows[] = array(
-            t('@fieldname', array('@fieldname' => ucfirst(strtolower($fieldname)))),
+            $new_fieldname,
             $reference->$fieldname,
           );
         }
