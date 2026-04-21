@@ -668,7 +668,11 @@ $return = db_merge('ext_links')
     ))
     ->execute();
 $tasks_performed[] = "update kew herbarium link";
+}
 
+function cdm_dataportal_update_7804()
+{
+$tasks_performed = array();
 $return = db_merge('ext_links')
     ->key(array('id' => 'ggbn'))
     ->fields(array(
@@ -682,7 +686,6 @@ $return = db_merge('ext_links')
     ->execute();
 $tasks_performed[] = "update ggbn link";
 }
-
 /* ======================================================================== */
 
 /**
