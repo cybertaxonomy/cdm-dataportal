@@ -577,12 +577,6 @@ function compose_cdm_specimen_or_observation($specimen_or_observation, $isSpecim
                           array('#markup' => render_collection($value))
                         ));
                         break;
-
-                    case 'storedUnder':
-                        @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), array(
-                          array('#markup' => render_taxon_or_name($value))
-                        ));
-                        break;
                     case 'dnaQuality':
                         $sub_dl_groups = array();
 
@@ -1356,12 +1350,6 @@ function compose_cdm_specimen_or_observation_tree_entry($specimen_or_observation
                       break;
 
                   // TODO preservation
-                  case 'storedUnder':
-                    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($value->uuid));
-                    @_description_list_group_add($groups, cdm_occurrence_field_name_label('storedUnder'), array(
-                      array('#markup' => render_taxon_or_name($taxon_name, path_to_name($taxon_name->uuid)))
-                    ));
-                  break;
 
                   /* ---- FieldObservation --- */
                   case 'gatheringEvent':
