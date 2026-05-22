@@ -2510,16 +2510,16 @@ function cdm_ws_debug_add($uri, $method, $post_data, $duration_fetch, $duration_
   }
 
   if(strpos($uri, '?') > 0){
-    if (strpos($uri, '?type')==0){
-      $json_uri = str_replace('?', '?type=json&', $uri);
-      $xml_uri = str_replace('?', '?type=xml&', $uri);
+    if (strpos($uri, '?format')==0){
+      $json_uri = str_replace('?', '?format=json&', $uri);
+      $xml_uri = str_replace('?', '?format=xml&', $uri);
     }else{
       $json_uri =  $uri;
       $xml_uri = $uri;
     }
   } else {
-    $json_uri = $uri . '?type=json';
-    $xml_uri = $json_uri . '?type=xml';
+    $json_uri = $uri . '?format=json';
+    $xml_uri = $uri . '?format=xml';
   }
 
   // data links to make data accessible as json and xml
