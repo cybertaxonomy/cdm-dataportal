@@ -53,7 +53,7 @@
  * A drupal render array
  * @ingroup compose
  */
-function compose_map($map_id, $occurrence_query = NULL, $kml_request_url, $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = [], $resizable = FALSE, $force_map_type = NULL) {
+function compose_map($map_id, $kml_request_url, $occurrence_query = NULL,  $distribution_query = NULL, $legend_format_query = NULL, array $event_listeners = [], $resizable = FALSE, $force_map_type = NULL) {
 
   $map_settings = get_array_variable_merged(CDM_MAP_DISTRIBUTION, CDM_MAP_DISTRIBUTION_DEFAULT);
 
@@ -186,7 +186,11 @@ function _add_js_openlayers_map($map_id, $map_settings, array $event_listeners =
   }
 
   // --- custom wms base layer
-  $map_settings['openlayers']['custom_wms_base_layer']['params'] = json_decode($map_settings['openlayers']['custom_wms_base_layer']['params']);
+  $params = $map_settings['openlayers']['custom_wms_base_layer']['params'] ?? null;
+  if (!empty($params)) {
+    $map_settings['openlayers']['custom_wms_base_layer']['params'] = json_decode($params);
+  }
+  //$map_settings['openlayers']['custom_wms_base_layer']['params'] = json_decode($map_settings['openlayers']['custom_wms_base_layer']['params']);
   $cdm_openlayers_options['customWMSBaseLayerData'] = $map_settings['openlayers']['custom_wms_base_layer'];
 
 
@@ -414,7 +418,7 @@ function compose_type_designations_map($type_designations)
 {
   $typedesignations_uuid_param = cdm_uuid_list_parameter_value($type_designations);
   $kml_request_uri = cdm_compose_ws_url(CDM_WS_KML_TYPEDESIGNATIONS, array($typedesignations_uuid_param));
-  $map_render_array = compose_map('specimens', null, $kml_request_uri, null, null, []);
+  $map_render_array = compose_map('specimens', $kml_request_uri,null,  null, null, []);
   return $map_render_array;
 }
 
@@ -581,7 +585,7 @@ function occurrence_map_query_parameters($taxon)
     $occurrence_query = $occurrence_queryDto->occurrenceQuery;
     $legend_format_query = null;
     $distribution_query = NULL;
-    $map_render_array = compose_map('specimens', NULL, $kml_request_url, $distribution_query, $legend_format_query, []);
+    $map_render_array = compose_map('specimens', $kml_request_url,NULL,  $distribution_query, $legend_format_query, []);
   }
   return $map_render_array;
 }
