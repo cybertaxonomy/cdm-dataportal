@@ -180,10 +180,13 @@ function roman_numerals($input_arabic_numeral='') {
  *
  */
 function num2alpha($n) {
+  $n = (int)$n;
   $r = '';
   for ($i = 1; $n >= 0 && $i < 10; $i++) {
-    $r = chr(0x41 + ($n % pow(26, $i) / pow(26, $i - 1))) . $r;
-    $n -= pow(26, $i);
+    $pow_i   = (int) pow(26, $i);
+    $pow_i_1 = (int) pow(26, $i - 1);
+    $r = chr(0x41 + (int)(($n % $pow_i) / $pow_i_1)) . $r;
+    $n -= $pow_i;
   }
   return $r;
 }

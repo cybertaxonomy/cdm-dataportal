@@ -1248,8 +1248,12 @@ function render_new_name_for_name_rels($taggedLabel, $taxon_name_uuid, $year = n
 
     $renderTemplate = get_nameRenderTemplate(RenderHints::getRenderPath(), $name_link, $reference_link);
     $currentTaxon = cache_get('current_taxon');
+    if ($currentTaxon !== FALSE
+      && isset($currentTaxon->data)
+      && isset($currentTaxon->data->nameType)){
+      $partDefinition = get_partDefinition($currentTaxon->data->nameType);
+    }
 
-    $partDefinition = get_partDefinition($currentTaxon->data->nameType);
 
     // Apply definitions to template.
     foreach ($renderTemplate as $part => $uri) {

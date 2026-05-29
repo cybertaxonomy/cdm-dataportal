@@ -19,8 +19,8 @@ class TypedEntityReference
    * Private constructor.
    */
   public function __construct($type, $uuid) {
-    $this->$type = $type;
-    $this->$uuid = $uuid;
+    $this->type = $type;
+    $this->uuid = $uuid;
   }
 
 }

@@ -301,12 +301,7 @@ function  compose_cdm_derived_unit_dto_storage_details($du_dto, $full_details = 
       cdm_occurrence_field_name_label('collection'),
       render_collection_dto($du_dto->collection));
   }
-  if (isset($du_dto->storedUnder)) {
-    $taxon_name = cdm_ws_get(CDM_WS_PORTAL_NAME, array($du_dto->storedUnder->uuid));
-    $table_row_data[] = cdm_sob_dto_table_row(
-      cdm_occurrence_field_name_label('storedUnder'),
-      render_taxon_or_name($taxon_name, url(path_to_name($taxon_name->uuid))));
-  }
+
   if (isset_not_empty($du_dto->exsiccatum)) {
     $table_row_data[] = cdm_sob_dto_table_row(
       cdm_occurrence_field_name_label('exsiccatum'),

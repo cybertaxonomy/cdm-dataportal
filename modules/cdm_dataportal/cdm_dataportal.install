@@ -647,8 +647,45 @@ $tasks_performed[] = "remove biocase and wfo-specimens link";
 return join(', ', $tasks_performed);
 }
 
+/**
+ * update for RELEASE 5.58:
+ *  - update external links
+ *
+ */
 
+function cdm_dataportal_update_7803()
+{
+$tasks_performed = array();
+$return = db_merge('ext_links')
+    ->key(array('id' => 'herbcat'))
+    ->fields(array(
+      'id' => 'herbcat',
+      'title' => 'Kew Herbarium Catalogue',
+      'link' => 'https://species.data.kew.org/search?q=[cdm:taxon_name]',
+      'category' => 'Specimens/Occurrences',
+      'status' => 1,
+      'weight' => -66,
+    ))
+    ->execute();
+$tasks_performed[] = "update kew herbarium link";
+}
 
+function cdm_dataportal_update_7804()
+{
+$tasks_performed = array();
+$return = db_merge('ext_links')
+    ->key(array('id' => 'ggbn'))
+    ->fields(array(
+      'id' => 'ggbn',
+      'title' => 'GGBN',
+      'link' => 'https://www.ggbn.org/ggbn_portal/search/overview?q=[cdm:taxon_name]',
+      'category' => 'Molecular Resources',
+      'status' => 1,
+      'weight' => -3,
+    ))
+    ->execute();
+$tasks_performed[] = "update ggbn link";
+}
 /* ======================================================================== */
 
 /**
