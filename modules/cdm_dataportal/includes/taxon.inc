@@ -974,7 +974,7 @@ function compose_list_of_taxa($taxon_list, $freetext_search_results = array(), $
                         }
                         $out .= ' sensu ' . $authorship;
                     }
-                    if ($show_classification) {
+                    if ($show_classification && $taxon->class) {
                         $out .= render_classifications_for_taxon($taxon);
                     }
                     if ($showMedia_synonyms) {
@@ -1084,7 +1084,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
         if(isset($taxonRelationsDTO->relations)){
             $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));
             foreach ($taxonRelationsDTO->relations as $relation) {
-                if (in_array($relation->type->uuid, $taxon_relationship_types) && in_array($searched_in_classification->uuid,$relation->classificationsUUIDs)  )  {
+                if (in_array($relation->type->uuid, $taxon_relationship_types) && ($searched_in_classification_uuid == null || in_array($searched_in_classification->uuid,$relation->classificationsUUIDs)  ))  {
                 //if (($relation->type->uuid == UUID_MISAPPLIED_NAME_FOR || $relation->typeUuid == UUID_MISAPPLIED_NAME_FOR || $relation->type->uuid == UUID_PROPARTE_SYNONYM_FOR || $relation->typeUuid == UUID_PROPARTE_SYNONYM_FOR) && _cdm_dataportal_matches_current_view($relation->classificationsUUIDs)) {
                  //   $table_of_accepted[$mispplication_uuid][] = cdm_ws_get(CDM_WS_TAXON, $relation);
                     $table_of_accepted[$mispplication_uuid][] = $relation;
@@ -1229,15 +1229,18 @@ function render_classifications_for_taxon($taxon) {
 
   $classifications = get_classifications_for_taxon($taxon);
   $classification_titles = array();
-  foreach ($classifications as $classification) {
-    if (isset($classification->titleCache)) {
-      $classification_titles[] = $classification->titleCache;
+  if (isset_not_empty($classifications)){
+    foreach ($classifications as $classification) {
+      if (isset($classification->titleCache)) {
+        $classification_titles[] = $classification->titleCache;
+      }
     }
+    if (count($classification_titles) == 0) {
+      $classification_titles[] = $unclassified_snippet;
+    }
+    return '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
   }
-  if (count($classification_titles) == 0) {
-    $classification_titles[] = $unclassified_snippet;
-  }
-  return '<span class="classifications"><span class="separator"> : </span>' . implode(', ', $classification_titles) . '</span>';
+  return '';
 }
 
 /**
