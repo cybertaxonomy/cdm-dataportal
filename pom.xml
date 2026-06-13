@@ -132,24 +132,26 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.9.1</version>
+              <version>3.11.2</version>
               <configuration>
-                <additionalparam>${javadoc.opts}</additionalparam>
+                <detectJavaApiLink>false</detectJavaApiLink>
+                <additionalOptions>
+                   <additionalOption>${javadoc.opts}</additionalOption>
+                </additionalOptions>
               </configuration>
             </plugin>            
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jar-plugin</artifactId>
-              <version>2.6</version>
+              <version>3.4.2</version>
               <configuration>
                 <excludes>
                   <exclude>**</exclude><!-- create empty archives -->
@@ -168,13 +170,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.4</version>
+                <version>3.21.0</version>
                 <configuration>
                     <locales>en</locales>
                     <outputEncoding>UTF-8</outputEncoding>
                     <siteDirectory>${basedir}/site</siteDirectory>
                     <!-- 
-						chmod: not not use chmod, rather adapt the umask
+						chmod: not use chmod, rather adapt the umask
                         of the user at the server to which the site is deployed
                     -->
                     <chmod>false</chmod>
