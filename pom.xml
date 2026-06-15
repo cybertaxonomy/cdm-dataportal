@@ -196,6 +196,31 @@
                     </gitFlowConfig>
                 </configuration>
            </plugin>
+           <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-enforcer-plugin</artifactId>
+             <version>3.6.3</version>
+             <executions>
+               <execution>
+                 <id>enforce</id>
+                 <configuration>
+                   <fail>true</fail>
+                   <skip>false</skip>
+                   <rules>
+                     <dependencyConvergence/>
+                     <requireMavenVersion>
+                       <version>[3.6.3,)</version>
+                       <message>You need at least maven 3.6.3 for this project!</message>
+                     </requireMavenVersion>
+                   </rules>
+                 </configuration>
+                 <goals>
+                   <goal>enforce</goal>
+                   <!-- Binds by default to the lifecycle phase: validate -->
+                 </goals>
+               </execution>
+             </executions>
+           </plugin>
         </plugins>
         <!-- EXTENSIONS -->
         <extensions>
