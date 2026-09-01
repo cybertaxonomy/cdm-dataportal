@@ -93,15 +93,15 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
         assertEquals("part. misapplied for", p.getMisappliedName(2).findElement(By.className("symbol")).getText());
         assertEquals("Ossaea glomerata", p.getMisappliedName(2).findElement(By.className("name")).getText());
         // no sensu but with Combination Authors:
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
+        assertEquals("-\n\"Ossaea angustifolia\" auct., non Cheek", p.getMisappliedName(3).getText());
         //added an annotation, currently this is processed first, so it has footnote number 1, this needs to be adapted if the ordering of the footnotes is fixed.
-        assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" auct. sensu A&S 20132; sensu A&S 20132; sensu A&S 20132: 22; sensu A&S 20132: 33; sensu 2015: Species solaris; sensu Lem 20203; auct.1; auctrs. afr.", p.getMisappliedName(4).getText());
+        assertEquals("-\n\"Ossaea glomerata\" auct. sensu A&S 20132; sensu A&S 20132; sensu A&S 20132: 22; sensu A&S 20132: 33; sensu 2015: Species solaris; sensu Lem 20203; auct.1; auctrs. afr.", p.getMisappliedName(4).getText());
         //assertEquals(UTF8.EN_DASH + "\n\"Ossaea glomerata\" sensu A&S2; sensu A&S2: 22; sensu A&S2: 33; sensu Species solaris; sensu Lem3; auct.1; auct. sensu A&S2; auctrs. afr.", p.getMisappliedName(4).getText());
 
 
         // TODO the order of the MANs is not always defined please see #7766
         // with doubtful flag
-        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S 20132", p.getMisappliedName(5).getText());
+        assertEquals("-\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Ossaea glomerata\" sensu A&S 20132", p.getMisappliedName(5).getText());
 
         assertEquals("misapplied for", p.getMisappliedName(6).findElement(By.className("symbol")).getText());
         assertEquals("Ossaea maculata", p.getMisappliedName(6).findElement(By.className("name")).getText());
@@ -167,11 +167,11 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         WebElement misappliedName1 = p.getMisappliedName(1);
         assertNotNull(misappliedName1);
-        assertEquals(UTF8.EN_DASH + "\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Oncidium carthaginense\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName1.getText());
+        assertEquals("-\n" + StringConstants.DOUBTFULMARKER_SPACE +"\"Oncidium carthaginense\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName1.getText());
 
         WebElement misappliedName2 = p.getMisappliedName(2);
         assertNotNull(misappliedName2);
-        assertEquals(UTF8.EN_DASH + "\n\"Oncidium guttatum\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName2.getText());
+        assertEquals("-\n\"Oncidium guttatum\" auct. sensu Greuter, W. & Rankin Rodríguez, R1", misappliedName2.getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(1, footnotes.size());
@@ -194,11 +194,11 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
 
         WebElement misappliedName1 = p.getMisappliedName(1);
         assertNotNull(misappliedName1);
-        assertEquals(UTF8.EN_DASH + "\n\"Nepenthes alata\" pro parte, sensu Cheek, M.R. & Jebb, M.H.P. 20011, non Blanco, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName1.getText());
+        assertEquals("-\n\"Nepenthes alata\" pro parte, sensu Cheek, M.R. & Jebb, M.H.P. 20011, non Blanco, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName1.getText());
 
         WebElement misappliedName2 = p.getMisappliedName(2);
         assertNotNull(misappliedName2);
-        assertEquals(UTF8.EN_DASH + "\n\"Nepenthes blancoi\" pro parte, sensu Macfarlane 19083, non Blume, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName2.getText());
+        assertEquals("-\n\"Nepenthes blancoi\" pro parte, sensu Macfarlane 19083, non Blume, err. sec. Cheek, M.R. & Jebb, M.H.P. 20132", misappliedName2.getText());
 
         List<BaseElement> footnotes = ElementUtils.findFootNotes(p.getTaxonRelationships());
         assertEquals(3, footnotes.size());
