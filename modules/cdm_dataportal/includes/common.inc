@@ -730,10 +730,13 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
 
 
     // Contact
-    $agent_contact_details = compose_cdm_contact($team_or_person->contact, $team_or_person->titleCache);
-    if(!empty($agent_contact_details['#groups']) && is_array($agent_contact_details[0]['#groups'])){
-      $groups = array_merge($groups, $agent_contact_details[0]['#groups']);
+    if (isset_not_empty($team_or_person->contact)){
+      $agent_contact_details = compose_cdm_contact($team_or_person->contact, $team_or_person->titleCache);
+      if(!empty($agent_contact_details['#groups']) && is_array($agent_contact_details[0]['#groups'])){
+        $groups = array_merge($groups, $agent_contact_details[0]['#groups']);
+      }
     }
+
 
     // additional data
     foreach($data as $key=>$value){
