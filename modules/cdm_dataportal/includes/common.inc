@@ -703,7 +703,7 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
         if(is_object($membership->period)){
           @_description_list_group_add($membership_groups, t('Period'). $label_suffix, timePeriodToString($membership->period));
         }
-        if(is_object($membership->institute->contact)){
+        if(isset_not_empty($membership->institute) && isset_not_empty($membership->institute->contact)  && is_object($membership->institute->contact)){
           $institute_contact_details = compose_cdm_contact($membership->institute->contact, $membership->institute->titleCache);
           if(is_array($institute_contact_details[0]['#groups'])){
             $membership_groups = array_merge($membership_groups, $institute_contact_details[0]['#groups']);
@@ -731,7 +731,7 @@ function compose_cdm_team_or_person_base($team_or_person, $data = array()) {
 
     // Contact
     $agent_contact_details = compose_cdm_contact($team_or_person->contact, $team_or_person->titleCache);
-    if(is_array($agent_contact_details[0]['#groups'])){
+    if(!empty($agent_contact_details['#groups']) && is_array($agent_contact_details[0]['#groups'])){
       $groups = array_merge($groups, $agent_contact_details[0]['#groups']);
     }
 
