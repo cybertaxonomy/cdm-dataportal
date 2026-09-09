@@ -194,9 +194,39 @@ function cdm_api_block_view($delta) {
  * Implements hook_cron().
  *
  * Expire outdated cache entries.
+ *
+ * Also does housekeeping on the {sessions} table. The CDM web service debug
+ * logging (see cdm_ws_debug_add()) writes potentially large amounts of data
+ * into $_SESSION which ends up in the {sessions} table. Even though the logging
+ * is restricted to admin users (see cdm_debug_block_visible()), we still make
+ * sure stale session rows are purged regularly so the table cannot grow
+ * unbounded. Drupal core only garbage collects sessions probabilistically at
+ * session.gc_maxlifetime, which is why they can pile up.
  */
 function cdm_api_cron() {
   cache_clear_all(NULL, 'cache_cdm_ws');
+
+  // Maximum age (in seconds) for anonymous sessions. Anonymous sessions only
+  // exist as a side effect of writing to $_SESSION and carry nothing we need to
+  // keep, so they can be removed aggressively.
+  $anon_max_age = variable_get('cdm_api_session_anon_max_age', 6 * 3600);
+  // Maximum age for authenticated sessions. Keep this comfortably above a normal
+  // working session; deleting a row logs that user out.
+  $auth_max_age = variable_get('cdm_api_session_auth_max_age', 2 * 86400);
+
+  $deleted  = db_delete('sessions')
+    ->condition('uid', 0)
+    ->condition('timestamp', REQUEST_TIME - $anon_max_age, '<')
+    ->execute();
+  $deleted += db_delete('sessions')
+    ->condition('uid', 0, '>')
+    ->condition('timestamp', REQUEST_TIME - $auth_max_age, '<')
+    ->execute();
+
+  if ($deleted) {
+    watchdog('cdm_api', 'Purged @count stale row(s) from the {sessions} table.',
+      array('@count' => $deleted), WATCHDOG_INFO);
+  }
 }
 
 /**
@@ -2574,20 +2604,54 @@ function cdm_ws_debug_add($uri, $method, $post_data, $duration_fetch, $duration_
  * helper function to dtermine if the cdm_debug_block should be displayed or not
  * the visibility depends on whether
  *  - the block is enabled
- *  - the visibility restrictions in the block settings are satisfied
+ *  - the current user has one of the roles the block is restricted to
+ *
+ * This is also the gate for cdm_ws_debug_add(): that function writes into
+ * $_SESSION on every web service call, which forces Drupal to persist a row in
+ * the {sessions} table. Doing that for anonymous / ordinary users bloats the
+ * sessions table, so the logging must only happen for the administrators who
+ * can actually see the debug block.
+ *
+ * We deliberately do NOT use block_block_list_alter() for the role check:
+ * block_load() returns a {block} row for an arbitrary theme (no theme filter +
+ * fetchObject()), and when that theme differs from the active $theme_key
+ * block_block_list_alter() bails out before it ever consults {block_role}. That
+ * is why the role restriction configured on admin/structure/block was silently
+ * ignored and the logging ran for everyone. Instead we read the configured
+ * roles straight from {block_role} (the same source block_block_list_alter()
+ * uses) so nothing is hard coded here.
  */
 function cdm_debug_block_visible() {
   static $is_visible = null;
 
-  if($is_visible === null){
-      $block = block_load('cdm_api', 'cdm_ws_debug');
-      $is_visible = isset($block->status) && $block->status == 1;
-      if($is_visible){
-        $blocks = array($block);
-        // Checks the page, user role, and user-specific visibilty settings.
-        block_block_list_alter($blocks);
-        $is_visible = count($blocks) > 0;
+  if ($is_visible === null) {
+    global $user;
+
+    // Is the block enabled at all (in any theme)?
+    $enabled = (bool) db_query(
+      "SELECT 1 FROM {block} WHERE module = 'cdm_api' AND delta = 'cdm_ws_debug' AND status = 1 LIMIT 1"
+    )->fetchField();
+
+    if (!$enabled) {
+      $is_visible = FALSE;
+    }
+    else {
+      // Roles the block is restricted to on admin/structure/block.
+      $block_rids = db_query(
+        "SELECT rid FROM {block_role} WHERE module = 'cdm_api' AND delta = 'cdm_ws_debug'"
+      )->fetchCol();
+
+      if (empty($block_rids)) {
+        // No role restriction configured: the block is shown to everyone.
+        // Restrict the logging to authenticated users anyway so the {sessions}
+        // table stays small.
+        $is_visible = $user->uid > 0;
       }
+      else {
+        // $user->roles is array(rid => name); {block_role}.rid is the numeric id.
+        $is_visible = (bool) array_intersect($block_rids, array_keys($user->roles));
+      }
+    }
   }
   return $is_visible;
 }
