@@ -106,8 +106,8 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
 
         //WebElement h_gombenseElement = hieracium_gombense.getElement();
         WebDriverWait wait = searchResultPage.getWait();
-        assertEquals("Hieracium gombense", hieracium_gombense.getFullTaxonName());
-        assertEquals("Hieracium gombense as misapplied for Hieracium gombense subsp. purkynei (Čelak.) Zahn", hieracium_gombense.getText());
+        assertEquals("Hieracium gombense sensu Mirek, Z. 1995", hieracium_gombense.getFullTaxonName());
+        assertEquals("Hieracium gombense sensu Mirek, Z. 1995 as misapplied for Hieracium gombense subsp. purkynei (Čelak.) Zahn", hieracium_gombense.getText());
         WebElement nameElement = hieracium_gombense.getElement().findElement(By.className("TaxonName"));
         WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
         Assert.assertEquals("Hieracium gombense", namePart1.getText());

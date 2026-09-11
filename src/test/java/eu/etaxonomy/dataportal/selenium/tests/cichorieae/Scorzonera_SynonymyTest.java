@@ -64,7 +64,7 @@ public class Scorzonera_SynonymyTest extends CdmDataPortalTestBase{
 
 
         // also to some synonymy checks
-        assertEquals("– Scorzonera sect. Euscorzonera DC., Prodr. 7: 117. 1838, nom. inval.", p.getHeterotypicalGroupSynonymName(58, 1));
-        assertEquals("– Scorzonera subsect. Euvierhapperia Lipsch., Fragm. Monogr. Scorzonera 2: 89. 1939, nom. inval.", p.getHeterotypicalGroupSynonymName(59, 1));
+        assertEquals("- Scorzonera sect. Euscorzonera DC., Prodr. 7: 117. 1838, nom. inval.", p.getHeterotypicalGroupSynonymName(58, 1));
+        assertEquals("- Scorzonera subsect. Euvierhapperia Lipsch., Fragm. Monogr. Scorzonera 2: 89. 1939, nom. inval.", p.getHeterotypicalGroupSynonymName(59, 1));
     }
 }

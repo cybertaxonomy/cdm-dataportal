@@ -75,7 +75,7 @@ const CDM_SPECIMEN_RELATION_OPTION_CDET = 'CDET';
   define('CDM_DATAPORTAL_ANNOTATIONS_FOOTNOTES', 0);
   define('CDM_DATAPORTAL_LAST_VISITED_TAB_ARRAY_INDEX', 999);
 
-  define('CDM_SEARCH_BLAST_SERVICE_URI', 'http://bgbm-import:9001/api/sequence');
+  define('CDM_SEARCH_BLAST_SERVICE_URI', 'blast_search_uri');
   define('CDM_SEARCH_BLAST_ENABLED', 0);
   define('CDM_REGISTRATION_PRESISTENT_IDENTIFIER_AS_LINK', 'cdm_registration_presistent_identifier_as_link');
 
@@ -2927,7 +2927,7 @@ function cdm_settings_layout_search() {
     $form['blast_search_settings'][CDM_SEARCH_BLAST_SERVICE_URI] = array(
         '#type' => 'textfield',
         '#title' => t('Webservice URL for blast search') . ':',
-        '#default_value' => variable_get(CDM_SEARCH_BLAST_SERVICE_URI, 'http://130.133.70.28:9001/api/sequence'),
+        '#default_value' => variable_get(CDM_SEARCH_BLAST_SERVICE_URI, 'http://bgbm-bhit:9001/api/sequence'),
 
         '#description' => t('Enter the webservice URL for blast search'),
     );

@@ -113,7 +113,7 @@ function cdm_dataportal_search_form_prepare($action_path, $search_webservice, $q
   return $form;
 }
 
-function cdm_dataportal_taxon_autosuggest($classificationUuid = NULL, $areaUuid = NULL, $status = NULL, $string) {
+function cdm_dataportal_taxon_autosuggest($string, $classificationUuid = NULL, $areaUuid = NULL, $status = NULL ) {
   $matches = array();
 
   $queryParams = array();
@@ -415,7 +415,7 @@ function cdm_dataportal_search_blast_form($form, &$form_state) {
 
     $query_field_default_value = (isset($_SESSION['cdm']['search']['query']) ? $_SESSION['cdm']['search']['query'] : '');
 
-    $search_service_endpoint = CDM_SEARCH_BLAST_SERVICE_URI;
+    $search_service_endpoint = variable_get(CDM_SEARCH_BLAST_SERVICE_URI);
 
 
     $form = cdm_dataportal_search_blast_form_prepare(

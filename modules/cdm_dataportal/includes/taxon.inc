@@ -643,7 +643,7 @@ function cdm_new_taxonRelationships_process_relationship_dto($taxon_relation, &$
 function cdm_related_taxon($taxon, $reltype_uuid = NULL) {
   static $relsign_homo = '≡';
   static $relsign_hetero = '=';
-  static $relsign_invalid = '&ndash;';
+  static $relsign_invalid = '-';
   static $nom_status_invalid_type_uuids =  array(
     UUID_NOMENCLATURALSTATUS_TYPE_INVALID,
     UUID_NOMENCLATURALSTATUS_TYPE_NUDUM,
@@ -749,7 +749,7 @@ function cdm_related_taxon($taxon, $reltype_uuid = NULL) {
 function cdm_new_related_taxon($taxon_dto, $reltype_uuid = NULL) {
     static $relsign_homo = '≡';
     static $relsign_hetero = '=';
-    static $relsign_invalid = '&ndash;';
+    static $relsign_invalid = '-';
     static $nom_status_invalid_type_uuids =  array(
         UUID_NOMENCLATURALSTATUS_TYPE_INVALID,
         UUID_NOMENCLATURALSTATUS_TYPE_NUDUM,
@@ -1057,10 +1057,14 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
     $showMedia_taxa = $gallery_settings['cdm_dataportal_show_taxon_thumbnails'];
     $showMedia_synonyms = $gallery_settings['cdm_dataportal_show_synonym_thumbnails'];
     $searched_in_classification = cdm_dataportal_searched_in_classification();
+
     $searched_in_classification_uuid = null;
     if(isset($searched_in_classification->uuid)){
         $searched_in_classification_uuid = $searched_in_classification->uuid;
+    }else{
+        $searched_in_classification_uuid = get_current_classification_uuid();
     }
+
 
     // .. Well, for sure not as performant as before, but better than nothing.
     $misapplied_uuids = array();
@@ -1202,7 +1206,7 @@ function createOutput($taxon_type, $taxon, $taxonUri, $referenceUri): string
     if ($taxon_type == TAXON_TYPE_SYNONYM){
       $skip_render_template_parts = ['secReference'];
     }else if ($taxon_type == TAXON_TYPE_MISAPPLIEDNAME){
-      $skip_render_template_parts =  ['referencePart', 'secReference'] ;
+      $skip_render_template_parts =  ['referencePart'] ;
     }else {
       $skip_render_template_parts = [];
       if (!isset_not_empty($render_template['secReference'])){
