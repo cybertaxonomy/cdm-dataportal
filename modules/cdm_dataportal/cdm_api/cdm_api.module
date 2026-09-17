@@ -782,7 +782,7 @@ function cdm_webservice_url($default = ''){
     $ws_url = variable_get('cdm_webservice_url', $default);
     if($ws_url && $_SERVER['REQUEST_SCHEME'] == 'https' && parse_url($ws_url, PHP_URL_SCHEME) === 'http'){
       $conform_ws_url = preg_replace("/^http\:/", "https:", $ws_url);
-      drupal_set_message('The <stong>CDM web service URL</stong> scheme should be set to <strong>HTTPS</strong> the '
+      drupal_set_message('The <strong>CDM web service URL</strong> scheme should be set to <strong>HTTPS</strong> the '
         . l('CDM Data Portal settings', 'admin/config/cdm_dataportal/settings'), 'warning');
     } else {
       $conform_ws_url = $ws_url;
