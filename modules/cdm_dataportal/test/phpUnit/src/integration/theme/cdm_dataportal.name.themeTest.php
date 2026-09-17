@@ -1,6 +1,9 @@
 <?php
 
-class NameThemeTests extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class NameThemeTests extends TestCase {
+
 
   function test_render_taxon_or_name() {
     $taxon1_file = "theme/cdm_dataportal.name.themeTest-taxon1.json";
