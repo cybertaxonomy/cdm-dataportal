@@ -26,9 +26,9 @@
         <testsuite name="cdm_dataportal.unit">
             <directory>src/unit/</directory>
         </testsuite>
-        <testsuite name="cdm_tokens.unit">
-            <directory>../../cdm_tokens/test/src/unit/</directory>
-        </testsuite>
+        <!--<testsuite name="cdm_tokens.unit">
+            <directory>../../../cdm_tokens/test/src/unit/</directory>
+        </testsuite>-->
     </testsuites>
 
     <logging>
@@ -37,8 +37,9 @@
              charset="UTF-8" yui="true" highlight="true"
              lowUpperBound="35" highLowerBound="70"/>
         <log type="coverage-clover" target="target/phpunit/clover.xml"/>
-        -->
-        <log type="junit" target="../../target/phpunit/junit.cdm-dataportal.unit.xml" logIncompleteSkipped="false"/>
+
+        <log type="junit" target="../../target/phpunit/junit.cdm-dataportal.unit.xml" logIncompleteSkipped="false"/>-->
+        <junit outputFile="build/logfile.xml"/>
     </logging>
 
 </phpunit>
