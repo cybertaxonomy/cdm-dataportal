@@ -365,9 +365,16 @@
                 <version>1.22.1</version>
             </dependency>
             <dependency>
+                <!-- remove from management after fully upgrading cdmlib to jakarta only -->
                 <groupId>org.glassfish.jaxb</groupId>
                 <artifactId>jaxb-runtime</artifactId>
                 <version>4.0.9</version>
+            </dependency>
+            <dependency>
+                <!-- remove from management after fully upgrading cdmlib to jakarta only -->
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>4.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
