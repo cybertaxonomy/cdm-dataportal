@@ -401,6 +401,11 @@
                 <artifactId>byte-buddy</artifactId>
                 <version>1.18.14</version>
             </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
         </dependencies>
         
     
@@ -489,7 +494,6 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
         </dependency>
         <!-- the following are only needed if we exclude cdmlib-model dependencies (see above),
              maybe not needed anymore when TaxonNodeStatus.getLabel() does not work on Language
