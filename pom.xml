@@ -264,6 +264,11 @@
                 <version>33.7.1-jre</version>
             </dependency>
             <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>2.50.0</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>1.28.0</version>
@@ -358,12 +363,6 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.22.1</version>
-            </dependency>
-            <dependency>
-            <!-- There are newer versions 4.x-->
-                <groupId>org.glassfish.jaxb</groupId>
-                <artifactId>jaxb-runtime</artifactId>
-                <version>2.3.9</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
