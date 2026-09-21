@@ -39,6 +39,8 @@
         <spring-security.version>5.8.16</spring-security.version> 
         <aspectj.version>1.9.25.1</aspectj.version>
         <hibernate.version>5.4.33.Final</hibernate.version>
+        <wagon.version>3.5.3</wagon.version>
+        <scm.provider.version>2.1.0</scm.provider.version>
     </properties>
     <scm>
       <connection>scm:git:https://dev.e-taxonomy.eu/git/cdm-dataportal.git</connection>
@@ -226,33 +228,36 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-scm</artifactId>
-                <version>1.0-beta-6</version>
+                <version>${wagon.version}</version>
             </extension>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
-                <version>1.0-beta-6</version>
+                <version>${wagon.version}</version>
             </extension>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh-external</artifactId>
-                <version>1.0-beta-6</version>
+                <version>${wagon.version}</version>
             </extension>
+            
+            <!-- Maven SCM Komponenten (Ersetzt die 1.0 Versionen für Java 11/17 Support) -->
             <extension>
                 <groupId>org.apache.maven.scm</groupId>
                 <artifactId>maven-scm-manager-plexus</artifactId>
-                <version>1.0</version>
+                <version>${scm.provider.version}</version>
             </extension>
             <extension>
                 <groupId>org.apache.maven.scm</groupId>
                 <artifactId>maven-scm-provider-svnexe</artifactId>
-                <version>1.0</version>
+                <version>${scm.provider.version}</version>
             </extension>
-            <!-- WebDAV plugin to upload snapshots -->
+            
+            <!-- WebDAV-Erweiterung für moderne Maven-Versionen -->
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav</artifactId>
-                <version>1.0-beta-2</version>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>${wagon.version}</version>
             </extension>
         </extensions>
     </build>
