@@ -279,6 +279,12 @@
                 <version>1.28.0</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.15.0</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-buffer</artifactId>
                 <version>${netty.version}</version>
