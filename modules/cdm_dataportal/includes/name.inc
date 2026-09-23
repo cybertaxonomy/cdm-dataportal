@@ -860,7 +860,7 @@ if (isset_not_empty($skip_render_template_parts)) {
             $taggedNameNew = array();
             $nameInSourceActive = false;
             foreach ($taggedName as $element) {
-                if ($element->type != 'authors' && $element->type != 'nameInSourceSeparator' && !$nameInSourceActive && ($element->type != 'nomStatus' && !$hasStatusPart)) {
+                if ($element->type != 'authors' && $element->type != 'nameInSourceSeparator' && !$nameInSourceActive && !($element->type == 'nomStatus' && !$hasStatusPart)) {
                     $taggedNameNew[] = $element;
                 } else if ($element->type == 'nameInSourceSeparator' && !$nameInSourceActive) {
                     $nameInSourceActive = true;
