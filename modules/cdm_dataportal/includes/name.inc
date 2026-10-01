@@ -1672,8 +1672,9 @@ function render_registration($registration){
     if(isset($registration->institution->titleCache)){
       $office_class_attribute = registration_institution_class_attribute($registration);
     }
+
     $markup = "<span class=\"registration $office_class_attribute\">" . render_link_to_registration($registration->identifier) . ', '
-      .  preg_replace('/^([^T]*)(.*)$/', '${1}', $registration->registrationDate)
+      .  create_date_string($registration->registrationDate)
       . '</span>';
   }
   return $markup;

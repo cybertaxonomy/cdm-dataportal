@@ -536,9 +536,50 @@ function infer_mime_type($filepath) {
  * @return
  *  the formatted string representation of the $datetime
  */
-function format_datetime($datetime, $format = 'Y-m-d H:i:s O', $strip_zeros = true){
+function format_datetime($zoned_datetime, $format = 'Y-m-d H:i:s O', $strip_zeros = true){
+  $year = $zoned_datetime->year;
+  $monthValue = $zoned_datetime->monthValue;
+  $dayOfMonth = $zoned_datetime->dayOfMonth;
+  $hour = $zoned_datetime->hour;
+  $minute = $zoned_datetime->minute;
+  $second = $zoned_datetime->second;
+  $offsetSeconds = $zoned_datetime->offset->totalSeconds;
 
-  return date($format, strtotime($datetime));
+  // Offset in +HHMM Format umwandeln
+  $offsetHours = intdiv($offsetSeconds, 3600);
+  $offsetMinutes = intdiv(abs($offsetSeconds) % 3600, 60);
+  $offsetStr = sprintf('%+03d%02d', $offsetHours, $offsetMinutes);
+
+  // DateTime erstellen
+  $dateTime = new DateTime(sprintf(
+    '%04d-%02d-%02d %02d:%02d:%02d',
+    $year,
+    $monthValue,
+    $dayOfMonth,
+    $hour,
+    $minute,
+    $second
+  ));
+
+  return $dateTime->format($format);
+}
+
+function create_date_string($zone_date) {
+  $date_string = '';
+  if (isset($zone_date->year)){
+    $date_string .= $zone_date->year;
+  } else{
+    return $date_string;
+  }
+  if (isset($zone_date->monthValue)){
+    $date_string .= "-" . $zone_date->monthValue;
+  } else{
+    return $date_string;
+  }
+  if (isset($zone_date->dayOfMonth)){
+    $date_string .= "-" . $zone_date->dayOfMonth;
+  }
+  return $date_string;
 }
 
 /**
