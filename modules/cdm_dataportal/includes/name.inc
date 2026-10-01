@@ -1674,7 +1674,7 @@ function render_registration($registration){
     }
 
     $markup = "<span class=\"registration $office_class_attribute\">" . render_link_to_registration($registration->identifier) . ', '
-      .  create_date_string($registration->registrationDate)
+      .  format_datetime($registration->registrationDate, 'Y-m-d')
       . '</span>';
   }
   return $markup;
