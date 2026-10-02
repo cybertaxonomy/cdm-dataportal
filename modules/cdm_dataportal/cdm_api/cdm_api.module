@@ -526,7 +526,6 @@ function infer_mime_type($filepath) {
     return 'text/html';
   }
 }
-
 /**
  * Formats a mysql datatime as string
  *
@@ -536,33 +535,11 @@ function infer_mime_type($filepath) {
  * @return
  *  the formatted string representation of the $datetime
  */
-function format_datetime($zoned_datetime, $format = 'Y-m-d H:i:s O', $strip_zeros = true){
-  $year = $zoned_datetime->year;
-  $monthValue = $zoned_datetime->monthValue;
-  $dayOfMonth = $zoned_datetime->dayOfMonth;
-  $hour = $zoned_datetime->hour;
-  $minute = $zoned_datetime->minute;
-  $second = $zoned_datetime->second;
-  $offsetSeconds = $zoned_datetime->offset->totalSeconds;
+function format_datetime($datetime, $format = 'Y-m-d H:i:s O', $strip_zeros = true) {
 
-  // Offset in +HHMM Format umwandeln
-  $offsetHours = intdiv($offsetSeconds, 3600);
-  $offsetMinutes = intdiv(abs($offsetSeconds) % 3600, 60);
-  $offsetStr = sprintf('%+03d%02d', $offsetHours, $offsetMinutes);
-
-  // DateTime erstellen
-  $dateTime = new DateTime(sprintf(
-    '%04d-%02d-%02d %02d:%02d:%02d',
-    $year,
-    $monthValue,
-    $dayOfMonth,
-    $hour,
-    $minute,
-    $second
-  ));
-
-  return $dateTime->format($format);
+  return date($format, strtotime($datetime));
 }
+
 
 /**
  * Converts an ISO 8601 org.joda.time.Partial to a year.
