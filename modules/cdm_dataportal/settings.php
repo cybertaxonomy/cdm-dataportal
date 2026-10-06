@@ -1062,6 +1062,7 @@ function cdm_settings_general() {
       'class' => 'index-trigger'
     ),
   );
+  /*
   $form['cdm_webservice']['freetext_index']['operations'] = array(
     '#markup' => "<div>" . t('Operations: !url1 !url2', array(
         '!url1' => l(t("Purge"), cdm_compose_ws_url(CDM_WS_MANAGE_PURGE, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
@@ -1094,6 +1095,34 @@ function cdm_settings_general() {
     )
   );
   _add_js_cdm_ws_progressbar(".index-trigger", "#index-progress");
+
+  $form['cdm_webservice']['freetext_index']['operations'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Index Operations'),
+  );
+*/
+  $form['cdm_webservice']['freetext_index']['cdm_login'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Login'),
+    '#description' => t('Format: user:password'),
+    '#required' => FALSE,
+  );
+
+  $form['cdm_webservice']['freetext_index']['purge'] = array(
+    '#type' => 'submit',
+    '#value' => t('Purge'),
+    '#submit' => array('cdm_purge_submit'),
+  );
+
+  $form['cdm_webservice']['freetext_index']['reindex'] = array(
+    '#type' => 'submit',
+    '#value' => t('Reindex'),
+    '#submit' => array('cdm_reindex_submit'),
+  );
+
+  $form['cdm_webservice']['freetext_index']['progress'] = array(
+    '#markup' => '<div id="index-progress"></div>',
+  );
 
   $form['cdm_webservice']['proxy'] = array(
     '#type' => 'fieldset',
@@ -4085,5 +4114,63 @@ function submit_json_as_php_array($form, &$form_state) {
         $form_state['values'][$element] = NULL;
       }
     }
+  }
+}
+
+function cdm_make_authenticated_request($url, $username, $password) {
+  $headers = array(
+    'Authorization' => 'Basic ' . base64_encode($username . ':' . $password),
+  );
+
+  $options = array(
+    'headers' => $headers,
+    'timeout' => 30,
+  );
+
+  $response = drupal_http_request($url, $options);
+
+  if ($response->code == 200) {
+    return $response->data; // Response body
+  } else {
+    watchdog('cdm', 'Request failed: @code - @message',
+      array('@code' => $response->code, '@message' => $response->error),
+      WATCHDOG_ERROR);
+    return FALSE;
+  }
+}
+
+function cdm_purge_submit(&$form, &$form_state) {
+  $login = $form_state['values']['cdm_login'];
+  if (empty($login) || strpos($login, ':') === FALSE) {
+    form_set_error('cdm_login', t('Please enter credentials in format user:password'));
+    return;
+  }
+
+  list($username, $password) = explode(':', $login, 2);
+
+  $frontendURL = variable_get('cdm_webservice_url', '');
+  $url = cdm_compose_ws_url(CDM_WS_MANAGE_PURGE, NULL,
+    'frontendBaseUrl=' . urlencode($frontendURL));
+
+  if (cdm_make_authenticated_request($url, $username, $password)) {
+    drupal_set_message(t('Purge operation initiated'));
+  } else {
+    drupal_set_message(t('Purge operation failed'), 'error');
+  }
+}
+
+function cdm_reindex_submit(&$form, &$form_state) {
+  // Analog zu cdm_purge_submit
+  $login = $form_state['values']['cdm_login'];
+  list($username, $password) = explode(':', $login, 2);
+
+  $frontendURL = variable_get('cdm_webservice_url', '');
+  $url = cdm_compose_ws_url(CDM_WS_MANAGE_REINDEX, NULL,
+    'frontendBaseUrl=' . urlencode($frontendURL));
+
+  if (cdm_make_authenticated_request($url, $username, $password)) {
+    drupal_set_message(t('Reindex operation initiated'));
+  } else {
+    drupal_set_message(t('Reindex operation failed'), 'error');
   }
 }
