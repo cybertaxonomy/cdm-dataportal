@@ -14,7 +14,7 @@ class ImageMediaItem {
     $this->url = $url;
   }
 
-  public static function fromMediaRepresentationPart($mediaRepresentation){
+  public static function fromMediaRepresentation($mediaRepresentation){
     $h = @$mediaRepresentation->height;
     $w = @$mediaRepresentation->width;
     return new ImageMediaItem($mediaRepresentation->uri, new MediaSize($w, $h));
