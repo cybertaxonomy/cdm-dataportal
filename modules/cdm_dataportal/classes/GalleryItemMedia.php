@@ -40,7 +40,7 @@ class GalleryItemMedia {
 
   private function findRepresentations($media) {
 
-    if (is_array($media->representations) && isset($media->representations[0]->parts[0])) {
+    if (is_array($media->representations) ) {
       $thumbnail_representations = cdm_preferred_media_representations($media, $this->image_mime_type_list,
           $this->thumbnail_width, $this->thumbnail_height, FALSE, FALSE);
         
@@ -208,12 +208,8 @@ class GalleryItemMedia {
    *  The fist URL found in the representation parts or null
    */
   private function urlOf($media_representation){
-    if(isset($media_representation->parts)){
-      foreach($media_representation->parts as $part){
-        if(isset($part->uri)){
-          return $part->uri;
-        }
-      }
+    if(isset($media_representation->uri)){
+      return $media_representation->uri;
     }
     return null;
   }

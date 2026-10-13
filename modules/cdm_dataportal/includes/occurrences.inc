@@ -216,10 +216,8 @@ function addImageGallery($galleryName, $imageUuids)
 
 function getMediaUri($media)
 {
-    if (isset($media->representations) && sizeof($media->representations) == 1
-        && isset($media->representations[0]->parts) &&
-        sizeof($media->representations[0]->parts) == 1) {
-        return $media->representations[0]->parts[0]->uri;
+    if (isset($media->representations) && sizeof($media->representations) == 1) {
+        return $media->representations[0]->uri;
     }
     return null;
 }

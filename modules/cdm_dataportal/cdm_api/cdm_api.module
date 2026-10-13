@@ -394,8 +394,8 @@ function cdm_preferred_media_representations($media, array $mime_types, $width =
         foreach ($media->representations as &$representation) {
             // If the mimetype is not known, try inferring it.
             if (!$representation->mimeType) {
-                if (isset($representation->parts[0])) {
-                    $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
+                if (isset($representation->uri)) {
+                    $representation->mimeType = infer_mime_type($representation->uri);
                 }
             }
             $mime_type_match = array_search($representation->mimeType, $mime_types) !== false;
@@ -403,14 +403,12 @@ function cdm_preferred_media_representations($media, array $mime_types, $width =
             if ($match_per_mime_type_filter) {
                 $expansion_delta_sum = 0;
                 $valid_parts_cnt = 0;
-                // Look for part with the best matching size.
-                foreach ($representation->parts as $part) {
-                    if (empty($part->uri)) {
+                    if (empty($representation->uri)) {
                         // skip part if URI is missing
                         continue;
                     }
                     if ($strict_size_limit) {
-                        if (isset($part->width) && isset($part->height) && $part->width <= $width && $part->height <= $height) {
+                        if (isset($representation->width) && isset($representation->height) && $representation->width <= $width && $representation->height <= $height) {
                             $valid_parts_cnt++;
                         }
                     } else {
@@ -419,8 +417,8 @@ function cdm_preferred_media_representations($media, array $mime_types, $width =
                         $expansion_delta = PHP_INT_MAX; // biggest delta for unknown sizes
 
                         // determine the optimal size
-                        if (isset($part->width) && isset($part->height)) {
-                            $expansion = $part->width * $part->height;
+                        if (isset($representation->width) && isset($representation->height)) {
+                            $expansion = $representation->width * $representation->height;
                             if ($width != null && $height != null) {
                                 $optimalExpansion = $height * $width;
                             } else {
@@ -431,7 +429,7 @@ function cdm_preferred_media_representations($media, array $mime_types, $width =
                         }
                         // sum up the expansionDeltas of all parts contained in the representation
                         $expansion_delta_sum += $expansion_delta;
-                    }// end parts
+
                 }
                 if ($valid_parts_cnt > 0) {
                     $expansion_delta_sum = $expansion_delta_sum / $valid_parts_cnt;
@@ -443,8 +441,8 @@ function cdm_preferred_media_representations($media, array $mime_types, $width =
         foreach ($media->representations->items as &$representation) {
             // If the mimetype is not known, try inferring it.
             if (!$representation->mimeType) {
-                if (isset($representation->parts[0])) {
-                    $representation->mimeType = infer_mime_type($representation->parts[0]->uri);
+                if (isset($representation->uri)) {
+                    $representation->mimeType = infer_mime_type($representation->uri);
                 }
             }
             $mime_type_match = array_search($representation->mimeType, $mime_types) !== false;
