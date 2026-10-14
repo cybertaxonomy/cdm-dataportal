@@ -73,11 +73,6 @@ public abstract class CdmDataPortalTestBase extends Assert{
 		logger.debug("@AfterClass: closeDriver()");
 		if (driver != null) {
 		    try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.debug("Sleep before close the driver was interrupted.");
-            }
-		    try {
 		        driver.quit();
             } catch (WebDriverException  we) {
                 logger.debug("WebDriver quit timed out." + we.getMessage());
