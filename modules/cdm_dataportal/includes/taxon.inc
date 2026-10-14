@@ -1083,7 +1083,7 @@ function compose_list_of_taxon_search_result($taxon_list, $freetext_search_resul
     $table_of_accepted = array();
     foreach ($misapplied_uuids as $mispplication_uuid) {
         $taxonRelationsDTO = cdm_ws_get(CDM_WS_PORTAL_TAXON_RELATIONS_DTO, array(
-            $mispplication_uuid,
+            $mispplication_uuid
         ));
         if(isset($taxonRelationsDTO->relations)){
             $taxon_relationship_types = variable_get(CDM_TAXON_RELATIONSHIP_TYPES, unserialize(CDM_TAXON_RELATIONSHIP_TYPES_DEFAULT));

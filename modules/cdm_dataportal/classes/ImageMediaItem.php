@@ -14,10 +14,10 @@ class ImageMediaItem {
     $this->url = $url;
   }
 
-  public static function fromMediaRepresentationPart($mediaRepresentationPart){
-    $h = @$mediaRepresentationPart->height;
-    $w = @$mediaRepresentationPart->width;
-    return new ImageMediaItem($mediaRepresentationPart->uri, new MediaSize($w, $h));
+  public static function fromMediaRepresentation($mediaRepresentation){
+    $h = @$mediaRepresentation->height;
+    $w = @$mediaRepresentation->width;
+    return new ImageMediaItem($mediaRepresentation->uri, new MediaSize($w, $h));
   }
 
   /**

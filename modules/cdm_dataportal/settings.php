@@ -1056,44 +1056,47 @@ function cdm_settings_general() {
     );
   };
 
-  $frontentURL = urlencode(variable_get('cdm_webservice_url', ''));
-  $trigger_link_options = array(
-    'attributes' => array(
-      'class' => 'index-trigger'
-    ),
-  );
-  $form['cdm_webservice']['freetext_index']['operations'] = array(
-    '#markup' => "<div>" . t('Operations: !url1 !url2', array(
-        '!url1' => l(t("Purge"), cdm_compose_ws_url(CDM_WS_MANAGE_PURGE, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
-        '!url2' => l(t("Reindex"), cdm_compose_ws_url(CDM_WS_MANAGE_REINDEX, NULL, 'frontendBaseUrl=' . $frontentURL), $trigger_link_options),
-      ))
-    . '<div id="index-progress"></div></div>',
-  );
-
   $form['cdm_webservice']['freetext_index']['cdm_login'] = array(
-    // this must not be stored, it is only used by the _add_js_cdm_ws_progressbar
+    // this must not be stored, it is only used for the purge and reindex requests
     '#type' => 'textfield',
     '#title' => t('Login'),
-    '#description' => t('Your cdm user credentials in the following form: <code>user:password</code>')
+    '#description' => t('Your cdm user credentials in the following form: <code>user:password</code>'),
+    '#required' => FALSE,
   );
-  drupal_add_js('
+
+  $form['cdm_webservice']['freetext_index']['purge'] = array(
+    '#type' => 'submit',
+    '#value' => t('Purge'),
+    '#submit' => array('cdm_purge_submit'),
+  );
+
+  $form['cdm_webservice']['freetext_index']['reindex'] = array(
+    '#type' => 'submit',
+    '#value' => t('Reindex'),
+    '#submit' => array('cdm_reindex_submit'),
+  );
+
+  $form['cdm_webservice']['freetext_index']['progress'] = array(
+    '#markup' => '<div id="index-progress"></div>',
+  );
+
+  // show the progress of a purge or reindex operation which has been started
+  // by cdm_purge_submit() or cdm_reindex_submit()
+  if (!empty($_SESSION['cdm_index_monitor_url'])) {
+    $monitor_url = $_SESSION['cdm_index_monitor_url'];
+    unset($_SESSION['cdm_index_monitor_url']);
+    drupal_add_js(drupal_get_path('module', 'cdm_dataportal') . '/js/cdm_ws_progress_monitor.js');
+    drupal_add_js('
         jQuery(document).ready(function() {
-             jQuery("#edit-cdm-login").change(function (e) {
-                var login = jQuery(e.target).val();
-                jQuery("#edit-freetext-index .index-trigger").each(function(index){
-                   var url = jQuery(this).attr("href");
-                   url = url.replace(/:\/\/[^@]+@|:\/\//, "://" + login + "@");
-                   jQuery(this).attr("href", url);
-                });
-            });
+          jQuery("#index-progress").cdm_ws_progress_monitor(' . drupal_json_encode(url('cdm_api/proxy/' . urlencode($monitor_url))) . ');
         });
       ',
-    array(
-      'type' => 'inline',
-      'scope' => 'footer'
-    )
-  );
-  _add_js_cdm_ws_progressbar(".index-trigger", "#index-progress");
+      array(
+        'type' => 'inline',
+        'scope' => 'footer'
+      )
+    );
+  }
 
   $form['cdm_webservice']['proxy'] = array(
     '#type' => 'fieldset',
@@ -4085,5 +4088,107 @@ function submit_json_as_php_array($form, &$form_state) {
         $form_state['values'][$element] = NULL;
       }
     }
+  }
+}
+
+/**
+ * Sends a GET request with HTTP basic authentication, redirects are not followed.
+ *
+ * @return object
+ *   The response object as returned by drupal_http_request()
+ */
+function cdm_make_authenticated_request($url, $username, $password) {
+  $options = array(
+    'headers' => array(
+      'Authorization' => 'Basic ' . base64_encode($username . ':' . $password),
+      'Accept' => 'application/json',
+    ),
+    'timeout' => 30,
+    // the redirect location is the url of the progress monitor
+    'max_redirects' => 0,
+  );
+
+  $response = drupal_http_request($url, $options);
+
+  if ($response->code < 200 || $response->code >= 400) {
+    watchdog('cdm', 'Request to @url failed: @code - @message',
+      array('@url' => $url, '@code' => $response->code, '@message' => isset($response->error) ? $response->error : ''),
+      WATCHDOG_ERROR);
+  }
+  return $response;
+}
+
+function cdm_purge_submit(&$form, &$form_state) {
+  _cdm_start_index_operation($form_state, CDM_WS_MANAGE_PURGE, t('Purge'));
+}
+
+function cdm_reindex_submit(&$form, &$form_state) {
+  _cdm_start_index_operation($form_state, CDM_WS_MANAGE_REINDEX, t('Reindex'));
+}
+
+/**
+ * Starts a purge or reindex operation at the cdm webservice.
+ *
+ * The operation is requested with dataRedirect=true so that the webservice
+ * responds with the url of the progress monitor. This url is stored in the
+ * session, so that the settings form can show a progress bar after the
+ * redirect.
+ *
+ * @param array $form_state
+ * @param string $ws_uri
+ *   CDM_WS_MANAGE_PURGE or CDM_WS_MANAGE_REINDEX
+ * @param string $label
+ *   The label of the operation used in messages
+ */
+function _cdm_start_index_operation(&$form_state, $ws_uri, $label) {
+  $login = $form_state['values']['cdm_login'];
+  if (empty($login) || strpos($login, ':') === FALSE) {
+    form_set_error('cdm_login', t('Please enter credentials in format user:password'));
+    return;
+  }
+
+  list($username, $password) = explode(':', $login, 2);
+
+  $frontendURL = variable_get('cdm_webservice_url', '');
+  $url = cdm_compose_ws_url($ws_uri, NULL,
+    'frontendBaseUrl=' . urlencode($frontendURL) . '&dataRedirect=true');
+
+  $response = cdm_make_authenticated_request($url, $username, $password);
+  if ($response->code < 200 || $response->code >= 400) {
+    drupal_set_message(t('@operation operation failed: @code @error',
+      array('@operation' => $label, '@code' => $response->code, '@error' => isset($response->error) ? $response->error : '')), 'error');
+    return;
+  }
+
+  drupal_set_message(t('@operation operation initiated', array('@operation' => $label)));
+
+  // The webservice either responds with a JSON object containing the
+  // redirectURL or with an HTTP redirect to the progress monitor.
+  $monitor_url = NULL;
+  if ($response->code >= 300 && isset($response->headers['location'])) {
+    $monitor_url = $response->headers['location'];
+  }
+  elseif (isset($response->data)) {
+    $jsonp_redirect = json_decode($response->data);
+    if (isset($jsonp_redirect->redirectURL)) {
+      $monitor_url = $jsonp_redirect->redirectURL;
+    }
+  }
+
+  if ($monitor_url) {
+    if (strpos($monitor_url, '/') === 0) {
+      // absolute path, prepend scheme and host of the webservice
+      $ws_url_parts = parse_url(cdm_webservice_url());
+      $monitor_url = $ws_url_parts['scheme'] . '://' . $ws_url_parts['host']
+        . (isset($ws_url_parts['port']) ? ':' . $ws_url_parts['port'] : '') . $monitor_url;
+    }
+    elseif (!preg_match('#^https?://#', $monitor_url)) {
+      // relative url
+      $monitor_url = cdm_webservice_url() . $monitor_url;
+    }
+    $_SESSION['cdm_index_monitor_url'] = $monitor_url;
+  }
+  else {
+    watchdog('cdm', 'No progress monitor url in response of @url', array('@url' => $url), WATCHDOG_WARNING);
   }
 }

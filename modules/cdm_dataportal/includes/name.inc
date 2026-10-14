@@ -860,7 +860,7 @@ if (isset_not_empty($skip_render_template_parts)) {
             $taggedNameNew = array();
             $nameInSourceActive = false;
             foreach ($taggedName as $element) {
-                if ($element->type != 'authors' && $element->type != 'nameInSourceSeparator' && !$nameInSourceActive && ($element->type != 'nomStatus' && !$hasStatusPart)) {
+                if ($element->type != 'authors' && $element->type != 'nameInSourceSeparator' && !$nameInSourceActive && !($element->type == 'nomStatus' && !$hasStatusPart)) {
                     $taggedNameNew[] = $element;
                 } else if ($element->type == 'nameInSourceSeparator' && !$nameInSourceActive) {
                     $nameInSourceActive = true;
@@ -1672,8 +1672,9 @@ function render_registration($registration){
     if(isset($registration->institution->titleCache)){
       $office_class_attribute = registration_institution_class_attribute($registration);
     }
+
     $markup = "<span class=\"registration $office_class_attribute\">" . render_link_to_registration($registration->identifier) . ', '
-      .  preg_replace('/^([^T]*)(.*)$/', '${1}', $registration->registrationDate)
+      .  format_datetime($registration->registrationDate, 'Y-m-d')
       . '</span>';
   }
   return $markup;

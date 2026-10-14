@@ -1020,7 +1020,7 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
 
   if ($taxon_profile_image_settings['show'] && !$hide_taxon_profile_image) {
 
-    $representationPart = new stdClass();
+    $representation = new stdClass();
     $attributes = array();
    // if (isset_not_empty($media) && isset_not_empty($media -> count) && $media -> count > 0) {
     if (isset($media) && count($media) > 0){
@@ -1042,14 +1042,14 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
                 $taxon_profile_image_settings['maxextend']);
 
            //TODO: $representationPart = array_shift($pref_representations);
-            $representationPart = array_shift($pref_representations);
+            $representation = array_shift($pref_representations);
             $uri_String = "";
-            if (isset_not_empty($representationPart) && isset_not_empty($representationPart->parts) && isset_not_empty($representationPart->parts[0])) {
+            if (isset_not_empty($representation) && isset_not_empty($representation) && isset_not_empty($representation)) {
                 //if (is_string($representationPart->uri)) {
-                if (is_string($representationPart->parts[0]->uri)){
-                  $uri_String = $representationPart->parts[0]->uri;
+                if (is_string($representation->uri)){
+                  $uri_String = $representation->uri;
                 } else {
-                    $uri_String = $representationPart->parts[0]->uri->javaUri;
+                    $uri_String = $representation->uri->javaUri;
                 }
                 $attributes['alt'] = $uri_String;
             }
@@ -1070,17 +1070,17 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
           $url = file_create_url($profile_image_file->uri);
           $image_info = image_get_info($profile_image_file->uri);
           if($image_info){
-            $representationPart->width = $image_info['width'];
-            $representationPart->height = $image_info['height'];
-            $representationPart->uri = $url;
+            $representation->width = $image_info['width'];
+            $representation->height = $image_info['height'];
+            $representation->uri = $url;
           }
         }
-        if(!isset($representationPart->width)){
+        if(!isset($representation->width)){
           // either no custom placeholder defined or $image_info could not be loaded
           // use the hard coded default
-          $representationPart->width = 184;
-          $representationPart->height = 144;
-          $representationPart->uri = base_path() . drupal_get_path('module',
+          $representation->width = 184;
+          $representation->height = 144;
+          $representation->uri = base_path() . drupal_get_path('module',
               'cdm_dataportal') . '/images/no_picture.png';
         }
         $attributes['alt'] = "no image available";
@@ -1088,10 +1088,10 @@ function compose_cdm_taxon_page_new_profile($taxon_dto, $merged_tree, $media, $a
     }
 
     //if (isset($representationPart->uri)) {
-    if (isset($representationPart->parts[0]->uri)){
+    if (isset($representation->uri)){
       $profile_image = cdm_media_gallery_entry_image(
         //TODO: ImageMediaItem::fromMediaRepresentationPart($representationPart),
-        ImageMediaItem::fromMediaRepresentationPart($representationPart->parts[0]),
+        ImageMediaItem::fromMediaRepresentation($representation),
         $taxon_profile_image_settings['maxextend'],
         FALSE,
         $attributes
@@ -1214,7 +1214,7 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
 
     if ($taxon_profile_image_settings['show'] && !$hide_taxon_profile_image) {
 
-        $representationPart = new stdClass();
+        $representation= new stdClass();
         $attributes = array();
         if (isset($media[0])) {
             // due to a bug the portal/taxon/{uuid}/media service only delivers a filtered media object
@@ -1233,12 +1233,12 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
             if(count($preferred_representations) > 0){
 
                 $representation = array_shift($preferred_representations);
-                $representationPart = $representation->parts[0];
-                $attributes['alt'] = $representationPart->uri;
+
+                $attributes['alt'] = $representation->uri;
 
                 if (!empty($taxon_profile_image_settings['media_uri_query'])) {
-                    $representationPart->uri = $representationPart->uri
-                        . (strpos($representationPart->uri, '?') !== FALSE ? '&' : '?')
+                    $representation->uri = $representation->uri
+                        . (strpos($representation->uri, '?') !== FALSE ? '&' : '?')
                         . $taxon_profile_image_settings['media_uri_query'];
                 }
             }
@@ -1252,26 +1252,26 @@ function compose_cdm_taxon_page_profile($taxon, $merged_tree, $media, $add_synon
                     $url = file_create_url($profile_image_file->uri);
                     $image_info = image_get_info($profile_image_file->uri);
                     if($image_info){
-                        $representationPart->width = $image_info['width'];
-                        $representationPart->height = $image_info['height'];
-                        $representationPart->uri = $url;
+                        $representation->width = $image_info['width'];
+                        $representation->height = $image_info['height'];
+                        $representation->uri = $url;
                     }
                 }
-                if(!isset($representationPart->width)){
+                if(!isset($representation->width)){
                     // either no custom placeholder defined or $image_info could not be loaded
                     // use the hard coded default
-                    $representationPart->width = 184;
-                    $representationPart->height = 144;
-                    $representationPart->uri = base_path() . drupal_get_path('module',
+                    $representation->width = 184;
+                    $representation->height = 144;
+                    $representation->uri = base_path() . drupal_get_path('module',
                             'cdm_dataportal') . '/images/no_picture.png';
                 }
                 $attributes['alt'] = "no image available";
             }
         }
 
-        if (isset($representationPart->uri)) {
+        if (isset($representation->uri)) {
             $profile_image = cdm_media_gallery_entry_image(
-                ImageMediaItem::fromMediaRepresentationPart($representationPart),
+                ImageMediaItem::fromMediaRepresentation($representation),
                 $taxon_profile_image_settings['maxextend'],
                 FALSE,
                 $attributes
@@ -1440,7 +1440,10 @@ function compose_cdm_taxon_page_new_synonymy($taxon_dto, $add_accepted_taxon) {
     if (variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE, 0)) {
       $label = variable_get(CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL, CDM_SYNONYMY_ACCEPTED_TAXON_SEC_SEPARATE_LABEL_DEFAULT);
       $sec_string = $taxon_dto->secTitleCache;
-      $ends_with_point = substr($sec_string,-strlen("."))===".";
+      $ends_with_point = false;
+      if ($sec_string != null){
+        $ends_with_point = substr($sec_string,-strlen("."))===".";
+      }
       if (!$ends_with_point){
         $sec_string= $sec_string . ".";
       }

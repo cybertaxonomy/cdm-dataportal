@@ -147,8 +147,8 @@ function read_media_metadata($media)
 
 
   // Filename.
-  if (!empty($media->representations[0]->parts[0]->uri)) {
-    $fileUri = $media->representations[0]->parts[0]->uri;
+  if (!empty($media->representations[0]->uri)) {
+    $fileUri = $media->representations[0]->uri;
     $filename = substr($fileUri, strrpos($fileUri, "/") + 1);
     $metadata['filename'] = $filename;
   } else {
@@ -371,7 +371,7 @@ function compose_cdm_media_gallery($configuration) {
           //TODO
           $complete_media = cdm_ws_get(CDM_WS_MEDIA, $media->uuid);
         }
-        if ($has_uri && (is_array($complete_media->representations) && isset($complete_media->representations[0]->parts[0]))) {//||$complete_media->representations->count > 0) {
+        if (is_array($complete_media->representations) && isset($complete_media->representations[0])) {//||$complete_media->representations->count > 0) {
 
           $gallery_media_item = new GalleryItemMedia($complete_media, $max_extend, $max_extend);
 
@@ -629,22 +629,22 @@ function cdm_media_gallerie_entry_webapp($galleryItemMedia, $maxExtend, $addPass
  *   - mediaRepresentationPart: The CDM MediaRepresentationPart instance to be displayed.
  *   - maxExtend: The maximum extend of the image viewer view port.
  */
-function cdm_openlayers_image($mediaRepresentationPart, $maxExtend) {
+function cdm_openlayers_image($mediaRepresentation, $maxExtend) {
 
   _add_js_openlayers();
 
   // TODO merge code below with code from theme_cdm_media_gallerie_image
   // var_dump("MEDIA URI: " . $mediaRepresentationPart->uri);
   // TODO merge code below with code from theme_cdm_media_gallerie_image
-  $w = @$mediaRepresentationPart->width;
-  $h = @$mediaRepresentationPart->height;
+  $w = @$mediaRepresentation->width;
+  $h = @$mediaRepresentation->height;
 
   if (!($w && $h)) {
     // Take url and replace spaces.
-    $image_uri = str_replace(' ', '%20', $mediaRepresentationPart->uri);
+    $image_uri = str_replace(' ', '%20', $mediaRepresentation->uri);
     $imageDimensions = getimagesize_remote($image_uri);
     if (!$imageDimensions) {
-      return '<div>' . t('Image unavailable, uri:') . $mediaRepresentationPart->uri . '</div>';
+      return '<div>' . t('Image unavailable, uri:') . $mediaRepresentation->uri . '</div>';
     }
     $w = $imageDimensions[0];
     $h = $imageDimensions[1];
@@ -678,7 +678,7 @@ function cdm_openlayers_image($mediaRepresentationPart, $maxExtend) {
 
  var graphic = new OpenLayers.Layer.Image(
           \'Image Title\',
-          \'' . $mediaRepresentationPart->uri . '\',
+          \'' . $mediaRepresentation->uri . '\',
           new OpenLayers.Bounds(0, 0, ' . $w . ', ' . $h . '),
           new OpenLayers.Size(' . $w . ', ' . $h . '),
           imageLayerOptions
@@ -932,23 +932,23 @@ function getimagesize_remote($image_url) {
 function compose_cdm_media_mime_application($media_representation, $feature) {
 
   $out = '';
-  if (!empty($representation->parts)) {
-    foreach ($media_representation->parts as $part) {
-      $attributes = [
-        'title' => theme('cdm_feature_name', ['feature_name' => $feature->representation_L10n]),
-        'target' => '_blank',
-      ];
-      /*
-      $attributes = array('title'=>$feature->representation_L10n,'target'=>'_blank');
-      $attributes = array('title'=>'original publication', 'target'=>'_blank');
-      */
-      $out .= l(media_feature_icon($feature, $part->uri), $part->uri, [
-        'attributes' => $attributes,
-        'absolute' => TRUE,
-        'html' => TRUE,
-      ]);
-    }
-  }
+
+
+  $attributes = [
+    'title' => theme('cdm_feature_name', ['feature_name' => $feature->representation_L10n]),
+    'target' => '_blank',
+  ];
+  /*
+  $attributes = array('title'=>$feature->representation_L10n,'target'=>'_blank');
+  $attributes = array('title'=>'original publication', 'target'=>'_blank');
+  */
+  $out .= l(media_feature_icon($feature, $media_representation->uri), $media_representation->uri, [
+    'attributes' => $attributes,
+    'absolute' => TRUE,
+    'html' => TRUE,
+  ]);
+
+
   return $out;
 }
 
@@ -971,21 +971,14 @@ function compose_cdm_media_mime_image($media_representation, $feature) {
     'rel' => 'representation-' . $media_representation->uuid,
     'title' => $feature->representation_L10n,
   );
-  for ($i = 0; $part = $media_representation->parts[$i]; $i++) {
-    if ($i == 0) {
-      $out .= l(media_feature_icon($feature, $part->uri), $part->uri, array(
-        'attributes' => $attributes,
-        'absolute' => TRUE,
-        'html' => TRUE,
-      ));
-    }
-    else {
-      $out .= l('', $part->uri, array(
-        'attributes' => $attributes,
-        'absolute' => TRUE,
-      ));
-    }
-  }
+
+  $out .= l(media_feature_icon($feature, $media_representation->uri), $media_representation->uri, array(
+    'attributes' => $attributes,
+    'absolute' => TRUE,
+    'html' => TRUE,
+  ));
+
+
   return $out;
 }
 
