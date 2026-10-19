@@ -624,18 +624,24 @@ $return = db_merge('ext_links')
     ))
     ->execute();
 $tasks_performed[] = "update ggbn link";
-
-$nid = db_insert('ext_links')
-  ->fields(array(
-    'id' => 'powo',
-    'title' => 'Plants of the World Online',
-    'link' => 'https://powo.science.kew.org/results?q=[cdm:taxon_name]',
-    'category' => 'Classification/Nomenclature',
-    'status' => 1,
-    'weight' => -3,
-  ))
-  ->execute();
-$tasks_performed[] = "add powo link";
+$exists = db_select('ext_links', 'e')
+  ->fields('e', array('id'))
+  ->condition('id', 'powo')
+  ->execute()
+  ->fetchField();
+if (!$exists){
+    $nid = db_insert('ext_links')
+      ->fields(array(
+        'id' => 'powo',
+        'title' => 'Plants of the World Online',
+        'link' => 'https://powo.science.kew.org/results?q=[cdm:taxon_name]',
+        'category' => 'Classification/Nomenclature',
+        'status' => 1,
+        'weight' => -3,
+      ))
+      ->execute();
+    $tasks_performed[] = "add powo link";
+}
 $return = db_delete('ext_links')
   ->condition('id', 'biocase')
   ->execute();
