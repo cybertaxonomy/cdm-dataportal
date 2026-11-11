@@ -345,15 +345,17 @@ function cdm_dataportal_search_taxon_form($form, &$form_state, $advanced_form = 
       foreach ($term_tree as $vocab_uuid => $term_dto_tree) {
         $vocabulary = cdm_ws_get(CDM_WS_TERMVOCABULARY, array($vocab_uuid));
         $areas_options = term_tree_as_options($term_dto_tree);
-        $form['search']['areas']['area'][$vocab_cnt++] = array(
-          '#prefix' => '<strong>' . $vocabulary->representation_L10n
-            . (isset($mixed_vocabularies[$vocab_uuid]) ? ' <span title="Contains terms of at least one other area vocabulary.">(' . t('mixed') . ')</span>': '')
-            . '</strong><div class="resizable-container"><div class="resizable-box">',
-          '#type' => 'checkboxes',
-          '#default_value' => $areas_defaults,
-          '#options' => $areas_options,
-          '#suffix' => '</div></div>'
-        );
+        if (isset($vocabulary) && $vocabulary) {
+          $form['search']['areas']['area'][$vocab_cnt++] = [
+            '#prefix' => '<strong>' . $vocabulary->representation_L10n
+              . (isset($mixed_vocabularies[$vocab_uuid]) ? ' <span title="Contains terms of at least one other area vocabulary.">(' . t('mixed') . ')</span>' : '')
+              . '</strong><div class="resizable-container"><div class="resizable-box">',
+            '#type' => 'checkboxes',
+            '#default_value' => $areas_defaults,
+            '#options' => $areas_options,
+            '#suffix' => '</div></div>'
+          ];
+        }
       }
     }
 
