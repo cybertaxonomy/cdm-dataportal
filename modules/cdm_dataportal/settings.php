@@ -147,7 +147,8 @@ const ET_AL_POS = 'et_al_pos';
 //        'v1.2_dev' => 'v1.2_dev',// no longer recommended
         'v1.2' => 'v1.2',
         'v1.3_dev' => 'v1.3_dev (not recommended)',
-        'v1.4_dev' => 'v1.4_dev (latest features)'
+        'v1.4_dev' => 'v1.4_dev (latest features)',
+        'v1.4_cache_dev' => 'v1.4_dev_cache (with Redis)'
       )
     )
   );
