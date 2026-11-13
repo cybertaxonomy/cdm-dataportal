@@ -413,7 +413,7 @@ function theme_cdm_block_IdentificationKeys($variables) {
         $request_params['query'] = $description_source->originalInfo;
         $request_params['matchMode'] = "EXACT";
         $originalTaxonPager = cdm_ws_get(CDM_WS_PORTAL_NAME_FINDBYNAME, NULL, queryString($request_params));
-        if ($originalTaxonPager->count > 0) {
+        if (isset($originalTaxonPager) && $originalTaxonPager->count > 0) {
           $originalTaxonUsedInSource = $originalTaxonPager->records[0];
         }
         else {
