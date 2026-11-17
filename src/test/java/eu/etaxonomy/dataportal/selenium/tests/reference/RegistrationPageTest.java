@@ -221,7 +221,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "published in: Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 2017: Still curling after all these years: Glenodinium apiculatum Ehrenb. (Peridiniales, Dinophyceae) repeatedly found at its type locality in Berlin (Germany). – Systematics and Biodiversity",
                 regItem.getCitation().getText());
         assertEquals(
-                "Registration on 2019-02-12 08:08:29 +0100",
+                "Registration on 2019-02-12 09:08:29 +0100",
                 regItem.getMetadata().getText());
 
         // type designations in defined order
