@@ -72,7 +72,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "published in: Novis, P. M., Braidwood, J. & Kilroy, C. 2012: Small diatoms (Bacillariophyta) in cultures from the Styx River, New Zealand, including descriptions of three new species. – Phytotaxa 64: 11-45",
                 regItem.getCitation().getText());
         assertEquals(
-                "Registration on 2019-02-06 13:21:52 +0100",
+                "Registration on 2019-02-06 14:21:52 +0100",
                 regItem.getMetadata().getText());
         List<LinkElement> fkeys = regItem.getFootNoteKeys();
         assertEquals("1", fkeys.get(0).getText());
@@ -103,7 +103,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "published in: Jahn, R., Abarca, N., Gemeinholzer, B., Mora, D., Skibbe, O., Kulikovskiy, M., Gusev, E., Kusber, W.-H. & Zimmermann, J. 2017: Planothidium lanceolatum and Planothicium frequentissimum reinvestigated wieht molecular methods and morphology: four new species and the taxonomic importance of the sinus and cavum. – Diatom Research 32: 75-107",
                 regItem.getCitation().getText());
         assertEquals(
-                "Registration on 2019-02-06 13:20:51 +0100",
+                "Registration on 2019-02-06 14:20:51 +0100",
                 regItem.getMetadata().getText());
     }
 
@@ -150,7 +150,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "published in: Heidari, F., Zima, J., Riahi, H. & Hauer, T. 2018: New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149",
                 regItem.getCitation().getText());
         assertEquals(
-                "Registration on 2024-03-20 15:13:18 +0100",
+                "Registration on 2024-03-20 16:13:18 +0100",
                 regItem.getMetadata().getText());
     }
 
@@ -172,7 +172,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "published in: Heidari, F., Zima, J., Riahi, H. & Hauer, T. 2018: New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149",
                 regItem.getCitation().getText());
         assertEquals(
-                "Registration on 2019-02-06 12:54:35 +0100",
+                "Registration on 2019-02-06 13:54:35 +0100",
                 regItem.getMetadata().getText());
         List<LinkElement> footnoteKeys = regItem.getFootNoteKeys();
         assertEquals(1,  footnoteKeys.size());
@@ -201,7 +201,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 "published in: Heidari, F., Zima, J., Riahi, H. & Hauer, T. 2018: New simple trichal cyanobacterial taxa isolated from radioactive thermal springs. – Fottea 18(2): 137–149",
                 regItem.getCitation().getText());
         assertEquals(
-                "Registration on 2019-02-06 12:54:29 +0100",
+                "Registration on 2019-02-06 13:54:29 +0100",
                 regItem.getMetadata().getText());
     }
 
