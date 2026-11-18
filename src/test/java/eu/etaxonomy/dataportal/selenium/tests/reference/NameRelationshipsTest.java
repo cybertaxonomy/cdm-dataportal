@@ -8,13 +8,16 @@
 */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -45,13 +48,13 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
     String titleSuffix = " | Integration test reference";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
 
 
-    @Test
+    @DataPortalTest
     public void testNodosilinea_sensensia_RegPage() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), reg_nodosilinea_sensensia_id);
@@ -109,7 +112,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
 
     }
 
-    @Test
+    @DataPortalTest
     public void testNodosilinea_sensensia_SynonymPage() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensensia_uuid);
@@ -152,7 +155,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
     /**
      * Test for https://dev.e-taxonomy.eu/redmine/issues/5697
      */
-    @Test
+    @DataPortalTest
     public void testIssue5697() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_bulbostylis_pauciflora_uuid);
@@ -165,7 +168,7 @@ public class NameRelationshipsTest extends CdmDataPortalTestBase {
     /**
      * Test for https://dev.e-taxonomy.eu/redmine/issues/6523
      */
-    @Test
+    @DataPortalTest
     public void testIssue6523() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nepenthes_gracilis_uuid);

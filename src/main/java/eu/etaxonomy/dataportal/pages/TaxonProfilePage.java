@@ -8,8 +8,8 @@
  */
 package eu.etaxonomy.dataportal.pages;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -145,7 +145,7 @@ public class TaxonProfilePage extends TaxonPage {
 
         logger.trace("getFeatureBlockAt()");
         List<WebElement> featureBlocks = getDataPortalContent().getElement().findElements(By.className("block-cdm-dataportal-feature"));
-        Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
+        Assertions.assertTrue(featureBlocks.size() >= position, "Too few feature block elements");
         for(WebElement b : featureBlocks){
             if(logger.isTraceEnabled()) {
                 logger.trace( "getFeatureBlockAt() - checking block '" + b.getAttribute("id") + "");
@@ -162,7 +162,7 @@ public class TaxonProfilePage extends TaxonPage {
     public FeatureBlock getFeatureBlockAt(int position, String featureName, String enclosingTag, String ... elementTag){
 
         List<WebElement> featureBlocks = getDataPortalContent().getElement().findElements(By.className("block-cdm-dataportal-feature"));
-        Assert.assertTrue("Too few feature block elements", featureBlocks.size() >= position);
+        Assertions.assertTrue(featureBlocks.size() >= position, "Too few feature block elements");
         for(WebElement b : featureBlocks){
             if (b.getAttribute("id").equals("block-cdm-dataportal-feature-" + normalizeClassAttribute(featureName))){
                 return new FeatureBlock( driver, b, enclosingTag, elementTag);
@@ -179,7 +179,7 @@ public class TaxonProfilePage extends TaxonPage {
     public void testTableOfContentEntry(int index, String tocLinkText, String tocLinkFragment) {
         assertEquals(tocLinkText, getTableOfContentLinks().get(index).getText());
         String expectedHref = getDrupalPagePath() + "#" + tocLinkFragment.replace('-', '_');
-        assertTrue("Expecting the toc link to end with " + expectedHref,  getTableOfContentLinks().get(index).getUrl().toString().endsWith(expectedHref));
+        assertTrue(getTableOfContentLinks().get(index).getUrl().toString().endsWith(expectedHref), "Expecting the toc link to end with " + expectedHref);
     }
 
 }

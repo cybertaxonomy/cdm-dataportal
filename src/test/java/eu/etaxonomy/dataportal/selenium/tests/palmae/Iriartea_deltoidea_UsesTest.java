@@ -8,12 +8,15 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.palmae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -37,7 +40,7 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
 
     static TaxonProfilePage p = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws MalformedURLException {
 
         if(p == null){
@@ -47,31 +50,31 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
     }
 
 
-    @Test
+    @DataPortalTest
     public void testTitleAndTabs() {
 
         assertEquals(getContext().prepareTitle("Iriartea deltoidea Ruiz & Pav., Syst. Veg. Fl. Peruv. Chil. : 298 (1798)"), driver.getTitle());
-        assertNull("Authorship information should be hidden", p.getAuthorInformationText());
+        assertNull(p.getAuthorInformationText(), "Authorship information should be hidden");
 
         List<LinkElement> primaryTabs = p.getPrimaryTabs();
         int tabId = 0;
         assertEquals("General\n(active tab)", primaryTabs.get(tabId++).getText());
         assertEquals("Synonymy", primaryTabs.get(tabId++).getText());
         assertEquals("Images", primaryTabs.get(tabId++).getText());
-        assertEquals("Expecting " + tabId + " tabs", tabId, primaryTabs.size());
+        assertEquals(tabId, primaryTabs.size(), "Expecting " + tabId + " tabs");
 
     }
 
 
-    @Test
+    @DataPortalTest
     public void testFeatureToc() {
 
         assertEquals("Content", p.getTableOfContentHeader());
         List<LinkElement> links = p.getTableOfContentLinks();
-        assertEquals("Expecting 7 entries in the TOC of the profile page.", 7, links.size());
+        assertEquals(7, links.size(), "Expecting 7 entries in the TOC of the profile page.");
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureDistribution() {
 
         int featureId = 0;
@@ -108,14 +111,14 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
 
         featureBlockDistribution.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
 
-        assertNotNull("Expecting an OpenLayers map", featureBlockDistribution.getElement().findElement(By.id("openlayers-map-distribution")));
+        assertNotNull(featureBlockDistribution.getElement().findElement(By.id("openlayers-map-distribution")), "Expecting an OpenLayers map");
         String mapText = featureBlockDistribution.getElement().findElement(By.className("distribution_map_caption")).getText();
         assertTrue(mapText.equals("Map uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)")
                 // OR error text which is shown when the map server is absent
                 || mapText.equals("The map is currently broken due to problems with the map server."));
     }
 
-    @Test
+    @DataPortalTest
     public void testUses() {
 
         int featureId = 2;
@@ -141,7 +144,7 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
 
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureUseRecord() {
 
         int featureId = 5;
@@ -176,7 +179,7 @@ public class Iriartea_deltoidea_UsesTest extends CdmDataPortalTestBase{
             listItems.get(81).getText());
     }
 
-    @Test
+    @DataPortalTest
     public void testBibliography() {
 
         int featureId = 6;

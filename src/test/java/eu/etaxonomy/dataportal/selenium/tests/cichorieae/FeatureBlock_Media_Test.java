@@ -8,15 +8,18 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.Assertions;
 
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.ElementUtils;
@@ -35,7 +38,7 @@ public class FeatureBlock_Media_Test extends CdmDataPortalTestBase {
 
     static UUID erythroseris_amabilis_Uuid = UUID.fromString("b335ceee-d6c1-4c93-841d-3b4bd279d855");
 
-    @Test
+    @DataPortalTest
     public void erythroseris_amabilis() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), erythroseris_amabilis_Uuid);
         String expectedName = "Erythroseris amabilis";
@@ -45,11 +48,11 @@ public class FeatureBlock_Media_Test extends CdmDataPortalTestBase {
 
         List<List<GalleryImage>> galleryImageRows = ElementUtils.getGalleryImages(palynologyBlock.getElement(), p.getWait());
 
-        assertEquals("Expecting one row of images", 1, galleryImageRows.size());
-        assertEquals("Expecting 3 images in row", 3, galleryImageRows.get(0).size());
+        assertEquals(1, galleryImageRows.size(), "Expecting one row of images");
+        assertEquals(3, galleryImageRows.get(0).size(), "Expecting 3 images in row");
 
         GalleryImage firstImage = galleryImageRows.get(0).get(0);
-        assertNotNull("caption should be on", firstImage.getCaptionText());
+        assertNotNull(firstImage.getCaptionText(), "caption should be on");
 
     }
 

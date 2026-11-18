@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 //import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -42,7 +42,7 @@ public class TaxonProfileTest extends CdmDataPortalTestBase{
 
     TaxonSynonymyPage p = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws MalformedURLException {
 
         driver.get(getContext().getSiteUri().toString());
@@ -53,7 +53,7 @@ public class TaxonProfileTest extends CdmDataPortalTestBase{
     }
 
 
-    @Test
+    @DataPortalTest
     public void testSecundumNameInSource() {
 
 

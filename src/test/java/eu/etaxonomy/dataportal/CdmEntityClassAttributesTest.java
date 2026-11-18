@@ -8,8 +8,10 @@
 */
 package eu.etaxonomy.dataportal;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
+import org.junit.jupiter.api.Test;
 
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 
@@ -17,7 +19,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
  * @author a.kohlbecker
  * @since Oct 10, 2017
  */
-public class CdmEntityClassAttributesTest extends Assert {
+public class CdmEntityClassAttributesTest {
 
     @Test
     public void testTypeName() throws Exception {

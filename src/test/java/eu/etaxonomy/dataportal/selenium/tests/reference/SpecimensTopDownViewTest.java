@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -15,8 +18,8 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -40,14 +43,14 @@ public class SpecimensTopDownViewTest extends CdmDataPortalTestBase {
 
     private static final UUID glenodinium_apiculatum_t = UUID.fromString("d245083e-3bda-435f-9bb3-bdc2249ff23c");
 
-    @Before
+    @BeforeEach
     public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
         LogUtils.setLevel(LogManager.getLogger(), Level.DEBUG);
         setDrupalVar(DrupalVars.CDM_DATAPORTAL_TAXONPAGE_TABS, "1");
         setDrupalVar(DrupalVars.CDM_SPECIMEN_LIST_VIEW_MODE, "derivate_path");
     }
 
-    @Test
+    @DataPortalTest
     public void test1() throws MalformedURLException {
         TaxonPage p = new TaxonPage(driver, getContext(), glenodinium_apiculatum_t, "specimens");
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#specimens table.specimens"));

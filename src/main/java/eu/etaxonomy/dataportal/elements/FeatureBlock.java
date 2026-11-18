@@ -8,7 +8,8 @@
 */
 package eu.etaxonomy.dataportal.elements;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,7 +147,7 @@ public class FeatureBlock extends DrupalBlock {
         featureType = featureBlockElementsWrapper.getAttribute("id");
 
         //TODO throw exception instead of making an assertion! selenium should have appropriate exceptions
-        assertEquals("Unexpected tag enclosing description element representations", enclosingTag, featureBlockElementsWrapper.getTagName());
+        assertEquals(enclosingTag, featureBlockElementsWrapper.getTagName(), "Unexpected tag enclosing description element representations");
 
         logger.trace("FeatureBlock() - loading all elements ...");
         descriptionItemElements = new ArrayList<WebElement>();
@@ -268,13 +269,13 @@ public class FeatureBlock extends DrupalBlock {
         double elementPadLeft = pxSizeToDouble(firstDescriptionElement.getElement().getCssValue("padding-left"));
 
         assertEquals(indent, elementX - parentX + elementPadLeft, PIXEL_TOLERANCE);
-        assertEquals("css font-size:", computedFontSize, firstDescriptionElement.getComputedFontSize(), 0.5);
-        assertEquals("css display:", expectedCssDisplay, firstDescriptionElement.getElement().getCssValue("display"));
+        assertEquals(computedFontSize, firstDescriptionElement.getComputedFontSize(), 0.5, "css font-size:");
+        assertEquals(expectedCssDisplay, firstDescriptionElement.getElement().getCssValue("display"), "css display:");
 
         if(expectedCssDisplay.equals("list-item")){
-            assertEquals("css list-style-position: ", expectedListStylePosition, firstDescriptionElement.getElement().getCssValue("list-style-position"));
-            assertEquals("css list-style-image: ",  expectedListStyleImage, firstDescriptionElement.getElement().getCssValue("list-style-image"));
-            assertEquals("css list-style-type: ", expectedListStyleType, firstDescriptionElement.getElement().getCssValue("list-style-type"));
+            assertEquals(expectedListStylePosition, firstDescriptionElement.getElement().getCssValue("list-style-position"), "css list-style-position: ");
+            assertEquals(expectedListStyleImage, firstDescriptionElement.getElement().getCssValue("list-style-image"), "css list-style-image: ");
+            assertEquals(expectedListStyleType, firstDescriptionElement.getElement().getCssValue("list-style-type"), "css list-style-type: ");
         }
     }
 

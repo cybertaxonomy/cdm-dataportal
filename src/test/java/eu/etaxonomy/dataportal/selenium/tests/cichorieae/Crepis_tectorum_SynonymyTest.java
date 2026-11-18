@@ -8,10 +8,13 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.UUID;
 
-import org.junit.Test;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -30,7 +33,7 @@ public class Crepis_tectorum_SynonymyTest extends CdmDataPortalTestBase{
 
     static UUID crepis_tectorum_Uuid = UUID.fromString("c62dff09-3f04-4f05-9aac-904d51ac1b77");
 
-    @Test
+    @DataPortalTest
     public void crepis_tectorum_synonyms() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_tectorum_Uuid);
         assertEquals(getContext().prepareTitle("Crepis tectorum"), driver.getTitle());

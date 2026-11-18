@@ -8,9 +8,12 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.util.UUID;
 
-import org.junit.Test;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -37,17 +40,17 @@ public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
 //	static UUID crepis_artificialis_Uuid = UUID.fromString("3eabdf89-ddeb-461c-b6f8-341bb8deb7bf");
 
 
-    @Test
+    @DataPortalTest
     public void intybellia_rosea_cass() throws Exception {
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + intybellia_rosea_cass_Uuid + "/null/null/redirect_to_taxon");
         assertEquals(getContext().prepareTitle("Crepis purpurea"), driver.getTitle());
         TaxonSynonymyPage synonymyPage = new TaxonSynonymyPage(driver, getContext());
         WebElement intybellia_rosea_cass_synonym = synonymyPage.getHeterotypicalGroupSynonym(1, 1);
-        assertNotNull("Synonym 'Intybellia rosea Cass.' should be highlighted", intybellia_rosea_cass_synonym.findElement(By.className("highlight")));
+        assertNotNull(intybellia_rosea_cass_synonym.findElement(By.className("highlight")), "Synonym 'Intybellia rosea Cass.' should be highlighted");
 
     }
 
-    @Test
+    @DataPortalTest
     public void lapsana_zacintha_L() throws Exception {
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + lapsana_zacintha_Uuid + "/null/null/redirect_to_taxon");
         assertEquals(getContext().prepareTitle("Crepis zacintha"), driver.getTitle());
@@ -55,7 +58,7 @@ public class Cichorieae_NamePageTest extends CdmDataPortalTestBase{
 
         assertEquals("≡ Lapsana zacintha L., Sp. Pl.: 811. 1753", synonymyPage.getHomotypicalGroupSynonymName(1));
         WebElement lapsana_zacintha_synonym = synonymyPage.getHomotypicalGroupSynonym(1);
-        assertNotNull("Synonym 'Lapsana zacintha L.' should be highlighted", lapsana_zacintha_synonym.findElement(By.className("highlight")));
+        assertNotNull(lapsana_zacintha_synonym.findElement(By.className("highlight")), "Synonym 'Lapsana zacintha L.' should be highlighted");
 
         assertEquals("≡ Rhagadiolus zacintha (L.) All., Fl. Pedem. 1: 227. 1785", synonymyPage.getHomotypicalGroupSynonymName(2));
         assertEquals("≡ Zacintha verrucosa Gaertn., Fruct. Sem. Pl. 2: 358. 1791, nom. nov.", synonymyPage.getHomotypicalGroupSynonymName(3));

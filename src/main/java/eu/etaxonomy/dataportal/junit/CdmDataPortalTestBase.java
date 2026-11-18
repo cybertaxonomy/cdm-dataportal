@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.dataportal.junit;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Assertions;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -15,11 +18,9 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
@@ -32,57 +33,54 @@ import eu.etaxonomy.drush.DrushExecutionFailure;
 /**
  * @author a.kohlbecker
  */
-@RunWith(DataPortalContextSuite.class)
-public abstract class CdmDataPortalTestBase extends Assert{
+public abstract class CdmDataPortalTestBase {
 
     private static final Logger logger = LogManager.getLogger();
 
-	protected static WebDriver driver;
+    protected static WebDriver driver;
 
-	private DataPortalContext context;
+    private DataPortalContext context;
 
     private Map<String,Object> drupalVarsBeforeTest = new HashMap<>();
 
-	public DataPortalContext getContext() {
-		return context;
-	}
+    public DataPortalContext getContext() {
+        return context;
+    }
 
-	public void setContext(DataPortalContext context) {
-		this.context = context;
+    public void setContext(DataPortalContext context) {
+        this.context = context;
+    }
 
-	}
-
-	/**
+    /**
      * Return the URL of the currently active
      * context as String
      *
      * @return string representation of the DataPortal site URI
      */
     public String getSiteUrl() {
-    	return context.getSiteUri().toString();
+        return context.getSiteUri().toString();
     }
 
-    @BeforeClass
-	public static void setUpDriver() {
-		logger.debug("@BeforeClass: setUpDriver()");
-		driver = WebDriverFactory.newWebDriver();
-	}
+    @BeforeAll
+    public static void setUpDriver() {
+        logger.debug("@BeforeAll: setUpDriver()");
+        driver = WebDriverFactory.newWebDriver();
+    }
 
-	@AfterClass
-	public static void closeDriver() {
-		logger.debug("@AfterClass: closeDriver()");
-		if (driver != null) {
-		    try {
-		        driver.quit();
-            } catch (WebDriverException  we) {
+    @AfterAll
+    public static void closeDriver() {
+        logger.debug("@AfterAll: closeDriver()");
+        if (driver != null) {
+            try {
+                driver.quit();
+            } catch (WebDriverException we) {
                 logger.debug("WebDriver quit timed out." + we.getMessage());
             }
-		    driver = null;
+            driver = null;
+        }
+    }
 
-		}
-	}
-
-	@After
+    @AfterEach
     public void resetToOriginalState() throws IOException, InterruptedException, DrushExecutionFailure {
         restoreOriginalVars();
     }
@@ -112,28 +110,26 @@ public abstract class CdmDataPortalTestBase extends Assert{
     }
 
     /**
-         * Get the value of a Drupal variable. If the variable does not exist, it returns null
-         *
-         * @param varKey The key of the Drupal variable to get. In {@link DrupalVars}
-         * predefined variable key constants can be found.
-         *
-         *
-         * @throws IOException
-         * @throws InterruptedException
-         */
-        protected Object getDrupalVar(String varKey) throws IOException, InterruptedException, DrushExecutionFailure {
-            DrushExecuter dex = getContext().drushExecuter();
-            List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
-            assertTrue(0 <= result.size() && result.size() <= 1);
-            if(result.size() == 1){
-                logger.info("Var value: " + result.get(0).toString());
-                return result.get(0);
-            }
-
-            return null;
-
+     * Get the value of a Drupal variable. If the variable does not exist, it returns null
+     *
+     * @param varKey The key of the Drupal variable to get. In {@link DrupalVars}
+     * predefined variable key constants can be found.
+     *
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    protected Object getDrupalVar(String varKey) throws IOException, InterruptedException, DrushExecutionFailure {
+        DrushExecuter dex = getContext().drushExecuter();
+        List<Object> result = dex.execute(DrushExecuter.variableGet, varKey);
+        assertTrue(0 <= result.size() && result.size() <= 1);
+        if(result.size() == 1){
+            logger.info("Var value: " + result.get(0).toString());
+            return result.get(0);
         }
 
+        return null;
+    }
 
     protected void setDrupalVarJson(String varKey, String varValue) throws IOException, InterruptedException, DrushExecutionFailure {
         DrushExecuter dex = getContext().drushExecuter();

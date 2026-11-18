@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -131,11 +131,11 @@ public class PolytomousKeyPage extends PortalPage {
 
 		keyTableRows = keyTable.findElements(By.xpath("tbody/tr"));
 		WebElement keyEntry = keyTableRows.get(lineIndex);
-		Assert.assertEquals("node number", data.nodeNumber, keyEntry.findElement(By.className("nodeNumber")).getText());
-		Assert.assertEquals("edge text", composeFullEdgeText(data), keyEntry.findElement(By.className("edge")).getText());
+		Assertions.assertEquals(data.nodeNumber, keyEntry.findElement(By.className("nodeNumber")).getText(), "node number");
+		Assertions.assertEquals(composeFullEdgeText(data), keyEntry.findElement(By.className("edge")).getText(), "edge text");
 		WebElement linkContainer = keyEntry.findElement(By.className(data.linkClass.name()));
 		WebElement link = linkContainer.findElement(By.tagName("a"));
-		Assert.assertEquals("link text", data.linkText, link.getText());
+		Assertions.assertEquals(data.linkText, link.getText(), "link text");
 		String linkUrl = link.getAttribute("href");
 
 		logger.info("clicking on " +  data.linkClass.name() + " : " + linkUrl);
@@ -169,11 +169,11 @@ public class PolytomousKeyPage extends PortalPage {
 
     		keyTableRows = keyTable.findElements(By.xpath("tbody/tr"));
     		WebElement keyEntry = keyTableRows.get(lineIndex);
-    		Assert.assertEquals("node number", data.nodeNumber, keyEntry.findElement(By.className("nodeNumber")).getText());
-    		Assert.assertEquals("edge text", composeFullEdgeText(data), keyEntry.findElement(By.className("edge")).getText());
+    		Assertions.assertEquals(data.nodeNumber, keyEntry.findElement(By.className("nodeNumber")).getText(), "node number");
+    		Assertions.assertEquals(composeFullEdgeText(data), keyEntry.findElement(By.className("edge")).getText(), "edge text");
     		WebElement linkContainer = keyEntry.findElement(By.className(data.linkClass.name()));
     		WebElement link = linkContainer.findElement(By.tagName("a"));
-    		Assert.assertEquals("link text", data.linkText, link.getText());
+    		Assertions.assertEquals(data.linkText, link.getText(), "link text");
     		String linkUrl = link.getAttribute("href");
 
     		logger.info("clicking on " +  data.linkClass.name() + " : " + linkUrl);

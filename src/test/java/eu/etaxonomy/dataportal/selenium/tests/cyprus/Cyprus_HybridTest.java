@@ -8,10 +8,13 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.UUID;
 
-import org.junit.Test;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -36,7 +39,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
 
     private static final String hybridWithSpace = UTF8.HYBRID.toString();
 
-    @Test
+    @DataPortalTest
     public void testOrchiserapias() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), orchiserapias_Uuid);
         String expectedName = hybridWithSpace + "Orchiserapias";
@@ -45,7 +48,7 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
         assertEquals("≡ Orchis "+UTF8.HYBRID+" Serapias", p.getHomotypicalGroupSynonymName(1));
     }
 
-    @Test
+    @DataPortalTest
     public void testEpilobium_aschersonianum() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), epilobium_aschersonianum_Uuid);
         assertEquals(getContext().prepareTitle("Epilobium " + hybridWithSpace + "aschersonianum"), driver.getTitle());
@@ -53,13 +56,13 @@ public class Cyprus_HybridTest extends CdmDataPortalTestBase{
         assertEquals("≡ Epilobium lanceolatum "+UTF8.HYBRID+" parviflorum", p.getHomotypicalGroupSynonymName(1));
     }
 
-    @Test
+    @DataPortalTest
     public void testAegilops_biuncialis_x_geniculata() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), aegilops_biuncialis_x_geniculata_Uuid);
         assertEquals(getContext().prepareTitle("Aegilops biuncialis "+UTF8.HYBRID+" geniculata"), driver.getTitle());
         ClassificationTreeBlock classificationTree = p.getClassificationTree();
         ClassificationTreeElement focusedElement = classificationTree.getFocusedElement();
         assertTrue(classificationTree.isVisibleInViewPort(focusedElement));
-        assertEquals("Abbreviated form of name should be used", "A. biuncialis "+UTF8.HYBRID+" geniculata", focusedElement.getTaxonName());
+        assertEquals("A. biuncialis "+UTF8.HYBRID+" geniculata", focusedElement.getTaxonName(), "Abbreviated form of name should be used");
     }
 }

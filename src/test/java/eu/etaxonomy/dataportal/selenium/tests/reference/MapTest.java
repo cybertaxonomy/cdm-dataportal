@@ -8,13 +8,16 @@
 */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.OpenLayersMap;
@@ -44,12 +47,12 @@ public class MapTest extends CdmDataPortalTestBase {
 
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
 
-    @Test
+    @DataPortalTest
     public void namePageMapShown() throws MalformedURLException{
 
         NamePage p = new NamePage(driver, getContext(), nodosilinea_radiophila_name_UUID);
@@ -59,7 +62,7 @@ public class MapTest extends CdmDataPortalTestBase {
         assertEquals("specimens", openLayersMaps.get(0).getMapName());
     }
 
-    @Test
+    @DataPortalTest
     public void registrationPageMapShown() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), nodosilinea_radiophila_regid);
@@ -69,7 +72,7 @@ public class MapTest extends CdmDataPortalTestBase {
         assertEquals("specimens", openLayersMaps.get(0).getMapName());
     }
 
-    @Test
+    @DataPortalTest
     public void namePageMapHidden() throws MalformedURLException{
 
         NamePage p = new NamePage(driver, getContext(), ramsaria_name_UUID);
@@ -77,7 +80,7 @@ public class MapTest extends CdmDataPortalTestBase {
         assertTrue(openLayersMaps.isEmpty());
     }
 
-    @Test
+    @DataPortalTest
     public void registrationPageMapHidden() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), ramsaria_regid);

@@ -8,15 +8,18 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
@@ -43,40 +46,40 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 
     private TaxonProfilePage page = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws MalformedURLException {
 
         page = new TaxonProfilePage(driver, getContext(), taxonUuid);
 
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         logger.debug("@After");
     }
 
 
-    @Test
+    @DataPortalTest
     public void testPage() {
 
         assertEquals(getContext().prepareTitle("Allium guttatum subsp. guttatum"), page.getTitle());
-        assertNull("Authorship information should be hidden", page.getAuthorInformationText());
+        assertNull(page.getAuthorInformationText(), "Authorship information should be hidden");
 
         List<LinkElement> primaryTabs = page.getPrimaryTabs();
-        assertEquals("Expecting 3 tabs", 3, primaryTabs.size());
+        assertEquals(3, primaryTabs.size(), "Expecting 3 tabs");
         assertEquals("General\n(active tab)", primaryTabs.get(0).getText());
         assertEquals("Synonymy", primaryTabs.get(1).getText());
         assertEquals("Images", primaryTabs.get(2).getText());
 
         ImgElement profileImage = page.getProfileImage();
-        assertNotNull("Expecting profile images to be switched on", profileImage);
+        assertNotNull(profileImage, "Expecting profile images to be switched on");
 //		assertEquals("http://media.bgbm.org/erez/erez?src=EditWP6/zypern/photos/Allium_guttatum_guttatum_A1.jpg", profileImage.getUrl().toString());
 //		assertEquals(400, profileImage.getDimension().getHeight(), 0.5);
 //		assertEquals(250, profileImage.getDimension().getWidth(), 0.5);
 
         assertEquals("Content", page.getTableOfContentHeader());
         List<LinkElement> links = page.getTableOfContentLinks();
-        assertNotNull("Expecting a list of TOC links in the profile page.", links);
+        assertNotNull(links, "Expecting a list of TOC links in the profile page.");
         page.testTableOfContentEntry(0, "Status", "status");
         page.testTableOfContentEntry(1, "Endemism", "endemism");
         page.testTableOfContentEntry(2, "Red Data Book category", "red_data_book_category");
@@ -104,7 +107,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
 
         assertEquals("Distribution\nDivision 2A,B\nA. Hand, R. 2009: Supplementary notes to the flora of Cyprus VI. – Willdenowia 39: 301-325, B. Meikle, R.D. 1985: Flora of Cyprus 2. – Kew: The Bentham-Moxon Trust", featureBlock.getText());
         assertEquals("Distribution", featureBlock.getHeaderText());
-        assertEquals("expecting two footnote keys", 2, featureBlock.countFootNoteKeys());
+        assertEquals(2, featureBlock.countFootNoteKeys(), "expecting two footnote keys");
 
 //        ------- prepared for  bibliography ---------
 //        FeatureBlock bibliography = p.getFeatureBlockAt(5, "bibliography", "div", "div");
@@ -116,7 +119,7 @@ public class Allium_guttatum_subsp_guttatum_TaxonProfileTest extends CdmDataPort
         BaseElement footNote_1 = featureBlock.getFootNote(0);
         assertNotNull(footNoteKey_1);
         assertNotNull(footNote_1);
-        assertTrue("expecting one footnote 0 to be the footnote for key 0",footNote_1.getText().startsWith(footNoteKey_1.getText()));
+        assertTrue(footNote_1.getText().startsWith(footNoteKey_1.getText()), "expecting one footnote 0 to be the footnote for key 0");
 
         WebElement footNoteKey_1_element = footNoteKey_1.getElement();
 

@@ -8,11 +8,14 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
@@ -33,7 +36,7 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
 
     static final UUID achilllea_santolina_uuid = UUID.fromString("c246856f-c03e-4cb7-ac92-d9b2864084cd");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
@@ -41,7 +44,7 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
     /**
      * Test to reproduce issue https://dev.e-taxonomy.eu/redmine/issues/3616
      */
-    @Test
+    @DataPortalTest
     public void testIssue3616() throws MalformedURLException {
 
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
@@ -57,7 +60,7 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
     }
 
 
-    @Test
+    @DataPortalTest
     public void testTemporalData() throws MalformedURLException {
 
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);
@@ -75,7 +78,7 @@ public class DescriptionElementsTest extends CdmDataPortalTestBase{
         assertEquals("(15 Jul–)2 Aug–3 Sep(–16 Oct)", fruiting_period.getFeatureBlockElements().get(0).getText());
     }
 
-    @Test
+    @DataPortalTest
     public void testModifyingText() throws MalformedURLException {
 
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), achilllea_santolina_uuid);

@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -49,7 +52,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
 
     private TaxonPage p = null;
 
-    @Before
+    @BeforeEach
     public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
         LogUtils.setLevel(logger, Level.DEBUG);
         setDrupalVar(DrupalVars.CDM_DATAPORTAL_TAXONPAGE_TABS, "1");
@@ -57,19 +60,19 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         p = new TaxonPage(driver, getContext(), glenodinium_apiculatum_t, "specimens");
     }
 
-    @Test
+    @DataPortalTest
     public void testPageTitle()  {
         assertEquals(getContext().prepareTitle("Glenodinium apiculatum"), driver.getTitle());
     }
 
-    // @Test no point testing for the tab, the reference portal is set up being tab-less
+    // @DataPortalTest no point testing for the tab, the reference portal is set up being tab-less
     public void testPageTab()  {
         Optional<LinkElement> activeTab = p.getActivePrimaryTab();
         assertTrue(activeTab.isPresent());
         assertEquals("Specimens\n(active tab)", activeTab.get().getText());
     }
 
-    @Test
+    @DataPortalTest
     public void testTableHaders() {
 
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#derivate_hierarchy_table"));
@@ -85,7 +88,7 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         assertEquals("Derivatives", headerRows.get(7).getText());
     }
 
-    @Test
+    @DataPortalTest
     public void testTable() {
 
         WebElement specimensTable = p.getDataPortalContent().getElement().findElement(By.cssSelector("#derivate_hierarchy_table"));
@@ -128,14 +131,14 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         ++rowId;
         WebElement row = rows.get(rowId);
         assertTrue(row.getAttribute("class").contains("detail_row"));
-        assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
+        assertEquals("none", rows.get(rowId).getCssValue("display"), "Should be initially invisible");
 
         row = rows.get(rowId-1);
 
         WebElement cell = row.findElement(By.tagName("td"));
         cell.click();
 
-        assertEquals("The click should make it visible", "table-row", rows.get(rowId).getCssValue("display"));
+        assertEquals("table-row", rows.get(rowId).getCssValue("display"), "The click should make it visible");
         cells = rows.get(rowId).findElements(By.tagName("td"));
         String detailsText = cells.get(1).getText();
         String[] detailsLines = StringUtils.split(detailsText, "\n");
@@ -180,13 +183,13 @@ public class SpecimenTableViewTest extends CdmDataPortalTestBase {
         // details row
         ++rowId;
         assertTrue(rows.get(rowId).getAttribute("class").contains("detail_row"));
-        assertEquals("Should be initially invisible", "none", rows.get(rowId).getCssValue("display"));
+        assertEquals("none", rows.get(rowId).getCssValue("display"), "Should be initially invisible");
         // the row itself is not clickable, therefore search for the data element
         cell = rows.get(rowId - 1).findElement(By.tagName("td"));
         cell.click();
 
 //        rows.get(rowId - 1).click();
-        assertEquals("The click should make it visible", "table-row", rows.get(rowId).getCssValue("display"));
+        assertEquals("table-row", rows.get(rowId).getCssValue("display"), "The click should make it visible");
         cells = rows.get(rowId).findElements(By.tagName("td"));
         detailsText = cells.get(1).getText();
         detailsLines = StringUtils.split(detailsText, "\n");

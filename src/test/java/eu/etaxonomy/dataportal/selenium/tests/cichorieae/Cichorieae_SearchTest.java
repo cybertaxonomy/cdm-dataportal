@@ -8,12 +8,14 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -36,13 +38,13 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
     private static GenericPortalPage homePage = null;
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
         homePage = new GenericPortalPage(driver, getContext());
     }
 
-    // @Test
+    // @DataPortalTest
     public void testSearchLCommunis() throws Exception {
 
         TaxonSearchResultPage searchResultPage = homePage.submitQuery("Lapsana com*");
@@ -56,21 +58,21 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
         WebElement nameElement = lapsanaCommunnis.getElement().findElement(By.className("TaxonName"));
 
         WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
-        Assert.assertEquals("Lapsana communis", namePart1.getText());
-        Assert.assertEquals("italic", namePart1.getCssValue("font-style"));
+        Assertions.assertEquals("Lapsana communis", namePart1.getText());
+        Assertions.assertEquals("italic", namePart1.getCssValue("font-style"));
 
         WebElement authorPart = nameElement.findElement(By.xpath("span[2]"));
-        Assert.assertEquals("L.", authorPart.getText());
-        Assert.assertEquals("normal", authorPart.getCssValue("font-style"));
+        Assertions.assertEquals("L.", authorPart.getText());
+        Assertions.assertEquals("normal", authorPart.getCssValue("font-style"));
 
         WebElement referenceElement = lapsanaCommunnis.getElement().findElement(By.className("reference"));
-        Assert.assertEquals("Sp. Pl.: 811. 1753", referenceElement.findElement((By.className("reference"))).getText());
+        Assertions.assertEquals("Sp. Pl.: 811. 1753", referenceElement.findElement((By.className("reference"))).getText());
 
         PortalPage taxonProfilLapsanaCommunnis = searchResultPage.clickTaxonName(lapsanaCommunnis, GenericPortalPage.class, UUID_L_COMMUNIS);
         assertEquals(getContext().prepareTitle("Lapsana communis"), taxonProfilLapsanaCommunnis.getTitle());
     }
 
-    @Test
+    @DataPortalTest
     public void testSearchLCommunis_ImageLinks() throws Exception {
 
         TaxonSearchResultPage searchResultPage = homePage.submitQuery("Lapsana com*");
@@ -83,11 +85,11 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
         WebDriverWait wait = searchResultPage.getWait();
         List<List<GalleryImage>> galleryImageRows = ElementUtils.getGalleryImages(l_communisElement, wait);
 
-        assertEquals("Expecting one row of images", 1, galleryImageRows.size());
-        assertEquals("Expecting 4 images in row", 4, galleryImageRows.get(0).size());
+        assertEquals(1, galleryImageRows.size(), "Expecting one row of images");
+        assertEquals(4, galleryImageRows.get(0).size(), "Expecting 4 images in row");
 
         GalleryImage firstImage = galleryImageRows.get(0).get(0);
-        assertNull("caption should be off", firstImage.getCaptionText());
+        assertNull(firstImage.getCaptionText(), "caption should be off");
         if(searchResultPage.isZenTheme()) {
             firstImage.getImageLink().getUrl().equals("http://media.bgbm.org/erez/erez?src=EditWP6/photos/Lactuca_triquetra_Bc_01.JPG");
         } else {
@@ -95,7 +97,7 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
         }
     }
 
-    @Test
+    @DataPortalTest
     public void testSearchMisappliedNames() throws Exception {
 
         TaxonSearchResultPage searchResultPage = homePage.submitQuery("Hieracium gombense*");
@@ -110,7 +112,7 @@ public class Cichorieae_SearchTest extends CdmDataPortalTestBase {
         assertEquals("Hieracium gombense sensu Mirek, Z. 1995 as misapplied for Hieracium gombense subsp. purkynei (Čelak.) Zahn", hieracium_gombense.getText());
         WebElement nameElement = hieracium_gombense.getElement().findElement(By.className("TaxonName"));
         WebElement namePart1 = nameElement.findElement(By.xpath("span[1]"));
-        Assert.assertEquals("Hieracium gombense", namePart1.getText());
-        Assert.assertEquals("rgb(124, 124, 124)", namePart1.getCssValue("color"));
+        Assertions.assertEquals("Hieracium gombense", namePart1.getText());
+        Assertions.assertEquals("rgb(124, 124, 124)", namePart1.getCssValue("color"));
     }
 }

@@ -8,12 +8,15 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -36,12 +39,12 @@ public class TextualTypeDesignationTest extends CdmDataPortalTestBase{
     static final UUID equisetum_arvense_n_uuid = UUID.fromString("96ad7144-a898-4694-94a9-335d0cab9c24");
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
 
-    @Test
+    @DataPortalTest
     public void testPageTitles() throws MalformedURLException {
         NamePage p = new NamePage(driver, getContext(), equisetum_arvense_n_uuid);
         assertEquals(
@@ -55,7 +58,7 @@ public class TextualTypeDesignationTest extends CdmDataPortalTestBase{
 
     }
 
-    @Test
+    @DataPortalTest
     public void testNamePage() throws MalformedURLException {
         NamePage p = new NamePage(driver, getContext(), equisetum_arvense_n_uuid);
         List<TypeDesignationElement> typeDesignations = p.getTypeDesignations(0, "div");

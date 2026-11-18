@@ -8,11 +8,14 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -33,12 +36,12 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
 
     private static final UUID typinium_Uuid = UUID.fromString("037eee62-ac1f-45eb-b4f2-ed9b77e472f1");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
 
-    @Test
+    @DataPortalTest
     public void testTypeDesignationWithMultiAuthorCitation() throws Exception {
        TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), typinium_Uuid);
        assertEquals("Typinium Mill.", p.getAcceptedNameText());
@@ -48,7 +51,7 @@ public class TypeDesignationTest extends CdmDataPortalTestBase{
        }else{
            List<TypeDesignationElement> typeDesignations = p.getHomotypicalGroupTypeDesignations();
            assertEquals(TypeDesignationType.nameTypeDesignation, typeDesignations.get(0).getTypeDesignationType());
-           assertNotNull("Expecting at least one Typedesignation", typeDesignations);
+           assertNotNull(typeDesignations, "Expecting at least one Typedesignation");
        }
 
        List<BaseElement> footnotes = p.getHomotypicalGroupFootNotes();

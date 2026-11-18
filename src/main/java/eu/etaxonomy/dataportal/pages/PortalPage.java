@@ -8,8 +8,10 @@
  */
 package eu.etaxonomy.dataportal.pages;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
 import java.io.IOException;
@@ -206,17 +208,17 @@ public abstract class PortalPage {
             if(getAciveHealthChecks().contains(HealthChecks.NO_ERROR)) {
                 String ignore_error = null;
                 List<String> errors = getErrors().stream().filter(str -> ignore_error == null || !str.startsWith(ignore_error)).collect(Collectors.toList());
-                assertTrue("The page must not show an error box: (" + String.join(" | ", errors) + ")", errors.size() == 0);
+                assertTrue(errors.size() == 0, "The page must not show an error box: (" + String.join(" | ", errors) + ")");
             }
             if(getAciveHealthChecks().contains(HealthChecks.NO_WARNING)) {
                 String ignore_warning = null;
                 List<String> warnings = getWarnings().stream().filter(str -> ignore_warning == null || !str.startsWith(ignore_warning)).collect(Collectors.toList());
-                assertTrue("The page must not show an warning box: (" + String.join(" | ", warnings) + ")", warnings.size() == 0);
+                assertTrue(warnings.size() == 0, "The page must not show an warning box: (" + String.join(" | ", warnings) + ")");
             }
         } catch (NoSuchElementException e) {
             //IGNORE since this is expected!
         }
-        assertFalse("The default footnote list key PAGE_GLOBAL must not occur in the page.", driver.getPageSource().contains("member-of-footnotes-PAGE_GLOBAL"));
+        assertFalse(driver.getPageSource().contains("member-of-footnotes-PAGE_GLOBAL"), "The default footnote list key PAGE_GLOBAL must not occur in the page.");
     }
 
     /**

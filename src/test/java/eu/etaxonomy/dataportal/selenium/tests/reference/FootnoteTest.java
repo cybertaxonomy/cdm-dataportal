@@ -8,15 +8,17 @@
 */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -49,12 +51,12 @@ public class FootnoteTest extends CdmDataPortalTestBase {
 
     private static final String titleSuffix = " | Integration test reference";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
 
-    @Test
+    @DataPortalTest
     public void registationPageFieldUnitAnnotation() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), nodosilinea_radiophila_regid);
@@ -89,7 +91,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
                 footnotes.get(5).getText());
     }
 
-    @Test
+    @DataPortalTest
     public void namePageFieldUnitAnnotation() throws MalformedURLException{
 
         NamePage p = new NamePage(driver, getContext(), nodosilinea_radiophila_name_UUID);
@@ -130,13 +132,13 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertTrue(linksInFootnote5.get(0).getUrl().endsWith("cdm_dataportal/reference/f2e43411-2564-42c7-816e-7e6046adbefa"));
         assertEquals("", linksInFootnote5.get(0).getText());
         assertEquals("http://testbank.org/100004", linksInFootnote5.get(1).getText());
-        assertTrue("unexpected url in footnote: " + linksInFootnote5.get(1).getUrl(), linksInFootnote5.get(1).getUrl().endsWith("cdm_dataportal/registration?identifier=http%3A//testbank.org/100004"));
+        assertTrue(linksInFootnote5.get(1).getUrl().endsWith("cdm_dataportal/registration?identifier=http%3A//testbank.org/100004"), "unexpected url in footnote: " + linksInFootnote5.get(1).getUrl());
         assertEquals("7. editorial note on the fieldunit", footnotes.get(6).getText());
         assertEquals("5. Test of several paratypes", footnotes.get(4).getText());
 
     }
 
-    @Test
+    @DataPortalTest
     public void registationPageTypeNameAnnotation() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), ramsaria_regid);
@@ -156,7 +158,7 @@ public class FootnoteTest extends CdmDataPortalTestBase {
 
     }
 
-    @Test
+    @DataPortalTest
     public void namePageTypeNameAnnotation() throws MalformedURLException{
 
         NamePage p = new NamePage(driver, getContext(), ramsaria_name_UUID);
@@ -182,16 +184,16 @@ public class FootnoteTest extends CdmDataPortalTestBase {
         assertTrue(linksInFootnote3.get(0).getUrl().endsWith("cdm_dataportal/reference/5e5d9d08-8c28-4b22-b30a-6214c8641163"));
     }
 
-    @Test
+    @DataPortalTest
     public void testSynonymyFootnotes() throws MalformedURLException{
         try {
             setDrupalVar("cdm_synonymy_syn_sec_per_homotypic_group", "1");
         } catch (IOException e) {
-           Assert.fail();
+           Assertions.fail();
         } catch (InterruptedException e) {
-            Assert.fail();
+            Assertions.fail();
         } catch (DrushExecutionFailure e) {
-            Assert.fail();
+            Assertions.fail();
         }
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), centaurea_immanuelis_loewii_UUID);
         assertEquals("Centaurea immanuelis-loewii Degen in Magyar Bot. Lapok 16: 117. 1917", p.getAcceptedNameText());

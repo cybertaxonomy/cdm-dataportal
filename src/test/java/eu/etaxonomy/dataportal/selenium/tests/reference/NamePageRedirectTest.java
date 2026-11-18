@@ -8,14 +8,17 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -40,7 +43,7 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
     static final UUID name_achilllea_santolina_uuid = UUID.fromString("2ff1fb18-7055-420f-8c10-5105b66974de");
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
@@ -48,29 +51,23 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
     /**
      * related to https://dev.e-taxonomy.eu/redmine/issues/8304
      */
-    @Test
+    @DataPortalTest
     public void testNoRedirect() throws MalformedURLException {
 
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + name_achilllea_santolina_uuid.toString() + "/null/null");
-        assertTrue(
-                "The target page should be a name page, no redirect must have happened.",
-                p.getDrupalPagePath().startsWith("cdm_dataportal/name/" + name_achilllea_santolina_uuid.toString()));
+        assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/name/" + name_achilllea_santolina_uuid.toString()), "The target page should be a name page, no redirect must have happened.");
 
         p = new GenericPortalPage(driver, getContext(), "name/" + name_achilllea_santolina_uuid.toString() + "/null/null/null");
-        assertTrue(
-                "The target page should be a name page, no redirect must have happened.",
-                p.getDrupalPagePath().startsWith("cdm_dataportal/name/" + name_achilllea_santolina_uuid.toString()));
+        assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/name/" + name_achilllea_santolina_uuid.toString()), "The target page should be a name page, no redirect must have happened.");
 
         p = new GenericPortalPage(driver, getContext(), "name/" + name_achilllea_santolina_uuid.toString() + "///");
-        assertTrue(
-                "The target page should be a name page, no redirect must have happened.",
-                p.getDrupalPagePath().startsWith("cdm_dataportal/name/" + name_achilllea_santolina_uuid.toString()));
+        assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/name/" + name_achilllea_santolina_uuid.toString()), "The target page should be a name page, no redirect must have happened.");
     }
 
     /**
      * related to https://dev.e-taxonomy.eu/redmine/issues/8304
      */
-    @Test
+    @DataPortalTest
     public void testRedirectToTaxon() throws MalformedURLException {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -82,17 +79,13 @@ public class NamePageRedirectTest extends CdmDataPortalTestBase{
 //        wait.apply(driver, new String[] {timeout});
         wait.until(ExpectedConditions.jsReturnsValue("return document.readyState === 'complete';"));
         logger.debug("DrupalPagePath: " + p.getDrupalPagePath());
-        assertTrue(
-                "The target page should be a taxon page, the name page must have been redirected to the according taxon page.",
-                p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + taxon_achilllea_santolina_uuid.toString()));
+        assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + taxon_achilllea_santolina_uuid.toString()), "The target page should be a taxon page, the name page must have been redirected to the according taxon page.");
 
         p = new GenericPortalPage(driver, getContext(),
                 "name/" + name_achilllea_santolina_uuid.toString() + "///redirect_to_taxon");
         wait.until(ExpectedConditions.jsReturnsValue("return document.readyState === 'complete';"));
 
         logger.debug("DrupalPagePath: " + p.getDrupalPagePath());
-        assertTrue(
-                "The target page should be a taxon page, the name page must have been redirected to the according taxon page.",
-                p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + taxon_achilllea_santolina_uuid.toString()));
+        assertTrue(p.getDrupalPagePath().startsWith("cdm_dataportal/taxon/" + taxon_achilllea_santolina_uuid.toString()), "The target page should be a taxon page, the name page must have been redirected to the according taxon page.");
     }
 }

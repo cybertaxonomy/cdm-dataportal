@@ -8,12 +8,15 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -38,7 +41,7 @@ public class NamePageTest extends CdmDataPortalTestBase{
     static final UUID name_nodosilinea_radiophila_uuid = UUID.fromString("e97cc25b-ec11-4bb8-88d7-ab40a023f3fb");
     static final UUID taxon_nodosilinea_sensenia_uuid = UUID.fromString("7094ea13-2a95-46d9-bfca-8c0e0848e44c");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
@@ -46,7 +49,7 @@ public class NamePageTest extends CdmDataPortalTestBase{
     /**
      * related to https://dev.e-taxonomy.eu/redmine/issues/9230
      */
-    @Test
+    @DataPortalTest
     public void testUnpublishedTypeDesignationsHidden() throws MalformedURLException {
 
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "name/" + name_nodosilinea_radiophila_uuid.toString() + "/null/null");
@@ -62,7 +65,7 @@ public class NamePageTest extends CdmDataPortalTestBase{
     /**
          * related to https://dev.e-taxonomy.eu/redmine/issues/9967
          */
-    @Test
+    @DataPortalTest
     public void testNotDesignatedTypeDesignation() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), taxon_nodosilinea_sensenia_uuid);

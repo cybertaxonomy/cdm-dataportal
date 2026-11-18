@@ -8,14 +8,17 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -49,7 +52,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
     static final UUID nepenthes_abalata_Uuid = UUID.fromString("9b588d8a-c4fa-430a-b9c7-026bf715ecf6");
     private static final Logger logger = LogManager.getLogger();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
 
@@ -74,7 +77,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
      *
      * NOTE: Species solaris has no authorship!!
      */
-    @Test
+    @DataPortalTest
     public void tesIssue5647() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
@@ -120,7 +123,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
     /**
      * Test to reproduce issue https://dev.e-taxonomy.eu/redmine/issues/7766
      */
-    @Test
+    @DataPortalTest
     public void tesIssue7766() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
@@ -143,7 +146,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
      *
      * @throws MalformedURLException
      */
-    @Test
+    @DataPortalTest
     public void tesIssue7778() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), miconia_cubacinerea_Uuid);
@@ -160,7 +163,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
     /**
      * https://dev.e-taxonomy.eu/redmine/issues/5492
      */
-    @Test
+    @DataPortalTest
     public void testIssue5492() throws MalformedURLException {
 
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), trichocentrum_undulatum_Uuid);
@@ -186,7 +189,7 @@ public class MisappliedNamesTest extends CdmDataPortalTestBase{
      * dieser Namensanwendung zu tun (also: Protologbildlinks müssen bei MAN weggelassen werden oder der Link
      * muss nach dem <non Blume> eingefügt werden)
      */
-    @Test
+    @DataPortalTest
     public void testIssue7658() throws MalformedURLException {
 
 

@@ -8,15 +8,18 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.LinkElement;
@@ -39,20 +42,20 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
 
     private GenericPortalPage homePage;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         driver.get(getContext().getSiteUri().toString());
         homePage = new GenericPortalPage(driver, getContext());
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         logger.debug("@After");
     }
 
-    @Test
-    @Ignore // see #3788 (sort order of search results broken in free-text taxon search)
+    @DataPortalTest
+    @Disabled // see #3788 (sort order of search results broken in free-text taxon search)
     public void Illicium() throws Exception {
 
         TaxonSearchResultPage searchResultPage = homePage.submitQuery("Illicium");
@@ -68,11 +71,11 @@ public class FloraMalesiana_OriginalSourceTest extends CdmDataPortalTestBase{
         logger.debug("clicking TaxonName" + entryIillicium.getElement().toString());
         TaxonProfilePage taxonProfileIillicium = searchResultPage.clickTaxonName(entryIillicium, TaxonProfilePage.class, UUID_ILLICIUM);
 
-//        assertNull("Authorship information should be hidden", taxonProfileIillicium.getAuthorInformationText());  // FF WebDriver hangs here
+//        assertNull(taxonProfileIillicium.getAuthorInformationText(), "Authorship information should be hidden");  // FF WebDriver hangs here
 
         List<LinkElement> primaryTabs = taxonProfileIillicium.getPrimaryTabs();
 
-        assertEquals("Expecting 4 tabs", 4, primaryTabs.size());
+        assertEquals(4, primaryTabs.size(), "Expecting 4 tabs");
         assertEquals("General\n(active tab)", primaryTabs.get(0).getText());
         assertEquals("Synonymy", primaryTabs.get(1).getText());
         assertEquals("Images", primaryTabs.get(2).getText());

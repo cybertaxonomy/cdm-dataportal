@@ -8,12 +8,15 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.palmae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -45,7 +48,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
      */
     String evans_et_al_referenceCitation = "Evans, T., Sengdala, K., Thammavong, B., Viengkham, O.V. & Dransfield, J. 2002: A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina. – Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84";
 
-    @Before
+    @BeforeEach
     public void setUp() throws MalformedURLException {
 
         if(p == null){
@@ -55,11 +58,11 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
     }
 
 
-    @Test
+    @DataPortalTest
     public void testTitleAndTabs() {
 
         assertEquals(getContext().prepareTitle("Calamus acanthospathus Griff., Calcutta J. Nat. Hist. 5: 39. 1845"), driver.getTitle());
-        assertNull("Authorship information should be hidden", p.getAuthorInformationText());
+        assertNull(p.getAuthorInformationText(), "Authorship information should be hidden");
 
         List<LinkElement> primaryTabs = p.getPrimaryTabs();
         int tabId = 0;
@@ -67,27 +70,27 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertEquals("Synonymy", primaryTabs.get(tabId++).getText());
         assertEquals("Images", primaryTabs.get(tabId++).getText());
 //        assertEquals("Specimens", primaryTabs.get(tabId++).getText()); is disabled by layout settings
-        assertEquals("Expecting " + tabId + " tabs", tabId, primaryTabs.size());
+        assertEquals(tabId, primaryTabs.size(), "Expecting " + tabId + " tabs");
 
     }
 
-    @Test
+    @DataPortalTest
     public void testProfileImage() {
         ImgElement profileImage = p.getProfileImage();
-        assertNotNull("Expecting profile images to be switched on", profileImage);
-        assertTrue("Expecting image palm_tc_29336_1.jpg", profileImage.getSrcUrl().toString().endsWith("/palm_tc_29336_1.jpg"));
+        assertNotNull(profileImage, "Expecting profile images to be switched on");
+        assertTrue(profileImage.getSrcUrl().toString().endsWith("/palm_tc_29336_1.jpg"), "Expecting image palm_tc_29336_1.jpg");
     }
 
 
-    @Test
+    @DataPortalTest
     public void testFeatureToc() {
 
         assertEquals("Content", p.getTableOfContentHeader());
         List<LinkElement> links = p.getTableOfContentLinks();
-        assertNotNull("Expecting a list of TOC links in the profile page.", links);
+        assertNotNull(links, "Expecting a list of TOC links in the profile page.");
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureDistribution() {
 
         int featureId = 0;
@@ -117,12 +120,12 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertEquals(evans_et_al_referenceCitation, featureBlockDistribution.getOriginalSourcesSections().get(0).getElement().findElement(By.className("reference")).getText());
         assertTrue(LinkElement.testIfLinkElement(featureBlockDistribution.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
 
-        assertNotNull("Expecting an OpenLayers map", featureBlockDistribution.getElement().findElement(By.id("openlayers-map-distribution")));
+        assertNotNull(featureBlockDistribution.getElement().findElement(By.id("openlayers-map-distribution")), "Expecting an OpenLayers map");
         assertEquals("Map uses TDWG level 3 distributions (http://www.nhm.ac.uk/hosted_sites/tdwg/geogrphy.html)", featureBlockDistribution.getElement().findElement(By.className("distribution_map_caption")).getText());
 
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureBiologyAndEcology() {
 
         int featureId = 2;
@@ -150,7 +153,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(LinkElement.testIfLinkElement(featureBlockBioEco.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureConservation() {
 
         int featureId = 3;
@@ -176,7 +179,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(LinkElement.testIfLinkElement(featureBlockConservation.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureCommonName() {
 
         int featureId = 4;
@@ -203,7 +206,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
 
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureUses() {
 
         int featureId = 5;
@@ -229,7 +232,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(LinkElement.testIfLinkElement(featureBlockUses.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureDiscussion() {
 
         int featureId = 1;
@@ -257,7 +260,7 @@ public class Calamus_acanthospathus_TaxonProfileTest extends CdmDataPortalTestBa
         assertTrue(LinkElement.testIfLinkElement(featureBlockDiscussion.getOriginalSourcesSections().get(0).getLinksInElement().get(0), "cdm_dataportal/reference/706c5e5e-1dac-4fb2-b849-8e99ad7d63aa"));
     }
 
-    @Test
+    @DataPortalTest
     public void testFeatureMaterialsExamined() {
 
         int featureId = 6;

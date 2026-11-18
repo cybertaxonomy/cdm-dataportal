@@ -8,13 +8,16 @@
 */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.UUID;
 
 import org.apache.logging.log4j.Level;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -44,7 +47,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
     private DerivedUnitTree duTree;
 
-    @Before
+    @BeforeEach
     public void switchToView() throws IOException, InterruptedException, DrushExecutionFailure {
         LogUtils.setLevel(getClass(), Level.DEBUG);
         setDrupalVar(DrupalVars.CDM_DATAPORTAL_TAXONPAGE_TABS, "1");
@@ -60,7 +63,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         duTree = DerivedUnitTree.from(treeElement);
     }
 
-    @Test
+    @DataPortalTest
     public void testPage() {
 
         assertEquals(4, duTree.getRootNodes().size());
@@ -74,7 +77,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("B SP-99999", rootNodeHeader4.getText());
     }
 
-    @Test
+    @DataPortalTest
     public void testDerivationTree1() {
 
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(3);
@@ -83,9 +86,9 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DerivedUnitTreeNode subNode2 = rootNode.getSubNodes().get(2);
 
         assertEquals("B SP-99999", rootNode.getHeader().getText());
-        assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
+        assertFalse(subNode1.getElement().isDisplayed(), "sub node 1 initially invisible");
         rootNode.getTreeNodeSymbol().click();
-        assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
+        assertTrue(subNode1.getElement().isDisplayed(), "sub node 1 visible after click");
         assertEquals("[icon] B_SP-99999", subNode0.getHeader().getText());
         assertEquals("B B-923845", subNode1.getHeader().getText());
         assertEquals("B DNA-9098080", subNode2.getHeader().getText());
@@ -105,16 +108,16 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         assertEquals("B", tissueSampleTable.getDetailsValueCellText("Collection"));
     }
 
-    @Test
+    @DataPortalTest
     public void testDerivationTree2() {
 
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(1);
         DerivedUnitTreeNode subNode1 = rootNode.getSubNodes().get(0);
 
         assertEquals("Kusber, W.-H. 12", rootNode.getHeader().getText());
-        assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
+        assertFalse(subNode1.getElement().isDisplayed(), "sub node 1 initially invisible");
         rootNode.getTreeNodeSymbol().click();
-        assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
+        assertTrue(subNode1.getElement().isDisplayed(), "sub node 1 visible after click");
         assertEquals("B 123123", subNode1.getHeader().getText());
 
         // ---- root node
@@ -152,7 +155,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         //DetailsTable mediaTable = subNode1.getDetailsTable(DetailsTable.tableClassAttrFrom("Media"));
     }
 
-    @Test
+    @DataPortalTest
     public void testDerivationTree3() {
 
         DerivedUnitTreeNode rootNode = duTree.getRootNodes().get(2);
@@ -166,14 +169,14 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
 
         assertEquals("Ehrenberg, C.G. D047", rootNode.getHeader().getText());
 
-        assertFalse("sub node 1 initially invisible", subNode1.getElement().isDisplayed());
+        assertFalse(subNode1.getElement().isDisplayed(), "sub node 1 initially invisible");
         rootNode.getTreeNodeSymbol().click();
-        assertTrue("sub node 1 visible after click", subNode1.getElement().isDisplayed());
+        assertTrue(subNode1.getElement().isDisplayed(), "sub node 1 visible after click");
         assertEquals("CEDiT 2017E68", subNode1.getHeader().getText());
 
-        assertFalse("sub node 1 initially invisible", subNode1_1.getElement().isDisplayed());
+        assertFalse(subNode1_1.getElement().isDisplayed(), "sub node 1 initially invisible");
         subNode1.getTreeNodeSymbol().click();
-        assertTrue("sub node 1 visible after click", subNode1_1.getElement().isDisplayed());
+        assertTrue(subNode1_1.getElement().isDisplayed(), "sub node 1 visible after click");
         assertEquals("10.5555 (JSTOR image viewer)", subNode1_1.getHeader().getText());
         assertEquals("B IMG 99999", subNode1_2.getHeader().getText());
         assertEquals("M M0093531 (Erigeron annus)", subNode1_3.getHeader().getText());
@@ -293,7 +296,7 @@ public class SpecimensTreeViewTest extends CdmDataPortalTestBase {
         DetailsTable typeDesignationsTable_2 = subNode2.getDetailsTable(DetailsTable.tableClassAttrFrom("Type designations"));
         assertEquals("Isolectotype (designated by Kretschmann, J., Žerdoner ?alasan, A. & Kusber, W.-H. 20171) of Glenodinium apiculatum Ehrenb.;",
                 typeDesignationsTable_2.getBodyCellText(0, 0));
-        assertEquals("expecting one footnote key link", 2, typeDesignationsTable_2.getBodyCell(0, 0).getLinksInElement().size());
+        assertEquals(2, typeDesignationsTable_2.getBodyCell(0, 0).getLinksInElement().size(), "expecting one footnote key link");
 */
     }
 }

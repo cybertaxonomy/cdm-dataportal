@@ -10,8 +10,8 @@ package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -49,7 +49,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
      *
      * @throws Exception
      */
-    @Test
+    @DataPortalTest
     public void key_to_Malaysian_Sapindaceae_Genera() throws Exception {
 
         UUID keyUuid = UUID.fromString("8427a8f5-17b8-4c2b-9fff-143248d18643");
@@ -60,7 +60,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
         KeyLineData keyLineData;
 
 
-        Assert.assertEquals(getContext().prepareTitle("KEY 1 TO THE MALESIAN GENERA (based on vegetative and flower characters)"), p.getTitle());
+        Assertions.assertEquals(getContext().prepareTitle("KEY 1 TO THE MALESIAN GENERA (based on vegetative and flower characters)"), p.getTitle());
 
         // -------- //
         keyLineData = new KeyLineData("1",
@@ -75,7 +75,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
 
 
         //FIXME:
-        //Assert.assertTrue(targetPage.toString().startsWith(p.getPageURL().toString() + "#"));
+        //Assertions.assertTrue(targetPage.toString().startsWith(p.getPageURL().toString() + "#"));
 
         // -------- //
         keyLineData = new KeyLineData("1'", "Herbaceous or woody climbers. Leaves biternate. Inflorescences with basal tendrils",
@@ -87,7 +87,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
                     targetPage = p.followPolytomousKeyLine(1, keyLineData, "contento");
        //         }
        // targetPage = p.followPolytomousKeyLine(1, keyLineData);
-        Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkTextWithSuffix()), targetPage.getTitle());
+        Assertions.assertEquals(getContext().prepareTitle(keyLineData.getLinkTextWithSuffix()), targetPage.getTitle());
         p.get();
 
         // -------- //
@@ -101,7 +101,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
          //       }
         //targetPage = p.followPolytomousKeyLine(2, keyLineData);
         //FIXME (same as above):
-        //Assert.assertEquals(p, targetPage);
+        //Assertions.assertEquals(p, targetPage);
 
         // -------- //
         keyLineData = new KeyLineData("2'", "Leaves bipinnate", LinkClass.nodeLinkToTaxon, "Tristiropsis Radlk.", " in Dur., Index Gen. Phan.: 76. 1888");
@@ -112,7 +112,7 @@ public class FloraMalesianaPolytomousKeyTest extends CdmDataPortalTestBase {
                     targetPage = p.followPolytomousKeyLine(3, keyLineData, false);
         //        }
         //targetPage = p.followPolytomousKeyLine(3, keyLineData);
-        Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkTextWithSuffix()), targetPage.getTitle());
+        Assertions.assertEquals(getContext().prepareTitle(keyLineData.getLinkTextWithSuffix()), targetPage.getTitle());
         p.get();
 
     }

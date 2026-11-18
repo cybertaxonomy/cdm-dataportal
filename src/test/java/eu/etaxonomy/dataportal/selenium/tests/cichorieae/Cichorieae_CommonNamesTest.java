@@ -8,10 +8,13 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.UUID;
 
-import org.junit.Test;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -32,7 +35,7 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
     /**
      * regression test for issue ##3160 (Cichorieae Portal: Common names not correctly ordered)
      */
-    @Test
+    @DataPortalTest
     public void lactuca_serriola() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), lactuca_serriola_uuid);
         String expectedName = "Lactuca serriola";
@@ -41,7 +44,7 @@ public class Cichorieae_CommonNamesTest extends CdmDataPortalTestBase{
         FeatureBlock distributionBlock = p.getFeatureBlockAt(2, "distribution", "div", "dd");
         assertNotNull(distributionBlock);
 
-        assertTrue("footnotes must not be empty", distributionBlock.countFootNotes() > 0);
+        assertTrue(distributionBlock.countFootNotes() > 0, "footnotes must not be empty");
         // testing for the duplicate footnotes named below in the  FIXME (related to #4383 )
 
         /* expecting the sources of "North Caucasus AN,AO,AP,AQ,AR" to be sorted

@@ -8,10 +8,13 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.UUID;
 
-import org.junit.Test;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -36,7 +39,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
     private static final String hybridWithSpace = UTF8.HYBRID.toString();
 
 
-    @Test
+    @DataPortalTest
     public void testCrepis_malyi() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_malyi_Uuid);
         String expectedName = "Crepis "+hybridWithSpace+"malyi";
@@ -44,7 +47,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
         assertEquals("Crepis "+hybridWithSpace+"malyi Stadlm. in Oesterr. Bot. Z. 58: 425. 1908", p.getAcceptedNameText());
     }
 
-    @Test
+    @DataPortalTest
     public void testLactuca_favratii() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), lactuca_favratii_Uuid);
         assertEquals(getContext().prepareTitle("Lactuca "+hybridWithSpace+"\"favratii\""), p.getTitle());
@@ -52,7 +55,7 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
         assertEquals("≡ Cicerbita "+hybridWithSpace+"favratii Wilczek in Bull. Soc. Vaud. Sci. Nat. 51: 333. 1917", p.getHomotypicalGroupSynonymName(1));
     }
 
-    @Test
+    @DataPortalTest
     public void testCrepis_oenipontana() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_oenipontana_Uuid);
         assertEquals(getContext().prepareTitle("Crepis "+hybridWithSpace+"oenipontana"), p.getTitle());
@@ -62,11 +65,10 @@ public class Cichorieae_HybridTest extends CdmDataPortalTestBase{
         assertEquals("≡ Crepis "+hybridWithSpace+"pseudalpestris (Murr) Murr in Allg. Bot. Z. Syst. 22: 66. 1916", p.getHeterotypicalGroupSynonymName(1, 3));
     }
 
-    @Test
+    @DataPortalTest
     public void testCrepis_artificialis() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), crepis_artificialis_Uuid);
         assertEquals(getContext().prepareTitle("Crepis x artificialis"), p.getTitle());
-        assertEquals("Incorrectly created hybrid with x should be kept as entered",
-                "Crepis x artificialis J. Collins & al. in Genetics 14: 310. 1929", p.getAcceptedNameText());
+        assertEquals("Crepis x artificialis J. Collins & al. in Genetics 14: 310. 1929", p.getAcceptedNameText(), "Incorrectly created hybrid with x should be kept as entered");
     }
 }

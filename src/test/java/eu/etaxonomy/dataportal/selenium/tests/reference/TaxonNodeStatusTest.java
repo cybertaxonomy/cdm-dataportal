@@ -8,12 +8,15 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -40,19 +43,19 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
     static final UUID casus_admirabilis_uuid = UUID.fromString("1412a6af-c005-4a8a-a07a-036ea4255824");
     static final UUID casus_exosrs_uuid = UUID.fromString("411f37e2-c583-44bb-a40d-21b1eeb92034");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
 
-    @Test
+    @DataPortalTest
     public void test_casus_dubius() throws MalformedURLException {
 
         TaxonPage p = new TaxonPage(driver, getContext(), casus_dubius_uuid);
         casus_dubius_assertions(p);
     }
 
-    @Test
+    @DataPortalTest
     public void test_casus_dubius_synonymy() throws MalformedURLException {
 
         TaxonPage p = new TaxonSynonymyPage(driver, getContext(), casus_dubius_uuid);
@@ -87,12 +90,12 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         assertEquals("[Alternative Classification]", tnsData_1.getClassficationText());
     }
 
-    @Test
+    @DataPortalTest
     public void test_casus_noninsolor() throws MalformedURLException {
 
         TaxonPage p = new TaxonPage(driver, getContext(), casus_noninsolor_uuid);
 
-        assertTrue("Expecting sigular", p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
+        assertTrue(p.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "), "Expecting sigular");
 
         List<TaxonNodeStatusElement> statusElements = p.getTaxonNodeStates();
         assertEquals(1, statusElements.size());
@@ -108,7 +111,7 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         assertNull(tnsData_0.getClassficationText());
     }
 
-    @Test
+    @DataPortalTest
     public void test_casus_admirabilis() throws MalformedURLException {
 
         TaxonPage p = new TaxonPage(driver, getContext(), casus_admirabilis_uuid);
@@ -127,12 +130,12 @@ public class TaxonNodeStatusTest extends CdmDataPortalTestBase{
         assertNull(tnsData_0.getClassficationText());
     }
 
-    @Test
+    @DataPortalTest
     public void test_casus_exsors() throws MalformedURLException {
 
         TaxonPage page = new TaxonPage(driver, getContext(), casus_exosrs_uuid);
 
-        assertTrue("Expecting sigular", page.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "));
+        assertTrue(page.getTaxonNodeStatusContainer().get(0).getText().startsWith("Placement status: "), "Expecting sigular");
 
         List<TaxonNodeStatusElement> statusElements = page.getTaxonNodeStates();
         assertEquals(1, statusElements.size());

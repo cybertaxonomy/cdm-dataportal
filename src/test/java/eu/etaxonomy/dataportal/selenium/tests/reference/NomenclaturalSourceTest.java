@@ -8,10 +8,13 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -37,7 +40,7 @@ public class NomenclaturalSourceTest extends CdmDataPortalTestBase{
 
     TaxonSynonymyPage p = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
         if(p == null) {
@@ -45,7 +48,7 @@ public class NomenclaturalSourceTest extends CdmDataPortalTestBase{
         }
     }
 
-    @Test
+    @DataPortalTest
     public void testNomenclaturalReference() {
 
         WebElement acceptedName = p.getAcceptedName();
@@ -54,7 +57,7 @@ public class NomenclaturalSourceTest extends CdmDataPortalTestBase{
         assertEquals("Verh. Nat. Gesch. Ned. Bezitt., Bot. 19: 22, t. 1 & 4. 1840", referenceElement.getText());
     }
 
-    @Test
+    @DataPortalTest
     public void testProtologueAcceptedName() {
 
         WebElement acceptedName = p.getAcceptedName();
@@ -65,7 +68,7 @@ public class NomenclaturalSourceTest extends CdmDataPortalTestBase{
         assertEquals("http://media.test/protologue/1234", protologueElement.getLinksInElement().get(2).getUrl());
     }
 
-    @Test
+    @DataPortalTest
     public void testProtologueHeterotypicSynonym() {
 
         WebElement synonym = p.getHeterotypicalGroupSynonym(1, 1);
@@ -74,7 +77,7 @@ public class NomenclaturalSourceTest extends CdmDataPortalTestBase{
         assertEquals("http://media.test/protologue/5678", protologueElement.getLinksInElement().get(0).getUrl());
     }
 
-    @Test
+    @DataPortalTest
     public void testProtologueHopmotypicSynonym() {
 
         WebElement synonym = p.getHeterotypicalGroupSynonym(1, 2);

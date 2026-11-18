@@ -11,8 +11,8 @@ package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.BaseElement;
@@ -33,7 +33,7 @@ import eu.etaxonomy.dataportal.DrupalVars;
 public class CyprusPolytomousKeyTest extends CdmDataPortalTestBase {
 
 
-    @Test
+    @DataPortalTest
     public void key_to_Achillea() throws Exception {
 
         UUID keyUuid = UUID.fromString("55527688-92b4-4750-85ed-5808ff0a265e");
@@ -44,17 +44,17 @@ public class CyprusPolytomousKeyTest extends CdmDataPortalTestBase {
         KeyLineData keyLineData;
 
 
-        Assert.assertEquals(getContext().prepareTitle("Achillea"), driver.getTitle());
+        Assertions.assertEquals(getContext().prepareTitle("Achillea"), driver.getTitle());
 
-        Assert.assertEquals("but modified, supplemented and names used differing", p.getKeyAnnotationsText());
+        Assertions.assertEquals("but modified, supplemented and names used differing", p.getKeyAnnotationsText());
 
         List<BaseElement> sourceRefs = p.getSources();
 
-        Assert.assertEquals( "G. N. Hadjikyriakou 2007: Aromatic and spicy plants in Cyprus. – Nicosia", sourceRefs.get(0).getText());
-        Assert.assertEquals(1, sourceRefs.get(0).getLinksInElement().size());
+        Assertions.assertEquals( "G. N. Hadjikyriakou 2007: Aromatic and spicy plants in Cyprus. – Nicosia", sourceRefs.get(0).getText());
+        Assertions.assertEquals(1, sourceRefs.get(0).getLinksInElement().size());
 
-        Assert.assertEquals("Meikle, R.D. 1985: Flora of Cyprus 2. – Kew: The Bentham-Moxon Trust", sourceRefs.get(1).getText());
-        Assert.assertEquals(1, sourceRefs.get(1).getLinksInElement().size());
+        Assertions.assertEquals("Meikle, R.D. 1985: Flora of Cyprus 2. – Kew: The Bentham-Moxon Trust", sourceRefs.get(1).getText());
+        Assertions.assertEquals(1, sourceRefs.get(1).getLinksInElement().size());
 
         // -------- //
         keyLineData = new KeyLineData("1",
@@ -67,16 +67,16 @@ public class CyprusPolytomousKeyTest extends CdmDataPortalTestBase {
             targetPage = p.followPolytomousKeyLine(0, keyLineData, false);
         }
 
-        Assert.assertEquals(getContext().prepareTitle(keyLineData.getLinkText()), driver.getTitle());
+        Assertions.assertEquals(getContext().prepareTitle(keyLineData.getLinkText()), driver.getTitle());
         // This page should also have a key tab
-        Assert.assertEquals("Keys", targetPage.getPrimaryTabs().get(2).getText());
+        Assertions.assertEquals("Keys", targetPage.getPrimaryTabs().get(2).getText());
         p.get();
 
         // -------- //
         keyLineData = new KeyLineData("1'", "Capitula with ligulate ray-florets; leaves pinnatisect",
                 LinkClass.nodeLinkToNode, "2");
 //        targetPage = p.followPolytomousKeyLine(1, keyLineData);
-//        Assert.assertEquals(p.getPageURL().getPath(), targetPage.getPageURL().getPath()); // TODO
+//        Assertions.assertEquals(p.getPageURL().getPath(), targetPage.getPageURL().getPath()); // TODO
 //        p.get();
 
 

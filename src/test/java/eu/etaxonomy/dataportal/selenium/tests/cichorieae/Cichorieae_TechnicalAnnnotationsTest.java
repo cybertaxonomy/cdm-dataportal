@@ -8,11 +8,14 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
@@ -34,7 +37,7 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
     static UUID pilosella_uuid = UUID.fromString("f42a07d1-d959-4838-b8ea-192b523ad5cc");
 
 
-    @Test
+    @DataPortalTest
     public void soroseris_hookeriana() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), soroseris_hookeriana_uuid);
         String expectedName = "Soroseris hookeriana";
@@ -47,27 +50,26 @@ public class Cichorieae_TechnicalAnnnotationsTest extends CdmDataPortalTestBase{
 
         // Credits contains an technical annotation but this must not be displayed
         FeatureBlock creditsBlock = p.getFeatureBlockAt(1, "credits", "div", "div");
-        //testing this is not possible due to SCHROTT-CODE // assertEquals("expecting 1 DescriptionElements in citation", 1, creditsBlock.getDescriptionElements().size());
+        //testing this is not possible due to SCHROTT-CODE // assertEquals(1, creditsBlock.getDescriptionElements().size(), "expecting 1 DescriptionElements in citation");
         assertEquals("Credits\nBoufford D. E. 2009: Images (12 added)\nSmalla M. 2009: Images (1 added)\nSun H. 2009: Images (3 added)\nYue J. 2009: Images (1 added)\nZhang J. 2009: Images (1 added).\n" +
                 "\n" +
                 "1\n" +
                 "1. This fact has been moved from Soroseris gillii (S. Moore) Stebbins to this taxon.", creditsBlock.getText());
-        assertTrue("expecting 1 footnote keys", creditsBlock.hasFootNoteKeys());
-        assertTrue("expecting no footnotes", creditsBlock.hasFootNotes());
+        assertTrue(creditsBlock.hasFootNoteKeys(), "expecting 1 footnote keys");
+        assertTrue(creditsBlock.hasFootNotes(), "expecting no footnotes");
     }
 
-    @Test
+    @DataPortalTest
     public void pilosella() throws MalformedURLException {
         TaxonSynonymyPage p = new TaxonSynonymyPage(driver, getContext(), pilosella_uuid);
         String expectedName = "Pilosella";
         assertEquals(getContext().prepareTitle(expectedName), p.getTitle());
 
         assertEquals("Pilosella Vaill. in Königl. Akad. Wiss. Paris Phys. Abh. 5: 703. 17541", p.getAcceptedNameText());
-        assertEquals("Expecting one footnote key", 1, p.getAcceptedNameFootNoteKeys().size());
-        assertEquals("Expecting one footnote", 1, p.getHomotypicalGroupFootNotes().size());
+        assertEquals(1, p.getAcceptedNameFootNoteKeys().size(), "Expecting one footnote key");
+        assertEquals(1, p.getHomotypicalGroupFootNotes().size(), "Expecting one footnote");
         String expectetToStartWith = "1. As has been discovered by Greuter & al. in Taxon 54: 166 (2005),";
-        assertTrue("Expecting footnote to start with: '" + expectetToStartWith + "' but was '" + p.getHomotypicalGroupFootNotes().get(0).getText() + "'"
-                , p.getHomotypicalGroupFootNotes().get(0).getText().startsWith(expectetToStartWith));
+        assertTrue(p.getHomotypicalGroupFootNotes().get(0).getText().startsWith(expectetToStartWith), "Expecting footnote to start with: '" + expectetToStartWith + "' but was '" + p.getHomotypicalGroupFootNotes().get(0).getText() + "'");
     }
 
 }

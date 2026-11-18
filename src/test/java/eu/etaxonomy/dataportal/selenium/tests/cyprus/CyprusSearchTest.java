@@ -8,8 +8,11 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cyprus;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -29,7 +32,7 @@ public class CyprusSearchTest extends CdmDataPortalTestBase{
 
 	private GenericPortalPage homePage;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 
 		driver.get(getContext().getSiteUri().toString());
@@ -40,13 +43,13 @@ public class CyprusSearchTest extends CdmDataPortalTestBase{
 	/**
 	 * see http://dev.e-taxonomy.eu/trac/ticket/2350
 	 */
-	@Test
+	@DataPortalTest
 	public void searchResultsWithoutAnnotationFootnotes() throws Exception{
 
 		TaxonSearchResultPage searchResultPage = homePage.submitQuery("Genis*");
 
 		for (TaxonListElement item : searchResultPage.getResultItems()){
-			 assertNull("result set entries must not have footnote keys", item.getElement().findElements(By.className("footnote-key")));
+			 assertNull(item.getElement().findElements(By.className("footnote-key")), "result set entries must not have footnote keys");
 		}
 
 	}

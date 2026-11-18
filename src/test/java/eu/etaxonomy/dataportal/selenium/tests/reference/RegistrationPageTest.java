@@ -8,12 +8,15 @@
 */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.NoSuchElementException;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -52,12 +55,12 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
     String titleSuffix = " | Integration test reference";
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
 
-    @Test
+    @DataPortalTest
     public void test100001() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), planothidium_victori_id);
@@ -81,7 +84,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertEquals("1. Please check reference detail", fns.get(0).getText());
     }
 
-    @Test
+    @DataPortalTest
     public void test100002() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), planothidium_victori_epitype_id);
@@ -107,7 +110,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 regItem.getMetadata().getText());
     }
 
-    @Test
+    @DataPortalTest
     public void test100003() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), nodosilinea_id);
@@ -126,7 +129,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
     }
 
 
-    @Test
+    @DataPortalTest
     public void test100004() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), nodosilinea_radiophila_id);
@@ -154,7 +157,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 regItem.getMetadata().getText());
     }
 
-    @Test
+    @DataPortalTest
     public void test100005() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), ramsaria_id);
@@ -183,7 +186,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
 
     }
 
-    @Test
+    @DataPortalTest
     public void test100006() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(), ramsaria_avicennae_id);
@@ -205,7 +208,7 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
                 regItem.getMetadata().getText());
     }
 
-    @Test
+    @DataPortalTest
     public void test100008() throws MalformedURLException, UnsupportedEncodingException{
 
         RegistrationPage p = new RegistrationPage(driver, getContext(),  glenodinium_apiculatum_types_id);
@@ -239,8 +242,8 @@ public class RegistrationPageTest extends CdmDataPortalTestBase {
         assertTrue(
                 regItem.getSpecimenTypeDesignations().get(1).getLinksInElement().get(1).getUrl().endsWith("cdm_dataportal/reference/c5d980ff-8766-4322-9acb-7b0a499de707"));
         List<List<GalleryImage>> galleryImages = ElementUtils.getGalleryImages(regItem.getSpecimenTypeDesignations().get(1).getElement(), p.getWait());
-        assertEquals("Expecting one row of images", 1, galleryImages.size());
-        assertEquals("Expecting 1 image in row", 1, galleryImages.get(0).size());
+        assertEquals(1, galleryImages.size(), "Expecting one row of images");
+        assertEquals(1, galleryImages.get(0).size(), "Expecting 1 image in row");
         assertEquals(
                 "https://upload.wikimedia.org/wikipedia/commons/2/25/PIA01466.jpg",
                 galleryImages.get(0).get(0).getImageLink().getUrl());

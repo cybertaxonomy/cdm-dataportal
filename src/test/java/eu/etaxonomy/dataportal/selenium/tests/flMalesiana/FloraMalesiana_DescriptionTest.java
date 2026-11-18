@@ -8,14 +8,17 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.flMalesiana;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.WebElement;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
@@ -35,25 +38,25 @@ public class FloraMalesiana_DescriptionTest extends CdmDataPortalTestBase{
 
     private static final UUID tristiropsis_acutangula_uuid = UUID.fromString("87e76e43-e4b7-44a1-a195-2c36a63b34bb");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         driver.get(getContext().getSiteUri().toString());
     }
 
-    @After
+    @AfterEach
     public void tearDown(){
         logger.debug("@After");
     }
 
-    @Test
+    @DataPortalTest
     public void tristiropsis_acutangula() throws Exception {
 
         TaxonProfilePage p =  new TaxonProfilePage(driver, getContext(), tristiropsis_acutangula_uuid);
 
         List<LinkElement> primaryTabs = p.getPrimaryTabs();
 
-        assertEquals("Expecting 4 tabs", 4, primaryTabs.size());
+        assertEquals(4, primaryTabs.size(), "Expecting 4 tabs");
         assertEquals("General\n(active tab)", primaryTabs.get(0).getText());
         assertEquals("Synonymy", primaryTabs.get(1).getText());
         assertEquals("Images", primaryTabs.get(2).getText());

@@ -8,10 +8,13 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.reference;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.junit.CdmDataPortalTestBase;
@@ -30,12 +33,12 @@ import eu.etaxonomy.dataportal.pages.GenericPortalPage;
 public class AdvancedSearchFormTest extends CdmDataPortalTestBase{
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driver.get(getContext().getSiteUri().toString());
     }
 
-    @Test
+    @DataPortalTest
     public void testTaxonSearchForm() throws MalformedURLException {
 
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "search");
@@ -43,7 +46,7 @@ public class AdvancedSearchFormTest extends CdmDataPortalTestBase{
 
     }
 
-    @Test
+    @DataPortalTest
     public void testFactualDataSearchForm() throws MalformedURLException {
 
         GenericPortalPage p = new GenericPortalPage(driver, getContext(), "search/taxon_by_description");

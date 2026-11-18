@@ -8,14 +8,17 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Assertions;
+
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -41,7 +44,7 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
 
     TaxonProfilePage p = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws MalformedURLException {
 
         if(p != null && driver != null ){
@@ -52,11 +55,11 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
     }
 
 
-    @Test
+    @DataPortalTest
     public void testTitleAndTabs() {
 
         assertEquals(getContext().prepareTitle("Lactuca triquetra"), p.getTitle());
-        assertNull("Authorship information should be hidden", p.getAuthorInformationText());
+        assertNull(p.getAuthorInformationText(), "Authorship information should be hidden");
 
         List<LinkElement> primaryTabs = p.getPrimaryTabs();
         int tabId = 0;
@@ -69,24 +72,24 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         assertEquals("Synonymy", primaryTabs.get(tabId++).getText());
         assertEquals("Images", primaryTabs.get(tabId++).getText());
         assertEquals("Specimens", primaryTabs.get(tabId++).getText());
-        assertEquals("Expecting " + tabId + " tabs", tabId, primaryTabs.size());
+        assertEquals(tabId, primaryTabs.size(), "Expecting " + tabId + " tabs");
 
     }
 
-    @Test
+    @DataPortalTest
     public void testProfileImage() {
         ImgElement profileImage = p.getProfileImage();
-        assertNotNull("Expecting profile images to be switched on", profileImage);
+        assertNotNull(profileImage, "Expecting profile images to be switched on");
         //adapted the image to the one used in production db
-        assertTrue("Expecting image Astartoseris_triquetra_Bc_01.JPG but was " + profileImage.getSrcUrl().toString(), profileImage.getSrcUrl().toString().matches("(?i).*Astartoseris_triquetra_Bc_01.*"));
+        assertTrue(profileImage.getSrcUrl().toString().matches("(?i).*Astartoseris_triquetra_Bc_01.*"), "Expecting image Astartoseris_triquetra_Bc_01.JPG but was " + profileImage.getSrcUrl().toString());
     }
 
 
-    @Test
+    @DataPortalTest
     public void testFeatures() {
         assertEquals("Content", p.getTableOfContentHeader());
         List<LinkElement> links = p.getTableOfContentLinks();
-        assertNotNull("Expecting a list of TOC links in the profile page.", links);
+        assertNotNull(links, "Expecting a list of TOC links in the profile page.");
 
         FeatureBlock featureBlock;
         int featureId = 0;
@@ -144,13 +147,13 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
             logger.info(descriptionElement.getText());
             featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
             assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-    //        assertEquals("Expecting 7 FootnoteKeys", 7, featureBlock.getFootNoteKeys().size()); //original version
-    //        assertEquals("Expecting 6 FootnoteKeys", 6, featureBlock.getFootNoteKeys().size());   //version after bug #3475
-            assertEquals("Expecting 8 FootnoteKeys", 8, featureBlock.countFootNoteKeys()); // new version #3475 fixed
-            assertEquals("Expecting 7 Footnotes", 7, featureBlock.countFootNotes());
+    //        assertEquals(7, featureBlock.getFootNoteKeys().size(), "Expecting 7 FootnoteKeys"); //original version
+    //        assertEquals(6, featureBlock.getFootNoteKeys().size(), "Expecting 6 FootnoteKeys");   //version after bug #3475
+            assertEquals(8, featureBlock.countFootNoteKeys(), "Expecting 8 FootnoteKeys"); // new version #3475 fixed
+            assertEquals(7, featureBlock.countFootNotes(), "Expecting 7 Footnotes");
         }
 
-        assertNotNull("Expecting an OpenLayers map", featureBlock.getElement().findElement(By.id("openlayers-map-distribution")));
+        assertNotNull(featureBlock.getElement().findElement(By.id("openlayers-map-distribution")), "Expecting an OpenLayers map");
         WebElement mapCaptionElement = null;
         try {
             mapCaptionElement = featureBlock.getElement().findElement(By.className("distribution_map_caption"));
@@ -171,8 +174,8 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         assertEquals(blockTextFull, featureBlock.getText());
         featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-        assertEquals("Expecting no FootnoteKeys", 0, featureBlock.countFootNoteKeys());
-        assertEquals("Expecting no Footnotes", 0, featureBlock.countFootNotes());
+        assertEquals(0, featureBlock.countFootNoteKeys(), "Expecting no FootnoteKeys");
+        assertEquals(0, featureBlock.countFootNotes(), "Expecting no Footnotes");
 
 
         /* Common names */
@@ -205,8 +208,8 @@ public class Lactuca_triquetra_TaxonProfileTest extends CdmDataPortalTestBase{
         assertEquals(blockTextFull, featureBlock.getText().replaceAll("\\n", " "));
         featureBlock.testDescriptionElementLayout(0, indent, descriptionElementFontSize, expectedCssDisplay, expectedListStyleType, expectedListStylePosition, expectedListStyleImage);
         assertEquals(0, featureBlock.getOriginalSourcesSections().size());
-        assertEquals("Expecting no FootnoteKeys", 0, featureBlock.countFootNoteKeys());
-        assertEquals("Expecting no Footnotes", 0, featureBlock.countFootNotes());
+        assertEquals(0, featureBlock.countFootNoteKeys(), "Expecting no FootnoteKeys");
+        assertEquals(0, featureBlock.countFootNotes(), "Expecting no Footnotes");
 
     }
 

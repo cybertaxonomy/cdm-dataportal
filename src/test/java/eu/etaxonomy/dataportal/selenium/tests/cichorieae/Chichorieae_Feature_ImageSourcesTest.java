@@ -8,12 +8,13 @@
  */
 package eu.etaxonomy.dataportal.selenium.tests.cichorieae;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Assertions;
 
 import java.net.MalformedURLException;
 import java.util.UUID;
 
-import org.junit.Test;
+import eu.etaxonomy.dataportal.junit.DataPortalTest;
 
 import eu.etaxonomy.dataportal.DataPortalSite;
 import eu.etaxonomy.dataportal.elements.FeatureBlock;
@@ -31,7 +32,7 @@ public class Chichorieae_Feature_ImageSourcesTest extends CdmDataPortalTestBase 
     static UUID hieracium_bupleuroides_aggr = UUID.fromString("f85a5f90-fc61-4622-939f-ba6e50500b0d");
     static UUID pilosella_anchusoides = UUID.fromString("b384de9c-0a70-48e9-8fcc-1f772a331544");
 
-    @Test
+    @DataPortalTest
     public void hieracium_bupleuroides_aggr() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), hieracium_bupleuroides_aggr);
         String expectedName = "Hieracium bupleuroides aggr.";
@@ -43,7 +44,7 @@ public class Chichorieae_Feature_ImageSourcesTest extends CdmDataPortalTestBase 
         assertEquals("A. Gottschlich, G. 2009: Die Gattung Hieracium (Compositae) in der Region Abruzzen (Italien). – Stapfia 89 (as Hieracium bupleuroides C. C. Gmel.)", imageSourcesBlock.getFootNote(0).getText());
     }
 
-    @Test
+    @DataPortalTest
     public void pilosella_anchusoides() throws MalformedURLException {
         TaxonProfilePage p = new TaxonProfilePage(driver, getContext(), pilosella_anchusoides);
         String expectedName = "Pilosella anchusoides";
