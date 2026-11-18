@@ -434,6 +434,12 @@
                 <artifactId>aspectjweaver</artifactId>
                 <version>${aspectj.version}</version>
             </dependency>
+            <!-- JUnit 6 pulls jspecify 1.0.0; Selenium pulls 1.0.1 -->
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>1.0.1</version>
+            </dependency>
         </dependencies>
         
     
