@@ -885,7 +885,6 @@ function append_query_parameters($uri, $query_string) {
 function proxy_content($uri, $hook = NULL) {
 
   $args = func_get_args();
-  $do_gzip = function_exists('gzencode');
   $uriEncoded = array_shift($args);
   $uri = urldecode($uriEncoded);
   $hook = array_shift($args);
@@ -991,12 +990,10 @@ function proxy_content($uri, $hook = NULL) {
     } // END of tread as theme hook
 
 
-    if($do_gzip){
-      $response_data = gzencode($response_data, 2, FORCE_GZIP);
-      drupal_add_http_header('Content-Encoding', 'gzip');
-    }
+    // Do not gzip the response or set the Content-Length here: if the page
+    // cache is enabled, drupal_page_set_cache() compresses the body itself, so
+    // that clients would receive double compressed data.
     drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
-    drupal_add_http_header('Content-Length', strlen($response_data));
 
     print $response_data;
   } // END of handle $hook either as compose ot theme hook
