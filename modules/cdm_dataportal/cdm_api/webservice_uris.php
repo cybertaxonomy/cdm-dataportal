@@ -24,7 +24,7 @@ const CDM_WS_NAME_TYPEDESIGNATIONS = 'name/$0/typeDesignations';
 const CDM_WS_TYPE_DESIGNATION_STATUS_FILTER_TERMS = 'name/typeDesignationStatusFilterTerms';
 
 const CDM_WS_PORTAL_NAME = 'portal/name';
-const CDM_WS_PORTAL_NAME_FINDBYNAME = 'name/findByName/';
+const CDM_WS_PORTAL_NAME_FINDBYNAME = 'name/findByName';
 const CDM_WS_PORTAL_NAME_DESCRIPTIONS = 'portal/name/$0/taxonNameDescriptions';
 const CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS = 'portal/name/$0/typeDesignations';
 const CDM_WS_PORTAL_NAME_TYPEDESIGNATIONS_IN_HOMOTYPICAL_GROUP = 'portal/name/$0/typeDesignationsInHomotypicalGroup';
