@@ -124,7 +124,7 @@
     <profile>
       <id>java8-doclint-disabled</id>
       <activation>
-        <jdk>[17,)</jdk>
+        <jdk>[21,)</jdk>
       </activation>
       <properties>
         <javadoc.opts>-Xdoclint:none</javadoc.opts>
