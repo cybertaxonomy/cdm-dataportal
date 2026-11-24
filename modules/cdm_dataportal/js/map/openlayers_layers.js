@@ -114,7 +114,7 @@
                 // If using the MapQuest-OSM tiles, OpenStreetMap must be given credit for the data
                 attribution: 'Kartendaten: © <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: © <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
                 transitionEffect: "resize",
-                sphericalMercator: true, wrapX: true
+                sphericalMercator: true, wrapX: false
               }
             );
 
