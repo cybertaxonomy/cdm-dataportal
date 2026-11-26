@@ -34,12 +34,16 @@
             
         -->
         <netty.version>4.2.18.Final</netty.version>
-        <jackson.version>2.22.2</jackson.version>
+        <!-- Jackson 2 for Selenium/dataportal test code; cdmlib uses tools.jackson 3.x -->
+        <jackson.version>2.23.0</jackson.version>
+        <jackson.annotations.version>2.23</jackson.annotations.version>
         <log4j.version>2.26.1</log4j.version>
-        <spring.version>5.3.39</spring.version>
-        <spring-security.version>5.8.16</spring-security.version> 
-        <aspectj.version>1.9.25.1</aspectj.version>
-        <hibernate.version>5.4.33.Final</hibernate.version>
+        <!-- align with cdmlib-parent (used if optional Spring/Hibernate deps are re-enabled) -->
+        <spring.version>7.1.0</spring.version>
+        <spring-security.version>7.2.0</spring-security.version>
+        <aspectj.version>1.9.27</aspectj.version>
+        <hibernate.version>7.4.17.Final</hibernate.version>
+        <slf4j.version>2.0.20</slf4j.version>
         <wagon.version>3.5.3</wagon.version>
         <scm.provider.version>2.1.0</scm.provider.version>
         <junit-jupiter.version>6.1.3</junit-jupiter.version>
@@ -273,7 +277,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.7.1-jre</version>
+                <version>33.8.0-jre</version>
             </dependency>
             <dependency>
                 <groupId>com.google.errorprone</groupId>
@@ -370,7 +374,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.20.0</version>
+                <version>3.22.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
@@ -397,7 +401,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>2.0.19</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.logging</groupId>
@@ -417,12 +421,17 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>2.22</version>
+                <version>${jackson.annotations.version}</version>
             </dependency>
             <dependency>
-                <!-- newer version available at tools.jackson.core -->
+                <!-- dataportal/Selenium stay on Jackson 2; cdmlib uses tools.jackson 3 -->
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
@@ -440,6 +449,17 @@
                 <groupId>org.jspecify</groupId>
                 <artifactId>jspecify</artifactId>
                 <version>1.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.6.0</version>
+            </dependency>
+            <dependency>
+                <!-- align with cdmlib (ORM 7.4 / Search 8.4 convergence) -->
+                <groupId>org.hibernate.models</groupId>
+                <artifactId>hibernate-models</artifactId>
+                <version>1.3.5</version>
             </dependency>
         </dependencies>
         
@@ -549,7 +569,7 @@
             <version>${spring-security.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
         </dependency>   -->
